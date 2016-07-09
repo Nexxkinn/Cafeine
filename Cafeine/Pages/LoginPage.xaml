@@ -1,0 +1,36 @@
+﻿<Page
+    x:Class="Cafeine.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Cafeine"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Pivot x:Name="loginpage" HorizontalAlignment="Center" Height="453" Width="318">
+            <PivotItem Margin="10,0,10,24">
+                <RelativePanel>
+                    <Grid Height="406">
+                        <Button x:Name="Myanimelist_button" Width="278" Height="100" HorizontalAlignment="Center" Foreground="White" Click="MAL_click" >
+                            <Button.Background>
+                                <ImageBrush Stretch="None" ImageSource="ms-appx:///Assets/logo/mal-logo-xsmall.png"/>
+                            </Button.Background>
+                        </Button>
+                    </Grid>
+                </RelativePanel>
+                
+            </PivotItem>
+            <PivotItem x:Name="userlogin" x:DeferLoadStrategy="Lazy">
+                <Grid Height="402">
+                    <TextBox x:Name="usrnm" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap" VerticalAlignment="Top" Width="242" PlaceholderText="Username" />
+                    <PasswordBox x:Name="psswd" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="242" PlaceholderText="Password" Margin="0,37,-38,0" />
+                    <Button x:Name="MAL_login" Content="Login" HorizontalAlignment="Left" Height="68"  VerticalAlignment="Top" Width="68" Click="button_Click" Margin="0,74,0,0" />
+                </Grid>
+            </PivotItem>
+        </Pivot>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Height="65" Margin="216,522,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="600"/>
+
+
+    </Grid>
+</Page>
