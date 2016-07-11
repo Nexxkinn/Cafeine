@@ -15,11 +15,11 @@ namespace Cafeine.Datalist
 {
     public class animelibrary : ILibrarydata
     {
-        int id { get; set; }
-        string Title { get; set; }
-        int my_score { get; set; }
-        string imgurl { get; set; }
-        int totalepisodes { get; set; }
+        public int id { get; set; }
+        public string Title { get; set; }
+        public int my_score { get; set; }
+        public string imgurl { get; set; }
+        public int totalepisodes { get; set; }
     }
 
     public interface ILibrarydata
@@ -42,26 +42,20 @@ namespace Cafeine.Datalist
     }
     class LibraryList
     {
-        private async Task<string> grabuserdata(int category)
+        public async Task<string> grabuserdata(int category)
         {
             string anime_or_manga = (category == 1) ? "anime" : "manga";
             //grab username
             string username = new Logincredentials().getusername(1);
             var url = new Uri("http://myanimelist.net/malappinfo.php?u=" + username + "&type=" + anime_or_manga + "&status=all");
-            var client = new HttpClient();
-            using (HttpResponseMessage response = await client.GetAsync(url))
-            {
-                response.EnsureSuccessStatusCode();
-                string getrespond = response.Content.ReadAsStringAsync().ToString();
-                response.Dispose();
-                return getrespond;
-            }
-                
+            HttpClient client = new HttpClient();
+            string response = await client.GetStringAsync(url);
+            return response;
         }
-        public async Task<List<ILibrarydata>> querydata(int category,int orderby)
+        public async Task<List<ILibrarydata>> querydata(int category)
         {
             var data = new List<ILibrarydata>();
-            var raw = await grabuserdata(category)
+            var raw = await grabuserdata(category);
             XDocument parseddata = XDocument.Parse(raw);
             switch (category) //1 - anime  //2 - manga
             {
@@ -70,26 +64,17 @@ namespace Cafeine.Datalist
                         var anime = parseddata.Root.Elements("anime").ToList();
                         foreach (var item in anime)
                         {
-                            data.Add{
-                                new 
-                            }
+                            data.Add(new animelibrary
+                            {
+                                imgurl = item.Element("series_image").Value,
+                                Title = item.Element("series_title").Value,
+                                my_score = (int)item.Element("my_score")
+                            });
                         }
-
-                            var list = from query in parseddata.Root.Elements("anime").ToList()
-                                   orderby (int)query.Element("my_score") descending
-                                   select new
-                                   {
-                                       imgurl = (string)query.Element("series_image"),
-                                       Title = (string)query.Element("series_title"),
-                                       my_score = (int)query.Element("my_score")
-                                   };
-                        
                         break;
                     }
             }
-
-
-            //LINQ
+            return data;
         }
     }
 }

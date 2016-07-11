@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Xml.Linq;
-using Windows.ApplicationModel;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Cafeine.Data;
+using Cafeine.Datalist;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Cafeine
@@ -26,12 +13,9 @@ namespace Cafeine
     {
         public Animelist()
         {
-            this.InitializeComponent();
-            //manual offline xml data
-            //GrabUserList grab = new GrabUserList();
-            //currentwatch_anime.DataContext = grab.querydata(1, 1);
-            //GrabUserList nana = new GrabUserList();
-            //textBox.Text = nana.getcredentialfromlocker();
+            InitializeComponent();
+            var data = new LibraryList().querydata(1);
+            currentwatch_anime.DataContext = data;
         }
 
         private void logout_test(object sender, RoutedEventArgs e)
