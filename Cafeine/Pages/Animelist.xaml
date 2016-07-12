@@ -38,8 +38,8 @@
                                 <RelativePanel Width="320" IsRightTapEnabled="True" IsDoubleTapEnabled="False" Background="White">
                                     <!--<Image x:Name="theimage" Source="{Binding sourceimage}"  MaxHeight="142" MaxWidth="105" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="0,1,5,0"/>
                                     <TextBlock x:Name="thetitle"  Text="{Binding Title}" FontFamily="ms-appx:/Font/Ubuntu-L.ttf#Ubuntu" FontSize="18" RelativePanel.RightOf="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-                                    <TextBlock Text="{Binding Myscore}" RelativePanel.Below="thetitle" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>
-                                -->
+                                    <TextBlock Text="{Binding Myscore}" RelativePanel.Below="thetitle" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>-->
+                                
                                 </RelativePanel>
                             </Grid>
                         </DataTemplate>

@@ -1,7 +1,10 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Cafeine.Data;
 using Cafeine.Datalist;
+using System;
+using System.Threading.Tasks;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Cafeine
@@ -14,10 +17,23 @@ namespace Cafeine
         public Animelist()
         {
             InitializeComponent();
-            var data = new LibraryList().querydata(1);
-            currentwatch_anime.DataContext = data;
+            Task.Run(async () => await getonit());
         }
-
+        async Task getonit()
+        {
+            try
+            {
+                var list = await new LibraryList().querydata(1);
+                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    currentwatch_anime.ItemsSource = list;
+                });
+            } catch (Exception e)
+            {
+                //TODO: show error message?? e.Message
+                //to the msdn it goes
+            }
+        }
         private void logout_test(object sender, RoutedEventArgs e)
         {
             //remove user credentials
@@ -27,5 +43,6 @@ namespace Cafeine
             vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
             Frame.Navigate(typeof(LoginPage), null);
         }
+
     }
 }

@@ -47,21 +47,26 @@ namespace Cafeine.Datalist
             string anime_or_manga = (category == 1) ? "anime" : "manga";
             //grab username
             string username = new Logincredentials().getusername(1);
-            var url = new Uri("http://myanimelist.net/malappinfo.php?u=" + username + "&type=" + anime_or_manga + "&status=all");
-            HttpClient client = new HttpClient();
-            string response = await client.GetStringAsync(url);
-            return response;
+            var url = new Uri("http://myanimelist.net/malappinfo.php?u=" + Uri.EscapeDataString(username) + "&type=" + anime_or_manga + "&status=all");
+            using (var client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string getrespond = await response.Content.ReadAsStringAsync();
+                return getrespond;
+            }
         }
         public async Task<List<ILibrarydata>> querydata(int category)
         {
             var data = new List<ILibrarydata>();
-            var raw = await grabuserdata(category);
+            string raw = await grabuserdata(category);
+            //string load = Path.Combine(Package.Current.InstalledLocation.Path, "Dumplist/useranimelist.xml");
             XDocument parseddata = XDocument.Parse(raw);
             switch (category) //1 - anime  //2 - manga
             {
                 case 1:
                     {
-                        var anime = parseddata.Root.Elements("anime").ToList();
+                        var anime = parseddata.Descendants("anime");
                         foreach (var item in anime)
                         {
                             data.Add(new animelibrary
