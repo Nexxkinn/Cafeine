@@ -1,0 +1,15 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Cafeine.Datalist"
+    x:Class="Cafeine.DataTemplates">
+    <DataTemplate x:Key="UserAnimeLibraryTemplate" x:DataType="local:animelibrary">
+        <Grid Margin="5">
+            <RelativePanel Width="320" Background="White">
+                <Image x:Name="theimage" Source="{x:Bind imgurl}" MaxHeight="142" MaxWidth="105" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="0,1,5,0"/>
+                <TextBlock x:Name="thetitle"  Text="{x:Bind Title}" x:Phase="1" FontFamily="ms-appx:/Font/Ubuntu-C.ttf#Ubuntu" FontSize="18" RelativePanel.RightOf="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
+                <TextBlock Text="{x:Bind my_score}" RelativePanel.Below="thetitle" x:Phase="1" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>
+            </RelativePanel>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

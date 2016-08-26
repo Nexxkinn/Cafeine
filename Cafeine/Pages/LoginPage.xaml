@@ -7,19 +7,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Pivot x:Name="loginpage" HorizontalAlignment="Center" Height="453" Width="318">
-            <PivotItem Margin="10,0,10,24">
+    <Grid Background="#FF2F343B" >
+        <Pivot x:Name="loginpage" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FF373C43" Width="310" Height="240" Margin="0">
+            <PivotItem HorizontalAlignment="Center" Margin="16,0" Height="196" VerticalAlignment="Top">
                 <RelativePanel>
-                    <Grid Height="406">
-                        <Button x:Name="Myanimelist_button" Width="278" Height="100" HorizontalAlignment="Center" Foreground="White" Click="MAL_click" >
-                            <Button.Background>
-                                <ImageBrush Stretch="None" ImageSource="ms-appx:///Assets/logo/mal-logo-xsmall.png"/>
-                            </Button.Background>
-                        </Button>
-                    </Grid>
+                    <Button x:Name="Myanimelist_button" HorizontalAlignment="Center" Foreground="White" Click="MAL_click" Height="79" FontFamily="ms-appx:/Font/ufonts.com_agrevuecyr-medium.ttf#AGRevueCyr" Content="MyAnimeList" FontSize="24" Background="#FF5F6369" Width="278"/>
+                    <Button x:Name="Hummingbord_button" Width="278" RelativePanel.Below="Myanimelist_button" HorizontalAlignment="Center" Foreground="White" Height="79" FontFamily="ms-appx:/Font/ufonts.com_agrevuecyr-medium.ttf#AGRevueCyr" Content="Hummingbird" FontSize="24" Margin="0,0,-8,0" Background="#FFEC8661"/>
                 </RelativePanel>
-                
+
             </PivotItem>
             <PivotItem x:Name="userlogin" x:DeferLoadStrategy="Lazy">
                 <Grid Height="402">
@@ -29,8 +24,8 @@
                 </Grid>
             </PivotItem>
         </Pivot>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Height="65" Margin="216,522,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="600"/>
-
-
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Text="TextBlock" Margin="805,703,805,293" RenderTransformOrigin="0.5,0.5" Width="310"/>
+        <TextBlock x:Name="TITLE" CharacterSpacing="200" HorizontalAlignment="Center" Height="77" Margin="0,0,0,400" TextWrapping="Wrap" Text="CAFEINE" VerticalAlignment="Center" Width="415" Foreground="White" TextAlignment="Center" FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum" FontSize="90" Padding="0" FontWeight="SemiBold" TextLineBounds="TrimToCapHeight" Canvas.ZIndex="1"/>
+        <TextBlock x:Name="TITLE_SHADOW" CharacterSpacing="200" HorizontalAlignment="Center" Height="77" Margin="10,0,0,390" TextWrapping="Wrap" Text="CAFEINE" VerticalAlignment="Center" Width="415" Foreground="Black" TextAlignment="Center" FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum" FontSize="90" Padding="0" FontWeight="SemiBold" TextLineBounds="TrimToCapHeight"/>
     </Grid>
 </Page>

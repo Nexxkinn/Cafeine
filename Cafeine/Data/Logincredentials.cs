@@ -54,7 +54,7 @@ namespace Cafeine.Data
                 return false;
             }
         }
-        public string getusername(int status)
+        public static string getusername(int status)
         {
             var get_user = new Logincredentials().getcredentialfromlocker(1);
             return get_user.UserName;

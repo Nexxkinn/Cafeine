@@ -7,92 +7,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Page.Resources>
-        
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <local:DataTemplates/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Page.Resources>
     <Grid Background="#FFF2F2F2">
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="65,16,0,0" VerticalAlignment="Top" BorderThickness="0" Width="120" Background="#FFF2F2F2" PlaceholderText="Anime" FontSize="20">
-            <ListBoxItem Content="Anime" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False"/>
-            <ListBoxItem Content="Manga" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False"/>
-        </ComboBox>
-        <Pivot Margin="0,55,0,48" >
-            <PivotItem Header="Curently Watching" Margin="12,0,0,0">
-                <GridView x:Name="currentwatch_anime" Foreground="{x:Null}">
-                    <GridView.ItemTemplate>
-                        <DataTemplate >
-                            <Grid Margin="5">
-                                <RelativePanel Width="320" Background="White">
-                                    <Image x:Name="theimage" Source="{Binding imgurl}"  MaxHeight="142" MaxWidth="105" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="0,1,5,0"/>
-                                    <TextBlock x:Name="thetitle"  Text="{Binding Title}" FontFamily="ms-appx:/Font/Ubuntu-C.ttf#Ubuntu" FontSize="18" RelativePanel.RightOf="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-                                    <TextBlock Text="{Binding my_score}" RelativePanel.Below="thetitle" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>
-                                </RelativePanel>
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
-            </PivotItem>
-            <PivotItem Header="Completed">
-                <GridView x:Name="completed_anime" x:DeferLoadStrategy="Lazy" Margin="10,90,0,10" Foreground="{x:Null}" RenderTransformOrigin="0.5,0.5">
-                    <GridView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="5">
-                                <RelativePanel Width="320" IsRightTapEnabled="True" IsDoubleTapEnabled="False" Background="White">
-                                    <!--<Image x:Name="theimage" Source="{Binding sourceimage}"  MaxHeight="142" MaxWidth="105" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="0,1,5,0"/>
-                                    <TextBlock x:Name="thetitle"  Text="{Binding Title}" FontFamily="ms-appx:/Font/Ubuntu-L.ttf#Ubuntu" FontSize="18" RelativePanel.RightOf="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-                                    <TextBlock Text="{Binding Myscore}" RelativePanel.Below="thetitle" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>-->
-                                
-                                </RelativePanel>
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
-            </PivotItem>
-            <PivotItem Header="On Hold">
-                <GridView x:Name="onhold_anime" x:DeferLoadStrategy="Lazy" Margin="10,90,0,10" Foreground="{x:Null}" RenderTransformOrigin="0.5,0.5">
-                    <GridView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="5">
-                                <RelativePanel Width="320" IsRightTapEnabled="True" IsDoubleTapEnabled="False" Background="White">
-                                    <!--<Image x:Name="theimage" Source="{Binding sourceimage}"  MaxHeight="142" MaxWidth="105" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="0,1,5,0"/>
-                                    <TextBlock x:Name="thetitle"  Text="{Binding Title}" FontFamily="ms-appx:/Font/Ubuntu-L.ttf#Ubuntu" FontSize="18" RelativePanel.RightOf="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-                                    <TextBlock Text="{Binding Myscore}" RelativePanel.Below="thetitle" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>
-                                -->
-                                </RelativePanel>
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
-            </PivotItem>
-            <PivotItem Header="Dropped">
-                <GridView x:Name="dropped_anime" x:DeferLoadStrategy="Lazy" Margin="10,90,0,10" Foreground="{x:Null}" RenderTransformOrigin="0.5,0.5">
-                    <GridView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="5">
-                                <RelativePanel Width="320" IsRightTapEnabled="True" IsDoubleTapEnabled="False" Background="White">
-                                    <!--<Image x:Name="theimage" Source="{Binding sourceimage}"  MaxHeight="142" MaxWidth="105" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="0,1,5,0"/>
-                                    <TextBlock x:Name="thetitle"  Text="{Binding Title}" FontFamily="ms-appx:/Font/Ubuntu-L.ttf#Ubuntu" FontSize="18" RelativePanel.RightOf="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-                                    <TextBlock Text="{Binding Myscore}" RelativePanel.Below="thetitle" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>
-                                -->
-                                </RelativePanel>
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
-            </PivotItem>
-            <PivotItem Header="Plan to Watch">
-                <GridView x:Name="plantowatch_anime" x:DeferLoadStrategy="Lazy" Margin="10,90,0,10" Foreground="{x:Null}" RenderTransformOrigin="0.5,0.5">
-                    <GridView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="5">
-                                <RelativePanel Width="320" IsRightTapEnabled="True" IsDoubleTapEnabled="False" Background="White">
-                                    <!--<Image x:Name="theimage" Source="{Binding sourceimage}"  MaxHeight="142" MaxWidth="105" HorizontalAlignment="Left" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="0,1,5,0"/>
-                                    <TextBlock x:Name="thetitle"  Text="{Binding Title}" FontFamily="ms-appx:/Font/Ubuntu-L.ttf#Ubuntu" FontSize="18" RelativePanel.RightOf="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-                                    <TextBlock Text="{Binding Myscore}" RelativePanel.Below="thetitle" RelativePanel.RightOf="theimage" HorizontalAlignment="Left" FontFamily="Segoe UI Semilight" FontWeight="SemiLight"/>
-                                -->
-                                </RelativePanel>
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+        <Pivot Margin="0,0,0,48">
+            <Pivot.LeftHeader>
+                <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="40,3,0,0" VerticalAlignment="Top" BorderThickness="0" Width="120" Background="#FFF2F2F2" PlaceholderText="Anime" FontSize="25">
+                    <ListBoxItem Content="Anime" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False"/>
+                    <ListBoxItem Content="Manga" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False"/>
+                </ComboBox>
+            </Pivot.LeftHeader>
+            <Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding my_status}"/>
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <PivotItem Margin="12,0,0,0">
+                <GridView x:Name="parah" Foreground="{x:Null}" ItemTemplate="{StaticResource UserAnimeLibraryTemplate}"/>
             </PivotItem>
         </Pivot>
         <CommandBar VerticalAlignment="Bottom">

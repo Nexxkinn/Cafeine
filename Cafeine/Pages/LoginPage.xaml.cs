@@ -2,6 +2,7 @@
 using Windows.UI.Xaml.Controls;
 using Cafeine.Data;
 using Windows.UI.Xaml.Navigation;
+
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Cafeine
@@ -21,7 +22,13 @@ namespace Cafeine
                 Logincredentials login = new Logincredentials();
                 bool canweusethepassword = await login.logincredential(autologin.UserName, autologin.Password, 1);
                 switch (canweusethepassword) {
-                    case true: Frame.Navigate(typeof(Animelist)); break;
+                    case true: await FileData.GrabUserDatatoOffline(1);
+                        await FileData.GrabUserDatatoOffline(2);
+                        Frame nextpage = Window.Current.Content as Frame;
+                        Window.Current.Content = new Pages.Shell(nextpage);
+                        nextpage.Navigate(typeof(Animelist));
+                        Window.Current.Activate();
+                        break;
                     case false: textBlock.Text = "Wrong username and/or password. Try again"; break;
                 }
                 

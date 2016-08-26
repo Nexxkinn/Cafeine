@@ -1,34 +1,24 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Windows.ApplicationModel;
-using Windows.Security.Credentials;
-using Cafeine.Data;
-using System;
-using Windows.Web.Http;
+using Windows.Storage;
+using Windows.Data.Xml.Dom;
+using System.IO;
+using System.Collections.ObjectModel;
 
-
-//still deciphering. 
 namespace Cafeine.Datalist
 {
-    public class animelibrary : ILibrarydata
+    
+    public class animelibrary
     {
         public int id { get; set; }
         public string Title { get; set; }
         public int my_score { get; set; }
         public string imgurl { get; set; }
         public int totalepisodes { get; set; }
-    }
-
-    public interface ILibrarydata
-    {
-        int id { get; set; }
-        string Title { get; set; }
-        int my_score { get; set; }
-        string imgurl { get; set; }
-        int totalepisodes { get; set; }
+        public Animestatus my_status { get; set; }
     }
 
     public enum Animestatus
@@ -37,40 +27,29 @@ namespace Cafeine.Datalist
         Completed = 2,
         OnHold = 3,
         Dropped = 4,
-        PlanToWatch = 6,
+        PlannToWatch = 6,
         AllOrAiring = 7
     }
     class LibraryList
     {
-        public async Task<string> grabuserdata(int category)
+        public static async Task<ObservableCollection<animelibrary>> querydata(int category)
         {
+            ObservableCollection<animelibrary> userlibrary = new ObservableCollection<animelibrary>();
             string anime_or_manga = (category == 1) ? "anime" : "manga";
-            //grab username
-            string username = new Logincredentials().getusername(1);
-            var url = new Uri("http://myanimelist.net/malappinfo.php?u=" + Uri.EscapeDataString(username) + "&type=" + anime_or_manga + "&status=all");
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string getrespond = await response.Content.ReadAsStringAsync();
-                return getrespond;
-            }
-        }
-        public async Task<List<ILibrarydata>> querydata(int category)
-        {
-            var data = new List<ILibrarydata>();
-            string raw = await grabuserdata(category);
-            //string load = Path.Combine(Package.Current.InstalledLocation.Path, "Dumplist/useranimelist.xml");
-            XDocument parseddata = XDocument.Parse(raw);
+            var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
+            string OffFile = Path.Combine(OffFolder.Path, "RAW_" + anime_or_manga + ".xml");
+            XDocument ParseData = XDocument.Load(OffFile);
+
             switch (category) //1 - anime  //2 - manga
             {
                 case 1:
                     {
-                        var anime = parseddata.Descendants("anime");
+                        var anime = ParseData.Descendants("anime");
                         foreach (var item in anime)
                         {
-                            data.Add(new animelibrary
+                            userlibrary.Add(new animelibrary
                             {
+                                my_status = (Animestatus)(int)item.Element("my_status"),
                                 imgurl = item.Element("series_image").Value,
                                 Title = item.Element("series_title").Value,
                                 my_score = (int)item.Element("my_score")
@@ -79,7 +58,7 @@ namespace Cafeine.Datalist
                         break;
                     }
             }
-            return data;
+            return userlibrary;
         }
     }
 }
