@@ -13,27 +13,25 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
-    <Grid Background="#FFF2F2F2">
-        <Pivot Margin="0,0,0,48">
-            <Pivot.LeftHeader>
-                <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="40,3,0,0" VerticalAlignment="Top" BorderThickness="0" Width="120" Background="#FFF2F2F2" PlaceholderText="Anime" FontSize="25">
-                    <ListBoxItem Content="Anime" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False"/>
-                    <ListBoxItem Content="Manga" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False"/>
-                </ComboBox>
-            </Pivot.LeftHeader>
-            <Pivot.HeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding my_status}"/>
-                </DataTemplate>
-            </Pivot.HeaderTemplate>
-            <PivotItem Margin="12,0,0,0">
-                <GridView x:Name="parah" Foreground="{x:Null}" ItemTemplate="{StaticResource UserAnimeLibraryTemplate}"/>
-            </PivotItem>
-        </Pivot>
-        <CommandBar VerticalAlignment="Bottom">
-            <AppBarButton Icon="Refresh" Label="Refresh"/>
-            <AppBarButton Icon="Sort" Label="Sort by"/>
-        </CommandBar>
-        <Button x:Name="test" Content="logout" Click="logout_test" HorizontalAlignment="Left" Margin="1205,10,0,0" VerticalAlignment="Top"/>
+    <Page.Background>
+        <SolidColorBrush Color="#FFF2F2F2"/>
+    </Page.Background>
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <GridView Grid.Row="0" Grid.Column="0" x:Name="parah" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource UserAnimeLibraryTemplate}" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,0,0,0">
+                <GridView.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="Currently Watching" FontSize="30" Canvas.ZIndex="9" IsColorFontEnabled="True" Foreground="Black" FontFamily="Segoe UI Light" FontWeight="Light" Padding="0,10,0,30"/>
+                    </DataTemplate>
+                </GridView.HeaderTemplate>
+            </GridView>
+        </Grid>
+        <Button x:Name="test" Content="logout" Click="Logout_test" HorizontalAlignment="Left" Margin="276,8,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>

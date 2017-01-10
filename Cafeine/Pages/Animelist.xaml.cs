@@ -5,20 +5,22 @@ using Cafeine.Data;
 using Cafeine.Datalist;
 using System;
 using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
+using Windows.UI.ViewManagement;
+using Windows.UI;
 namespace Cafeine
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class Animelist : Page
     {
-        
         public Animelist()
         {
             InitializeComponent();
+
+            //Change Title Bar
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            titleBar.BackgroundColor = Colors.Transparent;
+            titleBar.ForegroundColor = Colors.Transparent;
+            titleBar.ButtonBackgroundColor = Colors.White;
+            titleBar.ButtonForegroundColor = Colors.Black;
             this.Loaded += Animelist_Loaded;
         }
         private void Animelist_Loaded(object sender, RoutedEventArgs e)
@@ -43,7 +45,7 @@ namespace Cafeine
                 //to the msdn it goes
             }
         }
-        private void logout_test(object sender, RoutedEventArgs e)
+        private void Logout_test(object sender, RoutedEventArgs e)
         {
             //remove user credentials
             var getuserpass = new Logincredentials().getcredentialfromlocker(1);
@@ -53,5 +55,11 @@ namespace Cafeine
             Frame.Navigate(typeof(LoginPage), null);
         }
 
+        private void NavigateItemtoDetailsPage(object sender, ItemClickEventArgs e)
+        {
+            //pass data to other page
+            var SelectedItem = (UserItemCollection)e.ClickedItem;
+            Frame.Navigate(typeof(Pages.MoreDetails),SelectedItem);
+        }
     }
 }

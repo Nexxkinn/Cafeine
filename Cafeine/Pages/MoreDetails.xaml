@@ -1,0 +1,15 @@
+﻿<Page
+    x:Class="Cafeine.Pages.MoreDetails"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <TextBlock x:Name="Title" HorizontalAlignment="Left" Height="31" Margin="126,98,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="741"/>
+        <TextBlock x:Name="Rating" HorizontalAlignment="Left" Height="31" Margin="126,129,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="85"/>
+        <Image x:Name="image" HorizontalAlignment="Left" Height="318" Margin="394,72,0,0" VerticalAlignment="Top" Width="262"/>
+
+    </Grid>
+</Page>

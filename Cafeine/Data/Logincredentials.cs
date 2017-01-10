@@ -18,7 +18,7 @@ namespace Cafeine.Data
             }
             try
             {
-                var url = new Uri("http://myanimelist.net/api/account/verify_credentials.xml");
+                var url = new Uri("https://myanimelist.net/api/account/verify_credentials.xml");
                 var clientHeader = new HttpBaseProtocolFilter();
                 clientHeader.ServerCredential = new PasswordCredential(using_service, username, password);
                 clientHeader.AllowUI = false;
@@ -34,7 +34,6 @@ namespace Cafeine.Data
                     return true;
                 }
                 #region oldcode_but_works
-                // old one, but works
                 // problem : can't disable basic authentication pop-up when failed to login.
                 /*using (HttpClient client = new HttpClient()) {
                     //client.DefaultRequestHeaders.Accept.TryParseAdd("application/json");

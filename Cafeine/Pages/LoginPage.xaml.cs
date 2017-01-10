@@ -89,7 +89,12 @@ namespace Cafeine
             bool verify = await login.logincredential(usrnm.Text, psswd.Password, 1);
             switch (verify)
             {
-                case true: Frame.Navigate(typeof(Animelist), null); break;
+                case true:
+                    Frame nextpage = Window.Current.Content as Frame;
+                    Window.Current.Content = new Pages.Shell(nextpage);
+                    nextpage.Navigate(typeof(Animelist));
+                    Window.Current.Activate();
+                    break;
                 case false: MAL_login.Content = "nay yo";break;
             }
         }

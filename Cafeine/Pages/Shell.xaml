@@ -13,7 +13,13 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
-    <SplitView x:Name="shellsplit" HorizontalAlignment="Left" Height="720" DisplayMode="CompactOverlay" IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="250">
+    <Grid>
+        <Grid x:Name="dragarea" Margin="250,0,0,0" Canvas.ZIndex="100" Height="30" VerticalAlignment="Top">
+            <Grid.Background>
+                <SolidColorBrush Color="Transparent"/>
+            </Grid.Background>
+        </Grid>
+        <SplitView x:Name="shellsplit" HorizontalAlignment="Left" DisplayMode="CompactOverlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="250">
         <SplitView.Pane>
             <Grid>
                 <Grid.RowDefinitions>
@@ -25,7 +31,7 @@
                     <ColumnDefinition Width="Auto" MinWidth="202"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <ToggleButton Style="{StaticResource ToggleMenuButtonStyle}"/>
+                    <ToggleButton Style="{StaticResource ToggleMenuButtonStyle}" Click="showshell"/>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="1">
                     <TextBlock Margin="9,14,0,0" FontWeight="Bold" HorizontalAlignment="Left">MYANIMELIST</TextBlock>
@@ -39,4 +45,6 @@
             </Grid>
         </SplitView.Pane>
     </SplitView>
+        
+    </Grid>
 </Page>
