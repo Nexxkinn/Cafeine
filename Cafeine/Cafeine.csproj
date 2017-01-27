@@ -138,7 +138,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Datalist\AnimeSearchList.cs" />
-    <Compile Include="Datalist\ExpandedItemDetail.cs" />
+    <Compile Include="Datalist\ExpandItemDetail.cs" />
     <Compile Include="Datalist\LibraryList.cs" />
     <Compile Include="Data\FileData.cs" />
     <Compile Include="Data\Logincredentials.cs" />

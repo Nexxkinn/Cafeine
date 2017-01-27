@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Cafeine.Data;
+using Windows.UI.Core;
 
 namespace Cafeine
 {
@@ -27,7 +28,7 @@ namespace Cafeine
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                DebugSettings.EnableFrameRateCounter = true;
+                DebugSettings.EnableFrameRateCounter = false;
             }
 #endif
             Frame rootFrame = Window.Current.Content as Frame;
@@ -46,8 +47,6 @@ namespace Cafeine
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
-
-
             var autologin = new Logincredentials().getcredentialfromlocker(1);
             string status = null;
             if (autologin != null)
@@ -59,10 +58,12 @@ namespace Cafeine
             Window.Current.Activate();
         }
 
+
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
+
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();

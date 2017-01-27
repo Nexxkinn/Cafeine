@@ -13,9 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
-    <Page.Background>
-        <SolidColorBrush Color="#FFF2F2F2"/>
-    </Page.Background>
+    <Frame x:Name="animelist">
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -24,14 +22,14 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <GridView Grid.Row="0" Grid.Column="0" x:Name="parah" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource UserAnimeLibraryTemplate}" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,0,0,0">
+            <GridView Grid.Row="0" Grid.Column="0" x:Name="parah" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource UserAnimeLibraryTemplate}" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="68,0,0,0">
                 <GridView.HeaderTemplate>
                     <DataTemplate>
-                        <TextBlock Text="Currently Watching" FontSize="30" Canvas.ZIndex="9" IsColorFontEnabled="True" Foreground="Black" FontFamily="Segoe UI Light" FontWeight="Light" Padding="0,10,0,30"/>
+                        <TextBlock Text="Currently Watching" FontSize="30" Canvas.ZIndex="9" IsColorFontEnabled="True" Foreground="Black" FontFamily="Segoe UI" FontWeight="Light" Padding="0,20,0,30"/>
                     </DataTemplate>
                 </GridView.HeaderTemplate>
             </GridView>
         </Grid>
-        <Button x:Name="test" Content="logout" Click="Logout_test" HorizontalAlignment="Left" Margin="276,8,0,0" VerticalAlignment="Top"/>
-    </Grid>
+        </Grid>
+    </Frame>
 </Page>

@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI;
 using Windows.ApplicationModel.Core;
+using Cafeine.Data;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,20 +12,35 @@ namespace Cafeine.Pages
     /// </summary>
     public sealed partial class Shell : Page
     {
+        private CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+        //private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+        //{
+        //    dragarea.Height = sender.Height;
+        //    HamBut.Margin = new Thickness(0, dragarea.Height, 0, 0);
+        //}
         public Shell(Frame frame)
         {
             InitializeComponent();
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = true;
             Window.Current.SetTitleBar(dragarea);
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.ButtonBackgroundColor = Colors.White;
-            titleBar.ButtonForegroundColor = Colors.Black;
-            this.shellsplit.Content = frame;
+            //coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
+
+            shellsplit.Content = frame;
+
         }
-        public void showshell(object sender, RoutedEventArgs e)
+        public void Showshell(object sender, RoutedEventArgs e)
         {
             shellsplit.IsPaneOpen = !shellsplit.IsPaneOpen;
+        }
+
+        private void Logout_test(object sender, RoutedEventArgs e)
+        {
+            //remove user credentials
+            var getuserpass = new Logincredentials().getcredentialfromlocker(1);
+            getuserpass.RetrievePassword();
+            var vault = new Windows.Security.Credentials.PasswordVault();
+            vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
+            Frame.Navigate(typeof(LoginPage), null);
         }
     }
 }

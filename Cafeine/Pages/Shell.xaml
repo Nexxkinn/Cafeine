@@ -2,7 +2,6 @@
     x:Class="Cafeine.Pages.Shell"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Cafeine.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -14,37 +13,42 @@
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
-        <Grid x:Name="dragarea" Margin="250,0,0,0" Canvas.ZIndex="100" Height="30" VerticalAlignment="Top">
+        <Grid x:Name="dragarea" Margin="250,0,0,0" Canvas.ZIndex="100" Height="32" VerticalAlignment="Top">
             <Grid.Background>
                 <SolidColorBrush Color="Transparent"/>
             </Grid.Background>
         </Grid>
-        <SplitView x:Name="shellsplit" HorizontalAlignment="Left" DisplayMode="CompactOverlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="250">
-        <SplitView.Pane>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="48"/>
-                    <ColumnDefinition Width="Auto" MinWidth="202"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Grid.Column="0">
-                    <ToggleButton Style="{StaticResource ToggleMenuButtonStyle}" Click="showshell"/>
-                </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="1">
-                    <TextBlock Margin="9,14,0,0" FontWeight="Bold" HorizontalAlignment="Left">MYANIMELIST</TextBlock>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-                    <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Home"/>
-                    <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Animelist"/>
-                    <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Mangalist"/>
-                    <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Profile"/>
-                </StackPanel>
-            </Grid>
-        </SplitView.Pane>
-    </SplitView>
+        <RelativePanel>
+            <Button x:Name="HamBut" FontSize="15" Height="48" Margin="10,18" VerticalAlignment="Top" HorizontalAlignment="Left" Click="Showshell" Content="&#xE700;" FontFamily="{ThemeResource SymbolThemeFontFamily}" Background="{x:Null}" Width="48"/>
+            </RelativePanel>
+        <SplitView x:Name="shellsplit" HorizontalAlignment="Left" DisplayMode="Overlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="250">
+            <SplitView.Pane>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="48"/>
+                        <ColumnDefinition Width="Auto" MinWidth="202"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0">
+                        <ToggleButton Style="{StaticResource ToggleMenuButtonStyle}" Click="Showshell"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Margin="9,14,0,0" FontWeight="Bold" HorizontalAlignment="Left">MYANIMELIST</TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Home"/>
+                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Animelist"/>
+                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Mangalist"/>
+                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Profile"/>
+                        <Button x:Name="test" Content="logout" Click="Logout_test" HorizontalAlignment="Left" Margin="0,8,0,0" VerticalAlignment="Top"/>
+
+                    </StackPanel>
+                </Grid>
+            </SplitView.Pane>
+        </SplitView>
         
     </Grid>
 </Page>

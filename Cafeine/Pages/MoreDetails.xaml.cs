@@ -1,27 +1,11 @@
 ﻿using Cafeine.Datalist;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media.Imaging;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace Cafeine.Pages
+using Windows.UI.Xaml.Navigation;
+namespace Cafeine
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MoreDetails : Page
     {
         public MoreDetails()
@@ -29,16 +13,43 @@ namespace Cafeine.Pages
             this.InitializeComponent();
 
         }
+        
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             //Receive passed data from previous page
             var DataReceived = (UserItemCollection)e.Parameter;
-
-            Title.Text = DataReceived.Title;
-            Rating.Text = DataReceived.My_score.ToString();
+            Title.Text = DataReceived.Item_Title;
+            User_Rating.Text = DataReceived.My_score.ToString();
             BitmapImage bitmapImage = new BitmapImage(){ UriSource = new Uri(BaseUri, DataReceived.Imgurl) };
             image.Source = bitmapImage;
+
+            /// Proof of Concept - Parse Data Straight from MyAnimelist page
+            /// Requirement : RetreiveItemDetail(Item Id, AnimeOrManga)
+            /// 
+            ///Task.Run(async () => await ExpandDetail(DataReceived.Id));
+
         }
+        private void backbutton(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Animelist));
+            this.Frame.BackStack.Clear();
+        }
+        #region ExpandDetail
+        //async Task ExpandDetail(int id)
+        //{
+        //    try
+        //    {
+        //        ItemDetails Item = await ExpandedItemDetail.RetreiveItemDetail(id, 1);
+        //        await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+        //        {
+        //            Description.Text = Item.ItemSynopsis;
+        //        });
+        //    }
+        //    catch (Exception e)
+        //    {
+        //    }
+        //}
+#endregion
     }
     
 }

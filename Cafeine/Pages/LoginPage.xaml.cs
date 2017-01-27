@@ -24,15 +24,19 @@ namespace Cafeine
                 switch (canweusethepassword) {
                     case true: await FileData.GrabUserDatatoOffline(1);
                         await FileData.GrabUserDatatoOffline(2);
-                        Frame nextpage = Window.Current.Content as Frame;
-                        Window.Current.Content = new Pages.Shell(nextpage);
-                        nextpage.Navigate(typeof(Animelist));
+                        Frame rootframe = Window.Current.Content as Frame;
+                        Window.Current.Content = new Pages.Shell(rootframe);
+                        Frame.Navigate(typeof(Animelist));
                         Window.Current.Activate();
                         break;
                     case false: textBlock.Text = "Wrong username and/or password. Try again"; break;
                 }
                 
             }
+        }
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            this.Frame.BackStack.Clear();
         }
         public LoginPage()
         {
@@ -90,9 +94,9 @@ namespace Cafeine
             switch (verify)
             {
                 case true:
-                    Frame nextpage = Window.Current.Content as Frame;
-                    Window.Current.Content = new Pages.Shell(nextpage);
-                    nextpage.Navigate(typeof(Animelist));
+                    Frame rootframe = Window.Current.Content as Frame;
+                    Window.Current.Content = new Pages.Shell(rootframe);
+                    Frame.Navigate(typeof(Animelist));
                     Window.Current.Activate();
                     break;
                 case false: MAL_login.Content = "nay yo";break;

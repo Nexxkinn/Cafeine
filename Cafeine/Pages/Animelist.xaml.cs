@@ -1,12 +1,14 @@
 ﻿using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Cafeine.Data;
 using Cafeine.Datalist;
 using System;
 using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
 using Windows.UI;
+using Windows.UI.Xaml.Navigation;
+using System.Linq;
+
 namespace Cafeine
 {
     public sealed partial class Animelist : Page
@@ -14,26 +16,20 @@ namespace Cafeine
         public Animelist()
         {
             InitializeComponent();
-
-            //Change Title Bar
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.BackgroundColor = Colors.Transparent;
-            titleBar.ForegroundColor = Colors.Transparent;
-            titleBar.ButtonBackgroundColor = Colors.White;
-            titleBar.ButtonForegroundColor = Colors.Black;
             this.Loaded += Animelist_Loaded;
+            
         }
         private void Animelist_Loaded(object sender, RoutedEventArgs e)
         {
             //userlibrary = LibraryList.querydata(1);
-            Task.Run(async () => await getonit());
+            Task.Run(async () => await grabuserprofile());
             //Task.Run(async () => userlibrary = await LibraryList.querydata(1));
         }
-        async Task getonit()
+        async Task grabuserprofile()
         {
             try
             {
-                var list = await LibraryList.querydata(1);
+                var list = await LibraryList.QueryUserAnimeMangaListAsync(1,1);
                 await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
                     parah.ItemsSource = list;
@@ -45,21 +41,16 @@ namespace Cafeine
                 //to the msdn it goes
             }
         }
-        private void Logout_test(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //remove user credentials
-            var getuserpass = new Logincredentials().getcredentialfromlocker(1);
-            getuserpass.RetrievePassword();
-            var vault = new Windows.Security.Credentials.PasswordVault();
-            vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
-            Frame.Navigate(typeof(LoginPage), null);
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
         }
-
-        private void NavigateItemtoDetailsPage(object sender, ItemClickEventArgs e)
+            private void NavigateItemtoDetailsPage(object sender, ItemClickEventArgs e)
         {
             //pass data to other page
             var SelectedItem = (UserItemCollection)e.ClickedItem;
-            Frame.Navigate(typeof(Pages.MoreDetails),SelectedItem);
+            Frame.Navigate(typeof(MoreDetails),SelectedItem);
         }
+
     }
 }
