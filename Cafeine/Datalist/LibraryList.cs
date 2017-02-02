@@ -22,8 +22,7 @@ namespace Cafeine.Datalist
         public int My_score;
         public int My_watch;
         public string Imgurl;
-
-        private string ee;
+        
         public int Series_Status;
         public int My_status;
     }
