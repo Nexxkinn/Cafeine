@@ -1,0 +1,29 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Cafeine.Datalist"
+    x:Class="Cafeine.DataTemplates">
+    <DataTemplate x:Name="WatchingCollection" x:DataType="local:UserItemCollection">
+        <RelativePanel Width="120" Height="250" >
+            <Image x:Name="theimage" PointerEntered="Enter" Source="{x:Bind Imgurl}" MaxHeight="170" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="3,3,3,5">
+                <Image.Resources>
+                    <Storyboard x:Name="ImageOnHover">
+                        <DoubleAnimation Storyboard.TargetName="theimage" Storyboard.TargetProperty="Opacity" From="1.0" To="0.0" Duration="0:0:0.25">
+                            <DoubleAnimation.EasingFunction>
+                                <CubicEase EasingMode="EaseOut"/>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </Image.Resources>
+            </Image>
+            <TextBlock x:Name="thetitle" Margin="3,0" Text="{x:Bind Item_Title}" x:Phase="1" FontFamily="ms-appx:/Font/Ubuntu-C.ttf#Ubuntu" FontSize="15" RelativePanel.Below="theimage" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
+            <TextBlock x:Name="series_start" Text="{x:Bind Series_start}" Margin="3,0" x:Phase="1" FontFamily="ms-appx:/Font/Ubuntu-C.ttf#Ubuntu" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
+            <TextBlock x:Name="myscore" Text="{x:Bind My_score}" RelativePanel.AlignVerticalCenterWith="theimage" RelativePanel.AlignHorizontalCenterWith="theimage" x:Phase="1" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
+            <TextBlock x:Name="Myepisode" Text="{x:Bind My_watch}" RelativePanel.Below="myscore"  RelativePanel.AlignHorizontalCenterWith="theimage" x:Phase="1" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
+        </RelativePanel>
+    </DataTemplate>
+    <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Inline</ListViewItemPresenterCheckMode>
+    <Style x:Key="WatchingTab" TargetType="GridViewItem">
+        <Setter Property="Margin" Value="0,0,10,10"/>
+    </Style>
+</ResourceDictionary>

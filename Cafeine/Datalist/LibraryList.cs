@@ -20,10 +20,12 @@ namespace Cafeine.Datalist
         public string Series_start;
         public string Series_end;
         public int My_score;
+        public int My_watch;
         public string Imgurl;
 
-        public Animestatus Series_Status;
-        public Animestatus My_status;
+        private string ee;
+        public int Series_Status;
+        public int My_status;
     }
     /// <summary>
     /// <anime>
@@ -48,15 +50,6 @@ namespace Cafeine.Datalist
     //<my_tags/>
     //</anime>
     /// </summary>
-    public enum Animestatus
-    {
-        Watching = 1,
-        Completed = 2,
-        OnHold = 3,
-        Dropped = 4,
-        PlannToWatch = 6,
-        AllOrAiring = 7
-    }
     class LibraryList
     {
         public static async Task<ObservableCollection<UserItemCollection>> QueryUserAnimeMangaListAsync(int AnimeorManga, int Status)
@@ -81,9 +74,11 @@ namespace Cafeine.Datalist
                                 Item_Title = item.Element("series_title").Value,
                                 Item_Totalepisodes = (int)item.Element("series_episodes"),
 
+                                My_watch = (int)item.Element("my_watched_episodes"),
+                                Series_start = new string(item.Element("series_start").Value.Take(4).ToArray()),
                                 Imgurl = item.Element("series_image").Value,
                                 My_score = (int)item.Element("my_score"),
-                                My_status = (Animestatus)(int)item.Element("my_status")
+                                My_status = (int)item.Element("my_status")
                                 });
                         }
                         break;

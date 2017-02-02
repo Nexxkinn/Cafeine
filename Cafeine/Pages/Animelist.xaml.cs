@@ -4,10 +4,9 @@ using Windows.UI.Xaml.Controls;
 using Cafeine.Datalist;
 using System;
 using System.Threading.Tasks;
-using Windows.UI.ViewManagement;
-using Windows.UI;
 using Windows.UI.Xaml.Navigation;
-using System.Linq;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Cafeine
 {
@@ -29,10 +28,11 @@ namespace Cafeine
         {
             try
             {
-                var list = await LibraryList.QueryUserAnimeMangaListAsync(1,1);
+                var watching = await LibraryList.QueryUserAnimeMangaListAsync(1,1);
+
                 await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
-                    parah.ItemsSource = list;
+                    watch.ItemsSource = watching;
                 });
             }
             catch (Exception e)
@@ -51,6 +51,5 @@ namespace Cafeine
             var SelectedItem = (UserItemCollection)e.ClickedItem;
             Frame.Navigate(typeof(MoreDetails),SelectedItem);
         }
-
     }
 }
