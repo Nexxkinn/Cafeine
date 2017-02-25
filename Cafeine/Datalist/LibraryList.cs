@@ -25,6 +25,11 @@ namespace Cafeine.Datalist
         
         public int Series_Status;
         public int My_status;
+
+        internal int Element(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
     /// <summary>
     /// <anime>
@@ -63,7 +68,7 @@ namespace Cafeine.Datalist
             {
                 case 1:
                     {
-                        var anime = ParseData.Descendants("anime").Where(x => (int)x.Element("my_status") == Status);
+                        var anime = ParseData.Descendants("anime");//.Where(x => (int)x.Element("my_status") == Status);
                         foreach (var item in anime)
                         {
 

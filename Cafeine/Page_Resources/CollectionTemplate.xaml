@@ -4,8 +4,8 @@
     xmlns:local="using:Cafeine.Datalist"
     x:Class="Cafeine.DataTemplates">
     <DataTemplate x:Name="WatchingCollection" x:DataType="local:UserItemCollection">
-        <RelativePanel Width="120" Height="250" >
-            <Grid x:Name="quickstatus" PointerEntered="ImageEntered" PointerExited="ImageExited" Height="170" Width="120" Margin="3,3,3,0" HorizontalAlignment="Center" Canvas.ZIndex="1" Opacity="0">
+        <RelativePanel Width="165" Height="295" >
+            <Grid x:Name="quickstatus" PointerEntered="ImageEntered" PointerExited="ImageExited" Height="225" Width="160" Margin="3,3,3,8" HorizontalAlignment="Center" Canvas.ZIndex="1" Opacity="0">
                 <Grid.Resources>
                     <Storyboard x:Name="ImageOnHover">
                         <DoubleAnimation Storyboard.TargetName="quickstatus" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15">
@@ -32,14 +32,14 @@
                     <TextBlock x:Name="Myepisode" Grid.Row="1" Text="{x:Bind My_watch}" x:Phase="1" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
                 </Grid>
             </Grid>
-            <Image x:Name="theimage" Source="{x:Bind Imgurl}" MaxHeight="170" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="3,3,3,5"/>
-            <TextBlock x:Name="thetitle" Margin="3,0" Text="{x:Bind Item_Title}" x:Phase="1" FontFamily="ms-appx:/Font/Ubuntu-C.ttf#Ubuntu" FontSize="15" RelativePanel.Below="quickstatus" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-            <TextBlock x:Name="series_start" Text="{x:Bind Series_start}" Margin="3,0" x:Phase="1" FontFamily="ms-appx:/Font/Ubuntu-C.ttf#Ubuntu" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF272525"/>
-
+            <Image x:Name="theimage" Source="{x:Bind Imgurl}" MaxHeight="225" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="3,3,3,5"/>
+            <TextBlock x:Name="thetitle" Margin="3,0" Text="{x:Bind Item_Title}" x:Phase="1" FontFamily="Segoe UI" FontWeight="SemiBold" FontSize="15" RelativePanel.Below="quickstatus" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF333333"/>
+            <TextBlock x:Name="series_start" Text="{x:Bind Series_start}" Margin="3,0" x:Phase="1" FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
         </RelativePanel>
     </DataTemplate>
     <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Inline</ListViewItemPresenterCheckMode>
     <Style x:Key="WatchingTab" TargetType="GridViewItem">
-        <Setter Property="Margin" Value="0,0,10,10"/>
+        <Setter Property="Margin" Value="0,0,14,14"/>
     </Style>
+    
 </ResourceDictionary>

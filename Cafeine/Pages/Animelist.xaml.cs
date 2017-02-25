@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
+using System.Linq;
 
 namespace Cafeine
 {
@@ -28,11 +29,11 @@ namespace Cafeine
         {
             try
             {
-                var watching = await LibraryList.QueryUserAnimeMangaListAsync(1,1);
-
+                var Librarylist = await LibraryList.QueryUserAnimeMangaListAsync(1,1);
                 await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
-                    watch.ItemsSource = watching;
+                    watch.ItemsSource = Librarylist.Where(x => x.My_status == 1);
+                    OnHold.ItemsSource = Librarylist.Where(x => x.My_status == 2);
                 });
             }
             catch (Exception e)

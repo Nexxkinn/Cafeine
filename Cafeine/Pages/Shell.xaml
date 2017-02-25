@@ -19,8 +19,8 @@
             </Grid.Background>
         </Grid>
         <RelativePanel>
-            <Button x:Name="HamBut" FontSize="15" Height="48" Margin="10,18" VerticalAlignment="Top" HorizontalAlignment="Left" Click="Showshell" Content="&#xE700;" FontFamily="{ThemeResource SymbolThemeFontFamily}" Background="{x:Null}" Width="48"/>
-            </RelativePanel>
+            <Button x:Name="HamBut" FontSize="20" Height="48" Margin="20,24,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="Showshell" Content="&#xE700;" FontFamily="{ThemeResource SymbolThemeFontFamily}" Background="{x:Null}" Width="48"/>
+        </RelativePanel>
         <SplitView x:Name="shellsplit" HorizontalAlignment="Left" DisplayMode="Overlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="250">
             <SplitView.Pane>
                 <Grid>
