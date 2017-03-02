@@ -26,7 +26,7 @@ namespace Cafeine
                         await FileData.GrabUserDatatoOffline(2);
                         Frame rootframe = Window.Current.Content as Frame;
                         Window.Current.Content = new Pages.Shell(rootframe);
-                        Frame.Navigate(typeof(Animelist));
+                        rootframe.Navigate(typeof(Animelist));
                         Window.Current.Activate();
                         break;
                     case false: textBlock.Text = "Wrong username and/or password. Try again"; break;
@@ -34,13 +34,10 @@ namespace Cafeine
                 
             }
         }
-        protected override async void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            this.Frame.BackStack.Clear();
-        }
         public LoginPage()
         {
             InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Enabled;
         }
       /*  private async void result(object sender, RoutedEventArgs e)
         {
@@ -94,9 +91,11 @@ namespace Cafeine
             switch (verify)
             {
                 case true:
+                    await FileData.GrabUserDatatoOffline(1);
+                    await FileData.GrabUserDatatoOffline(2);
                     Frame rootframe = Window.Current.Content as Frame;
                     Window.Current.Content = new Pages.Shell(rootframe);
-                    Frame.Navigate(typeof(Animelist));
+                    rootframe.Navigate(typeof(Animelist));
                     Window.Current.Activate();
                     break;
                 case false: MAL_login.Content = "nay yo";break;

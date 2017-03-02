@@ -5,50 +5,43 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Styles/Splitview.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Page.Resources>
-    <Grid>
-        <Grid x:Name="dragarea" Margin="250,0,0,0" Canvas.ZIndex="100" Height="32" VerticalAlignment="Top">
+    <Grid >
+        <Grid x:Name="dragarea" Canvas.ZIndex="100" Height="32" VerticalAlignment="Top" Margin="70,0,0,0">
             <Grid.Background>
                 <SolidColorBrush Color="Transparent"/>
             </Grid.Background>
         </Grid>
-        <RelativePanel>
-            <Button x:Name="HamBut" FontSize="20" Height="48" Margin="20,24,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="Showshell" Content="&#xE700;" FontFamily="{ThemeResource SymbolThemeFontFamily}" Background="{x:Null}" Width="48"/>
-        </RelativePanel>
-        <SplitView x:Name="shellsplit" HorizontalAlignment="Left" DisplayMode="Overlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="250">
+        <SplitView x:Name="shellsplit" HorizontalAlignment="Left" DisplayMode="Inline" IsPaneOpen="True" OpenPaneLength="68" PaneBackground="{x:Null}">
             <SplitView.Pane>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="48"/>
-                        <ColumnDefinition Width="Auto" MinWidth="202"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Row="0" Grid.Column="0">
-                        <ToggleButton Style="{StaticResource ToggleMenuButtonStyle}" Click="Showshell"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="0" Grid.Column="1">
-                        <TextBlock Margin="9,14,0,0" FontWeight="Bold" HorizontalAlignment="Left">MYANIMELIST</TextBlock>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Home"/>
-                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Animelist"/>
-                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Mangalist"/>
-                        <RadioButton Tag="G" Style="{StaticResource NavButtonStyle}" Content="  Profile"/>
-                        <Button x:Name="test" Content="logout" Click="Logout_test" HorizontalAlignment="Left" Margin="0,8,0,0" VerticalAlignment="Top"/>
-
-                    </StackPanel>
-                </Grid>
+                <RelativePanel>
+                    <Button x:Name="HamBut" FontSize="20" Height="48" Margin="20,24,0,0" VerticalAlignment="Top" HorizontalAlignment="Right" Content="&#xE700;" FontFamily="{ThemeResource SymbolThemeFontFamily}" Background="{x:Null}" Width="48">
+                        <Button.Resources>
+                            <Style x:Key="FlyoutPresenterStyle1" TargetType="FlyoutPresenter">
+                                <Setter Property="Padding" Value="0,16,0,12"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="FlyoutPresenter">
+                                            <Border BorderBrush="{TemplateBinding BorderBrush}" Margin="0,24,0,0" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                                                <ScrollViewer x:Name="ScrollViewer" AutomationProperties.AccessibilityView="Raw" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}">
+                                                    <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Resources>
+                        <Button.Flyout>
+                            <Flyout Placement="Right" FlyoutPresenterStyle="{StaticResource FlyoutPresenterStyle1}">
+                                <RelativePanel>
+                                    <TextBlock x:Name="Username" Text="Windows10test" FontFamily="Segoe UI" FontWeight="SemiBold" FontSize="20" Margin="10,0,10,0" Height="16" TextAlignment="Center" Foreground="#FF333333" TextLineBounds="Tight" />
+                                    <Button x:Name="Settings" Content="Logout" RelativePanel.Below="Username" HorizontalContentAlignment="Left" Click="Logout_test"/>
+                                </RelativePanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                </RelativePanel>
             </SplitView.Pane>
         </SplitView>
-        
     </Grid>
 </Page>

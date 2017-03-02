@@ -20,7 +20,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Pivot Margin="76,24,0,0">
+        <Pivot Margin="8,24,0,0">
             <Pivot.Resources>
                 <x:Double x:Key="PivotHeaderItemFontSize">20</x:Double>
                 <x:String x:Key="PivotHeaderItemThemeFontWeight">SemiBold</x:String>

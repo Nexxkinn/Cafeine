@@ -42,10 +42,6 @@ namespace Cafeine
                 //to the msdn it goes
             }
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-        }
             private void NavigateItemtoDetailsPage(object sender, ItemClickEventArgs e)
         {
             //pass data to other page
