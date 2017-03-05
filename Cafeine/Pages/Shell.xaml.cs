@@ -41,17 +41,24 @@ namespace Cafeine.Pages
 
             if ((int)result.Id == 0)
             {
+                //remove user credentials
                 var getuserpass = new Logincredentials().getcredentialfromlocker(1);
                 getuserpass.RetrievePassword();
                 var vault = new Windows.Security.Credentials.PasswordVault();
                 vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
+                //navigate back to the loginpage
                 f.Navigate(typeof(LoginPage));
                 Window.Current.Content = f;
                 Window.Current.Activate();
             }
-            //remove user credentials
+            
 
 
+        }
+
+        private void AddCollection_Click(object sender, RoutedEventArgs e)
+        {
+            f.Navigate(typeof(Searchpage));
         }
     }
 }

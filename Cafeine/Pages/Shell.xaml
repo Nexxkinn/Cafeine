@@ -35,11 +35,12 @@
                             <Flyout Placement="Right" FlyoutPresenterStyle="{StaticResource FlyoutPresenterStyle1}">
                                 <RelativePanel>
                                     <TextBlock x:Name="Username" Text="Windows10test" FontFamily="Segoe UI" FontWeight="SemiBold" FontSize="20" Margin="10,0,10,0" Height="16" TextAlignment="Center" Foreground="#FF333333" TextLineBounds="Tight" />
-                                    <Button x:Name="Settings" Content="Logout" RelativePanel.Below="Username" HorizontalContentAlignment="Left" Click="Logout_test"/>
-                                </RelativePanel>
+                                    <Button x:Name="Logout" Content="Logout" RelativePanel.Below="Username" HorizontalContentAlignment="Left" Click="Logout_test"/>
+                                    </RelativePanel>
                             </Flyout>
                         </Button.Flyout>
                     </Button>
+                    <Button x:Name="AddCollection" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="20" Height="48" Content="" Background="{x:Null}" Width="48" RelativePanel.Below="HamBut" RelativePanel.AlignRightWith="HamBut" Click="AddCollection_Click" ToolTipService.ToolTip="Add collection"/>
                 </RelativePanel>
             </SplitView.Pane>
         </SplitView>
