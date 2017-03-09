@@ -24,9 +24,11 @@ namespace Cafeine
                 switch (canweusethepassword) {
                     case true: await FileData.GrabUserDatatoOffline(1);
                         await FileData.GrabUserDatatoOffline(2);
-                        Frame rootframe = Window.Current.Content as Frame;
-                        Window.Current.Content = new Pages.Shell(rootframe);
-                        rootframe.Navigate(typeof(Animelist));
+                        Frame rootframe = new Frame();
+                        Frame newframe =  new Frame();
+                        rootframe.Content = new Pages.Shell(newframe);
+                        newframe.Navigate(typeof(Animelist));
+                        Window.Current.Content = rootframe;
                         Window.Current.Activate();
                         break;
                     case false: textBlock.Text = "Wrong username and/or password. Try again"; break;
@@ -37,7 +39,6 @@ namespace Cafeine
         public LoginPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Enabled;
         }
       /*  private async void result(object sender, RoutedEventArgs e)
         {

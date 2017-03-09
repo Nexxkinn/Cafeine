@@ -17,7 +17,6 @@ namespace Cafeine
         {
             InitializeComponent();
             this.Loaded += Animelist_Loaded;
-            
         }
         private void Animelist_Loaded(object sender, RoutedEventArgs e)
         {
@@ -33,7 +32,10 @@ namespace Cafeine
                 await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
                     watch.ItemsSource = Librarylist.Where(x => x.My_status == 1);
-                    OnHold.ItemsSource = Librarylist.Where(x => x.My_status == 2);
+                    completed.ItemsSource = Librarylist.Where(x => x.My_status == 2);
+                    OnHold.ItemsSource = Librarylist.Where(x => x.My_status == 3);
+                    dropped.ItemsSource = Librarylist.Where(x => x.My_status == 4);
+                    plantowatch.ItemsSource = Librarylist.Where(x => x.My_status == 6);
                 });
             }
             catch (Exception e)

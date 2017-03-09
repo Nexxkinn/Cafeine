@@ -4,14 +4,11 @@ using Windows.ApplicationModel.Core;
 using Cafeine.Data;
 using Windows.UI.Popups;
 using System;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Core;
 
 namespace Cafeine.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class Shell : Page
     {
         private CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
@@ -28,9 +25,23 @@ namespace Cafeine.Pages
             Window.Current.SetTitleBar(dragarea);
             f = frame;
             shellsplit.Content = f;
+            f.Navigated += F_Navigated;
         }
 
-        private async void Logout_test(object sender, RoutedEventArgs e)
+        private void F_Navigated(object sender, NavigationEventArgs e)
+        {
+            BackBut.Visibility = (f.CanGoBack) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void Backbutton(object sender, RoutedEventArgs e)
+        {
+            f.GoBack();
+        }
+        private void AddCollection_Click(object sender, RoutedEventArgs e)
+        {
+            f.Navigate(typeof(Searchpage));
+        }
+            private async void Logout_test(object sender, RoutedEventArgs e)
         {
             MessageDialog popup = new MessageDialog("Do you want to log out from this account?", "Logout");
             popup.Commands.Add(new UICommand("Logout") { Id = 0 });
@@ -54,11 +65,6 @@ namespace Cafeine.Pages
             
 
 
-        }
-
-        private void AddCollection_Click(object sender, RoutedEventArgs e)
-        {
-            f.Navigate(typeof(Searchpage));
         }
     }
 }

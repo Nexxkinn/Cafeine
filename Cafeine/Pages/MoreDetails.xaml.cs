@@ -22,17 +22,12 @@ namespace Cafeine
             User_Rating.Text = DataReceived.My_score.ToString();
             BitmapImage bitmapImage = new BitmapImage(){ UriSource = new Uri(BaseUri, DataReceived.Imgurl) };
             image.Source = bitmapImage;
-
+            
             /// Proof of Concept - Parse Data Straight from MyAnimelist page
             /// Requirement : RetreiveItemDetail(Item Id, AnimeOrManga)
             /// 
             ///Task.Run(async () => await ExpandDetail(DataReceived.Id));
 
-        }
-        private void backbutton(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Animelist));
-            this.Frame.BackStack.Clear();
         }
         #region ExpandDetail
         //async Task ExpandDetail(int id)

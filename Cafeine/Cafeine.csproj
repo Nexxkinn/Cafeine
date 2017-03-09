@@ -208,8 +208,6 @@
     <None Include="Cafeine_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dumplist\list.xml" />
-    <Content Include="Dumplist\useranimelist.xml" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />

@@ -49,6 +49,22 @@
                     <GridView x:Name="OnHold" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource WatchingCollection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 </Grid>
             </PivotItem>
+            <PivotItem Header="Plan to Watch" Margin="0">
+                <Grid>
+                    <GridView x:Name="plantowatch" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource WatchingCollection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Completed" Margin="0">
+                <Grid>
+                    <GridView x:Name="completed" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource WatchingCollection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Dropped" Margin="0">
+                <Grid>
+                    <GridView x:Name="dropped" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource WatchingCollection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </Grid>
+            </PivotItem>
+
         </Pivot>
     </Grid>
 </Page>
