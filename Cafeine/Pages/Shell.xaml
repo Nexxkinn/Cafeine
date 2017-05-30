@@ -40,8 +40,8 @@
                             </Flyout>
                         </Button.Flyout>
                     </Button>
-                    <Button x:Name="AddCollection" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="20" Height="48" Content="" Background="{x:Null}" Width="48" RelativePanel.Below="HamBut" RelativePanel.AlignRightWith="HamBut" Click="AddCollection_Click" ToolTipService.ToolTip="Add collection"/>
-                    <Button x:Name="BackBut"   FontSize="20" Height="48" VerticalAlignment="Top" RelativePanel.Below="AddCollection" RelativePanel.AlignRightWith="AddCollection" Click="Backbutton" Content="" FontFamily="{ThemeResource SymbolThemeFontFamily}" Background="{x:Null}" Width="48"/>
+                    <Button x:Name="AddCollection" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="16" Height="48" Content="" Background="{x:Null}" Width="48" RelativePanel.Below="HamBut" RelativePanel.AlignRightWith="HamBut" Click="AddCollection_Click" ToolTipService.ToolTip="Add collection"/>
+                    <Button x:Name="BackBut" Margin="20,24,0,0" FontSize="16" Height="48" Click="Backbutton" Content="" FontFamily="{ThemeResource SymbolThemeFontFamily}" Background="{x:Null}" Width="48"/>
                 </RelativePanel>
             </SplitView.Pane>
         </SplitView>

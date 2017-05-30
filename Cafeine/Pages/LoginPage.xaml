@@ -8,24 +8,16 @@
     mc:Ignorable="d">
 
     <Grid Background="#FF2F343B" >
-        <Pivot x:Name="loginpage" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FF373C43" Width="310" Height="240" Margin="0">
-            <PivotItem HorizontalAlignment="Center" Margin="16,0" Height="196" VerticalAlignment="Top">
-                <RelativePanel>
-                    <Button x:Name="Myanimelist_button" HorizontalAlignment="Center" Foreground="White" Click="MAL_click" Height="79" FontFamily="ms-appx:/Font/ufonts.com_agrevuecyr-medium.ttf#AGRevueCyr" Content="MyAnimeList" FontSize="24" Background="#FF5F6369" Width="278"/>
-                    <Button x:Name="Hummingbord_button" Width="278" RelativePanel.Below="Myanimelist_button" HorizontalAlignment="Center" Foreground="White" Height="79" FontFamily="ms-appx:/Font/ufonts.com_agrevuecyr-medium.ttf#AGRevueCyr" Content="Hummingbird" FontSize="24" Margin="0,0,-8,0" Background="#FFEC8661"/>
-                </RelativePanel>
-
-            </PivotItem>
-            <PivotItem x:Name="userlogin" x:DeferLoadStrategy="Lazy">
-                <Grid Height="402">
-                    <TextBox x:Name="usrnm" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap" VerticalAlignment="Top" Width="242" PlaceholderText="Username" />
-                    <PasswordBox x:Name="psswd" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="242" PlaceholderText="Password" Margin="0,37,-38,0" />
-                    <Button x:Name="MAL_login" Content="Login" HorizontalAlignment="Left" Height="68"  VerticalAlignment="Top" Width="68" Click="button_Click" Margin="0,74,0,0" />
-                </Grid>
-            </PivotItem>
-        </Pivot>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Text="TextBlock" Margin="805,703,805,293" RenderTransformOrigin="0.5,0.5" Width="310"/>
-        <TextBlock x:Name="TITLE" CharacterSpacing="200" HorizontalAlignment="Center" Height="77" Margin="0,0,0,400" TextWrapping="Wrap" Text="CAFEINE" VerticalAlignment="Center" Width="415" Foreground="White" TextAlignment="Center" FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum" FontSize="90" Padding="0" FontWeight="SemiBold" TextLineBounds="TrimToCapHeight" Canvas.ZIndex="1"/>
-        <TextBlock x:Name="TITLE_SHADOW" CharacterSpacing="200" HorizontalAlignment="Center" Height="77" Margin="10,0,0,390" TextWrapping="Wrap" Text="CAFEINE" VerticalAlignment="Center" Width="415" Foreground="Black" TextAlignment="Center" FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum" FontSize="90" Padding="0" FontWeight="SemiBold" TextLineBounds="TrimToCapHeight"/>
+        <ContentDialog x:Name="SignInDialog" VerticalAlignment="Center" Canvas.ZIndex="2" PrimaryButtonText="Sign In" Loaded="SignInDialog_Loaded" PrimaryButtonClick="SignIn_Click" BorderBrush="{x:Null}">
+            <StackPanel VerticalAlignment="Center">
+                <TextBox x:Name="usrnm" Height="20" TextWrapping="Wrap" VerticalAlignment="Center" Width="242" PlaceholderText="Username" />
+                <PasswordBox x:Name="psswd" Margin="0,4,0,0" VerticalAlignment="Center" Width="242" PlaceholderText="Password" />
+            </StackPanel>
+        </ContentDialog>
+        <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="TITLE" CharacterSpacing="200" HorizontalAlignment="Center" Height="77" TextWrapping="Wrap" Text="CAFEINE" VerticalAlignment="Center" Width="415" Foreground="White" TextAlignment="Center" FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum" FontSize="90" FontWeight="SemiBold" TextLineBounds="TrimToCapHeight" Canvas.ZIndex="1"/>
+            <TextBlock x:Name="TITLE_SHADOW" CharacterSpacing="200" HorizontalAlignment="Center" Height="77" Margin="5,0" Padding="0,5" TextWrapping="Wrap" Text="CAFEINE" Width="415" Foreground="Black" TextAlignment="Center" FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum" FontSize="90" FontWeight="SemiBold" TextLineBounds="TrimToCapHeight"/>
+            <Button Margin="0,16,0,0" Click="AddAccount_Click" RelativePanel.Below="TITLE" RelativePanel.AlignHorizontalCenterWith="TITLE" Content="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="48" Height="120" Width="120" Foreground="White"/>
+        </RelativePanel>
     </Grid>
 </Page>

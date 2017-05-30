@@ -1,54 +1,91 @@
 ﻿using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Cafeine.Datalist;
 using System;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
-using System.Linq;
+using Windows.UI.Popups;
+using Cafeine.Data;
+using Windows.UI.ViewManagement;
+using Windows.Foundation;
 
 namespace Cafeine
 {
     public sealed partial class Animelist : Page
     {
-        public Animelist()
+        Frame f;
+        public Animelist(Frame frame)
         {
             InitializeComponent();
-            this.Loaded += Animelist_Loaded;
+            f = frame;
+            ContentFrame.Content = f;
+            f.Navigated += ContentFrame_Navigated;
+            SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
         }
-        private void Animelist_Loaded(object sender, RoutedEventArgs e)
+
+        private void App_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            //userlibrary = LibraryList.querydata(1);
-            Task.Run(async () => await grabuserprofile());
-            //Task.Run(async () => userlibrary = await LibraryList.querydata(1));
-        }
-        async Task grabuserprofile()
-        {
-            try
+            if (f.CanGoBack)
             {
-                var Librarylist = await LibraryList.QueryUserAnimeMangaListAsync(1,1);
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-                {
-                    watch.ItemsSource = Librarylist.Where(x => x.My_status == 1);
-                    completed.ItemsSource = Librarylist.Where(x => x.My_status == 2);
-                    OnHold.ItemsSource = Librarylist.Where(x => x.My_status == 3);
-                    dropped.ItemsSource = Librarylist.Where(x => x.My_status == 4);
-                    plantowatch.ItemsSource = Librarylist.Where(x => x.My_status == 6);
-                });
-            }
-            catch (Exception e)
-            {
-                //TODO: show error message?? e.Message
-                //to the msdn it goes
+                e.Handled = true;
+                f.GoBack();
             }
         }
-            private void NavigateItemtoDetailsPage(object sender, ItemClickEventArgs e)
+
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            //pass data to other page
-            var SelectedItem = (UserItemCollection)e.ClickedItem;
-            Frame.Navigate(typeof(MoreDetails),SelectedItem);
+            switch (f.CurrentSourcePageType.ToString())
+            {
+                case "Cafeine.Pages.CollectionLibrary":
+                    Library.IsChecked = true;
+                    break;
+            }
+            if (f.CanGoBack)
+            {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            }
+            else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+        }
+
+        private void TabChecked(object sender, RoutedEventArgs e)
+        {
+            RadioButton rb = sender as RadioButton;
+            switch (rb.Name.ToString())
+            {
+                case "Schedule":
+                    f.Navigate(typeof(Pages.Schedule));
+                    break;
+                case "Library":
+                    f.Navigate(typeof(Pages.CollectionLibrary));
+                    break;
+            }
+        }
+
+        private async void Logout_test(object sender, RoutedEventArgs e)
+        {
+            MessageDialog popup = new MessageDialog("Do you want to log out from this account?", "Logout");
+            popup.Commands.Add(new UICommand("Logout") { Id = 0 });
+            popup.Commands.Add(new UICommand("Cancel") { Id = 1 });
+            popup.DefaultCommandIndex = 0;
+            popup.CancelCommandIndex = 1;
+            var result = await popup.ShowAsync();
+
+            if ((int)result.Id == 0)
+            {
+                //remove user credentials
+                var getuserpass = new Logincredentials().getcredentialfromlocker(1);
+                getuserpass.RetrievePassword();
+                var vault = new Windows.Security.Credentials.PasswordVault();
+                vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
+                //navigate back to the loginpage
+                f.Navigate(typeof(LoginPage));
+                Window.Current.Content = f;
+                Window.Current.Activate();
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
+
         }
     }
 }

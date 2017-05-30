@@ -1,0 +1,16 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Cafeine.Properties"
+    x:Class="Cafeine.DirectoryTemplate">
+    <DataTemplate x:Name="DirectoryCollection" x:DataType="local:VirtualDirectory">
+        <RelativePanel Width="165" Height="290">
+            <Image x:Name="theimage" MaxHeight="225" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="3,3,3,5"/>
+            <TextBlock x:Name="thetitle" Margin="3,0" Text="{x:Bind DirectoryTitle}"  FontSize="15" FontWeight="Medium" RelativePanel.Below="theimage" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" Foreground="#FF333333" MaxLines="2" FontStretch="ExtraCondensed"/>
+            <TextBlock x:Name="series_start" Visibility="Collapsed" Margin="3,0"  FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
+        </RelativePanel>
+    </DataTemplate>
+    <Style x:Key="WatchingTab" TargetType="GridViewItem">
+        <Setter Property="Margin" Value="0,0,4,14"/>
+    </Style>
+</ResourceDictionary>

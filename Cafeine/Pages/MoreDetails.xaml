@@ -9,7 +9,7 @@
         <RelativePanel>
             <TextBlock x:Name="Title" FontFamily="Segoe UI" FontWeight="Thin" FontSize="25" Text="Kobayashi-san Chi no Maid Dragon"  RelativePanel.RightOf="image"  HorizontalAlignment="Left" Height="40" Padding="10,0,0,0" Margin="0,27,0,0" VerticalAlignment="Top" />
             <TextBlock x:Name="User_Rating" Text="8" RelativePanel.RightOf="image" RelativePanel.Below="Title" HorizontalAlignment="Left" Width="271" Height="31" Padding="10,0,0,0" VerticalAlignment="Top" />
-            <Image x:Name="image" HorizontalAlignment="Left" Height="250" Width="176" Margin="0,38,0,0" VerticalAlignment="Top"/>
+            <Image x:Name="image" HorizontalAlignment="Left" Height="250" Width="176" Margin="8,38,0,0" VerticalAlignment="Top"/>
             <ComboBox HorizontalAlignment="Left" Height="36" Margin="181,98,-234,-102" VerticalAlignment="Top" Width="117"/>
         </RelativePanel>
     </Grid>

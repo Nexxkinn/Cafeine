@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
 using Windows.Web.Http;
 
-namespace Cafeine.Datalist
+namespace Cafeine.Data
 {
     //public class ItemDetails
     //{

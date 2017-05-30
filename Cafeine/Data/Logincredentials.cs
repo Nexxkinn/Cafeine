@@ -8,6 +8,13 @@ namespace Cafeine.Data
     class Logincredentials
     {
         private string using_service = null;
+        /// <summary>
+        /// Check user's credentials
+        /// </summary>
+        /// <param name="username">user's username</param>
+        /// <param name="password">user's password</param>
+        /// <param name="_using_service">1 -> Myanimelist, 2-> Hummingbird, 3-> Anico</param>
+        /// <returns></returns>
         public async Task<bool> logincredential(string username, string password, int _using_service)
         {
             switch (_using_service)

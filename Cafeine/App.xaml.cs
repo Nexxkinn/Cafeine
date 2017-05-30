@@ -6,6 +6,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Cafeine.Data;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.Foundation;
 
 namespace Cafeine
 {
@@ -55,6 +57,8 @@ namespace Cafeine
             }
             else status="";
             rootFrame.Navigate(typeof(LoginPage), status);
+
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(685, 600));
             Window.Current.Activate();
         }
 

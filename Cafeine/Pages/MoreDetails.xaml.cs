@@ -1,4 +1,4 @@
-﻿using Cafeine.Datalist;
+﻿using Cafeine.Properties;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,7 +17,7 @@ namespace Cafeine
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             //Receive passed data from previous page
-            var DataReceived = (UserItemCollection)e.Parameter;
+            var DataReceived = (ItemProperties)e.Parameter;
             Title.Text = DataReceived.Item_Title;
             User_Rating.Text = DataReceived.My_score.ToString();
             BitmapImage bitmapImage = new BitmapImage(){ UriSource = new Uri(BaseUri, DataReceived.Imgurl) };

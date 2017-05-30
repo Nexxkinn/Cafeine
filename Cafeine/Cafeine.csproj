@@ -11,7 +11,7 @@
     <AssemblyName>Cafeine</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -129,30 +129,6 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="Font\klavika-regularitalic-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\klavika-regular-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\klavika-mediumitalic-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\klavika-medium-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\klavika-lightitalic-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\klavika-light-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\klavika-bolditalic-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\klavika-bold-webfont.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Font\Cuprum-Bold.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -169,19 +145,30 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Cafeine_StoreKey.pfx" />
+    <Content Include="Font\Dosis-Medium.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="ClassDiagram1.cd" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Datalist\AnimeSearchList.cs" />
-    <Compile Include="Datalist\ExpandItemDetail.cs" />
-    <Compile Include="Datalist\LibraryList.cs" />
-    <Compile Include="Data\FileData.cs" />
+    <Compile Include="Data\AnimeSearchList.cs" />
+    <Compile Include="Data\ExpandItemDetail.cs" />
+    <Compile Include="Data\LibraryList.cs" />
+    <Compile Include="Data\DataControl.cs" />
     <Compile Include="Data\Logincredentials.cs" />
+    <Compile Include="Properties\ItemProperties.cs" />
     <Compile Include="Pages\Animelist.xaml.cs">
       <DependentUpon>Animelist.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CollectionLibrary.xaml.cs">
+      <DependentUpon>CollectionLibrary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\DirectoryExplorer.xaml.cs">
+      <DependentUpon>DirectoryExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -189,16 +176,20 @@
     <Compile Include="Pages\MoreDetails.xaml.cs">
       <DependentUpon>MoreDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Schedule.xaml.cs">
+      <DependentUpon>Schedule.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Searchpage.xaml.cs">
       <DependentUpon>Searchpage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Shell.xaml.cs">
-      <DependentUpon>Shell.xaml</DependentUpon>
+    <Compile Include="Page_Resources\DirectoryTemplate.cs">
+      <DependentUpon>DIrectoryTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Page_Resources\DataTemplates.cs">
+    <Compile Include="Page_Resources\ItemTemplates.cs">
       <DependentUpon>CollectionTemplate.xaml</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CustomToolNamespace>CollectionTemplate</CustomToolNamespace>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -230,6 +221,14 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
+    <Page Include="Pages\CollectionLibrary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\DirectoryExplorer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -238,25 +237,24 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Schedule.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Searchpage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Shell.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Page_Resources\CollectionTemplate.xaml">
+    </Page>
+    <Page Include="Page_Resources\DIrectoryTemplate.xaml">
+    </Page>
+    <Page Include="Page_Resources\SearchIndex.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="Styles\Splitview.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

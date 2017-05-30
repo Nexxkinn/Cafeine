@@ -1,37 +1,28 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Cafeine.Data;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+using Windows.UI.ViewManagement;
+using Windows.Foundation;
 
 namespace Cafeine
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class LoginPage : Page
     {
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is string && e.Parameter.ToString() == "usr_ava")
             {
-                textBlock.Text = "Login...";
                 var autologin = new Logincredentials().getcredentialfromlocker(1);
                 autologin.RetrievePassword();
                 Logincredentials login = new Logincredentials();
                 bool canweusethepassword = await login.logincredential(autologin.UserName, autologin.Password, 1);
                 switch (canweusethepassword) {
-                    case true: await FileData.GrabUserDatatoOffline(1);
-                        await FileData.GrabUserDatatoOffline(2);
-                        Frame rootframe = new Frame();
-                        Frame newframe =  new Frame();
-                        rootframe.Content = new Pages.Shell(newframe);
-                        newframe.Navigate(typeof(Animelist));
-                        Window.Current.Content = rootframe;
-                        Window.Current.Activate();
+                    case true: await DataControl.GrabUserDatatoOffline(1);
+                        Navigate();
                         break;
-                    case false: textBlock.Text = "Wrong username and/or password. Try again"; break;
+                    case false: break;
                 }
                 
             }
@@ -85,28 +76,42 @@ namespace Cafeine
                 }
         }*/
 
-        private async void button_Click(object sender, RoutedEventArgs e)
+        private async void SignIn_Click(ContentDialog sender, ContentDialogButtonClickEventArgs e)
         {
             Logincredentials login = new Logincredentials();
             bool verify = await login.logincredential(usrnm.Text, psswd.Password, 1);
             switch (verify)
             {
                 case true:
-                    await FileData.GrabUserDatatoOffline(1);
-                    await FileData.GrabUserDatatoOffline(2);
-                    Frame rootframe = Window.Current.Content as Frame;
-                    Window.Current.Content = new Pages.Shell(rootframe);
-                    rootframe.Navigate(typeof(Animelist));
-                    Window.Current.Activate();
+                    await DataControl.GrabUserDatatoOffline(1);
+                    Navigate();
                     break;
-                case false: MAL_login.Content = "nay yo";break;
+                case false: break;
+            }
+        }
+        private void Navigate()
+        {
+            Frame rootframe = new Frame();
+            Frame newframe = new Frame();
+            rootframe.Content = new Animelist(newframe);
+            newframe.Navigate(typeof(Pages.DirectoryExplorer));
+            Window.Current.Content = rootframe;
+            Window.Current.Activate();
+        }
+
+        private void SignInDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "CloseButtonText")){
+                SignInDialog.CloseButtonText = "Cancel";
+            }
+            else{
+                SignInDialog.SecondaryButtonText = "Cancel";
             }
         }
 
-        private void MAL_click(object sender, RoutedEventArgs e)
+        private async void AddAccount_Click(object sender, RoutedEventArgs e)
         {
-            FindName("userlogin");
-            loginpage.SelectedItem = userlogin;
+            await SignInDialog.ShowAsync();
         }
     }
 }

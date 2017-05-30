@@ -5,9 +5,9 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Cafeine
 {
-    public partial class DataTemplates
+    public partial class ItemTemplates
     {
-        public DataTemplates()
+        public ItemTemplates()
         {
             InitializeComponent();
         }

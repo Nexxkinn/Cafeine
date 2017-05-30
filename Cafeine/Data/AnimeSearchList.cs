@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Cafeine.Data;
 using System.Collections.ObjectModel;
 
-namespace Cafeine.Datalist
+namespace Cafeine.Data
 {
     class AnimeSearchList
     {

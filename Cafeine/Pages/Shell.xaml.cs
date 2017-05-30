@@ -21,8 +21,8 @@ namespace Cafeine.Pages
         public Shell(Frame frame)
         {
             InitializeComponent();
-            coreTitleBar.ExtendViewIntoTitleBar = true;
-            Window.Current.SetTitleBar(dragarea);
+            //coreTitleBar.ExtendViewIntoTitleBar = true;
+            //Window.Current.SetTitleBar(dragarea);
             f = frame;
             shellsplit.Content = f;
             f.Navigated += F_Navigated;
@@ -30,7 +30,22 @@ namespace Cafeine.Pages
 
         private void F_Navigated(object sender, NavigationEventArgs e)
         {
-            BackBut.Visibility = (f.CanGoBack) ? Visibility.Visible : Visibility.Collapsed;
+            //pretty ugly. Worth to recode it.
+            if(f.CanGoBack)
+            {
+                BackBut.Visibility = Visibility.Visible;
+                HamBut.Visibility = Visibility.Collapsed;
+                AddCollection.SetValue(RelativePanel.BelowProperty, BackBut);
+                AddCollection.SetValue(RelativePanel.AlignRightWithProperty, BackBut);
+            }
+            else
+            {
+
+                BackBut.Visibility = Visibility.Collapsed;
+                HamBut.Visibility = Visibility.Visible;
+                AddCollection.SetValue(RelativePanel.BelowProperty, HamBut);
+                AddCollection.SetValue(RelativePanel.AlignRightWithProperty, HamBut);
+            }
         }
 
         private void Backbutton(object sender, RoutedEventArgs e)
