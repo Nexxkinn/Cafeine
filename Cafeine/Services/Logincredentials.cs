@@ -3,7 +3,7 @@ using Windows.Security.Credentials;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using System.Threading.Tasks;
-namespace Cafeine.Data
+namespace Cafeine.Services
 {
     class Logincredentials
     {

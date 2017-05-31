@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Cafeine.Properties"
+    xmlns:local="using:Cafeine.Models"
     x:Class="Cafeine.ItemTemplates">
     <DataTemplate x:Name="WatchingCollection" x:DataType="local:ItemProperties">
         <RelativePanel Width="165" Height="290">

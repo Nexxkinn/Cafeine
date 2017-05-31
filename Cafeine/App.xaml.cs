@@ -4,7 +4,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Cafeine.Data;
+using Cafeine.Services;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Foundation;

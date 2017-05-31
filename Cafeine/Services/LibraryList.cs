@@ -4,10 +4,10 @@ using Windows.Storage;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Cafeine.Properties;
+using Cafeine.Models;
 using System.Threading.Tasks;
 
-namespace Cafeine.Data
+namespace Cafeine.Services
 {
     class LibraryList
     {
@@ -16,16 +16,16 @@ namespace Cafeine.Data
         ///convert user's collection into a list for Gridview or Listview's ItemCollection. 
         ///AnimeorManga : 1 -> anime, 2-> manga
         ///</summary>
-        public static async Task<ObservableCollection<ItemProperties>> QueryUserAnimeMangaListAsync(int AnimeorManga)
+        public static async Task<ObservableCollection<ItemProperties>> QueryUserAnimeMangaListAsync(bool AnimeorManga)
         {
             ObservableCollection<ItemProperties> Item = new ObservableCollection<ItemProperties>();
-            string anime_or_manga = (AnimeorManga == 1) ? "anime" : "manga";
+            string anime_or_manga = (AnimeorManga) ? "anime" : "manga";
             var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
             string OffFile = Path.Combine(OffFolder.Path, "RAW_" + anime_or_manga + ".xml");
             XDocument ParseData = XDocument.Load(OffFile);
             switch (AnimeorManga) //1 - anime  //2 - manga
             {
-                case 1:
+                case true:
                     {
                         var anime = ParseData.Descendants("anime");//.Where(x => (int)x.Element("my_status") == Status);
                         foreach (var item in anime)
@@ -45,7 +45,7 @@ namespace Cafeine.Data
                         }
                         break;
                     }
-                case 2:
+                case false:
                     {
                         var manga = ParseData.Descendants("manga");
                         foreach(var item in manga)

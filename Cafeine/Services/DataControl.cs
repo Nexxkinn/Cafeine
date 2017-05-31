@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Web.Http;
 using Windows.Storage;
-namespace Cafeine.Data
+namespace Cafeine.Services
 {
     class DataControl
     {
@@ -45,11 +45,11 @@ namespace Cafeine.Data
             ///                         
 
         }
-        public static async Task CreateCustomFolder(string FolderName)
+        public static async Task CreateCustomVirtualDirectory(string FolderName)
         {
 
         }
-        public static async Task AddItemToFolder(string CustomFolder)
+        public static async Task AddItemToVirtualDirectory(string CustomFolder)
         {
 
         }

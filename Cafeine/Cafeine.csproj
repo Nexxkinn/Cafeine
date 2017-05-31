@@ -155,38 +155,39 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Data\AnimeSearchList.cs" />
-    <Compile Include="Data\ExpandItemDetail.cs" />
-    <Compile Include="Data\LibraryList.cs" />
-    <Compile Include="Data\DataControl.cs" />
-    <Compile Include="Data\Logincredentials.cs" />
-    <Compile Include="Properties\ItemProperties.cs" />
-    <Compile Include="Pages\Animelist.xaml.cs">
+    <Compile Include="Services\AnimeSearchList.cs" />
+    <Compile Include="Services\ExpandItemDetail.cs" />
+    <Compile Include="Services\LibraryList.cs" />
+    <Compile Include="Services\DataControl.cs" />
+    <Compile Include="Services\Logincredentials.cs" />
+    <Compile Include="Models\ItemProperties.cs" />
+    <Compile Include="ViewModels\DirectoryExplorerViewModel.cs" />
+    <Compile Include="Views\Animelist.xaml.cs">
       <DependentUpon>Animelist.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\CollectionLibrary.xaml.cs">
+    <Compile Include="Views\CollectionLibrary.xaml.cs">
       <DependentUpon>CollectionLibrary.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\DirectoryExplorer.xaml.cs">
+    <Compile Include="Views\DirectoryExplorer.xaml.cs">
       <DependentUpon>DirectoryExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\LoginPage.xaml.cs">
+    <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\MoreDetails.xaml.cs">
+    <Compile Include="Views\MoreDetails.xaml.cs">
       <DependentUpon>MoreDetails.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Schedule.xaml.cs">
+    <Compile Include="Views\Schedule.xaml.cs">
       <DependentUpon>Schedule.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Searchpage.xaml.cs">
+    <Compile Include="Views\Searchpage.xaml.cs">
       <DependentUpon>Searchpage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Page_Resources\DirectoryTemplate.cs">
+    <Compile Include="Views\View_Resouces\DirectoryTemplate.cs">
       <DependentUpon>DIrectoryTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Page_Resources\ItemTemplates.cs">
+    <Compile Include="Views\View_Resouces\ItemTemplates.cs">
       <DependentUpon>CollectionTemplate.xaml</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CustomToolNamespace>CollectionTemplate</CustomToolNamespace>
@@ -216,45 +217,46 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Pages\Animelist.xaml">
+    <Page Include="Views\Animelist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="Pages\CollectionLibrary.xaml">
+    <Page Include="Views\CollectionLibrary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\DirectoryExplorer.xaml">
+    <Page Include="Views\DirectoryExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\LoginPage.xaml">
+    <Page Include="Views\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MoreDetails.xaml">
+    <Page Include="Views\MoreDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Schedule.xaml">
+    <Page Include="Views\Schedule.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Searchpage.xaml">
+    <Page Include="Views\Searchpage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Page_Resources\CollectionTemplate.xaml">
+    <Page Include="Views\View_Resouces\CollectionTemplate.xaml">
     </Page>
-    <Page Include="Page_Resources\DIrectoryTemplate.xaml">
+    <Page Include="Views\View_Resouces\DIrectoryTemplate.xaml">
     </Page>
-    <Page Include="Page_Resources\SearchIndex.xaml">
+    <Page Include="Views\View_Resouces\SearchIndex.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

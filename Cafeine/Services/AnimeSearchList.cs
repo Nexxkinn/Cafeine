@@ -4,10 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Cafeine.Data;
+using Cafeine.Services;
 using System.Collections.ObjectModel;
 
-namespace Cafeine.Data
+namespace Cafeine.Services
 {
     class AnimeSearchList
     {

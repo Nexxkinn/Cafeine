@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Popups;
-using Cafeine.Data;
+using Cafeine.Services;
 using Windows.UI.ViewManagement;
 using Windows.Foundation;
 

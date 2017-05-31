@@ -1,4 +1,4 @@
-﻿namespace Cafeine.Properties
+﻿namespace Cafeine.Models
 {
     public class ItemProperties
     {

@@ -1,4 +1,4 @@
-﻿using Cafeine.Properties;
+﻿using Cafeine.Models;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

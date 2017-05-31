@@ -1,5 +1,5 @@
-﻿using Cafeine.Data;
-using Cafeine.Properties;
+﻿using Cafeine.Services;
+using Cafeine.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,24 +30,40 @@ namespace Cafeine.Pages
         public CollectionLibrary()
         {
             this.InitializeComponent();
-            this.Loaded += Animelist_Loaded;
         }
-
-        private void Animelist_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var DataReceived = (VirtualDirectory)e.Parameter;
+
             //userlibrary = LibraryList.querydata(1);
-            Task.Run(async () => await grabuserprofile());
+            Task.Run(async () => await GrabUserItemList(DataReceived));
             //Task.Run(async () => userlibrary = await LibraryList.querydata(1));
         }
-        async Task grabuserprofile()
+        async Task GrabUserItemList(VirtualDirectory Datareceived)
         {
             try
             {
-                var Librarylist = await LibraryList.QueryUserAnimeMangaListAsync(1);
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                switch(Datareceived.AnimeOrManga)
                 {
-                    watch.ItemsSource = Librarylist.Where(x => x.My_status == 1);
-                });
+                    case true:
+                        {
+                            var Librarylist = await LibraryList.QueryUserAnimeMangaListAsync(true);
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                            {
+                                watch.ItemsSource = Librarylist.Where(x => x.My_status == Datareceived.DirectoryType - 3);
+                            });
+                            break;
+                        }
+                    case false:
+                        {
+                            var Librarylist = await LibraryList.QueryUserAnimeMangaListAsync(false);
+                            await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                            {
+                                watch.ItemsSource = Librarylist.Where(x => x.My_status == Datareceived.DirectoryType - 3);
+                            });
+                            break;
+                        }
+                }
             }
             catch (Exception e)
             {
