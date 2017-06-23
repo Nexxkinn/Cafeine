@@ -19,7 +19,7 @@ namespace Cafeine
                 Logincredentials login = new Logincredentials();
                 bool canweusethepassword = await login.logincredential(autologin.UserName, autologin.Password, 1);
                 switch (canweusethepassword) {
-                    case true: await DataControl.GrabUserDatatoOffline(1);
+                    case true: await DataProvider.GrabUserDatatoOffline(1);
                         Navigate();
                         break;
                     case false: break;
@@ -83,7 +83,7 @@ namespace Cafeine
             switch (verify)
             {
                 case true:
-                    await DataControl.GrabUserDatatoOffline(1);
+                    await DataProvider.GrabUserDatatoOffline(1);
                     Navigate();
                     break;
                 case false: break;

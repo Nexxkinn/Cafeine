@@ -148,20 +148,23 @@
     <Content Include="Font\Dosis-Medium.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="ClassDiagram1.cd" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\MALXMLSerializer.cs" />
     <Compile Include="Services\AnimeSearchList.cs" />
     <Compile Include="Services\ExpandItemDetail.cs" />
-    <Compile Include="Services\LibraryList.cs" />
+    <Compile Include="Services\CollectionLibraryProvider.cs" />
     <Compile Include="Services\DataControl.cs" />
     <Compile Include="Services\Logincredentials.cs" />
     <Compile Include="Models\ItemProperties.cs" />
+    <Compile Include="Services\XmlToJsonConverter.cs" />
+    <Compile Include="ViewModels\CollectionLibraryViewModel.cs" />
     <Compile Include="ViewModels\DirectoryExplorerViewModel.cs" />
+    <Compile Include="ViewModels\MoreDetailsViewModel.cs" />
     <Compile Include="Views\Animelist.xaml.cs">
       <DependentUpon>Animelist.xaml</DependentUpon>
     </Compile>

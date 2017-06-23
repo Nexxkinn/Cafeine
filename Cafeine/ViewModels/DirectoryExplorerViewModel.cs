@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Cafeine.Models;
 namespace Cafeine.ViewModels
 {
-    class DirectoryExplorerViewModel
+    public class DirectoryExplorerViewModel
     {
         public static List<VirtualDirectory> DefaultDirectory (VirtualDirectory e )
         {
@@ -18,28 +18,28 @@ namespace Cafeine.ViewModels
                 {
                     case 1:
                         {
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = true, DirectoryType = 4, DirectoryTitle = "Watching" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = true, DirectoryType = 6, DirectoryTitle = "On Hold" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = true, DirectoryType = 9, DirectoryTitle = "Planned to Watch" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = true, DirectoryType = 5, DirectoryTitle = "Completed" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = true, DirectoryType = 7, DirectoryTitle = "Dropped" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 4, DirectoryTitle = "Watching" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 6, DirectoryTitle = "On Hold" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 9, DirectoryTitle = "Planned to Watch" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 5, DirectoryTitle = "Completed" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 7, DirectoryTitle = "Dropped" });
                             break;
                         }
                     case 2:
                         {
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = false, DirectoryType = 4, DirectoryTitle = "Reading" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = false, DirectoryType = 6, DirectoryTitle = "On Hold" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = false, DirectoryType = 9, DirectoryTitle = "Planned to Read" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = false, DirectoryType = 5, DirectoryTitle = "Completed" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = false, DirectoryType = 7, DirectoryTitle = "Dropped" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 4, DirectoryTitle = "Reading" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 6, DirectoryTitle = "On Hold" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 9, DirectoryTitle = "Planned to Read" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 5, DirectoryTitle = "Completed" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 7, DirectoryTitle = "Dropped" });
                             break;
                         }
                 }
             }
             catch (NullReferenceException)
             {
-                Dir.Add(new VirtualDirectory { DirectoryType = 1, DirectoryTitle = "Anime" });
-                Dir.Add(new VirtualDirectory { DirectoryType = 2, DirectoryTitle = "Manga" });
+                Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Directory, DirectoryType = 1, DirectoryTitle = "Anime" });
+                Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Directory, DirectoryType = 2, DirectoryTitle = "Manga" });
                 //Dir.Add for custom folder ( DirectoryType = 3 ), and always navigate to CollectionLibrary filtered.
             }
             return Dir;

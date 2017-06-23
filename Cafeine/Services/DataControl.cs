@@ -1,11 +1,12 @@
 ﻿using System;
+using Cafeine.Models;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Web.Http;
 using Windows.Storage;
 namespace Cafeine.Services
 {
-    class DataControl
+    class DataProvider
     {
 
         ///<summary>
@@ -15,12 +16,13 @@ namespace Cafeine.Services
         ///</summary>
         public static async Task GrabUserDatatoOffline(int service)
         {
-            string username = Logincredentials.getusername(1);
+            string username = Logincredentials.getuser(1).UserName;
 
 
-            //currently only to serve MyAnimelist
-            var url = new Uri("http://myanimelist.net/malappinfo.php?u=" + Uri.EscapeDataString(username) + "&type=anime&status=all");
-            var url2 = new Uri("http://myanimelist.net/malappinfo.php?u=" + Uri.EscapeDataString(username) + "&type=manga&status=all");
+            ///currently only to serve MyAnimelist
+            ///Considering to use NetJSON to get faster serializer and deserializer.
+            var url = new Uri("https://myanimelist.net/malappinfo.php?u=" + Uri.EscapeDataString(username) + "&type=anime&status=all");
+            var url2 = new Uri("https://myanimelist.net/malappinfo.php?u=" + Uri.EscapeDataString(username) + "&type=manga&status=all");
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync(url);
@@ -34,15 +36,12 @@ namespace Cafeine.Services
 
                 //save data
                 var OfflineFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
-                var SaveFile = await OfflineFolder.CreateFileAsync("RAW_" + service + "_anime.xml", CreationCollisionOption.ReplaceExisting);
-                var SaveFile2 = await OfflineFolder.CreateFileAsync("RAW_" + service + "_manga.xml", CreationCollisionOption.ReplaceExisting);
+                var SaveFile = await OfflineFolder.CreateFileAsync("RAW_" + service + "_"+AnimeOrManga.Anime+".xml", CreationCollisionOption.ReplaceExisting);
+                var SaveFile2 = await OfflineFolder.CreateFileAsync("RAW_" + service + "_"+AnimeOrManga.Manga+".xml", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(SaveFile, FetchData);
                 await FileIO.WriteTextAsync(SaveFile2, FetchData2);
 
             }
-            ///save to offline data :   1.  Compress data
-            ///                         2.  save to category+"offlineuserdata.xml"
-            ///                         
 
         }
         public static async Task CreateCustomVirtualDirectory(string FolderName)

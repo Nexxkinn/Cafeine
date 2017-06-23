@@ -40,7 +40,7 @@ namespace Cafeine.Pages
         public void NavigateItemtoPage(object sender, ItemClickEventArgs e)
         {
             var SelectedItem = (VirtualDirectory)e.ClickedItem;
-            if (SelectedItem.AnimeOrManga.HasValue) Frame.Navigate(typeof(CollectionLibrary), SelectedItem); //check if it has a bool value
+            if (SelectedItem.AnimeOrManga != AnimeOrManga.Directory) Frame.Navigate(typeof(CollectionLibrary), SelectedItem); //check if it has a bool value
             else Frame.Navigate(typeof(DirectoryExplorer), SelectedItem); //navigate if it doesn't.
         }
     }

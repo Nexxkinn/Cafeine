@@ -60,10 +60,10 @@ namespace Cafeine.Services
                 return false;
             }
         }
-        public static string getusername(int status)
+        public static PasswordCredential getuser(int status)
         {
             var get_user = new Logincredentials().getcredentialfromlocker(1);
-            return get_user.UserName;
+            return get_user;
         }
         public PasswordCredential getcredentialfromlocker(int srvc)
         {
@@ -81,7 +81,7 @@ namespace Cafeine.Services
                 credential = thelist[0];
                 return credential;
             }
-            catch( Exception e)
+            catch(Exception)
             {
                 return null;
             }

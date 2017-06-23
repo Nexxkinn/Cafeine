@@ -1,25 +1,47 @@
-﻿namespace Cafeine.Models
+﻿using System.Xml.Serialization;
+
+namespace Cafeine.Models
 {
+    [XmlRoot("entry")]
     public class ItemProperties
     {
+        [XmlIgnore]
         public int Item_Id;
+        [XmlIgnore]
         public string Item_Title;
+        [XmlIgnore]
         public int Item_Totalepisodes;
+        [XmlIgnore]
         public string Item_Start;
+        [XmlIgnore]
         public string Item_end;
-        public int Item_rewatch;
+        [XmlIgnore]
         public int Item_lastupdated;
+        [XmlIgnore]
         public string Series_start;
+        [XmlIgnore]
         public string Series_end;
-        public int My_score;
-        public int My_watch;
+        [XmlIgnore]
         public string Imgurl;
+        [XmlIgnore]
         public int Series_Status;
-        public int My_status;
 
+        [XmlElement("episode")]
+        public int My_watch;
+        [XmlElement("status")]
+        public int My_status;
+        [XmlElement("score")]
+        public int My_score;
+
+        [XmlIgnore]
         public string[] VirtualDirectory;
     }
-
+    public enum AnimeOrManga
+    {
+        Anime=1,
+        Manga,
+        Directory
+    }
     /// <summary>
     /// AnimeOrManga : True if Anime, False if manga.
     /// DirectoryCategory : 1 - Anime, 2 - Manga, 3 - Others, 4-8 - Status
@@ -28,7 +50,7 @@
     public class VirtualDirectory
     {
 
-        public bool? AnimeOrManga;
+        public AnimeOrManga AnimeOrManga;
         public int DirectoryType;
         public string DirectoryTitle;
     }
