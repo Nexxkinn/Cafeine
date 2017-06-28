@@ -1,0 +1,46 @@
+﻿<Page
+    x:Class="Cafeine.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:Cafeine"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <local:HomePageTemplate/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Background="{ThemeResource AppBarBackground}">
+            <RelativePanel VerticalAlignment="Center" Padding="24,0,0,0">
+                <RadioButton x:Name="Library" Content="Library" GroupName="Tab" Checked="TabChecked" Padding="0,0,24,0" FontSize="24" VerticalAlignment="Center" FontWeight="Light"/>
+                <RadioButton x:Name="Schedule" RelativePanel.RightOf="Library" Content="Schedule" GroupName="Tab" Checked="TabChecked" Padding="0,0,24,0" FontSize="24" VerticalAlignment="Center" FontWeight="Light"/>
+            </RelativePanel>
+            <RelativePanel HorizontalAlignment="Right">
+                <AutoSuggestBox x:Name="Search" QueryIcon="Find" Width="320" Height="40" Margin="8,0" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.LeftOf="UserBtn"/>
+                <Button x:Name="UserBtn" Style="{StaticResource TextBlockButtonStyle}" Width="48" Height="48" Margin="8,0" RelativePanel.AlignRightWithPanel="True">
+                    <Button.Content>
+                        <SymbolIcon Symbol="Contact"/>
+                    </Button.Content>
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="Logout" Click="Logout_test"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </RelativePanel>
+        </Grid>
+        <Frame x:Name="ContentFrame" Grid.Row="1"/>
+    </Grid>
+</Page>

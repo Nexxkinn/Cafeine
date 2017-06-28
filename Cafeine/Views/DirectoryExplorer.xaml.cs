@@ -34,7 +34,7 @@ namespace Cafeine.Pages
             //Receive passed data from previous page
             var DataReceived = DirectoryExplorerViewModel.DefaultDirectory((VirtualDirectory)e.Parameter);
             VirDirInterface.ItemsSource = DataReceived;
-            
+
 
         }
         public void NavigateItemtoPage(object sender, ItemClickEventArgs e)

@@ -33,7 +33,6 @@ namespace Cafeine.Services
                 {
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
-                    string getrespond = response.Content.ReadAsStringAsync().ToString();
                     //store password
                     var vault = new PasswordVault();
                     var cred = clientHeader.ServerCredential;
@@ -81,7 +80,7 @@ namespace Cafeine.Services
                 credential = thelist[0];
                 return credential;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return null;
             }

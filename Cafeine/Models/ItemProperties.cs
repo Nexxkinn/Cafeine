@@ -38,8 +38,8 @@ namespace Cafeine.Models
     }
     public enum AnimeOrManga
     {
-        Anime=1,
-        Manga,
+        anime = 1,
+        manga,
         Directory
     }
     /// <summary>

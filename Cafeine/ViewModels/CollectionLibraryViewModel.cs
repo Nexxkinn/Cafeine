@@ -8,6 +8,8 @@ using Cafeine.Models;
 using Cafeine.Services;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Cafeine.ViewModels
 {
@@ -15,20 +17,35 @@ namespace Cafeine.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private ItemProperties itemproperty;
-
         public ItemProperties Itemproperty
         {
-            get { return itemproperty; }
-            
+            get => itemproperty;
+
         }
-        public int My_score
+        public string Image
         {
-            get { return Itemproperty.My_score; }
+            get => itemproperty.Imgurl;
+        }
+        public string My_score
+        {
+            get { return Itemproperty.My_score.ToString(); }
             set
             {
-                if (Itemproperty.My_score != value)
+                if (Itemproperty.My_score.ToString() != value)
                 {
-                    Itemproperty.My_score = value;
+                    Itemproperty.My_score = Convert.ToInt32(value);
+                    this.OnPropertyChanged();
+                }
+            }
+        }
+        public string My_watch
+        {
+            get { return Itemproperty.My_watch.ToString(); }
+            set
+            {
+                if (Itemproperty.My_watch.ToString() != value)
+                {
+                    Itemproperty.My_watch = Convert.ToInt32(value);
                     this.OnPropertyChanged();
                 }
             }

@@ -13,10 +13,10 @@ using Windows.Foundation;
 
 namespace Cafeine
 {
-    public sealed partial class Animelist : Page
+    public sealed partial class HomePage : Page
     {
         Frame f;
-        public Animelist(Frame frame)
+        public HomePage(Frame frame)
         {
             InitializeComponent();
             f = frame;
@@ -36,11 +36,11 @@ namespace Cafeine
 
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
+            //ugly hack
             switch (f.CurrentSourcePageType.ToString())
             {
-                case "Cafeine.Pages.CollectionLibrary":
-                    Library.IsChecked = true;
-                    break;
+                case "Cafeine.Pages.DirectoryExplorer": Library.IsChecked = true; break;
+                case "Cafeine.Pages.CollectionLibrary": Library.IsChecked = true; break;
             }
             if (f.CanGoBack)
             {
@@ -49,6 +49,7 @@ namespace Cafeine
             else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
         }
 
+        //very ugly hack
         private void TabChecked(object sender, RoutedEventArgs e)
         {
             RadioButton rb = sender as RadioButton;
@@ -58,7 +59,9 @@ namespace Cafeine
                     f.Navigate(typeof(Pages.Schedule));
                     break;
                 case "Library":
-                    f.Navigate(typeof(Pages.CollectionLibrary));
+                    f.Navigate(typeof(Pages.DirectoryExplorer));
+                    f.BackStack.Clear();
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     break;
             }
         }

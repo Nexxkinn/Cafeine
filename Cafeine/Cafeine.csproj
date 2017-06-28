@@ -154,8 +154,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\GroupedSearchResult.cs" />
     <Compile Include="Models\MALXMLSerializer.cs" />
-    <Compile Include="Services\AnimeSearchList.cs" />
+    <Compile Include="Services\SearchProvider.cs" />
     <Compile Include="Services\ExpandItemDetail.cs" />
     <Compile Include="Services\CollectionLibraryProvider.cs" />
     <Compile Include="Services\DataControl.cs" />
@@ -165,8 +166,8 @@
     <Compile Include="ViewModels\CollectionLibraryViewModel.cs" />
     <Compile Include="ViewModels\DirectoryExplorerViewModel.cs" />
     <Compile Include="ViewModels\MoreDetailsViewModel.cs" />
-    <Compile Include="Views\Animelist.xaml.cs">
-      <DependentUpon>Animelist.xaml</DependentUpon>
+    <Compile Include="Views\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CollectionLibrary.xaml.cs">
       <DependentUpon>CollectionLibrary.xaml</DependentUpon>
@@ -220,7 +221,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\Animelist.xaml">
+    <Page Include="Views\HomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

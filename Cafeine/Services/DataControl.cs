@@ -36,8 +36,8 @@ namespace Cafeine.Services
 
                 //save data
                 var OfflineFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
-                var SaveFile = await OfflineFolder.CreateFileAsync("RAW_" + service + "_"+AnimeOrManga.Anime+".xml", CreationCollisionOption.ReplaceExisting);
-                var SaveFile2 = await OfflineFolder.CreateFileAsync("RAW_" + service + "_"+AnimeOrManga.Manga+".xml", CreationCollisionOption.ReplaceExisting);
+                var SaveFile = await OfflineFolder.CreateFileAsync("RAW_" + service + "_" + AnimeOrManga.anime + ".xml", CreationCollisionOption.ReplaceExisting);
+                var SaveFile2 = await OfflineFolder.CreateFileAsync("RAW_" + service + "_" + AnimeOrManga.manga + ".xml", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(SaveFile, FetchData);
                 await FileIO.WriteTextAsync(SaveFile2, FetchData2);
 

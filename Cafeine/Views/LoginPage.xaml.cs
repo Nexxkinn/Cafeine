@@ -18,63 +18,65 @@ namespace Cafeine
                 autologin.RetrievePassword();
                 Logincredentials login = new Logincredentials();
                 bool canweusethepassword = await login.logincredential(autologin.UserName, autologin.Password, 1);
-                switch (canweusethepassword) {
-                    case true: await DataProvider.GrabUserDatatoOffline(1);
+                switch (canweusethepassword)
+                {
+                    case true:
+                        await DataProvider.GrabUserDatatoOffline(1);
                         Navigate();
                         break;
                     case false: break;
                 }
-                
+
             }
         }
         public LoginPage()
         {
             InitializeComponent();
         }
-      /*  private async void result(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var getlogincredentials = new GrabUserList().getcredentialfromlocker();
-                getlogincredentials.RetrievePassword();
-                var url = new Uri("http://myanimelist.net/api/account/verify_credentials.xml");
-                //string storeusercredential_myanimelist = "mall";
-                GrabUserList nn = new GrabUserList();
+        /*  private async void result(object sender, RoutedEventArgs e)
+          {
+              try
+              {
+                  var getlogincredentials = new GrabUserList().getcredentialfromlocker();
+                  getlogincredentials.RetrievePassword();
+                  var url = new Uri("http://myanimelist.net/api/account/verify_credentials.xml");
+                  //string storeusercredential_myanimelist = "mall";
+                  GrabUserList nn = new GrabUserList();
 
-                var clientHeader = new HttpBaseProtocolFilter();
-                clientHeader.ServerCredential = new PasswordCredential(getlogincredentials.Resource,getlogincredentials.UserName, getlogincredentials.Password);
-                clientHeader.AllowUI = false;
-                using (var client = new HttpClient(clientHeader))
-                {
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-                    string getrespond = await response.Content.ReadAsStringAsync();
-                    //store password
-                    //var vault = new PasswordVault();
-                    //var cred = clientHeader.ServerCredential;
-                    //vault.Add(cred);
-                    test.Content = getrespond;
-                }
-                #region oldcode_but_works
-                // old one, but works
-                // problem : can't disable basic authentication pop-up when failed to login.
-                /*using (HttpClient client = new HttpClient()) {
-                    //client.DefaultRequestHeaders.Accept.TryParseAdd("application/json");
-                    client.DefaultRequestHeaders.Authorization = new Windows.Web.Http.Headers.HttpCredentialsHeaderValue("basic",Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", username, password))));
-                    using (HttpResponseMessage response = await client.GetAsync(url))
-                    {
-                        response.EnsureSuccessStatusCode();
-                        string getresponse = await response.Content.ReadAsStringAsync();
-                        test.Content = getresponse;
-                    }
+                  var clientHeader = new HttpBaseProtocolFilter();
+                  clientHeader.ServerCredential = new PasswordCredential(getlogincredentials.Resource,getlogincredentials.UserName, getlogincredentials.Password);
+                  clientHeader.AllowUI = false;
+                  using (var client = new HttpClient(clientHeader))
+                  {
+                      HttpResponseMessage response = await client.GetAsync(url);
+                      response.EnsureSuccessStatusCode();
+                      string getrespond = await response.Content.ReadAsStringAsync();
+                      //store password
+                      //var vault = new PasswordVault();
+                      //var cred = clientHeader.ServerCredential;
+                      //vault.Add(cred);
+                      test.Content = getrespond;
                   }
-                
-                #endregion
-            }
-            catch (Exception ex) {
-                test.Content = "Maa-kun confused. She can't use your username / password to access it :(";
-                }
-        }*/
+                  #region oldcode_but_works
+                  // old one, but works
+                  // problem : can't disable basic authentication pop-up when failed to login.
+                  /*using (HttpClient client = new HttpClient()) {
+                      //client.DefaultRequestHeaders.Accept.TryParseAdd("application/json");
+                      client.DefaultRequestHeaders.Authorization = new Windows.Web.Http.Headers.HttpCredentialsHeaderValue("basic",Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", username, password))));
+                      using (HttpResponseMessage response = await client.GetAsync(url))
+                      {
+                          response.EnsureSuccessStatusCode();
+                          string getresponse = await response.Content.ReadAsStringAsync();
+                          test.Content = getresponse;
+                      }
+                    }
+
+                  #endregion
+              }
+              catch (Exception ex) {
+                  test.Content = "Maa-kun confused. She can't use your username / password to access it :(";
+                  }
+          }*/
 
         private async void SignIn_Click(ContentDialog sender, ContentDialogButtonClickEventArgs e)
         {
@@ -93,7 +95,7 @@ namespace Cafeine
         {
             Frame rootframe = new Frame();
             Frame newframe = new Frame();
-            rootframe.Content = new Animelist(newframe);
+            rootframe.Content = new HomePage(newframe);
             newframe.Navigate(typeof(Pages.DirectoryExplorer));
             Window.Current.Content = rootframe;
             Window.Current.Activate();
@@ -101,10 +103,12 @@ namespace Cafeine
 
         private void SignInDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "CloseButtonText")){
+            if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "CloseButtonText"))
+            {
                 SignInDialog.CloseButtonText = "Cancel";
             }
-            else{
+            else
+            {
                 SignInDialog.SecondaryButtonText = "Cancel";
             }
         }

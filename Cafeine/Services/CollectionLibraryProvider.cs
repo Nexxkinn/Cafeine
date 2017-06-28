@@ -29,7 +29,7 @@ namespace Cafeine.Services
             XDocument ParseData = XDocument.Load(OffFile);
             switch (AnimeManga) //1 - anime  //2 - manga
             {
-                case AnimeOrManga.Anime:
+                case AnimeOrManga.anime:
                     {
                         var anime = ParseData.Descendants("anime");//.Where(x => (int)x.Element("my_status") == Status);
                         foreach (var item in anime)
@@ -49,10 +49,10 @@ namespace Cafeine.Services
                         }
                         break;
                     }
-                case AnimeOrManga.Manga:
+                case AnimeOrManga.manga:
                     {
                         var manga = ParseData.Descendants("manga");
-                        foreach(var item in manga)
+                        foreach (var item in manga)
                         {
                             Item.Add(new CollectionLibraryViewModel(new ItemProperties
                             {
@@ -73,30 +73,30 @@ namespace Cafeine.Services
             return Item;
         }
 
-        public static async Task<bool> UpdateItem(ItemProperties e, AnimeOrManga AnimeManga)
+        public static async Task UpdateItem(CollectionLibraryViewModel e, AnimeOrManga AnimeManga)
         {
             using (var stream = new MemoryStream())
             {
                 using (var writer = XmlWriter.Create(stream))
                 {
-                    new XmlSerializer(e.GetType()).Serialize(writer, e);
+                    new XmlSerializer(e.Itemproperty.GetType()).Serialize(writer, e.Itemproperty);
                     var xmlEncodedList = Encoding.UTF8.GetString(stream.ToArray());
 
                     var User = Logincredentials.getuser(1); //Grab username and password
-                    var url = new Uri("https://myanimelist.net/api/" + AnimeManga.ToString() + "list/update/" + e.Item_Id + ".xml?data="+xmlEncodedList);
+                    var url = new Uri("https://myanimelist.net/api/" + AnimeManga.ToString() + "list/update/" + e.Itemproperty.Item_Id + ".xml?data=" + xmlEncodedList);
 
                     //GET
                     var clientHeader = new HttpBaseProtocolFilter();
                     clientHeader.ServerCredential = User;
                     clientHeader.AllowUI = false;
-                    using (var client = new HttpClient(clientHeader)) {
+                    using (var client = new HttpClient(clientHeader))
+                    {
                         HttpResponseMessage response = await client.GetAsync(url);
                         response.EnsureSuccessStatusCode();
-                        return true;
                     }
                 }
             }
-            
+
 
         }
     }

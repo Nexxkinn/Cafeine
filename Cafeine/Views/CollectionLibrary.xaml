@@ -9,7 +9,7 @@
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:ItemTemplates/>
+                <local:CollectionTemplates/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
@@ -32,19 +32,19 @@
                 </RelativePanel>
                 <RelativePanel Grid.Column="1" VerticalAlignment="Center" Padding="24,0,0,0">
                     <TextBlock x:Name="ScoreLabel" HorizontalAlignment="Left" Margin="0,70,0,0" Text="Score" VerticalAlignment="Top" OpticalMarginAlignment="TrimSideBearings"/>
-                    <TextBox x:Name="User_Rating" Text="8" Width="271" Height="31" Padding="10,0,0,0" RelativePanel.Below="ScoreLabel" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBox x:Name="User_Rating" Width="271" Height="31" Padding="10,0,0,0" RelativePanel.Below="ScoreLabel" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
-                    <TextBlock x:Name="EpisodesLabel" HorizontalAlignment="Left" Text="Episodes" RelativePanel.Below="User_Rating" VerticalAlignment="Top" OpticalMarginAlignment="TrimSideBearings"/>
-                    <TextBox x:Name="User_Episodes" Text="8" Width="271" Height="31" Padding="10,0,0,0" RelativePanel.Below="EpisodesLabel" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock x:Name="EpisodesLabel" HorizontalAlignment="Left" RelativePanel.Below="User_Rating" VerticalAlignment="Top" OpticalMarginAlignment="TrimSideBearings"/>
+                    <TextBox x:Name="User_Episodes" Width="271" Height="31" Padding="10,0,0,0" RelativePanel.Below="EpisodesLabel" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
-                    <TextBlock x:Name="StatusLabel" HorizontalAlignment="Left" Text="Status" RelativePanel.Below="User_Episodes" VerticalAlignment="Top" OpticalMarginAlignment="TrimSideBearings"/>
-                    <TextBox x:Name="User_Status" Text="8" Width="271" Height="31" Padding="10,0,0,0" RelativePanel.Below="StatusLabel" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <!--<TextBlock x:Name="StatusLabel" HorizontalAlignment="Left" Text="Status" RelativePanel.Below="User_Episodes" VerticalAlignment="Top" OpticalMarginAlignment="TrimSideBearings"/>
+                    <TextBox x:Name="User_Status" Text="8" Width="271" Height="31" Padding="10,0,0,0" RelativePanel.Below="StatusLabel" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
 
-                    <Button x:Name="btn_save" Content="Save" RelativePanel.Below="User_Status" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="96" Margin="0,20,0,70"/>
+                    <Button x:Name="btn_save" Content="Save" RelativePanel.Below="User_Episodes" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="96" Margin="0,20,0,70"/>
                 </RelativePanel>
             </Grid>
         </Popup>
-        <GridView Margin="8,0,0,0" x:Name="watch" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource WatchingCollection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+        <GridView Margin="8,0,0,0" x:Name="watch" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource Collection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden">
             <!--
                         <GridView.ItemsPanel>
                             <ItemsPanelTemplate>

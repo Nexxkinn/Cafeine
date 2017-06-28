@@ -9,7 +9,7 @@ namespace Cafeine.ViewModels
 {
     public class DirectoryExplorerViewModel
     {
-        public static List<VirtualDirectory> DefaultDirectory (VirtualDirectory e )
+        public static List<VirtualDirectory> DefaultDirectory(VirtualDirectory e)
         {
             List<VirtualDirectory> Dir = new List<VirtualDirectory>();
             try
@@ -18,20 +18,20 @@ namespace Cafeine.ViewModels
                 {
                     case 1:
                         {
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 4, DirectoryTitle = "Watching" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 6, DirectoryTitle = "On Hold" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 9, DirectoryTitle = "Planned to Watch" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 5, DirectoryTitle = "Completed" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Anime, DirectoryType = 7, DirectoryTitle = "Dropped" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.anime, DirectoryType = 4, DirectoryTitle = "Watching" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.anime, DirectoryType = 6, DirectoryTitle = "On Hold" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.anime, DirectoryType = 9, DirectoryTitle = "Planned to Watch" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.anime, DirectoryType = 5, DirectoryTitle = "Completed" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.anime, DirectoryType = 7, DirectoryTitle = "Dropped" });
                             break;
                         }
                     case 2:
                         {
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 4, DirectoryTitle = "Reading" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 6, DirectoryTitle = "On Hold" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 9, DirectoryTitle = "Planned to Read" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 5, DirectoryTitle = "Completed" });
-                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.Manga, DirectoryType = 7, DirectoryTitle = "Dropped" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.manga, DirectoryType = 4, DirectoryTitle = "Reading" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.manga, DirectoryType = 6, DirectoryTitle = "On Hold" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.manga, DirectoryType = 9, DirectoryTitle = "Planned to Read" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.manga, DirectoryType = 5, DirectoryTitle = "Completed" });
+                            Dir.Add(new VirtualDirectory { AnimeOrManga = AnimeOrManga.manga, DirectoryType = 7, DirectoryTitle = "Dropped" });
                             break;
                         }
                 }

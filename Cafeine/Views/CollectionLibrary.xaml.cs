@@ -31,24 +31,27 @@ namespace Cafeine.Pages
     {
         ObservableCollection<CollectionLibraryViewModel> ItemList = new ObservableCollection<CollectionLibraryViewModel>();
         CollectionLibraryViewModel SelectedItem = new CollectionLibraryViewModel();
+        VirtualDirectory DirectoryDetail;
         public CollectionLibrary()
         {
             this.InitializeComponent();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            VirtualDirectory DataReceived = (VirtualDirectory)e.Parameter;
-            Task.Run(async () => await GrabUserItemList(DataReceived));
+            DirectoryDetail = (VirtualDirectory)e.Parameter;
+            if (DirectoryDetail.AnimeOrManga == AnimeOrManga.anime) EpisodesLabel.Text = "Episodes Watched";
+            else EpisodesLabel.Text = "Chapters read";
+            Task.Run(async () => await GrabUserItemList());
         }
-        async Task GrabUserItemList(VirtualDirectory c)
+        async Task GrabUserItemList()
         {
 
             try
             {
-                ItemList = await CollectionLibraryProvider.QueryUserAnimeMangaListAsync(c.AnimeOrManga);
+                ItemList = await CollectionLibraryProvider.QueryUserAnimeMangaListAsync(DirectoryDetail.AnimeOrManga);
                 await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
                 {
-                    watch.ItemsSource = ItemList.Where(x => x.Itemproperty.My_status == c.DirectoryType - 3);
+                    watch.ItemsSource = ItemList.Where(x => x.Itemproperty.My_status == DirectoryDetail.DirectoryType - 3);
                 });
             }
             catch (Exception e)
@@ -60,23 +63,23 @@ namespace Cafeine.Pages
         {
             //pass data to other page
             SelectedItem = (CollectionLibraryViewModel)e.ClickedItem;
-            BitmapImage bitmapImage = new BitmapImage() { UriSource = new Uri(BaseUri, SelectedItem.Itemproperty.Imgurl) };
-            image.Source = bitmapImage;
+            image.Source = new BitmapImage(new Uri(SelectedItem.Image, UriKind.Absolute));
             Title.Text = SelectedItem.Itemproperty.Item_Title;
-
-            User_Rating.Text = SelectedItem.My_score.ToString();
+            User_Rating.Text = SelectedItem.My_score;
+            User_Episodes.Text = SelectedItem.My_watch;
             popupp.Height = Window.Current.Bounds.Height - 48;
             popupp.Width = Window.Current.Bounds.Width;
             popupp.VerticalAlignment = VerticalAlignment.Center;
             ppup.IsOpen = true;
-
-            SelectedItem.Itemproperty.My_score = 100;
             btn_save.Click += Btn_save_Click;
         }
 
-        private void Btn_save_Click(object sender, RoutedEventArgs e)
+        private async void Btn_save_Click(object sender, RoutedEventArgs e)
         {
-            ItemList[ItemList.IndexOf(SelectedItem)].My_score = Convert.ToInt32(User_Rating.Text);
+            var ItemIndex = ItemList[ItemList.IndexOf(SelectedItem)];
+            ItemIndex.My_score = User_Rating.Text;
+            ItemIndex.My_watch = User_Episodes.Text;
+            await CollectionLibraryProvider.UpdateItem(ItemIndex, DirectoryDetail.AnimeOrManga);
             ppup.IsOpen = false;
         }
     }
