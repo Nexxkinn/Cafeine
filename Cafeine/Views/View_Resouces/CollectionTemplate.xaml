@@ -3,8 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine.ViewModels"
     xmlns:xaml="using:Windows.UI.Xaml"
-    x:Class="Cafeine.ItemTemplates">
-    <xaml:DataTemplate x:Name="WatchingCollection" x:DataType="local:CollectionLibraryViewModel">
+    x:Class="Cafeine.CollectionTemplates">
+    <xaml:DataTemplate x:Name="Collection" x:DataType="local:CollectionLibraryViewModel">
         <RelativePanel Width="165" Height="290">
             <Grid x:Name="quickstatus" PointerEntered="ImageEntered" PointerExited="ImageExited" Height="225" Width="160" Margin="3,3,3,8" HorizontalAlignment="Center" Canvas.ZIndex="1" Opacity="0">
                 <Grid.Resources>
@@ -30,10 +30,10 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock x:Name="myscore" Grid.Row="0" Text="{x:Bind Path=My_score, Mode=OneWay}" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
-                    <TextBlock x:Name="Myepisode" Grid.Row="1" Text="{x:Bind Path=Itemproperty.My_watch, Mode=OneWay}" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
+                    <TextBlock x:Name="Myepisode" Grid.Row="1" Text="{x:Bind Path=My_watch, Mode=OneWay}" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
                 </Grid>
             </Grid>
-            <Image x:Name="theimage" Source="{x:Bind Path=Itemproperty.Imgurl}" MaxHeight="225" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="3,3,3,5"/>
+            <Image x:Name="theimage" Source="{x:Bind Path=Image}" MaxHeight="225" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="3,3,3,5"/>
             <TextBlock x:Name="thetitle" Margin="3,0" Text="{x:Bind Path=Itemproperty.Item_Title}" x:Phase="1"  FontSize="15" FontWeight="Medium" RelativePanel.Below="quickstatus" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" Foreground="#FF333333" MaxLines="2" FontStretch="ExtraCondensed"/>
             <TextBlock x:Name="series_start" Text="{x:Bind Path=Itemproperty.Series_start}" Visibility="Collapsed" Margin="3,0" x:Phase="1" FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
         </RelativePanel>

@@ -187,6 +187,9 @@
     <Compile Include="Views\Searchpage.xaml.cs">
       <DependentUpon>Searchpage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\View_Resouces\DIrectoryTemplate - Copy.cs">
+      <DependentUpon>HomePageTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\View_Resouces\DirectoryTemplate.cs">
       <DependentUpon>DIrectoryTemplate.xaml</DependentUpon>
     </Compile>
@@ -252,12 +255,10 @@
     </Page>
     <Page Include="Views\View_Resouces\CollectionTemplate.xaml">
     </Page>
-    <Page Include="Views\View_Resouces\DIrectoryTemplate.xaml">
-    </Page>
-    <Page Include="Views\View_Resouces\SearchIndex.xaml">
+    <Page Include="Views\View_Resouces\HomePageTemplate.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Views\View_Resouces\DIrectoryTemplate.xaml">
     </Page>
   </ItemGroup>
   <ItemGroup />
