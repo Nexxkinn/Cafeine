@@ -11,61 +11,99 @@ using System.Xml.Linq;
 using Windows.Storage;
 using System.IO;
 using System.Collections;
+using System.Xml;
 
 namespace Cafeine.Services
 {
     class SearchProvider
     {
-        ///project:
-        ///1 - QuickSuggestion   : give 5 first result from each group ( anime, manga, and people in order )
-        ///2 - Deepsearch        : give all relevant result from each group
-
-        //public static async Task<ObservableCollection<animelibrary>> quicksearch(string searchedtext)
-        // {
-
-        // }
-        public static async Task<IEnumerable<IGrouping<string, GroupedSearchResult>>> ResultIndex(string Query)
+        public static async Task<List<IGrouping<string, GroupedSearchResult>>> ResultIndex(string Query)
         {
-            //offline
-            List<GroupedSearchResult> Index = new List<GroupedSearchResult>();
-            Index.Add(new GroupedSearchResult { GroupName = "Anime", Library = await OnlineResult(Query, AnimeOrManga.anime) });
-            Index.Add(new GroupedSearchResult { GroupName = "Manga", Library = await OnlineResult(Query, AnimeOrManga.manga) });
-            var group = from i in Index
-                        group i by i.GroupName;
+            //online
+            List<GroupedSearchResult> Index = await OnlineResult(Query);
+            var group = Index.GroupBy(b => b.GroupName).ToList();
             return group;
         }
-        private static async Task<List<ItemProperties>> OnlineResult(string Query, AnimeOrManga animeormanga)
+        private static async Task<List<GroupedSearchResult>> OnlineResult(string Query)
         {
             var User = Logincredentials.getuser(1); //Grab username and password
-            var url = new Uri("https://myanimelist.net/api/" + animeormanga.ToString() + "search.xml?q=" + Query);
+            var url = new Uri("https://myanimelist.net/api/anime/search.xml?q=" + Query);
+            var url2 = new Uri("https://myanimelist.net/api/manga/search.xml?q=" + Query);                  //my god, I hate this hack
 
             //GET
-            var clientHeader = new HttpBaseProtocolFilter() { ServerCredential = User, AllowUI = false };
-            HttpResponseMessage response;
-            using (var client = new HttpClient(clientHeader))
-            {
-                response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-            }
-            return ParseItem(response.Content.ToString());
+            HttpResponseMessage AnimeResponse, MangaResponse;
+            byte[] bytes = Encoding.UTF8.GetBytes(User.UserName + ":" + User.Password);
+            string LoginToBase64 = Convert.ToBase64String(bytes);
 
-        }
-        private static List<ItemProperties> ParseItem(string Data)
-        {
-            List<ItemProperties> ItemList = new List<ItemProperties>();
-            XDocument ParseData = XDocument.Load(Data);
-            //parse xml -> ItemProperties
-            var Item = ParseData.Descendants("entry").Take(3);
-            foreach (var item in Item)
+            using (var client = new HttpClient())
             {
-                ItemList.Add(new ItemProperties
+                client.DefaultRequestHeaders.Add("Authorization", "Basic " + LoginToBase64);
+
+                AnimeResponse = await client.GetAsync(url);
+                AnimeResponse.EnsureSuccessStatusCode();
+
+                MangaResponse = await client.GetAsync(url2);
+                MangaResponse.EnsureSuccessStatusCode();
+            }
+
+            List<GroupedSearchResult> ItemList = new List<GroupedSearchResult>();
+            XDocument AnimeItems = ParseResponse(AnimeResponse.Content.ToString());
+            XDocument MangaItems = ParseResponse(MangaResponse.Content.ToString());
+            if (AnimeItems == null && MangaItems == null) return ItemList;                                // just return null list.
+
+            AnimeResponse.Dispose();
+            MangaResponse.Dispose();
+            if(AnimeItems != null)
+            {
+                var AnimeIndex = AnimeItems.Descendants("entry").Take(3);
+                foreach (var item in AnimeIndex)
                 {
-                    Item_Id = (int)item.Element("id"),
-                    Item_Title = item.Element("title").ToString(),
-                    Imgurl = item.Element("image").ToString()
-                });
+                    ItemList.Add(new GroupedSearchResult
+                    {
+                        GroupName = "Anime",
+                        Library = new ItemProperties
+                        {
+                            Item_Id = (int)item.Element("id"),
+                            Item_Title = item.Element("title").Value,
+                            Imgurl = item.Element("image").Value
+                        }
+                    });
+                }
+            }
+
+            if(MangaItems != null)
+            {
+                var MangaIndex = MangaItems.Descendants("entry").Take(3);
+                foreach (var item in MangaIndex)
+                {
+                    ItemList.Add(new GroupedSearchResult
+                    {
+                        GroupName = "Manga",
+                        Library = new ItemProperties
+                        {
+                            Item_Id = (int)item.Element("id"),
+                            Item_Title = item.Element("title").Value,
+                            Imgurl = item.Element("image").Value
+                        }
+                    });
+                }
             }
             return ItemList;
+
+        }
+
+        private static XDocument ParseResponse(string content)
+        {
+            XDocument ParseResponse;
+            try
+            {
+                ParseResponse = XDocument.Parse(content);
+                return ParseResponse;
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
         }
     }
 }

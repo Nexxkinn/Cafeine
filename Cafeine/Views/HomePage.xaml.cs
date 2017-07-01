@@ -10,7 +10,7 @@ using Windows.UI.Popups;
 using Cafeine.Services;
 using Windows.UI.ViewManagement;
 using Windows.Foundation;
-
+using Cafeine;
 namespace Cafeine
 {
     public sealed partial class HomePage : Page
@@ -78,8 +78,7 @@ namespace Cafeine
             if ((int)result.Id == 0)
             {
                 //remove user credentials
-                var getuserpass = new Logincredentials().getcredentialfromlocker(1);
-                getuserpass.RetrievePassword();
+                var getuserpass = Logincredentials.getuser(1);
                 var vault = new Windows.Security.Credentials.PasswordVault();
                 vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
                 //navigate back to the loginpage
@@ -89,6 +88,20 @@ namespace Cafeine
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             }
 
+        }
+
+        private async void Search_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput && sender.Text != "")
+            {
+                cvs.Source = await SearchProvider.ResultIndex(sender.Text);
+                Search.ItemsSource = cvs.View;
+            }
+        }
+
+        private void Search_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            f.Navigate(typeof(Searchpage));
         }
     }
 }

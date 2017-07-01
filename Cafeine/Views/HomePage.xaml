@@ -5,13 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="using:Cafeine"
+    xmlns:m="using:Cafeine.Models"
     mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <local:HomePageTemplate/>
-            </ResourceDictionary.MergedDictionaries>
+            <CollectionViewSource x:Name="cvs" x:Key="cvs" IsSourceGrouped="True" />
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
@@ -28,7 +27,57 @@
                 <RadioButton x:Name="Schedule" RelativePanel.RightOf="Library" Content="Schedule" GroupName="Tab" Checked="TabChecked" Padding="0,0,24,0" FontSize="24" VerticalAlignment="Center" FontWeight="Light"/>
             </RelativePanel>
             <RelativePanel HorizontalAlignment="Right">
-                <AutoSuggestBox x:Name="Search" QueryIcon="Find" Width="320" Height="40" Margin="8,0" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.LeftOf="UserBtn"/>
+                <AutoSuggestBox 
+                    x:Name="Search" 
+                    QueryIcon="Find" 
+                    Width="320" 
+                    Height="40"
+                    UpdateTextOnSelect="False"
+                    QuerySubmitted="Search_QuerySubmitted"
+                    TextChanged="Search_TextChanged"
+                    Margin="8,0" 
+                    RelativePanel.AlignVerticalCenterWithPanel="True" 
+                    RelativePanel.LeftOf="UserBtn">
+                    <AutoSuggestBox.Template>
+                        <ControlTemplate TargetType="AutoSuggestBox">
+                            <Grid x:Name="LayoutRoot">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="Orientation">
+                                        <VisualState x:Name="Landscape"/>
+                                        <VisualState x:Name="Portrait"/>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <TextBox x:Name="TextBox" ScrollViewer.BringIntoViewOnFocusChange="False" DesiredCandidateWindowAlignment="BottomEdge" Header="{TemplateBinding Header}" Margin="0" PlaceholderText="{TemplateBinding PlaceholderText}" Style="{TemplateBinding TextBoxStyle}" Width="{TemplateBinding Width}" Canvas.ZIndex="0"/>
+                                <Popup x:Name="SuggestionsPopup">
+                                    <Border x:Name="SuggestionsContainer">
+                                        <Border.RenderTransform>
+                                            <TranslateTransform x:Name="UpwardTransform"/>
+                                        </Border.RenderTransform>
+                                        <ListView x:Name="SuggestionsList" BorderBrush="{ThemeResource AutoSuggestBoxSuggestionsListBorderBrush}" BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}" Background="{ThemeResource AutoSuggestBoxSuggestionsListBackground}" DisplayMemberPath="{TemplateBinding DisplayMemberPath}" IsItemClickEnabled="True" ItemTemplate="{TemplateBinding ItemTemplate}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" MaxHeight="{ThemeResource AutoSuggestListMaxHeight}" Margin="{ThemeResource AutoSuggestListMargin}" Padding="{ThemeResource AutoSuggestListPadding}">
+                                            <ListView.ItemContainerTransitions>
+                                                <TransitionCollection/>
+                                            </ListView.ItemContainerTransitions>
+                                            <ListView.GroupStyle>
+                                                <GroupStyle>
+                                                    <GroupStyle.HeaderTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Key}"/>
+                                                        </DataTemplate>
+                                                    </GroupStyle.HeaderTemplate>
+                                                </GroupStyle>
+                                            </ListView.GroupStyle>
+                                        </ListView>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </ControlTemplate>
+                    </AutoSuggestBox.Template>
+                    <AutoSuggestBox.ItemTemplate>
+                        <DataTemplate x:DataType="m:GroupedSearchResult">
+                            <TextBlock Text="{x:Bind Path=Library.Item_Title}"/>
+                        </DataTemplate>
+                    </AutoSuggestBox.ItemTemplate>
+                </AutoSuggestBox>
                 <Button x:Name="UserBtn" Style="{StaticResource TextBlockButtonStyle}" Width="48" Height="48" Margin="8,0" RelativePanel.AlignRightWithPanel="True">
                     <Button.Content>
                         <SymbolIcon Symbol="Contact"/>

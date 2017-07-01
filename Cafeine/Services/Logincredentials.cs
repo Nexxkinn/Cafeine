@@ -3,6 +3,8 @@ using Windows.Security.Credentials;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using System.Threading.Tasks;
+using System.Text;
+
 namespace Cafeine.Services
 {
     class Logincredentials
@@ -26,16 +28,16 @@ namespace Cafeine.Services
             try
             {
                 var url = new Uri("https://myanimelist.net/api/account/verify_credentials.xml");
-                var clientHeader = new HttpBaseProtocolFilter();
-                clientHeader.ServerCredential = new PasswordCredential(using_service, username, password);
-                clientHeader.AllowUI = false;
-                using (var client = new HttpClient(clientHeader))
+                byte[] bytes = Encoding.UTF8.GetBytes(username + ":" + password);
+                string LoginToBase64 = Convert.ToBase64String(bytes);
+                using (var client = new HttpClient())
                 {
+                    client.DefaultRequestHeaders.Add("Authorization", "Basic " + LoginToBase64);
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
                     //store password
                     var vault = new PasswordVault();
-                    var cred = clientHeader.ServerCredential;
+                    var cred = new PasswordCredential(using_service, username, password);
                     vault.Add(cred);
                     return true;
                 }
@@ -62,6 +64,9 @@ namespace Cafeine.Services
         public static PasswordCredential getuser(int status)
         {
             var get_user = new Logincredentials().getcredentialfromlocker(1);
+            if(get_user != null) {
+                get_user.RetrievePassword();
+            };
             return get_user;
         }
         public PasswordCredential getcredentialfromlocker(int srvc)

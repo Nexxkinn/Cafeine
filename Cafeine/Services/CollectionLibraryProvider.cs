@@ -86,11 +86,13 @@ namespace Cafeine.Services
                     var url = new Uri("https://myanimelist.net/api/" + AnimeManga.ToString() + "list/update/" + e.Itemproperty.Item_Id + ".xml?data=" + xmlEncodedList);
 
                     //GET
-                    var clientHeader = new HttpBaseProtocolFilter();
-                    clientHeader.ServerCredential = User;
-                    clientHeader.AllowUI = false;
-                    using (var client = new HttpClient(clientHeader))
+                    byte[] bytes = Encoding.UTF8.GetBytes(User.UserName + ":" + User.Password);
+                    string LoginToBase64 = Convert.ToBase64String(bytes);
+
+                    using (var client = new HttpClient())
                     {
+                        client.DefaultRequestHeaders.Add("Authorization", "Basic " + LoginToBase64);
+
                         HttpResponseMessage response = await client.GetAsync(url);
                         response.EnsureSuccessStatusCode();
                     }

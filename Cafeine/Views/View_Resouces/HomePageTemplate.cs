@@ -1,4 +1,5 @@
-﻿namespace Cafeine
+﻿using Cafeine;
+namespace Cafeine
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

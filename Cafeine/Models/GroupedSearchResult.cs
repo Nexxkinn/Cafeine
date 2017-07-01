@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace Cafeine.Models
+﻿namespace Cafeine.Models
 {
-    class GroupedSearchResult
+    public class GroupedSearchResult
     {
-        //public List<ItemProperties> LocalLibrary;
         public string GroupName;
-        public List<ItemProperties> Library;
+        public ItemProperties Library;
     }
 }

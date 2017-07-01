@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine.Models"
     xmlns:xaml="using:Windows.UI.Xaml">
-    <!--<xaml:DataTemplate x:Name="SearchItemtemplate">
+    <!--<DataTemplate x:Name="SearchItemtemplate" x:DataType="local:GroupedSearchResult">
         <ListView>
             <ListView.GroupStyle>
                 <GroupStyle>
@@ -15,6 +15,13 @@
                     </GroupStyle.HeaderTemplate>
                 </GroupStyle>
             </ListView.GroupStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{x:Bind Path=Library.Item_Title}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
-    </xaml:DataTemplate>-->
+    </DataTemplate>-->
 </ResourceDictionary>
