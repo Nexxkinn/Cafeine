@@ -21,7 +21,8 @@
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <PackageCertificateThumbprint>8B87D90DF7EC590D587141F6047B8C8036017FD9</PackageCertificateThumbprint>
     <AppxBundle>Never</AppxBundle>
-    <AppxPackageDir>C:\Users\norvi\Documents\Visual Studio 2015\Projects\Cafeine\Cafeine\Appxxxxx\</AppxPackageDir>
+    <AppxPackageDir>C:\Users\norvi\Documents\Visual Studio 2017\Projects\Cafeines\Cafeine\bin\Store\</AppxPackageDir>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>

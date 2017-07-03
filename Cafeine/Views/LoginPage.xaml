@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="#FF2F343B" >
+    <Grid x:Name="LoginPageBackground" Background="#FF2F343B" >
         <ContentDialog x:Name="SignInDialog" VerticalAlignment="Center" Canvas.ZIndex="2" PrimaryButtonText="Sign In" Loaded="SignInDialog_Loaded" PrimaryButtonClick="SignIn_Click" BorderBrush="{x:Null}">
             <StackPanel VerticalAlignment="Center">
                 <TextBox x:Name="usrnm" Height="20" TextWrapping="Wrap" VerticalAlignment="Center" Width="242" PlaceholderText="Username" />

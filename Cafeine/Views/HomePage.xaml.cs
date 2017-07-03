@@ -8,9 +8,10 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Popups;
 using Cafeine.Services;
+using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
-using Windows.Foundation;
-using Cafeine;
+using Windows.UI;
+
 namespace Cafeine
 {
     public sealed partial class HomePage : Page
@@ -23,6 +24,13 @@ namespace Cafeine
             ContentFrame.Content = f;
             f.Navigated += ContentFrame_Navigated;
             SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            if (titleBar != null)
+            {
+                titleBar.BackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
+                titleBar.InactiveBackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
+                titleBar.ButtonBackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
+            }
         }
 
         private void App_BackRequested(object sender, BackRequestedEventArgs e)

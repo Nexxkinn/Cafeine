@@ -44,7 +44,7 @@
                 </RelativePanel>
             </Grid>
         </Popup>
-        <GridView Margin="8,0,0,0" x:Name="watch" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource Collection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+        <GridView Margin="8,0,0,0" x:Name="watch" Foreground="{x:Null}" IsItemClickEnabled="True" ItemClick="NavigateItemtoDetailsPage" ItemTemplate="{StaticResource Collection}" ItemContainerStyle="{StaticResource WatchingTab}">
             <!--
                         <GridView.ItemsPanel>
                             <ItemsPanelTemplate>
