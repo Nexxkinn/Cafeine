@@ -58,8 +58,6 @@ namespace Cafeine
             }
             else status="";
             rootFrame.Navigate(typeof(LoginPage), status);
-            CoreApplicationViewTitleBar coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-            coreTitleBar.ExtendViewIntoTitleBar = false;
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(685, 600));
             Window.Current.Activate();
         }
