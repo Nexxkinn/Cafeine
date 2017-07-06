@@ -42,7 +42,7 @@
             <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" Visibility="Collapsed"  x:Phase="1" FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
         </Grid>
     </DataTemplate>
-    <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Inline</ListViewItemPresenterCheckMode>
+    <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Overlay</ListViewItemPresenterCheckMode>
     <Style x:Key="WatchingTab" TargetType="GridViewItem">
         <Setter Property="Margin" Value="0,12,8,0"/>
     </Style>

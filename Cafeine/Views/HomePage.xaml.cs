@@ -47,8 +47,8 @@ namespace Cafeine
             //ugly hack
             switch (f.CurrentSourcePageType.ToString())
             {
-                case "Cafeine.Pages.DirectoryExplorer": Library.IsChecked = true; break;
-                case "Cafeine.Pages.CollectionLibrary": Library.IsChecked = true; break;
+                case "Cafeine.DirectoryExplorer": Library.IsChecked = true; break;
+                case "Cafeine.CollectionLibrary": Library.IsChecked = true; break;
             }
             if (f.CanGoBack)
             {
@@ -67,7 +67,7 @@ namespace Cafeine
                     f.Navigate(typeof(Pages.Schedule));
                     break;
                 case "Library":
-                    f.Navigate(typeof(Pages.DirectoryExplorer));
+                    f.Navigate(typeof(DirectoryExplorer));
                     f.BackStack.Clear();
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     break;
