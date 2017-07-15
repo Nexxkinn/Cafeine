@@ -134,22 +134,29 @@
     <Content Include="Font\Cuprum-Bold.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Font\Cuprum-BoldItalic.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\Cuprum-Italic.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Font\Cuprum-Regular.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Font\Montserrat\OFL.txt" />
     <Content Include="Font\ufonts.com_agrevuecyr-medium.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Cafeine_StoreKey.pfx" />
-    <Content Include="Font\Dosis-Medium.otf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Font\Montserrat\Montserrat-Black.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-BlackItalic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-Bold.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-BoldItalic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-ExtraBold.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-ExtraBoldItalic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-ExtraLight.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-ExtraLightItalic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-Italic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-Light.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-LightItalic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-Medium.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-MediumItalic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-Regular.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-SemiBold.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-SemiBoldItalic.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-Thin.ttf" />
+    <Content Include="Font\Montserrat\Montserrat-ThinItalic.ttf" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +198,9 @@
     </Compile>
     <Compile Include="Views\Searchpage.xaml.cs">
       <DependentUpon>Searchpage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\View_Resouces\ExpandItemDetailsTemplate.xaml.cs">
+      <DependentUpon>ExpandItemDetailsTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\View_Resouces\HomePageTemplate.cs">
       <DependentUpon>HomePageTemplate.xaml</DependentUpon>
@@ -263,6 +273,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\View_Resouces\CollectionTemplate.xaml">
+    </Page>
+    <Page Include="Views\View_Resouces\ExpandItemDetailsTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\View_Resouces\HomePageTemplate.xaml">
       <SubType>Designer</SubType>

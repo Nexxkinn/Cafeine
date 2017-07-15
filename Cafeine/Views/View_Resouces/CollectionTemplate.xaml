@@ -10,7 +10,7 @@
                 <RowDefinition Height="228"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="quickstatus" Grid.Row="0" PointerEntered="ImageEntered" PointerExited="ImageExited" Width="160" Margin="3,3,3,0" HorizontalAlignment="Center" Canvas.ZIndex="1" Opacity="0">
+            <Grid x:Name="quickstatus" Grid.Row="0" PointerEntered="ImageEntered" PointerExited="ImageExited" Height="228" Width="154" HorizontalAlignment="Center" Canvas.ZIndex="1" Opacity="0">
                 <Grid.Resources>
                     <Storyboard x:Name="ImageOnHover">
                         <DoubleAnimation Storyboard.TargetName="quickstatus" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15">
@@ -37,14 +37,29 @@
                     <TextBlock x:Name="Myepisode" Grid.Row="1" Text="{x:Bind Path=My_watch, Mode=OneWay}" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
                 </Grid>
             </Grid>
-            <Image x:Name="theimage" Grid.Row="0" Source="{x:Bind Path=Image}" MaxHeight="225" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="Fill" Margin="3,3,3,0"/>
-            <TextBlock x:Name="thetitle" Grid.Row="1" Margin="8,0" Text="{x:Bind Path=Itemproperty.Item_Title}" x:Phase="1"  FontSize="15" FontWeight="Medium" RelativePanel.Below="quickstatus" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" Foreground="#FF333333" MaxLines="2" FontStretch="ExtraCondensed"/>
+            <Image x:Name="theimage" Grid.Row="0" Source="{x:Bind Path=Image}" MaxHeight="228" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="Fill"/>
+            <TextBlock x:Name="thetitle" 
+                       Grid.Row="1" 
+                       Margin="8,4,8,0" 
+                       Text="{x:Bind Path=Itemproperty.Item_Title}" 
+                       x:Phase="1" 
+                       FontSize="15"
+                       FontWeight="Medium" 
+                       FontStretch="ExtraCondensed"
+                       FontFamily="ms-appx:/Font/Montserrat/Montserrat-Regular.ttf#Montserrat Regular"
+                       RelativePanel.Below="quickstatus"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"
+                       Foreground="#FF333333"
+                       MaxLines="2"
+                       CharacterSpacing="12"/>
             <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" Visibility="Collapsed"  x:Phase="1" FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
         </Grid>
     </DataTemplate>
-    <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Overlay</ListViewItemPresenterCheckMode>
     <Style x:Key="WatchingTab" TargetType="GridViewItem">
         <Setter Property="Margin" Value="0,12,8,0"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="FocusVisualMargin" Value="0" />
     </Style>
     <x:Double x:Key="PivotHeaderItemFontSize">20</x:Double>
     <x:String x:Key="PivotHeaderItemThemeFontWeight">SemiBold</x:String>

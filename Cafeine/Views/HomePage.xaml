@@ -16,7 +16,7 @@
             <CollectionViewSource x:Name="cvs" x:Key="cvs" IsSourceGrouped="True" />
         </ResourceDictionary>
     </Page.Resources>
-    <Grid>
+    <Grid Background="{ThemeResource AppBarBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -36,7 +36,7 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Grid x:Name="CommandBar" Background="{ThemeResource AppBarBackground}">
+        <Grid x:Name="CommandBar">
             <Grid VerticalAlignment="Bottom">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
                     <RadioButton x:Name="Library" Content="Library" GroupName="Tab" Checked="TabChecked"  FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}"/>
@@ -116,6 +116,7 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <Frame x:Name="ContentFrame" Grid.Row="1"/>
+        <Frame x:Name="ContentFrame" Grid.Row="1">
+        </Frame>
     </Grid>
 </Page>
