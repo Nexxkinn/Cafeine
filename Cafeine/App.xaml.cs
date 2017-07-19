@@ -58,6 +58,7 @@ namespace Cafeine
             }
             else status="";
             rootFrame.Navigate(typeof(LoginPage), status);
+            //rootFrame.Navigate(typeof(SettingsPage));
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(685, 600));
             Window.Current.Activate();
         }

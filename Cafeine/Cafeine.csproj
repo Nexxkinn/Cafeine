@@ -164,7 +164,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\GroupedSearchResult.cs" />
+    <Compile Include="Models\LocalDirectorySetupModel.cs" />
     <Compile Include="Models\MALXMLSerializer.cs" />
+    <Compile Include="Services\RemoteTorrent\qbittorrent\Api.cs" />
     <Compile Include="Services\SearchProvider.cs" />
     <Compile Include="Services\ExpandItemDetail.cs" />
     <Compile Include="Services\CollectionLibraryProvider.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Services\XmlToJsonConverter.cs" />
     <Compile Include="ViewModels\CollectionLibraryViewModel.cs" />
     <Compile Include="ViewModels\DirectoryExplorerViewModel.cs" />
+    <Compile Include="ViewModels\LocalDirectorySetupViewModel.cs" />
     <Compile Include="ViewModels\MoreDetailsViewModel.cs" />
     <Compile Include="Views\ExpandItemDetails.xaml.cs">
       <DependentUpon>ExpandItemDetails.xaml</DependentUpon>
@@ -187,17 +190,20 @@
     <Compile Include="Views\DirectoryExplorer.xaml.cs">
       <DependentUpon>DirectoryExplorer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\LocalDirectorySetup.xaml.cs">
+      <DependentUpon>LocalDirectorySetup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MoreDetails.xaml.cs">
-      <DependentUpon>MoreDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Schedule.xaml.cs">
       <DependentUpon>Schedule.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Searchpage.xaml.cs">
       <DependentUpon>Searchpage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\View_Resouces\ExpandItemDetailsTemplate.xaml.cs">
       <DependentUpon>ExpandItemDetailsTemplate.xaml</DependentUpon>
@@ -256,11 +262,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\LoginPage.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Views\LocalDirectorySetup.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MoreDetails.xaml">
+    <Page Include="Views\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -269,6 +275,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Searchpage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

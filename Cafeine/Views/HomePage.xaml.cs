@@ -45,6 +45,9 @@ namespace Cafeine
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
             //ugly hack
+            Schedule.Visibility = Visibility.Visible;
+            Library.Visibility = Visibility.Visible;
+            SettingsTab.Visibility = Visibility.Collapsed;
             switch (f.CurrentSourcePageType.ToString())
             {
                 case "Cafeine.DirectoryExplorer": Library.IsChecked = true; break;
@@ -68,13 +71,20 @@ namespace Cafeine
                     break;
                 case "Library":
                     f.Navigate(typeof(DirectoryExplorer));
-                    f.BackStack.Clear();
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    //f.BackStack.Clear();
+                    //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     break;
             }
         }
+        private void SettingPage(object sender, RoutedEventArgs e)
+        {
+            f.Navigate(typeof(SettingsPage));
+            Schedule.Visibility = Visibility.Collapsed;
+            Library.Visibility = Visibility.Collapsed;
+            SettingsTab.Visibility = Visibility.Visible;
+        }
 
-        private async void Logout_test(object sender, RoutedEventArgs e)
+            private async void Logout_test(object sender, RoutedEventArgs e)
         {
             MessageDialog popup = new MessageDialog("Do you want to log out from this account?", "Logout");
             popup.Commands.Add(new UICommand("Logout") { Id = 0 });

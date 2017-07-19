@@ -16,7 +16,11 @@
             <CollectionViewSource x:Name="cvs" x:Key="cvs" IsSourceGrouped="True" />
         </ResourceDictionary>
     </Page.Resources>
-    <Grid Background="{ThemeResource AppBarBackground}">
+
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{ThemeResource SystemChromeLowColor}"/>
+        </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -41,6 +45,7 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
                     <RadioButton x:Name="Library" Content="Library" GroupName="Tab" Checked="TabChecked"  FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}"/>
                     <RadioButton x:Name="Schedule" Content="Schedule" GroupName="Tab" Checked="TabChecked" FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}"/>
+                    <RadioButton x:Name="SettingsTab" Content="Settings" IsChecked="True" FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}" Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <AutoSuggestBox 
@@ -109,6 +114,7 @@
                         </Button.Content>
                         <Button.Flyout>
                             <MenuFlyout>
+                                <MenuFlyoutItem Text="Settings..." Click="SettingPage"/>
                                 <MenuFlyoutItem Text="Logout" Click="Logout_test"/>
                             </MenuFlyout>
                         </Button.Flyout>
@@ -116,7 +122,6 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <Frame x:Name="ContentFrame" Grid.Row="1">
-        </Frame>
+        <Frame x:Name="ContentFrame" Grid.Row="1"/>
     </Grid>
 </Page>

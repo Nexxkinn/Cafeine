@@ -72,7 +72,6 @@ namespace Cafeine.Services
             }
             return Item;
         }
-
         public static async Task UpdateItem(CollectionLibraryViewModel e, AnimeOrManga AnimeManga)
         {
             using (var stream = new MemoryStream())

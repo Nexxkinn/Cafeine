@@ -3,23 +3,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine.ViewModels"
     xmlns:xaml="using:Windows.UI.Xaml"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     x:Class="Cafeine.CollectionTemplates">
     <DataTemplate x:Name="Collection" x:DataType="local:CollectionLibraryViewModel">
-        <Grid Width="154" Height="300">
+        <Grid Width="150" Height="300">
             <Grid.RowDefinitions>
                 <RowDefinition Height="228"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="quickstatus" Grid.Row="0" PointerEntered="ImageEntered" PointerExited="ImageExited" Height="228" Width="154" HorizontalAlignment="Center" Canvas.ZIndex="1" Opacity="0">
+            <Grid x:Name="quickstatus" Grid.Row="0" PointerEntered="ImageEntered" PointerExited="ImageExited" Height="228" Width="150" HorizontalAlignment="Center" Canvas.ZIndex="1" Opacity="0">
                 <Grid.Resources>
-                    <Storyboard x:Name="ImageOnHover">
+                    <Storyboard x:Key="ImageOnHover">
                         <DoubleAnimation Storyboard.TargetName="quickstatus" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15">
                             <DoubleAnimation.EasingFunction>
                                 <CubicEase EasingMode="EaseOut"/>
                             </DoubleAnimation.EasingFunction>
                         </DoubleAnimation>
                     </Storyboard>
-                    <Storyboard x:Name="ImageOffHover">
+                    <Storyboard x:Key="ImageOffHover">
                         <DoubleAnimation Storyboard.TargetName="quickstatus" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.15">
                             <DoubleAnimation.EasingFunction>
                                 <CubicEase EasingMode="EaseIn"/>
@@ -37,7 +38,7 @@
                     <TextBlock x:Name="Myepisode" Grid.Row="1" Text="{x:Bind Path=My_watch, Mode=OneWay}" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
                 </Grid>
             </Grid>
-            <Image x:Name="theimage" Grid.Row="0" Source="{x:Bind Path=Image}" MaxHeight="228" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="Fill"/>
+            <Image x:Name="theimage" Grid.Row="0" Source="{x:Bind Path=Image}" MaxHeight="228" MaxWidth="150" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="Fill"/>
             <TextBlock x:Name="thetitle" 
                        Grid.Row="1" 
                        Margin="8,4,8,0" 
@@ -53,7 +54,7 @@
                        Foreground="#FF333333"
                        MaxLines="2"
                        CharacterSpacing="12"/>
-            <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" Visibility="Collapsed"  x:Phase="1" FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
+            <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" x:DeferLoadStrategy="Lazy" x:Phase="1" FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
         </Grid>
     </DataTemplate>
     <Style x:Key="WatchingTab" TargetType="GridViewItem">
@@ -61,10 +62,5 @@
         <Setter Property="Background" Value="White"/>
         <Setter Property="FocusVisualMargin" Value="0" />
     </Style>
-    <x:Double x:Key="PivotHeaderItemFontSize">20</x:Double>
-    <x:String x:Key="PivotHeaderItemThemeFontWeight">SemiBold</x:String>
-    <Thickness x:Key="PivotHeaderItemMargin">0,0,8,0</Thickness>
-    <x:String x:Key="PivotHeaderItemForegroundUnselected">#FF7F7F7F</x:String>
-    <x:String x:Key="PivotHeaderItemForegroundSelected">#FF333333</x:String>
-
+    <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Inline</ListViewItemPresenterCheckMode>
 </ResourceDictionary>
