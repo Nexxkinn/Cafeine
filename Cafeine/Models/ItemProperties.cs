@@ -6,6 +6,9 @@ namespace Cafeine.Models
     public class ItemProperties
     {
         [XmlIgnore]
+        public AnimeOrManga Category;
+
+        [XmlIgnore]
         public int Item_Id;
         [XmlIgnore]
         public string Item_Title;

@@ -8,7 +8,8 @@ using Windows.Storage;
 namespace Cafeine.Models {
     public class LocalDirectorySetupLocalFoldersModel {
         public string FolderName;
-        public LocalDirectorySetupItems LinkedItems;
+        public int ItemID;
+        public string LinkedItem;
     }
     public class LocalDirectorySetupItems {
         public string Category;

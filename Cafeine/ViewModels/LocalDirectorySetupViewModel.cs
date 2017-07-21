@@ -13,16 +13,34 @@ namespace Cafeine.ViewModels {
         public event PropertyChangedEventHandler PropertyChanged;
         private LocalDirectorySetupLocalFoldersModel localdirectorysetupfoldermodel;
         public LocalDirectorySetupLocalFoldersModel Localdirectorysetupfoldermodel => localdirectorysetupfoldermodel;
-
-        public LocalDirectorySetupItems LinkedFolder {
-            get { return Localdirectorysetupfoldermodel.LinkedItems; }
+        public int LinkedItemID {
+            get { return Localdirectorysetupfoldermodel.ItemID; }
             set {
-                if (Localdirectorysetupfoldermodel.LinkedItems != value) {
-                    Localdirectorysetupfoldermodel.LinkedItems = value;
+                if (Localdirectorysetupfoldermodel.ItemID != value) {
+                    Localdirectorysetupfoldermodel.ItemID = value;
                     this.OnPropertyChanged();
                 }
             }
         }
+        public string LinkedFolderName {
+            get { return Localdirectorysetupfoldermodel.FolderName; }
+            set {
+                if (Localdirectorysetupfoldermodel.FolderName != value) {
+                    Localdirectorysetupfoldermodel.FolderName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string LinkedItemName {
+            get { return Localdirectorysetupfoldermodel.LinkedItem; }
+            set {
+                if (Localdirectorysetupfoldermodel.LinkedItem != value) {
+                    Localdirectorysetupfoldermodel.LinkedItem = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public LocalDirectorySetupViewModel(LocalDirectorySetupLocalFoldersModel localdirectorysetupmodels) {
             localdirectorysetupfoldermodel = localdirectorysetupmodels;
         }

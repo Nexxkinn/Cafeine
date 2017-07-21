@@ -19,20 +19,31 @@ using Cafeine.ViewModels;
 using Cafeine.Models;
 using System.Xml.Linq;
 using Windows.Storage.AccessCache;
+using Newtonsoft.Json;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Cafeine.Views.SettingsPages {
     public sealed partial class LocalDirectorySetup : ContentDialog {
+        ObservableCollection<LocalDirectorySetupViewModel> FoldersVM = new ObservableCollection<LocalDirectorySetupViewModel>();
+        int FolderID; //C# sometimes suck at sharing a field between classes.
+
         public LocalDirectorySetup() {
             this.InitializeComponent();
         }
 
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) {
+        private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) {
+            //save to JSON as LinkedFolder_service.json
+            string JsonItems = JsonConvert.SerializeObject(FoldersVM, Formatting.Indented);
+            var OfflineFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
+            var SaveFile = await OfflineFolder.CreateFileAsync("LinkedFolder_1.json", CreationCollisionOption.ReplaceExisting);
+            await FileIO.WriteTextAsync(SaveFile, JsonItems);
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) {
+            //Clear any stored memory in this page
         }
+
         private async void BrowseDefaultFolder_Click(object sender, RoutedEventArgs e) {
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
             folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
@@ -45,46 +56,61 @@ namespace Cafeine.Views.SettingsPages {
                 StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", defaultfolder);
                 DefaultDirectory.Text = defaultfolder.Name;
                 await FeedFoldersToListView();
-                Animelist.Visibility = Visibility.Visible;
+                LinkedFolder.Visibility = Visibility.Visible;
+                FolderLabel.Visibility = Visibility.Visible;
+                BrowseDefaultFolder.Visibility = Visibility.Collapsed;
             }
             else {
                 DefaultDirectory.Text = "None";
             }
-            //for each item's directory tab
-            //IReadOnlyList<StorageFile> w = await folder.GetFilesAsync();
-            //foreach (StorageFile file in w)
-            //{
-            //    DefaultDirectory.Text = DefaultDirectory.Text + "\n" + file.Name;
-            //}
         }
+
         private async Task FeedFoldersToListView() {
             StorageFolder Defaultfolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync("PickedFolderToken");
-            ObservableCollection<LocalDirectorySetupViewModel> FoldersVM = new ObservableCollection<LocalDirectorySetupViewModel>();
-
             IReadOnlyList<StorageFolder> FL = await Defaultfolder.GetFoldersAsync();
             foreach (StorageFolder folder in FL) {
                 FoldersVM.Add(new LocalDirectorySetupViewModel(new LocalDirectorySetupLocalFoldersModel {
                     FolderName = folder.Name
                 }));
             }
-            Animelist.ItemsSource = FoldersVM;
+            LinkedFolder.ItemsSource = FoldersVM;
         }
-        private async Task<ObservableCollection<LocalDirectorySetupItems>> FeedCollectionToIObservableList() {
-            ObservableCollection<LocalDirectorySetupItems> Item = new ObservableCollection<LocalDirectorySetupItems>();
+
+        private static async Task<List<LocalDirectorySetupItems>> FeedCollectionToIObservableList() {
+            List<LocalDirectorySetupItems> Item = new List<LocalDirectorySetupItems>();
             var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
-            string OffFile = Path.Combine(OffFolder.Path, "RAW_1_anime.xml");
-            XDocument ParseData = XDocument.Load(OffFile);
-            var anime = ParseData.Descendants("anime");
-            ParseData.Remove();
-            foreach (var item in anime) {
+            StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
+            string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
+            List<ItemProperties> products = JsonConvert.DeserializeObject<List<ItemProperties>>(ReadJSONFile);
+            foreach (var item in products) {
                 Item.Add(new LocalDirectorySetupItems {
-                    Category = "Anime",
-                    ItemID = (int)item.Element("series_animedb_id"),
-                    Title = item.Element("series_title").Value,
+                    Category = item.Category.ToString(),
+                    ItemID = item.Item_Id,
+                    Title = item.Item_Title,
                 });
             }
-            anime.Remove();
             return Item;
+        }
+
+        private async void ItemAutoSuggest_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) {
+                var itemlist = await FeedCollectionToIObservableList();
+                ItemAutoSuggest.ItemsSource = itemlist.Where(x => x.Title.ToLower().Contains(sender.Text)).Take(10);
+            }
+        }
+
+        private void ItemAutoSuggest_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) {
+            var item = (LocalDirectorySetupItems)args.ChosenSuggestion;
+            FoldersVM[FolderID].LinkedItemID = item.ItemID;
+            FoldersVM[FolderID].LinkedItemName = item.Title;
+            ItemAutoSuggest.Visibility = Visibility.Collapsed;
+        }
+
+        private void LinkedFolder_ItemClick(object sender, ItemClickEventArgs e) {
+            var item = (LocalDirectorySetupViewModel)e.ClickedItem;
+            FolderID = FoldersVM.IndexOf(item);
+            ItemAutoSuggest.Text = "";
+            ItemAutoSuggest.Visibility = Visibility.Visible;
         }
     }
 }
