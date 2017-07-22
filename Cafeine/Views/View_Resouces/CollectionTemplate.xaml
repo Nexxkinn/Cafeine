@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine.ViewModels"
     xmlns:xaml="using:Windows.UI.Xaml"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     x:Class="Cafeine.CollectionTemplates">
     <DataTemplate x:Name="Collection" x:DataType="local:CollectionLibraryViewModel">
         <Grid Width="150" Height="300">
@@ -48,13 +47,12 @@
                        FontWeight="Medium" 
                        FontStretch="ExtraCondensed"
                        FontFamily="ms-appx:/Font/Montserrat/Montserrat-Regular.ttf#Montserrat Regular"
-                       RelativePanel.Below="quickstatus"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="Wrap"
                        Foreground="#FF333333"
                        MaxLines="2"
                        CharacterSpacing="12"/>
-            <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" x:DeferLoadStrategy="Lazy" x:Phase="1" FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
+            <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" x:DeferLoadStrategy="Lazy" x:Phase="1" FontFamily="Segoe UI" FontSize="15" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
         </Grid>
     </DataTemplate>
     <Style x:Key="WatchingTab" TargetType="GridViewItem">

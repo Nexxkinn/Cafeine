@@ -5,6 +5,7 @@
     xmlns:local="using:Cafeine"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>
@@ -20,13 +21,16 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <GridView Margin="8,0,0,0" x:Name="VirDirInterface" Foreground="{x:Null}" ItemClick="NavigateItemtoPage" IsItemClickEnabled="True" ItemTemplate="{StaticResource DirectoryCollection}" ItemContainerStyle="{StaticResource WatchingTab}" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-            <!--
-                        <GridView.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapGrid Orientation="Horizontal" HorizontalAlignment="Center"/>
-                            </ItemsPanelTemplate>
-                        </GridView.ItemsPanel>-->
+        <GridView x:Name="VirDirInterface"
+                  Margin="17,8,0,0"
+                  Foreground="{x:Null}"
+                  ItemClick="NavigateItemtoPage"
+                  IsItemClickEnabled="True"
+                  ItemTemplate="{StaticResource DirectoryCollection}" 
+                  ItemContainerStyle="{StaticResource WatchingTab}"
+                  ItemsPanel="{StaticResource Itemspanel}"
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                  animations:ReorderGridAnimation.Duration="300">
         </GridView>
     </Grid>
 </Page>

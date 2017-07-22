@@ -3,14 +3,68 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine.Models"
     x:Class="Cafeine.DirectoryTemplate">
+    <!--Grid mode-->
+    <!--<DataTemplate x:Name="DirectoryCollection" x:DataType="local:VirtualDirectory">
+        <Grid Width="150" Height="275">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="203"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{ThemeResource SystemListLowColor}"/>
+                </Rectangle.Fill>
+            </Rectangle>
+            <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="34" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Margin="8,4,8,0" 
+                       Text="{x:Bind DirectoryTitle}"
+                       FontSize="15"
+                       Grid.Row="1"
+                       FontWeight="Medium" 
+                       FontStretch="ExtraCondensed"
+                       FontFamily="ms-appx:/Font/Montserrat/Montserrat-Regular.ttf#Montserrat Regular"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"
+                       Foreground="#FF333333"
+                       MaxLines="2"/>
+        </Grid>
+    </DataTemplate>-->
+    <!--List mode-->
+    
     <DataTemplate x:Name="DirectoryCollection" x:DataType="local:VirtualDirectory">
-        <RelativePanel Width="165" Height="290">
-            <Image x:Name="theimage" MaxHeight="225" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="UniformToFill" Margin="3,3,3,5"/>
-            <TextBlock x:Name="thetitle" Margin="3,0" Text="{x:Bind DirectoryTitle}"  FontSize="15" FontWeight="Medium" RelativePanel.Below="theimage" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" Foreground="#FF333333" MaxLines="2" FontStretch="ExtraCondensed"/>
-            <TextBlock x:Name="series_start" Visibility="Collapsed" Margin="3,0"  FontFamily="Segoe UI" FontSize="15" RelativePanel.Below="thetitle" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
-        </RelativePanel>
+        <Grid Width="328" Height="52">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{ThemeResource SystemListLowColor}"/>
+                </Rectangle.Fill>
+            </Rectangle>
+            <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="20" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Margin="8,0" 
+                       Text="{x:Bind DirectoryTitle}"
+                       FontSize="15"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       FontWeight="Medium" 
+                       FontStretch="ExtraCondensed"
+                       FontFamily="ms-appx:/Font/Montserrat/Montserrat-Regular.ttf#Montserrat Regular"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"
+                       Foreground="#FF333333"
+                       MaxLines="2"
+                       VerticalAlignment="Center"/>
+        </Grid>
     </DataTemplate>
+    <ItemsPanelTemplate x:Key="Itemspanel">
+        <ItemsWrapGrid Orientation="Horizontal" MaxWidth="350" HorizontalAlignment="Left"/>
+    </ItemsPanelTemplate>
     <Style x:Key="WatchingTab" TargetType="GridViewItem">
-        <Setter Property="Margin" Value="0,0,4,14"/>
+        <Setter Property="Margin" Value="0,4"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="FocusVisualMargin" Value="0" />
     </Style>
+    <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Inline</ListViewItemPresenterCheckMode>
 </ResourceDictionary>
