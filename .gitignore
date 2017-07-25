@@ -245,6 +245,3 @@ ModelManifest.xml
 .fake/
 /Cafeine/Appxxxxx
 /Cafeine/Appxxxxx
-
-# appx files
-*.appx

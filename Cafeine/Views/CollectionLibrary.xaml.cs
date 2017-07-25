@@ -40,7 +40,7 @@ namespace Cafeine
             DirectoryDetail = (VirtualDirectory)e.Parameter;
             Task.Run(async () => await GrabUserItemList());
         }
-        public async Task GrabUserItemList()
+        async Task GrabUserItemList()
         {
 
             try
@@ -58,15 +58,11 @@ namespace Cafeine
         }
         private async void ExpandItem(object sender, ItemClickEventArgs e)
         {
-            await ss((CollectionLibraryViewModel)e.ClickedItem);
-        }
-        async Task ss(CollectionLibraryViewModel es) {
             ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
-            ExpandItemDialog.Item = es.Itemproperty;
+            var itemselected = (CollectionLibraryViewModel)e.ClickedItem;
+            ExpandItemDialog.Item = itemselected;
             ExpandItemDialog.category = DirectoryDetail.AnimeOrManga;
             await ExpandItemDialog.ShowAsync();
-            es.My_score = ExpandItemDialog.Item.My_score.ToString();
-            es.My_watch = ExpandItemDialog.Item.My_watch.ToString();
         }
     }
 }
