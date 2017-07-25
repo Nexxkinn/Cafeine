@@ -22,47 +22,50 @@ using Windows.UI.Xaml.Media.Imaging;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Cafeine
-{
+namespace Cafeine {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CollectionLibrary : Page
-    {
+    public partial class CollectionLibrary : Page {
         ObservableCollection<CollectionLibraryViewModel> ItemList = new ObservableCollection<CollectionLibraryViewModel>();
         VirtualDirectory DirectoryDetail;
-        public CollectionLibrary()
-        {
+        public CollectionLibrary() {
             this.InitializeComponent();
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
+        protected override void OnNavigatedTo(NavigationEventArgs e) {
             DirectoryDetail = (VirtualDirectory)e.Parameter;
             Task.Run(async () => await GrabUserItemList());
         }
-        async Task GrabUserItemList()
-        {
+        async Task GrabUserItemList() {
 
-            try
-            {
+            try {
                 ItemList = await CollectionLibraryProvider.QueryUserAnimeMangaListAsync(DirectoryDetail.AnimeOrManga);
-                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-                {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.High, () => {
                     watch.ItemsSource = ItemList.Where(x => x.Itemproperty.My_status == DirectoryDetail.DirectoryType - 3);
                 });
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 //TODO: show error message?? e.Message
             }
         }
-        private async void ExpandItem(object sender, ItemClickEventArgs e)
-        {
-            ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
+        private async void ExpandItemAsync(object sender, ItemClickEventArgs e) {
+
             var itemselected = (CollectionLibraryViewModel)e.ClickedItem;
-            ExpandItemDialog.Item = itemselected;
+            ItemProperties x = await lo(itemselected);
+            if (x != null) {
+                itemselected.My_score = x.My_score.ToString();
+                itemselected.My_watch = x.My_watch.ToString();
+            }
+
+        }
+        private async Task<ItemProperties> lo(CollectionLibraryViewModel e) {
+            ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
+            ItemProperties item;
+            ExpandItemDialog.Item = e.Itemproperty;
             ExpandItemDialog.category = DirectoryDetail.AnimeOrManga;
             await ExpandItemDialog.ShowAsync();
+            item = ExpandItemDialog.Item;
+            return item;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Cafeine
 {
     public sealed partial class ExpandItemDetails : ContentDialog
     {
-        public CollectionLibraryViewModel Item;
+        public ItemProperties Item = new ItemProperties();
         public AnimeOrManga category;
         //public ItemProperties SearchedItem;
         public ExpandItemDetails()
@@ -22,14 +22,14 @@ namespace Cafeine
         
         private void ExpandItemDetails_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            BackgroundBlur.Source = new BitmapImage(new Uri(Item.Image, UriKind.Absolute));
+            BackgroundBlur.Source = new BitmapImage(new Uri(Item.Imgurl, UriKind.Absolute));
             //pass data to other page
             if (category == AnimeOrManga.anime) EpisodesLabel.Text = "Episodes Watched";
             else EpisodesLabel.Text = "Chapters read";
             //image.Source = new BitmapImage(new Uri(Item.Image, UriKind.Absolute))
-            Title.Text = Item.Itemproperty.Item_Title;
-            User_Rating.Text = Item.My_score;
-            User_Episodes.Text = Item.My_watch;
+            Title.Text = Item.Item_Title;
+            User_Rating.Text = Item.My_score.ToString();
+            User_Episodes.Text = Item.My_watch.ToString();
             popupp.VerticalAlignment = VerticalAlignment.Center;
         }
 
@@ -40,8 +40,8 @@ namespace Cafeine
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            Item.My_score = User_Rating.Text;
-            Item.My_watch = User_Episodes.Text;
+            Item.My_score = Convert.ToInt32(User_Rating.Text);
+            Item.My_watch = Convert.ToInt32(User_Episodes.Text);
             await CollectionLibraryProvider.UpdateItem(Item, category);
         }
 
