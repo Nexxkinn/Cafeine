@@ -141,8 +141,9 @@ namespace Cafeine
                 NewItem = ChosenItem.Library;
             }
             //show expanditemdetails
+            CollectionLibraryViewModel m = new CollectionLibraryViewModel(NewItem);
             ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
-            ExpandItemDialog.Item = NewItem;
+            ExpandItemDialog.Item = m;
             ExpandItemDialog.category = (ChosenItem.GroupName == "Anime") ? AnimeOrManga.anime : AnimeOrManga.manga;
             await ExpandItemDialog.ShowAsync();
         }

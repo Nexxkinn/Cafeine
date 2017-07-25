@@ -157,6 +157,7 @@
     <Content Include="Font\Montserrat\Montserrat-SemiBoldItalic.ttf" />
     <Content Include="Font\Montserrat\Montserrat-Thin.ttf" />
     <Content Include="Font\Montserrat\Montserrat-ThinItalic.ttf" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
