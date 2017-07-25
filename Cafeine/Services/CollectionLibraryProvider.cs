@@ -47,14 +47,14 @@ namespace Cafeine.Services {
             }
             return Item;
         }
-        public static async Task UpdateItem(CollectionLibraryViewModel e, AnimeOrManga AnimeManga) {
+        public static async Task UpdateItem(ItemProperties e, AnimeOrManga AnimeManga) {
             using (var stream = new MemoryStream()) {
                 using (var writer = XmlWriter.Create(stream)) {
-                    new XmlSerializer(e.Itemproperty.GetType()).Serialize(writer, e.Itemproperty);
+                    new XmlSerializer(e.GetType()).Serialize(writer, e);
                     var xmlEncodedList = Encoding.UTF8.GetString(stream.ToArray());
 
                     var User = Logincredentials.getuser(1); //Grab username and password
-                    var url = new Uri("https://myanimelist.net/api/" + AnimeManga.ToString() + "list/update/" + e.Itemproperty.Item_Id + ".xml?data=" + xmlEncodedList);
+                    var url = new Uri("https://myanimelist.net/api/" + AnimeManga.ToString() + "list/update/" + e.Item_Id + ".xml?data=" + xmlEncodedList);
 
                     //GET
                     byte[] bytes = Encoding.UTF8.GetBytes(User.UserName + ":" + User.Password);

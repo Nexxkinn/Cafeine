@@ -11,6 +11,12 @@ using Cafeine.Services;
 using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI;
+using Cafeine.Models;
+using System.Collections.Generic;
+using Windows.Storage;
+using Newtonsoft.Json;
+using System.Linq;
+using Cafeine.ViewModels;
 
 namespace Cafeine
 {
@@ -117,9 +123,28 @@ namespace Cafeine
             }
         }
 
-        private void Search_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private async void Search_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            f.Navigate(typeof(Searchpage));
+            var ChosenItem = (GroupedSearchResult)args.ChosenSuggestion;
+            ItemProperties NewItem = new ItemProperties();
+
+            //fetch if it has local library
+            var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
+            StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
+            string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
+            try {
+                NewItem = JsonConvert.DeserializeObject<List<ItemProperties>>(ReadJSONFile)
+                    .Where(x => x.Item_Id == ChosenItem.Library.Item_Id)
+                    .First();
+            }
+            catch(InvalidOperationException) {
+                NewItem = ChosenItem.Library;
+            }
+            //show expanditemdetails
+            ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
+            ExpandItemDialog.Item = NewItem;
+            ExpandItemDialog.category = (ChosenItem.GroupName == "Anime") ? AnimeOrManga.anime : AnimeOrManga.manga;
+            await ExpandItemDialog.ShowAsync();
         }
     }
 }
