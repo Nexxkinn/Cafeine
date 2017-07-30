@@ -39,17 +39,6 @@ namespace Cafeine.Model
         [XmlIgnore]
         public string[] VirtualDirectory;
     }
-    public enum AnimeOrManga
-    {
-        anime = 1,
-        manga,
-        Directory
-    }
-    /// <summary>
-    /// AnimeOrManga : True if Anime, False if manga.
-    /// DirectoryCategory : 1 - Anime, 2 - Manga, 3 - Others, 4-8 - Status
-    /// DirectoryTitle : Tile
-    /// </summary>
     public class VirtualDirectory
     {
 

@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Cafeine.Models;
+using Cafeine.Model;
 using Cafeine.ViewModels;
 using System.Collections.ObjectModel;
 
@@ -34,8 +34,6 @@ namespace Cafeine
             //Receive passed data from previous page
             var DataReceived = DirectoryExplorerViewModel.DefaultDirectory((VirtualDirectory)e.Parameter);
             VirDirInterface.ItemsSource = DataReceived;
-
-
         }
         public void NavigateItemtoPage(object sender, ItemClickEventArgs e)
         {

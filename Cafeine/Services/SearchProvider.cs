@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using Cafeine.Models;
+using Cafeine.Model;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http;
 using System.Xml.Linq;
@@ -53,7 +53,7 @@ namespace Cafeine.Services {
                 foreach (var item in AnimeIndex) {
                     ItemList.Add(new GroupedSearchResult {
                         GroupName = "Anime",
-                        Library = new ItemProperties {
+                        Library = new ItemModel {
                             Item_Id = (int)item.Element("id"),
                             Item_Title = item.Element("title").Value,
                             Imgurl = item.Element("image").Value
@@ -67,7 +67,7 @@ namespace Cafeine.Services {
                 foreach (var item in MangaIndex) {
                     ItemList.Add(new GroupedSearchResult {
                         GroupName = "Manga",
-                        Library = new ItemProperties {
+                        Library = new ItemModel {
                             Item_Id = (int)item.Element("id"),
                             Item_Title = item.Element("title").Value,
                             Imgurl = item.Element("image").Value

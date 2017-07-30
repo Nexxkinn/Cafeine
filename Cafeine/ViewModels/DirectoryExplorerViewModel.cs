@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Cafeine.Models;
+using Cafeine.Model;
 namespace Cafeine.ViewModels
 {
     public class DirectoryExplorerViewModel

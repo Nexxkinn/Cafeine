@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Cafeine.Models"
+    xmlns:local="using:Cafeine.Model"
     x:Class="Cafeine.DirectoryTemplate">
     <!--Grid mode-->
     <!--<DataTemplate x:Name="DirectoryCollection" x:DataType="local:VirtualDirectory">

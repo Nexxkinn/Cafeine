@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Cafeine.ViewModels;
-using Cafeine.Models;
+using Cafeine.Model;
 using System.Xml.Linq;
 using Windows.Storage.AccessCache;
 using Newtonsoft.Json;
@@ -81,7 +81,7 @@ namespace Cafeine.Views.SettingsPages {
             var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
             StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
             string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
-            List<ItemProperties> products = JsonConvert.DeserializeObject<List<ItemProperties>>(ReadJSONFile);
+            List<ItemModel> products = JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile);
             foreach (var item in products) {
                 Item.Add(new LocalDirectorySetupItems {
                     Category = item.Category.ToString(),

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Cafeine.Models;
+using Cafeine.Model;
 using Cafeine.Services;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
@@ -14,8 +14,8 @@ using Windows.UI.Xaml.Media.Imaging;
 namespace Cafeine.ViewModels {
     public class CollectionLibraryViewModel : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
-        private ItemProperties itemproperty;
-        public ItemProperties Itemproperty {
+        private ItemModel itemproperty;
+        public ItemModel Itemproperty {
             get => itemproperty;
 
         }
@@ -36,7 +36,7 @@ namespace Cafeine.ViewModels {
                 this.OnPropertyChanged();
             }
         }
-        public CollectionLibraryViewModel(ItemProperties itemProperties) {
+        public CollectionLibraryViewModel(ItemModel itemProperties) {
             itemproperty = itemProperties;
         }
 

@@ -1,5 +1,5 @@
 ﻿using Cafeine.Services;
-using Cafeine.Models;
+using Cafeine.Model;
 using Cafeine.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -32,6 +32,10 @@ namespace Cafeine {
         public CollectionLibrary() {
             this.InitializeComponent();
         }
+        protected override void OnNavigatedFrom(NavigationEventArgs e) {
+            watch.ItemsSource = null;
+            GC.Collect();
+        }
         protected override void OnNavigatedTo(NavigationEventArgs e) {
             DirectoryDetail = (VirtualDirectory)e.Parameter;
             Task.Run(async () => await GrabUserItemList());
@@ -48,19 +52,19 @@ namespace Cafeine {
                 //TODO: show error message?? e.Message
             }
         }
-        private async void ExpandItemAsync(object sender, ItemClickEventArgs e) {
+        private async void ExpandItem(object sender, ItemClickEventArgs e) {
 
             var itemselected = (CollectionLibraryViewModel)e.ClickedItem;
-            ItemProperties x = await lo(itemselected);
+            ItemModel x = await lo(itemselected);
             if (x != null) {
                 itemselected.My_score = x.My_score.ToString();
                 itemselected.My_watch = x.My_watch.ToString();
             }
 
         }
-        private async Task<ItemProperties> lo(CollectionLibraryViewModel e) {
+        private async Task<ItemModel> lo(CollectionLibraryViewModel e) {
             ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
-            ItemProperties item;
+            ItemModel item;
             ExpandItemDialog.Item = e.Itemproperty;
             ExpandItemDialog.category = DirectoryDetail.AnimeOrManga;
             await ExpandItemDialog.ShowAsync();

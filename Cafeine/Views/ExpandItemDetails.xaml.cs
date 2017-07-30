@@ -1,4 +1,4 @@
-﻿using Cafeine.Models;
+﻿using Cafeine.Model;
 using Cafeine.Services;
 using Cafeine.ViewModels;
 using System;
@@ -11,9 +11,9 @@ namespace Cafeine
 {
     public sealed partial class ExpandItemDetails : ContentDialog
     {
-        public ItemProperties Item = new ItemProperties();
+        public ItemModel Item = new ItemModel();
         public AnimeOrManga category;
-        //public ItemProperties SearchedItem;
+        //public ItemModel SearchedItem;
         public ExpandItemDetails()
         {
             this.InitializeComponent();

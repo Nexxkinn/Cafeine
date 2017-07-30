@@ -4,7 +4,7 @@ using Windows.Storage;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Cafeine.Models;
+using Cafeine.Model;
 using Cafeine.ViewModels;
 using System.Threading.Tasks;
 using Windows.Web.Http.Filters;
@@ -27,7 +27,7 @@ namespace Cafeine.Services {
             var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
             StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
             string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
-            List<ItemProperties> products = JsonConvert.DeserializeObject<List<ItemProperties>>(ReadJSONFile);
+            List<ItemModel> products = JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile);
             switch (AnimeManga) //1 - anime  //2 - manga
             {
                 case AnimeOrManga.anime: {
@@ -47,7 +47,7 @@ namespace Cafeine.Services {
             }
             return Item;
         }
-        public static async Task UpdateItem(ItemProperties e, AnimeOrManga AnimeManga) {
+        public static async Task UpdateItem(ItemModel e, AnimeOrManga AnimeManga) {
             using (var stream = new MemoryStream()) {
                 using (var writer = XmlWriter.Create(stream)) {
                     new XmlSerializer(e.GetType()).Serialize(writer, e);

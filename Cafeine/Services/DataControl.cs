@@ -1,5 +1,5 @@
 ﻿using System;
-using Cafeine.Models;
+using Cafeine.Model;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Web.Http;
@@ -19,7 +19,7 @@ namespace Cafeine.Services {
         ///</summary>
         public static async Task GrabUserDatatoOffline(int service) {
             string username = Logincredentials.getuser(1).UserName;
-            List<ItemProperties> Item = new List<ItemProperties>();
+            List<ItemModel> Item = new List<ItemModel>();
 
             ///currently only to serve MyAnimelist
             ///Considering to use NetJSON to get faster serializer and deserializer.
@@ -41,7 +41,7 @@ namespace Cafeine.Services {
             XDocument ParsedItemsAnime = XDocument.Parse(FetchData);
             var anime = ParsedItemsAnime.Descendants("anime");
             foreach (var item in anime) {
-                Item.Add(new ItemProperties {
+                Item.Add(new ItemModel {
                     Category = AnimeOrManga.anime,
                     Item_Id = (int)item.Element("series_animedb_id"),
                     Item_Title = item.Element("series_title").Value,
@@ -57,7 +57,7 @@ namespace Cafeine.Services {
             XDocument ParsedItemsManga = XDocument.Parse(FetchData2);
             var manga = ParsedItemsManga.Descendants("manga");
             foreach (var item in manga) {
-                Item.Add(new ItemProperties {
+                Item.Add(new ItemModel {
                     Category = AnimeOrManga.manga,
                     Item_Id = (int)item.Element("series_mangadb_id"),
                     Item_Title = item.Element("series_title").Value,
