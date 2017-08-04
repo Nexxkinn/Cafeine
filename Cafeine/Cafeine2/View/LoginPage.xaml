@@ -1,0 +1,56 @@
+﻿<Page x:Class="Cafeine.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Cafeine"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      DataContext="{Binding Login, Source={StaticResource Locator}}">
+
+    <Grid x:Name="LoginPageBackground"
+          Background="#FF2F343B">
+        <RelativePanel HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+            <TextBlock x:Name="TITLE"
+                       CharacterSpacing="200"
+                       HorizontalAlignment="Center"
+                       Height="77"
+                       TextWrapping="Wrap"
+                       Text="CAFEINE"
+                       VerticalAlignment="Center"
+                       Width="415"
+                       Foreground="White"
+                       TextAlignment="Center"
+                       FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum"
+                       FontSize="90"
+                       FontWeight="SemiBold"
+                       TextLineBounds="TrimToCapHeight"
+                       Canvas.ZIndex="1" />
+            <TextBlock x:Name="TITLE_SHADOW"
+                       CharacterSpacing="200"
+                       HorizontalAlignment="Center"
+                       Height="77"
+                       Margin="5,0"
+                       Padding="0,5"
+                       TextWrapping="Wrap"
+                       Text="CAFEINE"
+                       Width="415"
+                       Foreground="Black"
+                       TextAlignment="Center"
+                       FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum"
+                       FontSize="90"
+                       FontWeight="SemiBold"
+                       TextLineBounds="TrimToCapHeight" />
+            <Button Margin="0,16,0,0"
+                    Command="{Binding ShowSignInDialog}"
+                    RelativePanel.Below="TITLE"
+                    RelativePanel.AlignHorizontalCenterWith="TITLE"
+                    Content="&#xE710;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="48"
+                    Height="120"
+                    Width="120"
+                    Foreground="White" />
+        </RelativePanel>
+    </Grid>
+</Page>
