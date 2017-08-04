@@ -23,7 +23,6 @@ namespace Cafeine {
         public HomeViewModel Vm => (HomeViewModel)DataContext;
         public HomePage() {
             InitializeComponent();
-            SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
             if (titleBar != null) {
                 titleBar.BackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
@@ -31,28 +30,6 @@ namespace Cafeine {
                 titleBar.ButtonBackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
             }
         }
-
-        private void App_BackRequested(object sender, BackRequestedEventArgs e) {
-            if (Vm.F.CanGoBack) {
-                e.Handled = true;
-                Vm.F.GoBack();
-            }
-        }
-
-        //private void ContentFrame_Navigated(object sender, NavigationEventArgs e) {
-        //    ugly hack
-        //    Schedule.Visibility = Visibility.Visible;
-        //    Library.Visibility = Visibility.Visible;
-        //    SettingsTab.Visibility = Visibility.Collapsed;
-        //    switch (f.CurrentSourcePageType.ToString()) {
-        //        case "Cafeine.DirectoryExplorer": Library.IsChecked = true; break;
-        //        case "Cafeine.CollectionLibrary": Library.IsChecked = true; break;
-        //    }
-        //    if (f.CanGoBack) {
-        //        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-        //    }
-        //    else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-        //}
 
         //very ugly hack
         //private void TabChecked(object sender, RoutedEventArgs e) {
@@ -84,11 +61,11 @@ namespace Cafeine {
         //    var result = await popup.ShowAsync();
 
         //    if ((int)result.Id == 0) {
-        //        //remove user credentials
+        //        remove user credentials
         //        var getuserpass = Logincredentials.getuser(1);
         //        var vault = new Windows.Security.Credentials.PasswordVault();
         //        vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
-        //        //navigate back to the loginpage
+        //        navigate back to the loginpage
         //        f.Navigate(typeof(LoginPage));
         //        Window.Current.Content = f;
         //        Window.Current.Activate();

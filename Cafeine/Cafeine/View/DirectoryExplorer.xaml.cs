@@ -35,6 +35,10 @@ namespace Cafeine
             var DataReceived = DirectoryExplorerViewModel.DefaultDirectory((VirtualDirectory)e.Parameter);
             VirDirInterface.ItemsSource = DataReceived;
         }
+        protected override void OnNavigatedFrom(NavigationEventArgs e) {
+            VirDirInterface.ItemsSource = null;
+            GC.Collect();
+        }
         public void NavigateItemtoPage(object sender, ItemClickEventArgs e)
         {
             var SelectedItem = (VirtualDirectory)e.ClickedItem;

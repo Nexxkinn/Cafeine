@@ -44,8 +44,8 @@
         <Grid x:Name="CommandBar">
             <Grid VerticalAlignment="Bottom">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
-                    <RadioButton x:Name="Library" Content="Library" GroupName="Tab"  FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}"/>
-                    <RadioButton x:Name="Schedule" Content="Schedule" GroupName="Tab" FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}"/>
+                    <RadioButton x:Name="Library" Content="Library" GroupName="Tab" IsChecked="{x:Bind Vm.LibraryTabChecked,Mode=TwoWay}" FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}"/>
+                    <RadioButton x:Name="Schedule" Content="Schedule" GroupName="Tab" IsChecked="{x:Bind Vm.ScheduleTabEnabled,Mode=TwoWay}" FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}"/>
                     <RadioButton x:Name="SettingsTab" Content="Settings" IsChecked="True" FontSize="24" MinWidth="100" FontWeight="Light" Template="{StaticResource RadioButtonTemplate}" Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -116,7 +116,7 @@
                         <Button.Flyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Text="Settings..." />
-                                <MenuFlyoutItem Text="Logout"/>
+                                <MenuFlyoutItem Text="Logout" Command="{x:Bind Vm.LogOutCommand}"/>
                             </MenuFlyout>
                         </Button.Flyout>
                     </Button>
