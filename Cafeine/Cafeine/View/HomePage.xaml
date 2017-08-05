@@ -168,7 +168,8 @@
                         </Button.Content>
                         <Button.Flyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem Text="Settings..." />
+                                <MenuFlyoutItem Text="Settings..."
+                                                Command="{x:Bind Vm.SettingsPage}"/>
                                 <MenuFlyoutItem Text="Logout"
                                                 Command="{x:Bind Vm.LogOutCommand}" />
                             </MenuFlyout>
@@ -179,6 +180,12 @@
         </Grid>
         <Frame x:Name="ContentFrame"
                Content="{x:Bind Vm.F, Mode=OneWay}"
-               Grid.Row="1" />
+               Grid.Row="1">
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="Navigated">
+                    <core:InvokeCommandAction Command="{x:Bind Vm.FNavigated, Mode=OneWay}"/>
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
+        </Frame>
     </Grid>
 </Page>

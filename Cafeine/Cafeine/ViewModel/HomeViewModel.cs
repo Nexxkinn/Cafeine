@@ -24,24 +24,19 @@ namespace Cafeine.ViewModel {
         private RelayCommand<string> _AutoSuggestBoxTextChanged;
         private RelayCommand<GroupedSearchResult> _AutoSuggestBoxQuerySubmited;
         private List<IGrouping<string, GroupedSearchResult>> _cvs = new List<IGrouping<string, GroupedSearchResult>>();
+        private RelayCommand _FNavigated;
 
         public HomeViewModel(INavigationService navigationservice) {
             _navigationservice = navigationservice;
             F.Navigate(typeof(DirectoryExplorer));
-            F.Navigated += F_Navigated;
             SystemNavigationManager.GetForCurrentView().BackRequested += HomeViewModel_BackRequested;
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
         }
         private void HomeViewModel_BackRequested(object sender, BackRequestedEventArgs e) {
             if (F.CanGoBack) {
                 e.Handled = true;
                 F.GoBack();
             }
-        }
-        private void F_Navigated(object sender, NavigationEventArgs e) {
-            if (F.CanGoBack) {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            }
-            else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
         }
 
         public Frame F {
@@ -141,6 +136,7 @@ namespace Cafeine.ViewModel {
                     }));
             }
         }
+
         public List<IGrouping<string, GroupedSearchResult>> CVS {
             get {
                 return _cvs;
@@ -153,6 +149,33 @@ namespace Cafeine.ViewModel {
 
                 _cvs = value;
                 RaisePropertyChanged("CVS");
+            }
+        }
+        public RelayCommand FNavigated {
+            get {
+                return _FNavigated
+                    ?? (_FNavigated = new RelayCommand(
+                    () => {
+                        if (F.CanGoBack) {
+                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                        }
+                        else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    }));
+            }
+        }
+        private RelayCommand _SettingsPage;
+
+        /// <summary>
+        /// Gets the SettingsPage.
+        /// </summary>
+        public RelayCommand SettingsPage {
+            get {
+                return _SettingsPage
+                    ?? (_SettingsPage = new RelayCommand(
+                    () => {
+                        F.Navigate(typeof(SettingsPage));
+                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                    }));
             }
         }
     }

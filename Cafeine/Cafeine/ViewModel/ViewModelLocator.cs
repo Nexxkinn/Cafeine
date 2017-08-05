@@ -48,6 +48,7 @@ namespace Cafeine.ViewModel {
             SimpleIoc.Default.Register<LoginViewModel>();
             SimpleIoc.Default.Register<SignInDialogViewModel>();
             SimpleIoc.Default.Register<HomeViewModel>();
+            SimpleIoc.Default.Register<LocalDirectorySetupViewModel>();
         }
 
         /// <summary>
@@ -59,5 +60,6 @@ namespace Cafeine.ViewModel {
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
         public LoginViewModel Login => ServiceLocator.Current.GetInstance<LoginViewModel>();
         public HomeViewModel Home => ServiceLocator.Current.GetInstance<HomeViewModel>();
+        public LocalDirectorySetupViewModel LDSetup => ServiceLocator.Current.GetInstance<LocalDirectorySetupViewModel>();
     }
 }
