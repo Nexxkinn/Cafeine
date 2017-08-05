@@ -19,7 +19,7 @@ namespace Cafeine.Services {
             //online
             List<GroupedSearchResult> Index = await OnlineResult(Query);
             var group = Index.GroupBy(b => b.GroupName).ToList();
-            return group;
+            return await Task.FromResult(group);
         }
         private static async Task<List<GroupedSearchResult>> OnlineResult(string Query) {
             var User = Logincredentials.getuser(1); //Grab username and password

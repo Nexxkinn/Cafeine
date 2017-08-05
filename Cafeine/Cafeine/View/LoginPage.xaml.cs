@@ -19,14 +19,6 @@ namespace Cafeine
             }
             InitializeComponent();
         }
-        //private void Navigate() {
-        //    Frame rootframe = new Frame();
-        //    Frame newframe = new Frame();
-        //    rootframe.Content = new HomePage(newframe);
-        //    newframe.Navigate(typeof(DirectoryExplorer));
-        //    Window.Current.Content = rootframe;
-        //    Window.Current.Activate();
-        //}
         
     }
 }

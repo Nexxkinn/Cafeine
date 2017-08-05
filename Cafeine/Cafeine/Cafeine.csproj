@@ -101,6 +101,11 @@
     <Compile Include="Design\DataControl.cs" />
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="Design\Logincredentials.cs" />
+    <Compile Include="Design\SearchProvider.cs" />
+    <Compile Include="Model\GroupedSearchResult.cs" />
+    <Compile Include="Model\LocalDirectorySetupModel.cs" />
+    <Compile Include="Model\MALXMLSerializer.cs" />
+    <Compile Include="Model\ValueConverter.cs" />
     <Compile Include="ViewModel\DirectoryExplorerViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="View\View_Resource\DirectoryTemplate.cs">

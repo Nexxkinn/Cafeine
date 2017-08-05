@@ -39,12 +39,12 @@ namespace Cafeine.Services
                     var vault = new PasswordVault();
                     var cred = new PasswordCredential(using_service, username, password);
                     vault.Add(cred);
-                    return true;
+                    return await Task.FromResult(true);
                 }
             }
             catch (Exception ex)
             {
-                return false;
+                return await Task.FromResult(false);
             }
         }
         public static PasswordCredential getuser(int status)

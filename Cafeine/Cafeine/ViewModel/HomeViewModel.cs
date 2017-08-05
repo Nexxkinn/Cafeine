@@ -1,8 +1,13 @@
-﻿using Cafeine.Services;
+﻿using Cafeine.Model;
+using Cafeine.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -16,6 +21,9 @@ namespace Cafeine.ViewModel {
         private bool? _LibraryTabChecked = true;
         private bool? _ScheduleTabEnabled = false;
         private RelayCommand _logoutCommand;
+        private RelayCommand<string> _AutoSuggestBoxTextChanged;
+        private RelayCommand<GroupedSearchResult> _AutoSuggestBoxQuerySubmited;
+        private List<IGrouping<string, GroupedSearchResult>> _cvs = new List<IGrouping<string, GroupedSearchResult>>();
 
         public HomeViewModel(INavigationService navigationservice) {
             _navigationservice = navigationservice;
@@ -89,12 +97,62 @@ namespace Cafeine.ViewModel {
                             var getuserpass = Logincredentials.getuser(1);
                             var vault = new Windows.Security.Credentials.PasswordVault();
                             vault.Remove(new Windows.Security.Credentials.PasswordCredential(getuserpass.Resource, getuserpass.UserName, getuserpass.Password));
-                            F.Navigate(typeof(LoginPage));
-                            Window.Current.Content = F;
-                            Window.Current.Activate();
+                            _navigationservice.NavigateTo(ViewModelLocator.SignInPageKey);
                         }
 
                     }));
+            }
+        }
+        public RelayCommand<string> AutoSuggestBoxTextChanged {
+            get {
+                return _AutoSuggestBoxTextChanged
+                    ?? (_AutoSuggestBoxTextChanged = new RelayCommand<string>(
+                    async p => {
+                        CVS = await SearchProvider.ResultIndex(p);
+                    }));
+            }
+        }
+
+        //TODO : connect it to ExpandItemDialog
+        public RelayCommand<GroupedSearchResult> AutoSuggestBoxQuerySubmited {
+            get {
+                return _AutoSuggestBoxQuerySubmited
+                    ?? (_AutoSuggestBoxQuerySubmited = new RelayCommand<GroupedSearchResult>(
+                    async p => {
+                        ItemModel NewItem = new ItemModel();
+
+                        //fetch if it has local library
+                        var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
+                        StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
+                        string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
+                        try {
+                            NewItem = JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile)
+                                .Where(x => x.Item_Id == p.Library.Item_Id)
+                                .First();
+                        }
+                        catch (InvalidOperationException) {
+                            NewItem = p.Library;
+                        }
+                        //show expanditemdetails
+                        //ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
+                        //ExpandItemDialog.Item = NewItem;
+                        //ExpandItemDialog.category = (p.GroupName == "Anime") ? AnimeOrManga.anime : AnimeOrManga.manga;
+                        //await ExpandItemDialog.ShowAsync();
+                    }));
+            }
+        }
+        public List<IGrouping<string, GroupedSearchResult>> CVS {
+            get {
+                return _cvs;
+            }
+
+            set {
+                if (_cvs == value) {
+                    return;
+                }
+
+                _cvs = value;
+                RaisePropertyChanged("CVS");
             }
         }
     }
