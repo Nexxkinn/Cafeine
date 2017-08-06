@@ -4,7 +4,7 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.4",
     "Microsoft.Toolkit.Uwp.UI.Animations": "1.5.1",
     "Microsoft.Xaml.Behaviors.Uwp.Managed": "2.0.0",
-    "MvvmLightLibs": "5.4.0-alpha",
+    "MvvmLightLibs": "5.3.0",
     "Newtonsoft.Json": "10.0.3"
   },
   "frameworks": {

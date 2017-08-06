@@ -29,8 +29,8 @@ namespace Cafeine {
                 titleBar.InactiveBackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
                 titleBar.ButtonBackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
             }
+            this.Loaded += Vm.test;
         }
-
         //very ugly hack
         //private void TabChecked(object sender, RoutedEventArgs e) {
         //    RadioButton rb = sender as RadioButton;

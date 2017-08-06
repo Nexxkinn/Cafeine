@@ -48,4 +48,14 @@ namespace Cafeine.Model {
             throw new NotImplementedException();
         }
     }
+    class DirectoryClicked : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            var args = (ItemClickEventArgs)value;
+            return (VirtualDirectory)args.ClickedItem;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
 }

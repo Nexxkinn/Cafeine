@@ -7,11 +7,36 @@ using System.Threading.Tasks;
 using Cafeine.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Views;
+using GalaSoft.MvvmLight.Command;
 
 namespace Cafeine.ViewModel
 {
     public class DirectoryExplorerViewModel : ViewModelBase
     {
+        private VirtualDirectory _directory = null;
+        public VirtualDirectory directory{
+            get { return _directory; }
+            set { Set(ref _directory, value); }
+        }
+
+        private List<VirtualDirectory> _dataReceived = new List<VirtualDirectory>();
+        public List<VirtualDirectory> DataReceived {
+            get {
+                return _dataReceived;
+            }
+            set {
+                Set(ref _dataReceived, value);
+            }
+        }
+        private ICafeineNavigationService navigationservice;
+
+        public DirectoryExplorerViewModel(ICafeineNavigationService nav) {
+            navigationservice = nav;
+            DataReceived = DefaultDirectory(directory);
+        }
+        public void updateitem() {
+            DataReceived = DefaultDirectory(directory);
+        }
         public static List<VirtualDirectory> DefaultDirectory(VirtualDirectory e)
         {
             List<VirtualDirectory> Dir = new List<VirtualDirectory>();
@@ -47,9 +72,16 @@ namespace Cafeine.ViewModel
             }
             return Dir;
         }
-        public INavigationService navigationservice;
-        public DirectoryExplorerViewModel(INavigationService nav) {
-            navigationservice = nav;
+        private RelayCommand<VirtualDirectory> _directoryItemClick;
+        public RelayCommand<VirtualDirectory> DirectoryItemClick {
+            get {
+                return _directoryItemClick
+                    ?? (_directoryItemClick = new RelayCommand<VirtualDirectory>(
+                    p => {
+                        if (p.AnimeOrManga != AnimeOrManga.Directory) navigationservice.NavigateTo("Collection", p); //check if it has a bool value
+                        else navigationservice.NavigateTo("VirDir", p); //navigate if it doesn't.
+                    }));
+            }
         }
 
     }

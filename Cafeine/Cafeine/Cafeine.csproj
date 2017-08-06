@@ -107,12 +107,16 @@
     <Compile Include="Model\LocalDirectorySetupModel.cs" />
     <Compile Include="Model\MALXMLSerializer.cs" />
     <Compile Include="Design\ValueConverter.cs" />
+    <Compile Include="Model\NavigationService.cs" />
     <Compile Include="ViewModel\CollectionLibraryViewModel.cs" />
     <Compile Include="ViewModel\DirectoryExplorerViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LocalDirectorySetupViewModel.cs" />
     <Compile Include="View\CollectionLibrary.xaml.cs">
       <DependentUpon>CollectionLibrary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DirectoryExplorerFrame.xaml.cs">
+      <DependentUpon>DirectoryExplorerFrame.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ExpandItemDetails.xaml.cs">
       <DependentUpon>ExpandItemDetails.xaml</DependentUpon>
@@ -219,6 +223,10 @@
     <Page Include="View\DirectoryExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DirectoryExplorerFrame.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ExpandItemDetails.xaml">
       <Generator>MSBuild:Compile</Generator>

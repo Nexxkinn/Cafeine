@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 namespace Cafeine.ViewModel {
     public class HomeViewModel : ViewModelBase {
         private INavigationService _navigationservice;
+        private ICafeineNavigationService _Fnavigationservice;
         private Frame _frame = new Frame();
         private bool? _LibraryTabChecked = true;
         private bool? _ScheduleTabEnabled = false;
@@ -26,11 +27,11 @@ namespace Cafeine.ViewModel {
         private List<IGrouping<string, GroupedSearchResult>> _cvs = new List<IGrouping<string, GroupedSearchResult>>();
         private RelayCommand _FNavigated;
 
-        public HomeViewModel(INavigationService navigationservice) {
-            _navigationservice = navigationservice;
-            F.Navigate(typeof(DirectoryExplorer));
+        public HomeViewModel(ICafeineNavigationService caf) {
+            //_navigationservice = navigationservice;
+            _Fnavigationservice = caf;
             SystemNavigationManager.GetForCurrentView().BackRequested += HomeViewModel_BackRequested;
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
         }
         private void HomeViewModel_BackRequested(object sender, BackRequestedEventArgs e) {
             if (F.CanGoBack) {
@@ -38,7 +39,9 @@ namespace Cafeine.ViewModel {
                 F.GoBack();
             }
         }
-
+        public void test(object sender, RoutedEventArgs e) {
+            _Fnavigationservice.NavigateTo("VirDir");
+        }
         public Frame F {
             get {
                 return _frame;
