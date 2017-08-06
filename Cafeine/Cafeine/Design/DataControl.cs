@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace Cafeine.Services {
+namespace Cafeine.Design {
     class DataProvider {
 
         ///<summary>

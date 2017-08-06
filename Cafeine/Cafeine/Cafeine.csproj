@@ -12,7 +12,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -98,6 +98,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Design\CollectionLibraryProvider.cs" />
     <Compile Include="Design\DataControl.cs" />
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="Design\Logincredentials.cs" />
@@ -105,10 +106,17 @@
     <Compile Include="Model\GroupedSearchResult.cs" />
     <Compile Include="Model\LocalDirectorySetupModel.cs" />
     <Compile Include="Model\MALXMLSerializer.cs" />
-    <Compile Include="Model\ValueConverter.cs" />
+    <Compile Include="Design\ValueConverter.cs" />
+    <Compile Include="ViewModel\CollectionLibraryViewModel.cs" />
     <Compile Include="ViewModel\DirectoryExplorerViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LocalDirectorySetupViewModel.cs" />
+    <Compile Include="View\CollectionLibrary.xaml.cs">
+      <DependentUpon>CollectionLibrary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ExpandItemDetails.xaml.cs">
+      <DependentUpon>ExpandItemDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\LocalDirectorySetup.xaml.cs">
       <DependentUpon>LocalDirectorySetup.xaml</DependentUpon>
     </Compile>
@@ -145,6 +153,9 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SignInDialogViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\View_Resource\ItemTemplates.cs">
+      <DependentUpon>CollectionTemplate.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -201,7 +212,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\CollectionLibrary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\DirectoryExplorer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ExpandItemDetails.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -228,6 +247,10 @@
     <Page Include="View\SignInDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\View_Resource\CollectionTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\View_Resource\DIrectoryTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>

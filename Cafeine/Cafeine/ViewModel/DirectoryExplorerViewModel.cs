@@ -5,9 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cafeine.Model;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Views;
+
 namespace Cafeine.ViewModel
 {
-    public class DirectoryExplorerViewModel
+    public class DirectoryExplorerViewModel : ViewModelBase
     {
         public static List<VirtualDirectory> DefaultDirectory(VirtualDirectory e)
         {
@@ -44,5 +47,10 @@ namespace Cafeine.ViewModel
             }
             return Dir;
         }
+        public INavigationService navigationservice;
+        public DirectoryExplorerViewModel(INavigationService nav) {
+            navigationservice = nav;
+        }
+
     }
 }

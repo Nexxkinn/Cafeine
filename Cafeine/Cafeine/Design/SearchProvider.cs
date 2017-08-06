@@ -13,7 +13,7 @@ using System.IO;
 using System.Collections;
 using System.Xml;
 
-namespace Cafeine.Services {
+namespace Cafeine.Design {
     class SearchProvider {
         public static async Task<List<IGrouping<string, GroupedSearchResult>>> ResultIndex(string Query) {
             //online

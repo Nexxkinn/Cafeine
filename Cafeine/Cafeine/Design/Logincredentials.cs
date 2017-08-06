@@ -5,7 +5,7 @@ using Windows.Web.Http.Filters;
 using System.Threading.Tasks;
 using System.Text;
 using System.Diagnostics;
-namespace Cafeine.Services
+namespace Cafeine.Design
 {
     class Logincredentials
     {

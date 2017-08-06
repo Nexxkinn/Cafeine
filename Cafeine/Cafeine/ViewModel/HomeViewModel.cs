@@ -1,5 +1,5 @@
 ﻿using Cafeine.Model;
-using Cafeine.Services;
+using Cafeine.Design;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
