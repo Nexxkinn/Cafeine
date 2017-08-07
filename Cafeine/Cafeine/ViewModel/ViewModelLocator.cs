@@ -34,20 +34,11 @@ namespace Cafeine.ViewModel {
 
             var F = new CafeineNavigationService();
             F.Configure("VirDir", typeof(DirectoryExplorer));
-            F.Configure("Collection", typeof(CollectionLibrary));
+            F.Configure("Collection", typeof(CollectionLibraryFrame));
             SimpleIoc.Default.Register<ICafeineNavigationService>(() => F);
 
             SimpleIoc.Default.Register<IDialogService, DialogService>();
-
-            if (ViewModelBase.IsInDesignModeStatic
-                    || UseDesignTimeData) {
-                SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
-            }
-            else {
-                SimpleIoc.Default.Register<IDataService, DataService>();
-            }
-
-            SimpleIoc.Default.Register<MainViewModel>();
+            
             SimpleIoc.Default.Register<LoginViewModel>();
             SimpleIoc.Default.Register<SignInDialogViewModel>();
             SimpleIoc.Default.Register<HomeViewModel>();
@@ -62,7 +53,6 @@ namespace Cafeine.ViewModel {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
         public LoginViewModel Login => ServiceLocator.Current.GetInstance<LoginViewModel>();
         public HomeViewModel Home => ServiceLocator.Current.GetInstance<HomeViewModel>();
         public LocalDirectorySetupViewModel LDSetup => ServiceLocator.Current.GetInstance<LocalDirectorySetupViewModel>();

@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
+using Windows.UI.ViewManagement;
 
 namespace Cafeine {
     sealed partial class App {
@@ -46,6 +47,7 @@ namespace Cafeine {
                     rootFrame.Navigate(typeof(LoginPage), e.Arguments);
                 }
                 // Ensure the current window is active
+                ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(685, 600));
                 Window.Current.Activate();
             }
             DispatcherHelper.Initialize();

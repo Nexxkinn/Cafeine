@@ -32,7 +32,6 @@ namespace Cafeine.ViewModel
 
         public DirectoryExplorerViewModel(ICafeineNavigationService nav) {
             navigationservice = nav;
-            DataReceived = DefaultDirectory(directory);
         }
         public void updateitem() {
             DataReceived = DefaultDirectory(directory);
@@ -78,7 +77,7 @@ namespace Cafeine.ViewModel
                 return _directoryItemClick
                     ?? (_directoryItemClick = new RelayCommand<VirtualDirectory>(
                     p => {
-                        if (p.AnimeOrManga != AnimeOrManga.Directory) navigationservice.NavigateTo("Collection", p); //check if it has a bool value
+                        if (p.AnimeOrManga != AnimeOrManga.Directory) navigationservice.NavigateTo("Collection",p); //check if it has a bool value
                         else navigationservice.NavigateTo("VirDir", p); //navigate if it doesn't.
                     }));
             }

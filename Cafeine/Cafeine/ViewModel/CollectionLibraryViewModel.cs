@@ -48,9 +48,13 @@ namespace Cafeine.ViewModel {
         }
     }
     public class CollectionLibraryViewModel : ViewModelBase {
-        private INavigationService _navigationservice;
-        VirtualDirectory directorydetail;
+        private ICafeineNavigationService _navigationservice;
+
         private ObservableCollection<CollectionLibrary> ItemList = new ObservableCollection<CollectionLibrary>();
+        //public ObservableCollection<CollectionLibrary> ItemList {
+        //    get { return _itemList; }
+        //    set { Set(ref _itemList, value); }
+        //}
 
         private VirtualDirectory _directory = new VirtualDirectory();
         public VirtualDirectory Directory {
@@ -72,10 +76,10 @@ namespace Cafeine.ViewModel {
             }
         }
 
-        public CollectionLibraryViewModel(INavigationService navigation) {
+        public CollectionLibraryViewModel(ICafeineNavigationService navigation) {
             _navigationservice = navigation;
         }
-        public async Task GrabUserItemList() {
+        public async void GrabUserItemList() {
 
             try {
                 ItemList = await CollectionLibraryProvider.QueryUserAnimeMangaListAsync(Directory.AnimeOrManga);

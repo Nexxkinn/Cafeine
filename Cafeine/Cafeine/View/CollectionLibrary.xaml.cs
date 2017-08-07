@@ -39,26 +39,7 @@ namespace Cafeine {
         }
         protected override void OnNavigatedTo(NavigationEventArgs e) {
             Vm.Directory = (VirtualDirectory)e.Parameter;
-            Task.Run(async () => await Vm.GrabUserItemList());
+            Vm.GrabUserItemList();
         }
-        //private async void ExpandItem(object sender, ItemClickEventArgs e) {
-
-        //    var itemselected = (CollectionLibrary)e.ClickedItem; //converter
-        //    ItemModel x = await lo(itemselected);
-        //    if (x != null) {
-        //        itemselected.My_score = x.My_score.ToString();
-        //        itemselected.My_watch = x.My_watch.ToString();
-        //    }
-
-        //}
-        //private async Task<ItemModel> lo(ViewModels.CollectionLibrary e) {
-        //    ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
-        //    ItemModel item;
-        //    ExpandItemDialog.Item = e.Itemproperty;
-        //    ExpandItemDialog.category = DirectoryDetail.AnimeOrManga;
-        //    await ExpandItemDialog.ShowAsync();
-        //    item = ExpandItemDialog.Item;
-        //    return item;
-        //}
     }
 }

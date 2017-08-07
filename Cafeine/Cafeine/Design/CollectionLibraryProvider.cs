@@ -45,7 +45,7 @@ namespace Cafeine.Design {
                     break;
                 }
             }
-            return Item;
+            return await Task.FromResult(Item);
         }
         public static async Task UpdateItem(ItemModel e, AnimeOrManga AnimeManga) {
             using (var stream = new MemoryStream()) {
