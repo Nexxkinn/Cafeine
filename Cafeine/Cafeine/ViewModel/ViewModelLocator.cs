@@ -15,15 +15,6 @@ namespace Cafeine.ViewModel {
     public class ViewModelLocator {
         public const string SignInPageKey = "SignInPage";
 
-        /// <summary>
-        /// This property can be used to force the application to run with design time data.
-        /// </summary>
-        public static bool UseDesignTimeData {
-            get {
-                return false;
-            }
-        }
-
         static ViewModelLocator() {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 

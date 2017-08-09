@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Cafeine.Design;
 using Cafeine.Model;
 using GalaSoft.MvvmLight.Views;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Cafeine.ViewModel {
     public class LoginViewModel : ViewModelBase {

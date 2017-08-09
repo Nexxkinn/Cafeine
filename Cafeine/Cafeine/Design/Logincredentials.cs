@@ -35,10 +35,12 @@ namespace Cafeine.Design
                     client.DefaultRequestHeaders.Add("Authorization", "Basic " + LoginToBase64);
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
+                    response.Dispose();
                     //store password
                     var vault = new PasswordVault();
                     var cred = new PasswordCredential(using_service, username, password);
                     vault.Add(cred);
+                    GC.Collect();
                     return await Task.FromResult(true);
                 }
             }

@@ -21,11 +21,11 @@
                        Width="415"
                        Foreground="White"
                        TextAlignment="Center"
-                       FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum"
                        FontSize="90"
                        FontWeight="SemiBold"
                        TextLineBounds="TrimToCapHeight"
-                       Canvas.ZIndex="1" />
+                       Canvas.ZIndex="1"
+                       FontFamily="ms-appx:/Assets/Fonts/Cuprum-Bold.ttf#Cuprum" />
             <TextBlock x:Name="TITLE_SHADOW"
                        CharacterSpacing="200"
                        HorizontalAlignment="Center"
@@ -37,10 +37,10 @@
                        Width="415"
                        Foreground="Black"
                        TextAlignment="Center"
-                       FontFamily="ms-appx:/Font/Cuprum-Bold.ttf#Cuprum"
                        FontSize="90"
                        FontWeight="SemiBold"
-                       TextLineBounds="TrimToCapHeight" />
+                       TextLineBounds="TrimToCapHeight"
+                       FontFamily="ms-appx:/Assets/Fonts/Cuprum-Bold.ttf#Cuprum" />
             <Button Margin="0,16,0,0"
                     Command="{Binding ShowSignInDialog}"
                     RelativePanel.Below="TITLE"

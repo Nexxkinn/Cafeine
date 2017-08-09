@@ -116,26 +116,8 @@ namespace Cafeine.ViewModel {
             get {
                 return _AutoSuggestBoxQuerySubmited
                     ?? (_AutoSuggestBoxQuerySubmited = new RelayCommand<GroupedSearchResult>(
-                    async p => {
-                        ItemModel NewItem = new ItemModel();
-
-                        //fetch if it has local library
-                        var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
-                        StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
-                        string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
-                        try {
-                            NewItem = JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile)
-                                .Where(x => x.Item_Id == p.Library.Item_Id)
-                                .First();
-                        }
-                        catch (InvalidOperationException) {
-                            NewItem = p.Library;
-                        }
-                        //show expanditemdetails
-                        //ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
-                        //ExpandItemDialog.Item = NewItem;
-                        //ExpandItemDialog.category = (p.GroupName == "Anime") ? AnimeOrManga.anime : AnimeOrManga.manga;
-                        //await ExpandItemDialog.ShowAsync();
+                    p => {
+                        ExpandItemDialogService.da(p, p.Library.Category);
                     }));
             }
         }

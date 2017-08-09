@@ -35,8 +35,12 @@ namespace Cafeine.Design {
 
                 FetchData = response.Content.ToString();
                 FetchData2 = response2.Content.ToString();
+
+                response.Dispose();
+                response2.Dispose();
+                GC.Collect();
             }
-            
+
             //convert XML to JSON for good
             XDocument ParsedItemsAnime = XDocument.Parse(FetchData);
             var anime = ParsedItemsAnime.Descendants("anime");
@@ -54,6 +58,7 @@ namespace Cafeine.Design {
                     My_status = (int)item.Element("my_status")
                 });
             }
+
             XDocument ParsedItemsManga = XDocument.Parse(FetchData2);
             var manga = ParsedItemsManga.Descendants("manga");
             foreach (var item in manga) {
@@ -76,7 +81,7 @@ namespace Cafeine.Design {
             var OfflineFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
             var SaveFile = await OfflineFolder.CreateFileAsync("RAW_" + service + ".json", CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteTextAsync(SaveFile, JsonItems);
-
+            GC.Collect();
         }
         public static async Task CreateCustomVirtualDirectory(string FolderName) {
 

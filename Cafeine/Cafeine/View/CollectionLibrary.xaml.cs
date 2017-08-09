@@ -29,12 +29,12 @@ namespace Cafeine {
     public partial class CollectionLibraryFrame : Page {
         public CollectionLibraryViewModel Vm => (CollectionLibraryViewModel)DataContext;
         ObservableCollection<CollectionLibrary> ItemList = new ObservableCollection<CollectionLibrary>();
-        VirtualDirectory DirectoryDetail;
         public CollectionLibraryFrame() {
             this.InitializeComponent();
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e) {
             watch.ItemsSource = null;
+            Vm.ItemItemSource = null;
             GC.Collect();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e) {

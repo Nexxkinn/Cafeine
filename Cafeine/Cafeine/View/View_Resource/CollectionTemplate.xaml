@@ -43,15 +43,13 @@
                        Margin="8,4,8,0" 
                        Text="{x:Bind Path=Itemproperty.Item_Title}" 
                        x:Phase="1" 
-                       FontSize="15"
-                       FontWeight="Medium" 
-                       FontStretch="ExtraCondensed"
-                       FontFamily="ms-appx:/Font/Montserrat/Montserrat-Regular.ttf#Montserrat Regular"
+                       FontSize="13.5"
+                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="Wrap"
                        Foreground="#FF333333"
                        MaxLines="2"
-                       CharacterSpacing="12"/>
+                       CharacterSpacing="16"/>
             <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" x:DeferLoadStrategy="Lazy" x:Phase="1" FontFamily="Segoe UI" FontSize="15" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
         </Grid>
     </DataTemplate>

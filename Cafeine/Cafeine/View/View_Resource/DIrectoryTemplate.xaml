@@ -45,17 +45,16 @@
             <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="20" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <TextBlock Margin="8,0" 
                        Text="{x:Bind DirectoryTitle}"
-                       FontSize="15"
+                       FontSize="13.5"
                        Grid.Row="1"
                        Grid.Column="1"
-                       FontWeight="Medium" 
-                       FontStretch="ExtraCondensed"
-                       FontFamily="ms-appx:/Font/Montserrat/Montserrat-Regular.ttf#Montserrat Regular"
                        TextTrimming="CharacterEllipsis"
                        TextWrapping="Wrap"
                        Foreground="#FF333333"
                        MaxLines="2"
-                       VerticalAlignment="Center"/>
+                       VerticalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat"
+                       CharacterSpacing="16"/>
         </Grid>
     </DataTemplate>
     <ItemsPanelTemplate x:Key="Itemspanel">

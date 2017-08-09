@@ -2,6 +2,7 @@
 using Cafeine.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
 using System;
 using System.Collections.Generic;
@@ -51,10 +52,6 @@ namespace Cafeine.ViewModel {
         private ICafeineNavigationService _navigationservice;
 
         private ObservableCollection<CollectionLibrary> ItemList = new ObservableCollection<CollectionLibrary>();
-        //public ObservableCollection<CollectionLibrary> ItemList {
-        //    get { return _itemList; }
-        //    set { Set(ref _itemList, value); }
-        //}
 
         private VirtualDirectory _directory = new VirtualDirectory();
         public VirtualDirectory Directory {
@@ -78,12 +75,27 @@ namespace Cafeine.ViewModel {
 
         public CollectionLibraryViewModel(ICafeineNavigationService navigation) {
             _navigationservice = navigation;
+            Messenger.Default.Register<NotificationMessageAction<CollectionLibrary>>(this, HandleNotificationMessage);
         }
+        private void HandleNotificationMessage(NotificationMessageAction<CollectionLibrary> message) {
+            //check if it has a same id from sender
+            var x = (ItemModel)message.Sender;
+            CollectionLibrary checkitem;
+            try {
+                checkitem = ItemItemSource.Where(i => i.Itemproperty.Item_Id == x.Item_Id).First();
+                message.Execute(checkitem);
+            }
+            catch (Exception) {
+                checkitem = null;
+            }
+        }
+
         public async void GrabUserItemList() {
 
             try {
                 ItemList = await CollectionLibraryProvider.QueryUserAnimeMangaListAsync(Directory.AnimeOrManga);
                 ItemItemSource = ItemList.Where(x => x.Itemproperty.My_status == Directory.DirectoryType - 3);
+                ItemList = null;
             }
             catch (Exception e) {
                 //TODO: show error message?? e.Message
@@ -96,24 +108,9 @@ namespace Cafeine.ViewModel {
                 return _expandItem
                     ?? (_expandItem = new RelayCommand<CollectionLibrary>(
                     async p => {
-                        ItemModel x = await lo(p);
-                        if (x != null) {
-                            p.My_score = x.My_score.ToString();
-                            p.My_watch = x.My_watch.ToString();
-                        }
+                        await ExpandItemDialogService.ItemCollectionExpand(p, Directory.AnimeOrManga);
                     }));
             }
         }
-        private async Task<ItemModel> lo(CollectionLibrary e) {
-            ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
-            ItemModel item;
-            ExpandItemDialog.Item = e.Itemproperty;
-            ExpandItemDialog.category = Directory.AnimeOrManga;
-            await ExpandItemDialog.ShowAsync();
-            item = ExpandItemDialog.Item;
-            return item;
-        }
-
-
     }
 }
