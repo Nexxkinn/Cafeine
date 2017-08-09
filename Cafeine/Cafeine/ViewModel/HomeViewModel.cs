@@ -117,7 +117,7 @@ namespace Cafeine.ViewModel {
                 return _AutoSuggestBoxQuerySubmited
                     ?? (_AutoSuggestBoxQuerySubmited = new RelayCommand<GroupedSearchResult>(
                     p => {
-                        ExpandItemDialogService.da(p, p.Library.Category);
+                        ExpandItemDialogService.QueryItemExpand(p);
                     }));
             }
         }

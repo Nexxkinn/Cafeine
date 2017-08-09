@@ -2,11 +2,12 @@
 using Cafeine.ViewModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Cafeine.Design {
     class ExpandItemDialogService : ViewModelBase {
@@ -29,13 +30,30 @@ namespace Cafeine.Design {
         ///2.   Check if it's available in collection
         ///     If so, expand from its vm
         /// 
-        public static async void da(GroupedSearchResult o, AnimeOrManga a) {
-            CollectionLibrary fff = new CollectionLibrary(o.Library);
+        public static async void QueryItemExpand(GroupedSearchResult o) {
+            CollectionLibrary input = new CollectionLibrary(o.Library);
+
+            //fetch if it has local library
+            var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
+            StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
+            string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
+            try {
+                input = new CollectionLibrary(
+                    JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile)
+                    .Where(x => x.Item_Id == o.Library.Item_Id)
+                    .First()
+                    );
+            }
+            catch (InvalidOperationException) {
+            }
+
+            //check if CollectionLibrary frame has the item too
             Messenger.Default.Send(
                 new NotificationMessageAction<CollectionLibrary>(o.Library, "", reply => {
-                    fff = reply;
+                    input = reply;
                 }));
-            await ItemCollectionExpand(fff, a);
+
+            await ItemCollectionExpand(input, o.Library.Category);
         }
 
     }
