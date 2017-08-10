@@ -159,10 +159,7 @@ namespace Cafeine.ViewModel {
         }
         private static async Task<List<LocalDirectorySetupItems>> FeedCollectionToIObservableList() {
             List<LocalDirectorySetupItems> Item = new List<LocalDirectorySetupItems>();
-            var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
-            StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
-            string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
-            List<ItemModel> products = JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile);
+            var products = await Design.DataProvider.GrabOfflineCollection();
             foreach (var item in products) {
                 Item.Add(new LocalDirectorySetupItems {
                     Category = item.Category.ToString(),

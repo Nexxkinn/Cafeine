@@ -83,6 +83,13 @@ namespace Cafeine.Design {
             await FileIO.WriteTextAsync(SaveFile, JsonItems);
             GC.Collect();
         }
+        public static async Task<ObservableCollection<ItemModel>> GrabOfflineCollection() {
+            var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
+            StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
+            string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
+            ObservableCollection<ItemModel> products = JsonConvert.DeserializeObject<ObservableCollection<ItemModel>>(ReadJSONFile);
+            return await Task.FromResult(products);
+        }
         public static async Task CreateCustomVirtualDirectory(string FolderName) {
 
         }

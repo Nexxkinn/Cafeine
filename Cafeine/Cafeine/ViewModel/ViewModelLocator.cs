@@ -24,8 +24,10 @@ namespace Cafeine.ViewModel {
             SimpleIoc.Default.Register<INavigationService>(() => nav);
 
             var F = new CafeineNavigationService();
+            F.Configure("SettingsPage", typeof(SettingsPage));
             F.Configure("VirDir", typeof(DirectoryExplorer));
             F.Configure("Collection", typeof(CollectionLibraryFrame));
+            F.Configure("ExpandItem", typeof(ExpandItemDetails));
             SimpleIoc.Default.Register<ICafeineNavigationService>(() => F);
 
             SimpleIoc.Default.Register<IDialogService, DialogService>();
@@ -36,6 +38,7 @@ namespace Cafeine.ViewModel {
             SimpleIoc.Default.Register<LocalDirectorySetupViewModel>();
             SimpleIoc.Default.Register<CollectionLibraryViewModel>();
             SimpleIoc.Default.Register<DirectoryExplorerViewModel>();
+            SimpleIoc.Default.Register<ExpandItemDialogViewModel>();
         }
 
         /// <summary>
@@ -49,5 +52,6 @@ namespace Cafeine.ViewModel {
         public LocalDirectorySetupViewModel LDSetup => ServiceLocator.Current.GetInstance<LocalDirectorySetupViewModel>();
         public CollectionLibraryViewModel CollectionFrame => ServiceLocator.Current.GetInstance<CollectionLibraryViewModel>();
         public DirectoryExplorerViewModel DirectoryExFrame => ServiceLocator.Current.GetInstance<DirectoryExplorerViewModel>();
+        public ExpandItemDialogViewModel ExpandDialog => ServiceLocator.Current.GetInstance<ExpandItemDialogViewModel>();
     }
 }

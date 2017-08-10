@@ -134,6 +134,7 @@
     <Compile Include="Model\NavigationService.cs" />
     <Compile Include="ViewModel\CollectionLibraryViewModel.cs" />
     <Compile Include="ViewModel\DirectoryExplorerViewModel.cs" />
+    <Compile Include="ViewModel\ExpandItemDialogViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LocalDirectorySetupViewModel.cs" />
     <Compile Include="View\CollectionLibrary.xaml.cs">
@@ -150,6 +151,9 @@
     </Compile>
     <Compile Include="View\View_Resource\DirectoryTemplate.cs">
       <DependentUpon>DIrectoryTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\View_Resource\Generic.xaml.cs">
+      <DependentUpon>Generic.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\View_Resource\HomePageTemplate.cs">
       <DependentUpon>HomePageTemplate.xaml</DependentUpon>
@@ -270,6 +274,10 @@
     <Page Include="View\View_Resource\DIrectoryTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\View_Resource\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\View_Resource\HomePageTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>

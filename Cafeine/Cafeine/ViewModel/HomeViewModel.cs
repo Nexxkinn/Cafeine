@@ -158,7 +158,7 @@ namespace Cafeine.ViewModel {
                 return _SettingsPage
                     ?? (_SettingsPage = new RelayCommand(
                     () => {
-                        F.Navigate(typeof(SettingsPage));
+                        _Fnavigationservice.NavigateTo("SettingsPage");
                         SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                     }));
             }

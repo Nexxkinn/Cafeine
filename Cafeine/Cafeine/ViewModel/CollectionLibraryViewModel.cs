@@ -108,7 +108,7 @@ namespace Cafeine.ViewModel {
                 return _expandItem
                     ?? (_expandItem = new RelayCommand<CollectionLibrary>(
                     async p => {
-                        await ExpandItemDialogService.ItemCollectionExpand(p, Directory.AnimeOrManga);
+                        await ExpandItemDialogService.ItemCollectionExpand(p);
                     }));
             }
         }

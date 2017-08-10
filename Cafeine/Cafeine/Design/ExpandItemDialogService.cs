@@ -11,17 +11,17 @@ using Windows.Storage;
 
 namespace Cafeine.Design {
     class ExpandItemDialogService : ViewModelBase {
-        public static async Task ItemCollectionExpand(CollectionLibrary ez, AnimeOrManga aa) {
+        public static async Task ItemCollectionExpand(CollectionLibrary ez) {
             ItemModel item;
             ExpandItemDetails ExpandItemDialog = new ExpandItemDetails();
-            ExpandItemDialog.Item = ez.Itemproperty;
-            ExpandItemDialog.category = aa;
+            ExpandItemDialog.Vm.Item = ez.Itemproperty;
+            //ExpandItemDialog.Vm.Item = ez.Itemproperty;
             await ExpandItemDialog.ShowAsync();
-            item = ExpandItemDialog.Item;
+            item = ExpandItemDialog.Vm.Item;
             if (item != null) {
                 ez.My_score = item.My_score.ToString();
                 ez.My_watch = item.My_watch.ToString();
-            }//TODO : CANCEL BUTTON
+            }
         }
 
         ///Steps :
@@ -32,14 +32,12 @@ namespace Cafeine.Design {
         /// 
         public static async void QueryItemExpand(GroupedSearchResult o) {
             CollectionLibrary input = new CollectionLibrary(o.Library);
-
+            
             //fetch if it has local library
-            var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
-            StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
-            string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
+            var OfflineCollection = await DataProvider.GrabOfflineCollection();
             try {
                 input = new CollectionLibrary(
-                    JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile)
+                    OfflineCollection
                     .Where(x => x.Item_Id == o.Library.Item_Id)
                     .First()
                     );
@@ -53,7 +51,7 @@ namespace Cafeine.Design {
                     input = reply;
                 }));
 
-            await ItemCollectionExpand(input, o.Library.Category);
+            await ItemCollectionExpand(input);
         }
 
     }

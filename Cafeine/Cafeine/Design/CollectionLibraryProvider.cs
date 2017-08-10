@@ -18,16 +18,14 @@ using Newtonsoft.Json;
 namespace Cafeine.Design {
     class CollectionLibraryProvider {
 
+        
         ///<summary>
         ///convert user's collection into a list for Gridview or Listview's ItemCollection. 
         ///AnimeorManga : 1 -> anime, 2-> manga
         ///</summary>
         public static async Task<ObservableCollection<CollectionLibrary>> QueryUserAnimeMangaListAsync(AnimeOrManga AnimeManga) {
             ObservableCollection<CollectionLibrary> Item = new ObservableCollection<CollectionLibrary>();
-            var OffFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
-            StorageFile OpenJSONFile = await OffFolder.GetFileAsync("RAW_1.json");
-            string ReadJSONFile = await FileIO.ReadTextAsync(OpenJSONFile);
-            List<ItemModel> products = JsonConvert.DeserializeObject<List<ItemModel>>(ReadJSONFile);
+            var products = await DataProvider.GrabOfflineCollection();
             switch (AnimeManga) //1 - anime  //2 - manga
             {
                 case AnimeOrManga.anime: {
