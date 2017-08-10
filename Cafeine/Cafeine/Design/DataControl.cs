@@ -55,7 +55,8 @@ namespace Cafeine.Design {
 
                     My_watch = (int)item.Element("my_watched_episodes"),
                     My_score = (int)item.Element("my_score"),
-                    My_status = (int)item.Element("my_status")
+                    My_status = (int)item.Element("my_status"),
+                    Tags = item.Element("my_tags").Value
                 });
             }
 
@@ -72,7 +73,8 @@ namespace Cafeine.Design {
 
                     My_watch = (int)item.Element("my_read_chapters"),
                     My_score = (int)item.Element("my_score"),
-                    My_status = (int)item.Element("my_status")
+                    My_status = (int)item.Element("my_status"),
+                    Tags = item.Element("my_tags").Value
                 });
             }
 

@@ -35,6 +35,8 @@ namespace Cafeine.Model
         public int My_status;
         [XmlElement("score")]
         public int My_score;
+        [XmlElement("tags")]
+        public string Tags;
 
         [XmlIgnore]
         public string[] VirtualDirectory;

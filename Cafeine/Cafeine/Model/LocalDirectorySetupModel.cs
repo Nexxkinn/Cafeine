@@ -16,4 +16,8 @@ namespace Cafeine.Model {
         public int ItemID;
         public string Title;
     }
+    public class LocalDirectoryFile {
+        public string Title;
+        public string Directory;
+    }
 }
