@@ -34,7 +34,10 @@
 
                 <TextBlock HorizontalAlignment="Left" Height="31" Margin="0,8,0,2" Text="Donate" Width="246" FontSize="20" FontWeight="SemiBold"/>
                 <TextBlock IsTextSelectionEnabled="True">
-                Currently only possible with Bitcoin<LineBreak/>Public address : 1Hswtu4QhKNxEmFU8X4izohSjHfnY4zsUT<LineBreak/>Thank you for your donation!
+                Currently possible with cryptocurrency 
+                    <LineBreak/>Bitcoin : 3DfFfGMUbhbVuH56FnyGfrSE83fzEVkWYT
+                    <LineBreak/>Litecoin : Lh6kziSE2yNG1TWUYEfXTEKaKuNMkKSRG3
+                    <LineBreak/>Thank you for your donation!
                 </TextBlock>
 
             </StackPanel>

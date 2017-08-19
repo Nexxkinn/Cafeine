@@ -30,7 +30,10 @@ namespace Cafeine.ViewModel {
                         await dialog.ShowAsync();
                         Logincredentials lo = new Logincredentials();
                         bool verify = await lo.logincredential(dialog.u, dialog.p, 1);
-                        if (verify == true) _navigationService.NavigateTo("HomePage");
+                        if (verify == true) {
+                            await DataProvider.GrabUserDatatoOffline(1);
+                            _navigationService.NavigateTo("HomePage");
+                        }
                     }));
             }
         }

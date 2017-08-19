@@ -18,6 +18,6 @@ namespace Cafeine.Model {
     }
     public class LocalDirectoryFile {
         public string Title;
-        public string Directory;
+        public StorageFile Directory;
     }
 }

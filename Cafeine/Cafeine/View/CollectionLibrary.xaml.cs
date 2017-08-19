@@ -35,6 +35,7 @@ namespace Cafeine {
         protected override void OnNavigatedFrom(NavigationEventArgs e) {
             watch.ItemsSource = null;
             Vm.ItemItemSource = null;
+            Vm.ErrorVisibility = Visibility.Collapsed;
             GC.Collect();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e) {

@@ -15,6 +15,9 @@
         <core:EventTriggerBehavior EventName="PrimaryButtonClick">
             <core:InvokeCommandAction Command="{x:Bind Vm.PrimaryButton}"/>
         </core:EventTriggerBehavior>
+        <core:EventTriggerBehavior EventName="SecondaryButtonClick">
+            <core:InvokeCommandAction Command="{x:Bind Vm.SecondaryButton}"/>
+        </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
     <ContentDialog.Resources>
         <ResourceDictionary>
@@ -63,8 +66,10 @@
                        Margin="0,0,0,8" />
             <AutoSuggestBox x:Name="ItemAutoSuggest"
                             Grid.Column="1"
+                            Text=""
                             ItemsSource="{x:Bind Vm.LinkedItemSuggestionItemSource, Mode=OneWay}"
-                            Visibility="{x:Bind Vm.IsLinkedItemSuggestionVisible,Mode=OneWay}">
+                            Visibility="{x:Bind Vm.IsLinkedItemSuggestionVisible,Mode=OneWay}"
+                            UpdateTextOnSelect="False">
                 <AutoSuggestBox.ItemTemplate>
                     <DataTemplate x:DataType="m:LocalDirectorySetupItems">
                         <TextBlock Text="{x:Bind Title}" />

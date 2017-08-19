@@ -12,9 +12,11 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
+using Windows.UI.Xaml.Controls;
 
 namespace Cafeine.ViewModel {
-    public class ExpandItemDialogViewModel : ViewModelBase {
+    public sealed class ExpandItemDialogViewModel : ViewModelBase {
         private ItemModel _item = new ItemModel();
         public ItemModel Item {
             get { return _item; }
@@ -73,8 +75,8 @@ namespace Cafeine.ViewModel {
                     foreach (var item in File) {
                         file.Add(
                             new LocalDirectoryFile {
-                                Title = item.Name,
-                                Directory = item.Path
+                                Title = "Episode " +  Regex.Match(item.Name, @"(?<=\- )\d\w | 01(?= \()"),
+                                Directory = item
                             }
                             );
                     }
@@ -98,6 +100,7 @@ namespace Cafeine.ViewModel {
                     ?? (_primaryButton = new RelayCommand(
                     async () => {
                         await Design.CollectionLibraryProvider.UpdateItem(Item, Item.Category);
+                        GC.Collect();
                     }));
             }
         }
@@ -109,6 +112,18 @@ namespace Cafeine.ViewModel {
                     ?? (_secondaryButton = new RelayCommand(
                     () => {
                         Item = null;
+                        GC.Collect();
+                    }));
+            }
+        }
+
+        private RelayCommand<LocalDirectoryFile> _collectionListItemClicked;
+        public RelayCommand<LocalDirectoryFile> CollectionListItemClicked {
+            get {
+                return _collectionListItemClicked
+                    ?? (_collectionListItemClicked = new RelayCommand<LocalDirectoryFile>(
+                    async p => {
+                        var open = await Windows.System.Launcher.LaunchFileAsync(p.Directory);
                     }));
             }
         }

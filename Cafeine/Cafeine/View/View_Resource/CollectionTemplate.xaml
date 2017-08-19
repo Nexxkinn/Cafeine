@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine.ViewModel"
     xmlns:xaml="using:Windows.UI.Xaml"
-    x:Class="Cafeine.CollectionTemplates">
+    x:Class="Cafeine.CollectionTemplates"
+    >
     <DataTemplate x:Name="Collection" x:DataType="local:CollectionLibrary">
         <Grid Width="150" Height="300">
             <Grid.RowDefinitions>
@@ -27,31 +28,46 @@
                         </DoubleAnimation>
                     </Storyboard>
                 </Grid.Resources>
-                <Rectangle x:Name="black" Fill="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.7"/>
-                <Grid HorizontalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="myscore" Grid.Row="0" Text="{x:Bind Path=My_score, Mode=OneWay}" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
-                    <TextBlock x:Name="Myepisode" Grid.Row="1" Text="{x:Bind Path=My_watch, Mode=OneWay}" VerticalAlignment="Center" FontFamily="Segoe UI Semilight" FontWeight="SemiLight" Foreground="White"/>
-                </Grid>
+                <Rectangle x:Name="black" Fill="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.85"/>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="8,4">
+                    <TextBlock Text="Watched" Foreground="White" FontWeight="Light" Visibility="{x:Bind Path=AnimeItemVisibility}"/>
+                    <TextBlock Text="Read" Foreground="White" FontWeight="Light" Visibility="{x:Bind Path=MangaItemVisibility}"/>
+                    
+                    <TextBlock x:Name="Myepisode" Text="{x:Bind Path=My_watch, Mode=OneWay}" Margin="0,2" FontSize="28" Foreground="White" FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Bold.ttf#Montserrat" TextLineBounds="Tight" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Of" FontWeight="Light" Foreground="White" />
+                        <TextBlock Text="{x:Bind Path=TotalEpisodesChapters}" Padding="4,0" FontWeight="Medium" Foreground="White" />
+                        <TextBlock Text="Episodes" FontWeight="Light" Foreground="White" Visibility="{x:Bind Path=AnimeItemVisibility}" />
+                        <TextBlock Text="Chapters" FontWeight="Light" Foreground="White" Visibility="{x:Bind Path=MangaItemVisibility}" />
+                    </StackPanel>
+                    <TextBlock Text="With a score" FontWeight="Light" Foreground="White" />
+                    <StackPanel Orientation="Horizontal" Height="24" Margin="0,2">
+                        <TextBlock x:Name="myscore" Text="{x:Bind Path=My_score, Mode=OneWay}" FontSize="28" FontWeight="Black" FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Bold.ttf#Montserrat" Foreground="White" TextLineBounds="Tight" />
+                        <TextBlock Margin="4,0" Text="out of 10" Foreground="White" FontWeight="Light" VerticalAlignment="Bottom" />
+                    </StackPanel>
+                </StackPanel>
             </Grid>
-            <Image x:Name="theimage" Grid.Row="0" Source="{x:Bind Path=Image}" MaxHeight="228" MaxWidth="150" HorizontalAlignment="Center" VerticalAlignment="Top" RelativePanel.AlignLeftWithPanel="True" Stretch="Fill"/>
+            <Image x:Name="theimage"
+                   Grid.Row="0"
+                   Source="{x:Bind Path=Image}"
+                   MaxHeight="228"
+                   MaxWidth="150"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   Stretch="Fill"
+                   Unloaded="theimage_Unloaded"/>
             <TextBlock x:Name="thetitle" 
                        Grid.Row="1" 
                        Margin="8,4,8,0" 
                        Text="{x:Bind Path=Itemproperty.Item_Title}" 
                        x:Phase="1" 
-                       FontSize="13.5"
-                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat"
-                       TextTrimming="CharacterEllipsis"
+                       FontSize="13.5" TextTrimming="CharacterEllipsis"
                        TextWrapping="Wrap"
                        Foreground="#FF333333"
                        MaxLines="2"
-                       CharacterSpacing="16"/>
-            <TextBlock x:Name="series_start" Margin="3,0" Text="{x:Bind Path=Itemproperty.Series_start}" x:DeferLoadStrategy="Lazy" x:Phase="1" FontFamily="Segoe UI" FontSize="15" TextTrimming="None" TextWrapping="Wrap" Foreground="#FF3F3F3F"/>
-        </Grid>
+                       CharacterSpacing="16" FontWeight="SemiBold"/>
+            </Grid>
     </DataTemplate>
     <Style x:Key="WatchingTab" TargetType="GridViewItem">
         <Setter Property="Margin" Value="0,12,8,0"/>

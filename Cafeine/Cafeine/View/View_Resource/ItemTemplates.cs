@@ -22,5 +22,9 @@ namespace Cafeine
             Storyboard sb = ((Grid)sender).Resources["ImageOffHover"] as Storyboard;
             sb.Begin();
         }
+        
+        private void theimage_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e) {
+            ((Image)sender).Source = null;
+        }
     }
 }

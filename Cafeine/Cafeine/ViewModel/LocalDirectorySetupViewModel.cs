@@ -181,9 +181,27 @@ namespace Cafeine.ViewModel {
                         var OfflineFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Offline_data", CreationCollisionOption.OpenIfExists);
                         var SaveFile = await OfflineFolder.CreateFileAsync("LinkedFolder_1.json", CreationCollisionOption.ReplaceExisting);
                         await FileIO.WriteTextAsync(SaveFile, JsonItems);
+                        IsBrowseButtonVisible = Visibility.Visible;
+                        IsLinkedItemSuggestionVisible = Visibility.Collapsed;
+                        IsStepTwoOK = Visibility.Collapsed;
                     }));
             }
         }
+
+        private RelayCommand _secondaryButton;
+        public RelayCommand SecondaryButton {
+            get {
+                return _secondaryButton
+                    ?? (_secondaryButton = new RelayCommand(
+                    () => {
+                        IsBrowseButtonVisible = Visibility.Visible;
+                        IsStepTwoOK = Visibility.Collapsed;
+                        IsLinkedItemSuggestionVisible = Visibility.Collapsed;
+                        LinkedItemSuggestionItemSource = null;
+                    }));
+            }
+        }
+
         private RelayCommand<localDirectorySetup> _linkedFolderItemClicked;
         public RelayCommand<localDirectorySetup> LinkedFolderItemClicked {
             get {

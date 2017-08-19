@@ -49,5 +49,24 @@
                             </ItemsPanelTemplate>
                         </GridView.ItemsPanel>-->
         </GridView>
+        <StackPanel Visibility="{x:Bind Vm.ErrorVisibility, Mode=OneWay}"
+                    Orientation="Vertical"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Opacity="0.7">
+            <TextBlock Text="Hmm..."
+                       FontSize="32"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat SemiBold" FontWeight="SemiBold" />
+            <TextBlock Text="Why is it empty, I wonder..." Margin="0,0,0,24" HorizontalAlignment="Center"/>
+            <TextBlock Text="0"
+                       Canvas.ZIndex="0"
+                       Grid.Row="0" Grid.Column="0"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Cafeine_font.ttf#Untitled1" 
+                       FontSize="200"/>
+        </StackPanel>
     </Grid>
 </Page>

@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace Cafeine.ViewModel {
     public class CollectionLibrary : INotifyPropertyChanged {
@@ -37,8 +38,17 @@ namespace Cafeine.ViewModel {
                 this.OnPropertyChanged();
             }
         }
+        public string TotalEpisodesChapters {
+            get { return (itemproperty.Item_Totalepisodes != 0) ? itemproperty.Item_Totalepisodes.ToString() : "-"; }
+        }
         public CollectionLibrary(ItemModel itemProperties) {
             itemproperty = itemProperties;
+        }
+        public Visibility MangaItemVisibility {
+            get { return (itemproperty.Category == AnimeOrManga.manga) ? Visibility.Visible : Visibility.Collapsed; }
+        }
+        public Visibility AnimeItemVisibility {
+            get { return (itemproperty.Category == AnimeOrManga.anime) ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public CollectionLibrary() {
@@ -50,7 +60,7 @@ namespace Cafeine.ViewModel {
     }
     public class CollectionLibraryViewModel : ViewModelBase {
         private ICafeineNavigationService _navigationservice;
-
+        
         private ObservableCollection<CollectionLibrary> ItemList = new ObservableCollection<CollectionLibrary>();
 
         private VirtualDirectory _directory = new VirtualDirectory();
@@ -60,6 +70,15 @@ namespace Cafeine.ViewModel {
             }
             set {
                 Set(ref _directory, value);
+            }
+        }
+        private Visibility _errorVisibility = Visibility.Collapsed;
+        public Visibility ErrorVisibility {
+            get {
+                return _errorVisibility;
+            }
+            set {
+                Set(ref _errorVisibility, value);
             }
         }
 
@@ -95,13 +114,14 @@ namespace Cafeine.ViewModel {
             try {
                 ItemList = await CollectionLibraryProvider.QueryUserAnimeMangaListAsync(Directory.AnimeOrManga);
                 ItemItemSource = ItemList.Where(x => x.Itemproperty.My_status == Directory.DirectoryType - 3);
+                int count = ItemItemSource.Count();
+                if (count == 0) ErrorVisibility = Visibility.Visible;
                 ItemList = null;
             }
             catch (Exception e) {
-                //TODO: show error message?? e.Message
+                
             }
         }
-
         private RelayCommand<CollectionLibrary> _expandItem;
         public RelayCommand<CollectionLibrary> ExpandItem {
             get {
