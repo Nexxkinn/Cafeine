@@ -127,6 +127,8 @@
     <Compile Include="Design\DataControl.cs" />
     <Compile Include="Design\ExpandItemDialogService.cs" />
     <Compile Include="Design\Logincredentials.cs" />
+    <Compile Include="Design\RemoteTorrent\qBittorent\Comm.cs" />
+    <Compile Include="Design\RemoteTorrent\qBittorent\CoreApi.cs" />
     <Compile Include="Design\SearchProvider.cs" />
     <Compile Include="Model\GroupedSearchResult.cs" />
     <Compile Include="Model\LocalDirectorySetupModel.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="ViewModel\ExpandItemDialogViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LocalDirectorySetupViewModel.cs" />
+    <Compile Include="ViewModel\TorrentManagerViewModel.cs" />
     <Compile Include="View\CollectionLibrary.xaml.cs">
       <DependentUpon>CollectionLibrary.xaml</DependentUpon>
     </Compile>
@@ -149,6 +152,9 @@
     </Compile>
     <Compile Include="View\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TorrentManager.xaml.cs">
+      <DependentUpon>TorrentManager.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\View_Resource\DirectoryTemplate.cs">
       <DependentUpon>DIrectoryTemplate.xaml</DependentUpon>
@@ -268,6 +274,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\TorrentManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\View_Resource\CollectionTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -285,9 +295,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Design\RemoteTorrent\qBittorent\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator">
       <Version>1.3.0</Version>
