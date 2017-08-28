@@ -78,5 +78,18 @@ namespace Cafeine.Design.RemoteTorrent.qBittorent {
                 return await Task.FromResult(false);
             }
         }
+        public static PasswordCredential GetTorrentCredential() {
+            PasswordCredential credential = null;
+            var vault = new PasswordVault();
+            try {
+                var thelist = vault.FindAllByResource("qBittorent");
+                credential = thelist[0];
+                credential.RetrievePassword();
+                return credential;
+            }
+            catch (Exception) {
+                return null;
+            }
+        }
     }
 }

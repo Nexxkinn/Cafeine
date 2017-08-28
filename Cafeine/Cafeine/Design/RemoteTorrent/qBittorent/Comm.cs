@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Windows.Web.Http;
 
 namespace Cafeine.Design.RemoteTorrent.qBittorent {
-    class TorrentProtery {
+    public class TorrentProtery {
         public string hash;
         public string name;
         public int size;

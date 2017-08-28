@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Cafeine.View.TorrentManager"
+    x:Class="Cafeine.TorrentManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine"
@@ -9,6 +9,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
+    DataContext="{Binding TorrentManager, Source={StaticResource Locator}}"
     mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>
@@ -32,15 +33,14 @@
                   ItemTemplate="{StaticResource DirectoryCollection}"
                   ItemContainerStyle="{StaticResource WatchingTab}"
                   ItemsPanel="{StaticResource Itemspanel}"
-                  ItemsSource="{x:Bind Vm.DataReceived,Mode=OneWay}"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
                   animations:ReorderGridAnimation.Duration="300">
-            <interactivity:Interaction.Behaviors>
+            <!--<interactivity:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="ItemClick">
                     <core:InvokeCommandAction Command="{x:Bind Vm.DirectoryItemClick}"
                                               InputConverter="{StaticResource DConv}" />
                 </core:EventTriggerBehavior>
-            </interactivity:Interaction.Behaviors>
+            </interactivity:Interaction.Behaviors>-->
         </GridView>
     </Grid>
 </Page>

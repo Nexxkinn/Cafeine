@@ -28,6 +28,7 @@ namespace Cafeine.ViewModel {
             F.Configure("VirDir", typeof(DirectoryExplorer));
             F.Configure("Collection", typeof(CollectionLibraryFrame));
             F.Configure("ExpandItem", typeof(ExpandItemDetails));
+            F.Configure("TorentManager", typeof(TorrentManager));
             SimpleIoc.Default.Register<ICafeineNavigationService>(() => F);
 
             SimpleIoc.Default.Register<IDialogService, DialogService>();
@@ -39,6 +40,7 @@ namespace Cafeine.ViewModel {
             SimpleIoc.Default.Register<CollectionLibraryViewModel>();
             SimpleIoc.Default.Register<DirectoryExplorerViewModel>();
             SimpleIoc.Default.Register<ExpandItemDialogViewModel>();
+            SimpleIoc.Default.Register<TorrentManagerViewModel>();
         }
 
         /// <summary>
@@ -53,5 +55,6 @@ namespace Cafeine.ViewModel {
         public CollectionLibraryViewModel CollectionFrame => ServiceLocator.Current.GetInstance<CollectionLibraryViewModel>();
         public DirectoryExplorerViewModel DirectoryExFrame => ServiceLocator.Current.GetInstance<DirectoryExplorerViewModel>();
         public ExpandItemDialogViewModel ExpandDialog => ServiceLocator.Current.GetInstance<ExpandItemDialogViewModel>();
+        //public TorrentManagerViewModel TorrentManager => ServiceLocator.Current.GetInstance<TorrentManagerViewModel>();
     }
 }
