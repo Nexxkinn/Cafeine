@@ -25,12 +25,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <GridView x:Name="VirDirInterface"
+        <GridView x:Name="List"
                   Margin="17,8,0,0"
                   Foreground="{x:Null}"
                   IsItemClickEnabled="True"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                  animations:ReorderGridAnimation.Duration="300">
+                  animations:ReorderGridAnimation.Duration="300"
+                  ItemsSource="{x:Bind Vm.list,Mode=OneWay}">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="torrent:TorrentModel" >
                     <Grid Width="328" Height="52">
@@ -78,5 +79,27 @@
                 </core:EventTriggerBehavior>
             </interactivity:Interaction.Behaviors>-->
         </GridView>
+        <StackPanel Visibility="{x:Bind Vm.IsErrorVisualVisible, Mode=OneWay}"
+                    Orientation="Vertical"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Opacity="0.7">
+            <TextBlock Text="Hmm..."
+                       FontSize="32"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat SemiBold" FontWeight="SemiBold" />
+            
+            <TextBlock Text="An error" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind Vm.ErrorValue,Mode=OneWay}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Got called out instead..." Margin="0,0,0,24" HorizontalAlignment="Center"/>
+            <TextBlock Text="0"
+                       Canvas.ZIndex="0"
+                       Grid.Row="0" Grid.Column="0"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Cafeine_font.ttf#Untitled1" 
+                       FontSize="200"/>
+        </StackPanel>
     </Grid>
 </Page>

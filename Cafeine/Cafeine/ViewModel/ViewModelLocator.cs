@@ -63,6 +63,6 @@ namespace Cafeine.ViewModel {
         }
         public DirectoryExplorerViewModel DirectoryExFrame => ServiceLocator.Current.GetInstance<DirectoryExplorerViewModel>();
         public ExpandItemDialogViewModel ExpandDialog => ServiceLocator.Current.GetInstance<ExpandItemDialogViewModel>();
-        //public TorrentManagerViewModel TorrentManager => ServiceLocator.Current.GetInstance<TorrentManagerViewModel>();
+        public TorrentManagerViewModel TorrentManager => ServiceLocator.Current.GetInstance<TorrentManagerViewModel>();
     }
 }

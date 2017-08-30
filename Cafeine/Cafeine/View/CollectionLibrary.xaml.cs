@@ -28,7 +28,7 @@ namespace Cafeine {
     /// </summary>
     public partial class CollectionLibraryFrame : Page {
         public CollectionLibraryViewModel Vm => (CollectionLibraryViewModel)DataContext;
-        ObservableCollection<CollectionLibrary> ItemList = new ObservableCollection<CollectionLibrary>();
+        //ObservableCollection<CollectionLibrary> ItemList = new ObservableCollection<CollectionLibrary>();
         public CollectionLibraryFrame() {
             this.InitializeComponent();
         }

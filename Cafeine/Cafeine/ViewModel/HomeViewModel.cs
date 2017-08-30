@@ -63,7 +63,7 @@ namespace Cafeine.ViewModel {
                     FeedTabChecked = false;
                     break;
 
-                    case "Cafeine.CollectionLibrary":
+                    case "Cafeine.CollectionLibraryFrame":
                     LibraryTabChecked = true;
                     ScheduleTabChecked = false;
                     FeedTabChecked = false;

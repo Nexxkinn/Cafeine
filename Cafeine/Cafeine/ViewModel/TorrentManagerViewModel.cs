@@ -41,7 +41,7 @@ namespace Cafeine.ViewModel {
             _navigationservice = navigation;
             Fetchdata().Wait();
         }
-        private async Task Fetchdata() {
+        public async Task Fetchdata() {
             try {
                 //Authentication
                 var credentials = CoreApi.GetTorrentCredential();
@@ -55,7 +55,7 @@ namespace Cafeine.ViewModel {
             }
             catch (Exception e) {
                 IsErrorVisualVisible = Visibility.Visible;
-                ErrorValue = e.GetType().ToString();
+                ErrorValue = e.ToString();
             }
 
         }
