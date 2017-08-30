@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
 using Microsoft.Practices.ServiceLocation;
 using Cafeine.Model;
+using System;
 
 namespace Cafeine.ViewModel {
     /// <summary>
@@ -14,7 +15,8 @@ namespace Cafeine.ViewModel {
     /// </summary>
     public class ViewModelLocator {
         public const string SignInPageKey = "SignInPage";
-
+        private string _currentScanVMKey;
+        
         static ViewModelLocator() {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
@@ -42,7 +44,6 @@ namespace Cafeine.ViewModel {
             SimpleIoc.Default.Register<ExpandItemDialogViewModel>();
             SimpleIoc.Default.Register<TorrentManagerViewModel>();
         }
-
         /// <summary>
         /// Gets the Main property.
         /// </summary>
@@ -52,7 +53,14 @@ namespace Cafeine.ViewModel {
         public LoginViewModel Login => ServiceLocator.Current.GetInstance<LoginViewModel>();
         public HomeViewModel Home => ServiceLocator.Current.GetInstance<HomeViewModel>();
         public LocalDirectorySetupViewModel LDSetup => ServiceLocator.Current.GetInstance<LocalDirectorySetupViewModel>();
-        public CollectionLibraryViewModel CollectionFrame => ServiceLocator.Current.GetInstance<CollectionLibraryViewModel>();
+        public CollectionLibraryViewModel CollectionFrame {
+            get {
+                if (!string.IsNullOrEmpty(_currentScanVMKey))
+                    SimpleIoc.Default.Unregister(_currentScanVMKey);
+                _currentScanVMKey = Guid.NewGuid().ToString();
+                return ServiceLocator.Current.GetInstance<CollectionLibraryViewModel>(_currentScanVMKey);
+            }
+        }
         public DirectoryExplorerViewModel DirectoryExFrame => ServiceLocator.Current.GetInstance<DirectoryExplorerViewModel>();
         public ExpandItemDialogViewModel ExpandDialog => ServiceLocator.Current.GetInstance<ExpandItemDialogViewModel>();
         //public TorrentManagerViewModel TorrentManager => ServiceLocator.Current.GetInstance<TorrentManagerViewModel>();

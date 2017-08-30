@@ -129,6 +129,7 @@
     <Compile Include="Design\Logincredentials.cs" />
     <Compile Include="Design\RemoteTorrent\qBittorent\Comm.cs" />
     <Compile Include="Design\RemoteTorrent\qBittorent\CoreApi.cs" />
+    <Compile Include="Design\RemoteTorrent\TorrentModel.cs" />
     <Compile Include="Design\SearchProvider.cs" />
     <Compile Include="Model\GroupedSearchResult.cs" />
     <Compile Include="Model\LocalDirectorySetupModel.cs" />

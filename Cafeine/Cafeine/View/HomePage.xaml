@@ -21,6 +21,7 @@
                                   Source="{x:Bind Vm.CVS, Mode=OneWay}"
                                   IsSourceGrouped="True" />
         <m:AutoSuggestBoxTextChanged x:Key="argsconv" />
+            <m:TabIsChecked x:Key="tabconv"/>
         </ResourceDictionary>
     </Page.Resources>
 
@@ -59,11 +60,34 @@
                                  FontSize="22"
                                  MinWidth="100" Template="{StaticResource RadioButtonTemplate}"
                                  FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Reguler.ttf#Montserrat"
-                                 CharacterSpacing="16" />
+                                 CharacterSpacing="16">
+                        <interactivity:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Checked">
+                                <core:InvokeCommandAction Command="{x:Bind Vm.TabChecked, Mode=OneWay}"
+                                                          InputConverter="{StaticResource tabconv}"/>
+                            </core:EventTriggerBehavior>
+                        </interactivity:Interaction.Behaviors>
+                    </RadioButton>
+
+                    <RadioButton x:Name="TManager"
+                                 Content="Feeds"
+                                 GroupName="Tab"
+                                 IsChecked="{x:Bind Vm.FeedTabChecked,Mode=TwoWay}"
+                                 FontSize="22"
+                                 MinWidth="100" Template="{StaticResource RadioButtonTemplate}"
+                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Reguler.ttf#Montserrat"
+                                 CharacterSpacing="16">
+                        <interactivity:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="Checked">
+                                <core:InvokeCommandAction Command="{x:Bind Vm.TabChecked, Mode=OneWay}"
+                                                          InputConverter="{StaticResource tabconv}"/>
+                            </core:EventTriggerBehavior>
+                        </interactivity:Interaction.Behaviors>
+                    </RadioButton>
                     <RadioButton x:Name="Schedule"
                                  Content="Schedule"
                                  GroupName="Tab"
-                                 IsChecked="{x:Bind Vm.ScheduleTabEnabled,Mode=TwoWay}"
+                                 IsChecked="{x:Bind Vm.ScheduleTabChecked,Mode=TwoWay}"
                                  FontSize="24"
                                  MinWidth="120"
                                  FontWeight="Light"

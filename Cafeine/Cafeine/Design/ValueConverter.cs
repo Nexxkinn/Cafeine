@@ -68,4 +68,14 @@ namespace Cafeine.Model {
             throw new NotImplementedException();
         }
     }
+    class TabIsChecked : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            var args = value as object;
+            return args;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
 }

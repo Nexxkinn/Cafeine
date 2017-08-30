@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine"
     xmlns:m="using:Cafeine.Model"
+    xmlns:torrent="using:Cafeine.Design.RemoteTorrent"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
@@ -13,9 +14,7 @@
     mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <local:DirectoryTemplate />
-            </ResourceDictionary.MergedDictionaries>
+            <ListViewItemPresenterCheckMode x:Key="GridViewItemCheckMode">Inline</ListViewItemPresenterCheckMode>
             <m:DirectoryClicked x:Key="DConv" />
         </ResourceDictionary>
     </Page.Resources>
@@ -30,11 +29,48 @@
                   Margin="17,8,0,0"
                   Foreground="{x:Null}"
                   IsItemClickEnabled="True"
-                  ItemTemplate="{StaticResource DirectoryCollection}"
-                  ItemContainerStyle="{StaticResource WatchingTab}"
-                  ItemsPanel="{StaticResource Itemspanel}"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
                   animations:ReorderGridAnimation.Duration="300">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="torrent:TorrentModel" >
+                    <Grid Width="328" Height="52">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="48"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="{ThemeResource SystemListLowColor}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="20" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Margin="8,0" 
+                       Text="{x:Bind name}"
+                       FontSize="13.5"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"
+                       Foreground="#FF333333"
+                       MaxLines="2"
+                       VerticalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat"
+                       CharacterSpacing="16"/>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+            <GridView.ItemContainerStyle>
+                <Style TargetType="GridViewItem">
+                    <Setter Property="Margin" Value="0,4"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="FocusVisualMargin" Value="0" />
+                </Style>
+            </GridView.ItemContainerStyle>
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid Orientation="Horizontal" MaxWidth="350" HorizontalAlignment="Left"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
             <!--<interactivity:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="ItemClick">
                     <core:InvokeCommandAction Command="{x:Bind Vm.DirectoryItemClick}"

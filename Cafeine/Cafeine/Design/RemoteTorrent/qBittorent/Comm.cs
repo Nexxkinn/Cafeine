@@ -8,14 +8,6 @@ using System.Threading.Tasks;
 using Windows.Web.Http;
 
 namespace Cafeine.Design.RemoteTorrent.qBittorent {
-    public class TorrentProtery {
-        public string hash;
-        public string name;
-        public int size;
-        public float progress;
-        public int eta;
-        public string state;
-    }
     public enum ManageTorrent {
         Pause=1,
         Resume,
@@ -38,9 +30,9 @@ namespace Cafeine.Design.RemoteTorrent.qBittorent {
         ///Delete Torrent with downloaded data
         ///
 
-        public static async Task<List<TorrentProtery>> GetTorrentList() {
+        public static async Task<List<TorrentModel>> GetTorrentList() {
             string TorrentList = await CoreApi.GetASync("/query/torrents");
-            List<TorrentProtery> products = JsonConvert.DeserializeObject<List<TorrentProtery>>(TorrentList);
+            List<TorrentModel> products = JsonConvert.DeserializeObject<List<TorrentModel>>(TorrentList);
             return await Task.FromResult(products);
         }
         public static async Task<bool> DownloadTorrent(string hash) {

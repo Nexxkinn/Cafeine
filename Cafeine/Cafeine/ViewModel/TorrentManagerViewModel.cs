@@ -1,6 +1,8 @@
-﻿using Cafeine.Design.RemoteTorrent.qBittorent;
+﻿using Cafeine.Design.RemoteTorrent;
+using Cafeine.Design.RemoteTorrent.qBittorent;
 using Cafeine.Model;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace Cafeine.ViewModel {
     public class TorrentManagerViewModel : ViewModelBase {
         private ICafeineNavigationService _navigationservice;
 
-        public List<TorrentProtery> list = new List<TorrentProtery>();
+        public List<TorrentModel> list = new List<TorrentModel>();
 
         private Visibility _isErrorVisualVisible = Visibility.Collapsed;
         public Visibility IsErrorVisualVisible {
@@ -56,6 +58,40 @@ namespace Cafeine.ViewModel {
                 ErrorValue = e.GetType().ToString();
             }
 
+        }
+
+        ///PauseItemClick
+        private RelayCommand _pauseItemClick;
+        public RelayCommand PauseItemClick {
+            get {
+                return _pauseItemClick
+                    ?? (_pauseItemClick = new RelayCommand(
+                    () => {
+
+                    }));
+            }
+        }
+        //ResumeItemClick
+        private RelayCommand _resumeItemClick;
+        public RelayCommand ResumeItemClick {
+            get {
+                return _resumeItemClick
+                    ?? (_resumeItemClick = new RelayCommand(
+                    () => {
+
+                    }));
+            }
+        }
+        ///DeleteItemClick
+        private RelayCommand _deleteItemClick;
+        public RelayCommand DeleteItemClick {
+            get {
+                return _deleteItemClick
+                    ?? (_deleteItemClick = new RelayCommand(
+                    () => {
+
+                    }));
+            }
         }
     }
 }

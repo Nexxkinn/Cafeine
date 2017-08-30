@@ -21,6 +21,8 @@ namespace Cafeine.ViewModel {
         private Frame _frame = new Frame();
         private bool? _LibraryTabChecked = true;
         private bool? _ScheduleTabEnabled = false;
+        private bool? _FeedTabChecked = false;
+
         private RelayCommand _logoutCommand;
         private RelayCommand<string> _AutoSuggestBoxTextChanged;
         private RelayCommand<GroupedSearchResult> _AutoSuggestBoxQuerySubmited;
@@ -37,21 +39,45 @@ namespace Cafeine.ViewModel {
             if (F.CanGoBack) {
                 e.Handled = true;
                 F.GoBack();
+                AutoTabChecked();
             }
         }
         public void test(object sender, RoutedEventArgs e) {
             _Fnavigationservice.NavigateTo("VirDir");
         }
+
         public Frame F {
             get {
                 return _frame;
             }
             set {
-                switch (F.CurrentSourcePageType.ToString()) {
-                    case "Cafeine.DirectoryExplorer": LibraryTabChecked = true; break;
-                    case "Cafeine.CollectionLibrary": LibraryTabChecked = true; break;
-                }
                 Set(() => F, ref _frame, value);
+            }
+        }
+        public void AutoTabChecked() {
+            try {
+                switch (F.CurrentSourcePageType.ToString()) {
+                    case "Cafeine.DirectoryExplorer":
+                    LibraryTabChecked = true;
+                    ScheduleTabChecked = false;
+                    FeedTabChecked = false;
+                    break;
+
+                    case "Cafeine.CollectionLibrary":
+                    LibraryTabChecked = true;
+                    ScheduleTabChecked = false;
+                    FeedTabChecked = false;
+                    break;
+
+                    case "Cafeine.TorrentManager":
+                    LibraryTabChecked = false;
+                    ScheduleTabChecked = false;
+                    FeedTabChecked = true;
+                    break;
+                }
+            }
+            catch (Exception) {
+
             }
         }
         public bool? LibraryTabChecked {
@@ -66,7 +92,7 @@ namespace Cafeine.ViewModel {
                 RaisePropertyChanged("LibraryTabChecked");
             }
         }
-        public bool? ScheduleTabEnabled {
+        public bool? ScheduleTabChecked {
             get {
                 return _ScheduleTabEnabled;
             }
@@ -78,6 +104,19 @@ namespace Cafeine.ViewModel {
                 RaisePropertyChanged("ScheduleTabEnabled");
             }
         }
+        public bool? FeedTabChecked {
+            get {
+                return _FeedTabChecked;
+            }
+            set {
+                if (_FeedTabChecked == value) {
+                    return;
+                }
+                _FeedTabChecked = value;
+                RaisePropertyChanged("FeedTabChecked");
+            }
+        }
+
         public RelayCommand LogOutCommand {
             get {
                 return _logoutCommand
@@ -149,10 +188,6 @@ namespace Cafeine.ViewModel {
             }
         }
         private RelayCommand _SettingsPage;
-
-        /// <summary>
-        /// Gets the SettingsPage.
-        /// </summary>
         public RelayCommand SettingsPage {
             get {
                 return _SettingsPage
@@ -160,6 +195,27 @@ namespace Cafeine.ViewModel {
                     () => {
                         _Fnavigationservice.NavigateTo("SettingsPage");
                         SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                    }));
+            }
+        }
+
+        private RelayCommand<object> _tabChecked;
+        public RelayCommand<object> TabChecked {
+            get {
+                return _tabChecked
+                    ?? (_tabChecked = new RelayCommand<object>(
+                    p => {
+                        var x = (RoutedEventArgs)p;
+                        var xx = (RadioButton)x.OriginalSource;
+                        switch (xx.Name.ToString()) {
+                            case "TManager":
+                            _Fnavigationservice.NavigateTo("TorentManager");
+                            break;
+                            case "Library":
+                            _Fnavigationservice.NavigateTo("VirDir");
+                            //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                            break;
+                        }
                     }));
             }
         }
