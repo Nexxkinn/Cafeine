@@ -8,9 +8,9 @@ namespace Cafeine.Design.RemoteTorrent {
     public class TorrentModel {
         public string hash;
         public string name;
-        public int size;
+        public long size;
         public float progress;
-        public int eta;
+        public long eta;
         public string state;
     }
 }

@@ -186,7 +186,7 @@
             </Image>
             <Rectangle Fill="Black" Opacity="0.4" MinWidth="250" MinHeight="600" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
             <!--<Image x:Name="image" Height="250" Width="176" HorizontalAlignment="Left" Canvas.ZIndex="1" RelativePanel.AlignVerticalCenterWithPanel="True"/>-->
-            <TextBlock x:Name="Title" FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-ExtraBold.ttf#Montserrat" FontSize="23" FontWeight="Black" Text="{x:Bind Vm.Item.Item_Title}" Padding="8,0,12,0" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" TextWrapping="WrapWholeWords" Foreground="White" TextAlignment="Right" OpticalMarginAlignment="TrimSideBearings" CharacterSpacing="12" />
+            <TextBlock x:Name="Title" FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-ExtraBold.ttf#Montserrat ExtraBold" FontSize="23" FontWeight="Black" Text="{x:Bind Vm.Item.Item_Title}" Padding="8,0,12,0" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" TextWrapping="WrapWholeWords" Foreground="White" TextAlignment="Right" OpticalMarginAlignment="TrimSideBearings" CharacterSpacing="12" />
         </RelativePanel>
         
         <Grid Grid.Column="1">

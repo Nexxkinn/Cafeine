@@ -14,9 +14,10 @@ namespace Cafeine.ViewModel {
     public class LoginViewModel : ViewModelBase {
         private RelayCommand _ShowSignIn;
         private readonly INavigationService _navigationService;
-
-        public LoginViewModel(INavigationService navigationService) {
+        private ICafeineNavigationService _Fnavigationservice;
+        public LoginViewModel(INavigationService navigationService, ICafeineNavigationService Fnavigationservice) {
             _navigationService = navigationService;
+            _Fnavigationservice = Fnavigationservice;
             AutoLogin();
         }
 
@@ -33,6 +34,7 @@ namespace Cafeine.ViewModel {
                         if (verify == true) {
                             await DataProvider.GrabUserDatatoOffline(1);
                             _navigationService.NavigateTo("HomePage");
+                            _Fnavigationservice.NavigateTo("VirDir");
                         }
                     }));
             }
@@ -49,6 +51,7 @@ namespace Cafeine.ViewModel {
                     case true:
                     await DataProvider.GrabUserDatatoOffline(1);
                     _navigationService.NavigateTo("HomePage");
+                    _Fnavigationservice.NavigateTo("VirDir");
                     break;
                     case false: break;
                 }

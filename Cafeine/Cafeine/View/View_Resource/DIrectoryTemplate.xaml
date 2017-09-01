@@ -53,7 +53,8 @@
                        Foreground="#FF333333"
                        MaxLines="2"
                        VerticalAlignment="Center"
-                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat"
+                       FontWeight="SemiBold"
+                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat SemiBold"
                        CharacterSpacing="16"/>
         </Grid>
     </DataTemplate>

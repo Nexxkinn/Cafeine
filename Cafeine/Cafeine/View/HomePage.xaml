@@ -59,7 +59,7 @@
                                  IsChecked="{x:Bind Vm.LibraryTabChecked,Mode=TwoWay}"
                                  FontSize="22"
                                  MinWidth="100" Template="{StaticResource RadioButtonTemplate}"
-                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Reguler.ttf#Montserrat"
+                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Regular.ttf#Montserrat"
                                  CharacterSpacing="16">
                         <interactivity:Interaction.Behaviors>
                             <core:EventTriggerBehavior EventName="Checked">
@@ -75,7 +75,7 @@
                                  IsChecked="{x:Bind Vm.FeedTabChecked,Mode=TwoWay}"
                                  FontSize="22"
                                  MinWidth="100" Template="{StaticResource RadioButtonTemplate}"
-                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Reguler.ttf#Montserrat"
+                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Regular.ttf#Montserrat"
                                  CharacterSpacing="16">
                         <interactivity:Interaction.Behaviors>
                             <core:EventTriggerBehavior EventName="Checked">
@@ -92,7 +92,7 @@
                                  MinWidth="120"
                                  FontWeight="Light"
                                  Template="{StaticResource RadioButtonTemplate}"
-                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Reguler.ttf#Montserrat"
+                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Regular.ttf#Montserrat"
                                  Visibility="Collapsed"/>
                     <RadioButton x:Name="SettingsTab"
                                  Content="Settings"

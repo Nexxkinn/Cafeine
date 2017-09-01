@@ -29,8 +29,8 @@ namespace Cafeine.ViewModel {
         private List<IGrouping<string, GroupedSearchResult>> _cvs = new List<IGrouping<string, GroupedSearchResult>>();
         private RelayCommand _FNavigated;
 
-        public HomeViewModel(ICafeineNavigationService caf) {
-            //_navigationservice = navigationservice;
+        public HomeViewModel(ICafeineNavigationService caf, INavigationService navigationservice) {
+            _navigationservice = navigationservice;
             _Fnavigationservice = caf;
             SystemNavigationManager.GetForCurrentView().BackRequested += HomeViewModel_BackRequested;
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
@@ -41,9 +41,6 @@ namespace Cafeine.ViewModel {
                 F.GoBack();
                 AutoTabChecked();
             }
-        }
-        public void test(object sender, RoutedEventArgs e) {
-            _Fnavigationservice.NavigateTo("VirDir");
         }
 
         public Frame F {

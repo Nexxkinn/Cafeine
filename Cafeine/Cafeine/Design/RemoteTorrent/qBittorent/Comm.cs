@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,9 +32,16 @@ namespace Cafeine.Design.RemoteTorrent.qBittorent {
         ///
 
         public static async Task<List<TorrentModel>> GetTorrentList() {
-            string TorrentList = await CoreApi.GetASync("/query/torrents");
-            List<TorrentModel> products = JsonConvert.DeserializeObject<List<TorrentModel>>(TorrentList);
-            return await Task.FromResult(products);
+            string TorrentList = await CoreApi.GetASync("/query/torrents").ConfigureAwait(false);
+            JArray parse = JArray.Parse(TorrentList);
+            var Jlist = parse.ToList();
+            var Lists = new List<TorrentModel>();
+            List<TorrentModel> product = new List<TorrentModel>();
+            foreach(JToken item in Jlist) {
+                TorrentModel itemproperty = item.ToObject<TorrentModel>();
+                product.Add(itemproperty);
+            }
+            return await Task.FromResult(product);
         }
         public static async Task<bool> DownloadTorrent(string hash) {
 

@@ -21,7 +21,7 @@ namespace Cafeine.ViewModel {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             var nav = new NavigationService();
-            nav.Configure(SignInPageKey, typeof(SignInDialog));
+            nav.Configure(SignInPageKey, typeof(LoginPage));
             nav.Configure("HomePage", typeof(HomePage));
             SimpleIoc.Default.Register<INavigationService>(() => nav);
 
@@ -31,6 +31,7 @@ namespace Cafeine.ViewModel {
             F.Configure("Collection", typeof(CollectionLibraryFrame));
             F.Configure("ExpandItem", typeof(ExpandItemDetails));
             F.Configure("TorentManager", typeof(TorrentManager));
+            //F.Configure(SignInPageKey, typeof(SignInDialog));
             SimpleIoc.Default.Register<ICafeineNavigationService>(() => F);
 
             SimpleIoc.Default.Register<IDialogService, DialogService>();

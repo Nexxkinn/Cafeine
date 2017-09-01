@@ -44,10 +44,13 @@ namespace Cafeine.ViewModel {
         public async Task Fetchdata() {
             try {
                 //Authentication
+                //CoreApi.Authentication(8080, "admin", "adminadmin").Wait();
                 var credentials = CoreApi.GetTorrentCredential();
                 ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-                int port = (int)localSettings.Values["localport"];
-                bool authentication = await CoreApi.Authentication(port, credentials.UserName, credentials.Password);
+                string port = (string)localSettings.Values["localport"];
+
+                //TODO : Factory Pattern. Returns "a method was called at an unexpected time" at any way.
+                bool authentication = await CoreApi.Authentication(port, credentials.UserName, credentials.Password).ConfigureAwait(false);
                 if (authentication) {
                     //fetch data
                     list = await Comm.GetTorrentList();

@@ -10,8 +10,8 @@ namespace Cafeine {
         public SignInDialog() {
             this.InitializeComponent();
         }
-        public string u;
-        public string p;
+        public string u = string.Empty;
+        public string p = string.Empty;
         //public string s;
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) {
             u = usrnm.Text;

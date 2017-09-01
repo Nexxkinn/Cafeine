@@ -11,30 +11,31 @@ using Windows.Web.Http.Filters;
 
 namespace Cafeine.Design.RemoteTorrent.qBittorent {
     class CoreApi {
-        public static async Task<bool> Authentication(int port, string username, string password) {
-            Uri uri = new Uri("http://localhost:" + port.ToString() + "/login");
-            try {
-                using (var client = new HttpClient()) {
-                    Dictionary<string, string> authentication = new Dictionary<string, string>();
-                    authentication.Add("username", username);
-                    authentication.Add("password", password);
+        public static async Task<bool> Authentication(string port, string username, string password) {
+            Uri uri = new Uri("http://localhost:" + port + "/login");
+            //try {
+            using (var client = new HttpClient()) {
+                Dictionary<string, string> authentication = new Dictionary<string, string>();
+                authentication.Add("username", username);
+                authentication.Add("password", password);
 
-                    HttpFormUrlEncodedContent x = new HttpFormUrlEncodedContent(authentication);
-                    var result = await client.PostAsync(uri, x);
+                HttpFormUrlEncodedContent x = new HttpFormUrlEncodedContent(authentication);
+                var result = client.PostAsync(uri, x).GetAwaiter().GetResult();
+                result.EnsureSuccessStatusCode();
+                result.Dispose();
+                //store user credential and port
+                var vault = new PasswordVault();
+                var cred = new PasswordCredential("qBittorent", username, password);
+                vault.Add(cred);
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                localSettings.Values["localport"] = port;
+                //GC.Collect();
+            }
+            return await Task.FromResult(true);
+            //}
+            //catch(Exception e) {
 
-                    //store user credential and port
-                    var vault = new PasswordVault();
-                    var cred = new PasswordCredential("qBittorent", username, password);
-                    vault.Add(cred);
-                    ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-                    localSettings.Values["localport"] = port.ToString();
-                    GC.Collect();
-                }
-                return await Task.FromResult(true);
-            }
-            catch(Exception) {
-                return await Task.FromResult(false);
-            }
+            //}
         }
         private static string GetKey() {
             string skey;
@@ -50,23 +51,23 @@ namespace Cafeine.Design.RemoteTorrent.qBittorent {
             string key = GetKey();
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
             string port = (string)localSettings.Values["localport"];
-            Uri uri = new Uri(new Uri("http://localhost:"+port),path);
+            Uri uri = new Uri(new Uri("http://localhost:" + port), path);
             try {
                 using (HttpClient client = new HttpClient()) {
                     client.DefaultRequestHeaders.Add("Cookie", "SID=" + key);
-                    var result = await client.GetAsync(uri);
+                    var result = client.GetAsync(uri).GetAwaiter().GetResult();
                     string output = result.Content.ToString();
                     return await Task.FromResult(output);
                 }
             }
-            catch(Exception) {
+            catch (Exception) {
                 return null;
             }
         }
-        public static async Task<bool> PostAsync(string path,IHttpContent content) {
+        public static async Task<bool> PostAsync(string path, IHttpContent content) {
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
             string port = (string)localSettings.Values["localport"];
-            Uri uri = new Uri(new Uri("http://localhost:"+port), path);
+            Uri uri = new Uri(new Uri("http://localhost:" + port), path);
             try {
                 using (var client = new HttpClient()) {
                     var result = await client.PostAsync(uri, content);

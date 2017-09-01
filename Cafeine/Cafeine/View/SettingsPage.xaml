@@ -9,9 +9,9 @@
 
     <Grid>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Hidden">
-            <StackPanel Orientation="Vertical" Margin="16" ScrollViewer.VerticalScrollMode="Auto">
-                <TextBlock HorizontalAlignment="Left" Margin="0,0,0,4" TextWrapping="Wrap" Text="General Settings" Width="246" FontSize="20" FontWeight="SemiBold"/>
-                <HyperlinkButton Content="Link collections with your local folders" Margin="0" Click="Linkdirectory_Click">
+            <StackPanel Orientation="Vertical" Margin="16,8" ScrollViewer.VerticalScrollMode="Auto">
+                <TextBlock HorizontalAlignment="Left" Text="Bridge Collections" Width="246" FontSize="20" FontWeight="Normal"/>
+                <HyperlinkButton Content="Link collections with your local folders" Click="Linkdirectory_Click">
                     <HyperlinkButton.Foreground>
                         <SolidColorBrush Color="{ThemeResource SystemBaseMediumHighColor}"/>
                     </HyperlinkButton.Foreground>
@@ -21,15 +21,32 @@
                         </DataTemplate>
                     </HyperlinkButton.ContentTemplate>
                 </HyperlinkButton>
-                <TextBlock HorizontalAlignment="Left" Height="31" Margin="0,8,0,2" TextWrapping="Wrap" Text="Remote Torrent (Soon)" Width="246" FontSize="20" FontWeight="SemiBold"/>
-                <ComboBox HorizontalAlignment="Left" Height="32" Margin="0,2" PlaceholderText="Remote App" Width="246" IsEnabled="False"/>
-                <TextBox HorizontalAlignment="Left" Height="30" Margin="0,2" TextWrapping="Wrap" PlaceholderText="Port" Width="246" IsEnabled="False"/>
-                <TextBox HorizontalAlignment="Left" Height="30" Margin="0,2" TextWrapping="Wrap" PlaceholderText="Username" Width="246" IsEnabled="False"/>
-                <PasswordBox HorizontalAlignment="Left" Height="32" Margin="0,2" PlaceholderText="Password" Width="246" IsEnabled="False"/>
-
-                <TextBlock HorizontalAlignment="Left" Height="31" Margin="0,8,0,2" Text="About" Width="246" FontSize="20" FontWeight="SemiBold"/>
+                <TextBlock HorizontalAlignment="Left" Margin="0,8" TextWrapping="Wrap" Text="RSS Reader" Width="246" FontSize="20"/>
+                <TextBlock >
+                    Make sure to enable WebUI in your Torrent client.
+                            <LineBreak/>It's intended to be an RSS downloader with automatic
+                            <LineBreak/>folder management.
+                </TextBlock>
+                <StackPanel Visibility="Visible" Margin="0,8">
+                    <TextBlock Text="Client          : qBittorent"/>
+                    <TextBlock Text="Username   : Admin"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8">
+                        <Button Content="Edit config"/>
+                        <Button Content="Delete" Margin="8,0"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Visibility="Collapsed">
+                    <ComboBox HorizontalAlignment="Left" Margin="0,2" PlaceholderText="Remote App" Width="246" >
+                        <TextBlock Text="qBittorent"/>
+                    </ComboBox>
+                    <TextBox HorizontalAlignment="Left" Margin="0,2" TextWrapping="Wrap" PlaceholderText="Port" Width="246"/>
+                    <TextBox HorizontalAlignment="Left" Margin="0,2" TextWrapping="Wrap" PlaceholderText="Username" Width="246"/>
+                    <PasswordBox HorizontalAlignment="Left" Margin="0,2" PlaceholderText="Password" Width="246"/>
+                    <TextBox PlaceholderText="Searchable RSS Feeds" Width="246" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <TextBlock HorizontalAlignment="Left" Height="31" Text="About" Width="246" FontSize="20" />
                 <TextBlock>
-                Cafeine Ambon<LineBreak/>Made by Nexxkinn
+                Cafeine Balige<LineBreak/>Made by Nexxkinn
                 </TextBlock>
 
                 <TextBlock HorizontalAlignment="Left" Height="31" Margin="0,8,0,2" Text="Donate" Width="246" FontSize="20" FontWeight="SemiBold"/>
@@ -37,10 +54,10 @@
                 Currently possible with cryptocurrency 
                     <LineBreak/>Bitcoin : 3DfFfGMUbhbVuH56FnyGfrSE83fzEVkWYT
                     <LineBreak/>Litecoin : Lh6kziSE2yNG1TWUYEfXTEKaKuNMkKSRG3
-                    <LineBreak/>Thank you for your donation!
+                    <LineBreak/>Any amount is greatly appreciated.
                 </TextBlock>
 
             </StackPanel>
-        </ScrollViewer>        
+        </ScrollViewer>
     </Grid>
 </Page>
