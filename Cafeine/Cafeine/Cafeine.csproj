@@ -141,7 +141,7 @@
     <Compile Include="ViewModel\ExpandItemDialogViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LocalDirectorySetupViewModel.cs" />
-    <Compile Include="ViewModel\TorrentManagerViewModel.cs" />
+    <Compile Include="ViewModel\RSSFeedViewModel.cs" />
     <Compile Include="View\CollectionLibrary.xaml.cs">
       <DependentUpon>CollectionLibrary.xaml</DependentUpon>
     </Compile>
@@ -154,8 +154,8 @@
     <Compile Include="View\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TorrentManager.xaml.cs">
-      <DependentUpon>TorrentManager.xaml</DependentUpon>
+    <Compile Include="View\RSSFeedPage.xaml.cs">
+      <DependentUpon>RSSFeedPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\View_Resource\DirectoryTemplate.cs">
       <DependentUpon>DIrectoryTemplate.xaml</DependentUpon>
@@ -243,6 +243,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="View\CollectionLibrary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -275,7 +280,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\TorrentManager.xaml">
+    <Page Include="View\RSSFeedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

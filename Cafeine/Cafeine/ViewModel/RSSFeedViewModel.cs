@@ -12,7 +12,7 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace Cafeine.ViewModel {
-    public class TorrentManagerViewModel : ViewModelBase {
+    public class RSSFeedViewModel : ViewModelBase {
         private ICafeineNavigationService _navigationservice;
 
         public List<TorrentModel> list = new List<TorrentModel>();
@@ -37,7 +37,7 @@ namespace Cafeine.ViewModel {
             }
         }
 
-        public TorrentManagerViewModel(ICafeineNavigationService navigation) {
+        public RSSFeedViewModel(ICafeineNavigationService navigation) {
             _navigationservice = navigation;
             Fetchdata().Wait();
         }

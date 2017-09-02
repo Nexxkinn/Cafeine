@@ -19,27 +19,30 @@ namespace Cafeine.ViewModel {
         private INavigationService _navigationservice;
         private ICafeineNavigationService _Fnavigationservice;
         private Frame _frame = new Frame();
-        private bool? _LibraryTabChecked = true;
-        private bool? _ScheduleTabEnabled = false;
-        private bool? _FeedTabChecked = false;
 
         private RelayCommand _logoutCommand;
         private RelayCommand<string> _AutoSuggestBoxTextChanged;
         private RelayCommand<GroupedSearchResult> _AutoSuggestBoxQuerySubmited;
         private List<IGrouping<string, GroupedSearchResult>> _cvs = new List<IGrouping<string, GroupedSearchResult>>();
-        private RelayCommand _FNavigated;
 
         public HomeViewModel(ICafeineNavigationService caf, INavigationService navigationservice) {
             _navigationservice = navigationservice;
             _Fnavigationservice = caf;
             SystemNavigationManager.GetForCurrentView().BackRequested += HomeViewModel_BackRequested;
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            F.Navigated += F_Navigated;
         }
+
+        private void F_Navigated(object sender, NavigationEventArgs e) {
+            if (F.CanGoBack) {
+                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                        }
+                        else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+        }
+
         private void HomeViewModel_BackRequested(object sender, BackRequestedEventArgs e) {
             if (F.CanGoBack) {
                 e.Handled = true;
                 F.GoBack();
-                AutoTabChecked();
             }
         }
 
@@ -49,68 +52,6 @@ namespace Cafeine.ViewModel {
             }
             set {
                 Set(() => F, ref _frame, value);
-            }
-        }
-        public void AutoTabChecked() {
-            try {
-                switch (F.CurrentSourcePageType.ToString()) {
-                    case "Cafeine.DirectoryExplorer":
-                    LibraryTabChecked = true;
-                    ScheduleTabChecked = false;
-                    FeedTabChecked = false;
-                    break;
-
-                    case "Cafeine.CollectionLibraryFrame":
-                    LibraryTabChecked = true;
-                    ScheduleTabChecked = false;
-                    FeedTabChecked = false;
-                    break;
-
-                    case "Cafeine.TorrentManager":
-                    LibraryTabChecked = false;
-                    ScheduleTabChecked = false;
-                    FeedTabChecked = true;
-                    break;
-                }
-            }
-            catch (Exception) {
-
-            }
-        }
-        public bool? LibraryTabChecked {
-            get {
-                return _LibraryTabChecked;
-            }
-            set {
-                if (_LibraryTabChecked == value) {
-                    return;
-                }
-                _LibraryTabChecked = value;
-                RaisePropertyChanged("LibraryTabChecked");
-            }
-        }
-        public bool? ScheduleTabChecked {
-            get {
-                return _ScheduleTabEnabled;
-            }
-            set {
-                if (_ScheduleTabEnabled == value) {
-                    return;
-                }
-                _ScheduleTabEnabled = value;
-                RaisePropertyChanged("ScheduleTabEnabled");
-            }
-        }
-        public bool? FeedTabChecked {
-            get {
-                return _FeedTabChecked;
-            }
-            set {
-                if (_FeedTabChecked == value) {
-                    return;
-                }
-                _FeedTabChecked = value;
-                RaisePropertyChanged("FeedTabChecked");
             }
         }
 
@@ -172,18 +113,6 @@ namespace Cafeine.ViewModel {
                 RaisePropertyChanged("CVS");
             }
         }
-        public RelayCommand FNavigated {
-            get {
-                return _FNavigated
-                    ?? (_FNavigated = new RelayCommand(
-                    () => {
-                        if (F.CanGoBack) {
-                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                        }
-                        else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                    }));
-            }
-        }
         private RelayCommand _SettingsPage;
         public RelayCommand SettingsPage {
             get {
@@ -196,24 +125,18 @@ namespace Cafeine.ViewModel {
             }
         }
 
-        private RelayCommand<object> _tabChecked;
-        public RelayCommand<object> TabChecked {
-            get {
-                return _tabChecked
-                    ?? (_tabChecked = new RelayCommand<object>(
-                    p => {
-                        var x = (RoutedEventArgs)p;
-                        var xx = (RadioButton)x.OriginalSource;
-                        switch (xx.Name.ToString()) {
-                            case "TManager":
-                            _Fnavigationservice.NavigateTo("TorentManager");
-                            break;
-                            case "Library":
-                            _Fnavigationservice.NavigateTo("VirDir");
-                            //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                            break;
-                        }
-                    }));
+        public void TabSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            var pivot = (Frame)(((PivotItem)(sender as Pivot).SelectedItem).Content);
+            switch (pivot.Name) {
+                case "ContentFrame":
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = (F.CanGoBack) ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+                break;
+                case "RSSFeed":
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = (pivot.CanGoBack) ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+                break;
+                default:
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                break;
             }
         }
     }

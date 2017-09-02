@@ -13,15 +13,11 @@
 
     <Page.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <local:HomePageTemplate />
-            </ResourceDictionary.MergedDictionaries>
             <CollectionViewSource x:Name="cvs"
                                   x:Key="cvs"
                                   Source="{x:Bind Vm.CVS, Mode=OneWay}"
                                   IsSourceGrouped="True" />
-        <m:AutoSuggestBoxTextChanged x:Key="argsconv" />
-            <m:TabIsChecked x:Key="tabconv"/>
+            <m:AutoSuggestBoxTextChanged x:Key="argsconv" />
         </ResourceDictionary>
     </Page.Resources>
 
@@ -30,12 +26,9 @@
             <SolidColorBrush Color="{ThemeResource SystemChromeLowColor}" />
         </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState>
@@ -49,63 +42,28 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Grid x:Name="CommandBar">
-            <Grid VerticalAlignment="Bottom">
-                <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Bottom">
-                    <RadioButton x:Name="Library"
-                                 Content="Library"
-                                 GroupName="Tab"
-                                 IsChecked="{x:Bind Vm.LibraryTabChecked,Mode=TwoWay}"
-                                 FontSize="22"
-                                 MinWidth="100" Template="{StaticResource RadioButtonTemplate}"
-                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Regular.ttf#Montserrat"
-                                 CharacterSpacing="16">
-                        <interactivity:Interaction.Behaviors>
-                            <core:EventTriggerBehavior EventName="Checked">
-                                <core:InvokeCommandAction Command="{x:Bind Vm.TabChecked, Mode=OneWay}"
-                                                          InputConverter="{StaticResource tabconv}"/>
-                            </core:EventTriggerBehavior>
-                        </interactivity:Interaction.Behaviors>
-                    </RadioButton>
-
-                    <RadioButton x:Name="TManager"
-                                 Content="Feeds"
-                                 GroupName="Tab"
-                                 IsChecked="{x:Bind Vm.FeedTabChecked,Mode=TwoWay}"
-                                 FontSize="22"
-                                 MinWidth="100" Template="{StaticResource RadioButtonTemplate}"
-                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Regular.ttf#Montserrat"
-                                 CharacterSpacing="16">
-                        <interactivity:Interaction.Behaviors>
-                            <core:EventTriggerBehavior EventName="Checked">
-                                <core:InvokeCommandAction Command="{x:Bind Vm.TabChecked, Mode=OneWay}"
-                                                          InputConverter="{StaticResource tabconv}"/>
-                            </core:EventTriggerBehavior>
-                        </interactivity:Interaction.Behaviors>
-                    </RadioButton>
-                    <RadioButton x:Name="Schedule"
-                                 Content="Schedule"
-                                 GroupName="Tab"
-                                 IsChecked="{x:Bind Vm.ScheduleTabChecked,Mode=TwoWay}"
-                                 FontSize="24"
-                                 MinWidth="120"
-                                 FontWeight="Light"
-                                 Template="{StaticResource RadioButtonTemplate}"
-                                 FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Regular.ttf#Montserrat"
-                                 Visibility="Collapsed"/>
-                    <RadioButton x:Name="SettingsTab"
-                                 Content="Settings"
-                                 IsChecked="True"
-                                 FontSize="24"
-                                 MinWidth="100"
-                                 FontWeight="Light"
-                                 Template="{StaticResource RadioButtonTemplate}"
-                                 Visibility="Collapsed" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"
+        <Pivot SelectionChanged="{x:Bind Vm.TabSelectionChanged, Mode=OneWay}" >
+            <Pivot.Resources>
+                <Style TargetType="PivotHeaderItem" BasedOn="{StaticResource PivotTitleTemplate}" />
+            </Pivot.Resources>
+            <PivotItem x:Name="Me" Header="Library" Margin="0">
+                <PivotItem.Content>
+                    <Frame x:Name="ContentFrame"
+                           Content="{x:Bind Vm.F, Mode=OneWay}"
+                           Grid.Row="1">
+                    </Frame>
+                </PivotItem.Content>
+            </PivotItem>
+            <PivotItem Header="RSS Feed">
+                <PivotItem.Content>
+                    <Frame x:Name="RSSFeed"/>
+                </PivotItem.Content>
+            </PivotItem>
+        </Pivot>
+        <Grid x:Name="CommandBar" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
-                    <AutoSuggestBox x:Name="Search"
+                <AutoSuggestBox x:Name="Search"
                                     QueryIcon="Find"
                                     Width="224"
                                     Height="36"
@@ -115,26 +73,26 @@
                                     TextBoxStyle="{StaticResource AutoSuggestBoxSearchBoxStyle}"
                                     ItemsSource="{x:Bind cvs.View,Mode=OneWay}"
                                     VerticalAlignment="Bottom">
-                        <interactivity:Interaction.Behaviors>
-                            <core:EventTriggerBehavior EventName="TextChanged">
-                                <core:InvokeCommandAction Command="{x:Bind Vm.AutoSuggestBoxTextChanged, Mode=OneWay}"
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="TextChanged">
+                            <core:InvokeCommandAction Command="{x:Bind Vm.AutoSuggestBoxTextChanged, Mode=OneWay}"
                                                           CommandParameter="{x:Bind Search.Text,Mode=TwoWay}" />
-                            </core:EventTriggerBehavior>
-                            <core:EventTriggerBehavior EventName="QuerySubmitted">
-                                <core:InvokeCommandAction Command="{x:Bind Vm.AutoSuggestBoxQuerySubmited}"
+                        </core:EventTriggerBehavior>
+                        <core:EventTriggerBehavior EventName="QuerySubmitted">
+                            <core:InvokeCommandAction Command="{x:Bind Vm.AutoSuggestBoxQuerySubmited}"
                                                           InputConverter="{StaticResource argsconv}"/>
-                            </core:EventTriggerBehavior>
-                        </interactivity:Interaction.Behaviors>
-                        <AutoSuggestBox.Template>
-                            <ControlTemplate TargetType="AutoSuggestBox">
-                                <Grid x:Name="LayoutRoot">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="Orientation">
-                                            <VisualState x:Name="Landscape" />
-                                            <VisualState x:Name="Portrait" />
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <TextBox x:Name="TextBox"
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                    <AutoSuggestBox.Template>
+                        <ControlTemplate TargetType="AutoSuggestBox">
+                            <Grid x:Name="LayoutRoot">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="Orientation">
+                                        <VisualState x:Name="Landscape" />
+                                        <VisualState x:Name="Portrait" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <TextBox x:Name="TextBox"
                                              ScrollViewer.BringIntoViewOnFocusChange="False"
                                              DesiredCandidateWindowAlignment="BottomEdge"
                                              Header="{TemplateBinding Header}"
@@ -143,12 +101,12 @@
                                              Style="{TemplateBinding TextBoxStyle}"
                                              Width="{TemplateBinding Width}"
                                              Canvas.ZIndex="0" />
-                                    <Popup x:Name="SuggestionsPopup">
-                                        <Border x:Name="SuggestionsContainer">
-                                            <Border.RenderTransform>
-                                                <TranslateTransform x:Name="UpwardTransform" />
-                                            </Border.RenderTransform>
-                                            <ListView x:Name="SuggestionsList"
+                                <Popup x:Name="SuggestionsPopup">
+                                    <Border x:Name="SuggestionsContainer">
+                                        <Border.RenderTransform>
+                                            <TranslateTransform x:Name="UpwardTransform" />
+                                        </Border.RenderTransform>
+                                        <ListView x:Name="SuggestionsList"
                                                       BorderBrush="{ThemeResource AutoSuggestBoxSuggestionsListBorderBrush}"
                                                       BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}"
                                                       Background="{ThemeResource AutoSuggestBoxSuggestionsListBackground}"
@@ -160,58 +118,48 @@
                                                       MaxHeight="{ThemeResource AutoSuggestListMaxHeight}"
                                                       Margin="{ThemeResource AutoSuggestListMargin}"
                                                       Padding="{ThemeResource AutoSuggestListPadding}">
-                                                <ListView.ItemContainerTransitions>
-                                                    <TransitionCollection />
-                                                </ListView.ItemContainerTransitions>
-                                                <ListView.GroupStyle>
-                                                    <GroupStyle>
-                                                        <GroupStyle.HeaderTemplate>
-                                                            <DataTemplate>
-                                                                <TextBlock Text="{Binding Key}" />
-                                                            </DataTemplate>
-                                                        </GroupStyle.HeaderTemplate>
-                                                    </GroupStyle>
-                                                </ListView.GroupStyle>
-                                            </ListView>
-                                        </Border>
-                                    </Popup>
-                                </Grid>
-                            </ControlTemplate>
-                        </AutoSuggestBox.Template>
-                        <AutoSuggestBox.ItemTemplate>
-                            <DataTemplate x:DataType="m:GroupedSearchResult">
-                                <TextBlock Text="{x:Bind Path=Library.Item_Title}" />
-                            </DataTemplate>
-                        </AutoSuggestBox.ItemTemplate>
-                    </AutoSuggestBox>
-                    <Button x:Name="UserBtn"
+                                            <ListView.ItemContainerTransitions>
+                                                <TransitionCollection />
+                                            </ListView.ItemContainerTransitions>
+                                            <ListView.GroupStyle>
+                                                <GroupStyle>
+                                                    <GroupStyle.HeaderTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Key}" />
+                                                        </DataTemplate>
+                                                    </GroupStyle.HeaderTemplate>
+                                                </GroupStyle>
+                                            </ListView.GroupStyle>
+                                        </ListView>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </ControlTemplate>
+                    </AutoSuggestBox.Template>
+                    <AutoSuggestBox.ItemTemplate>
+                        <DataTemplate x:DataType="m:GroupedSearchResult">
+                            <TextBlock Text="{x:Bind Path=Library.Item_Title}" />
+                        </DataTemplate>
+                    </AutoSuggestBox.ItemTemplate>
+                </AutoSuggestBox>
+                <Button x:Name="UserBtn"
                             Style="{StaticResource TextBlockButtonStyle}"
                             Width="48"
                             Height="48"
                             Margin="8,0">
-                        <Button.Content>
-                            <SymbolIcon Symbol="Contact" />
-                        </Button.Content>
-                        <Button.Flyout>
-                            <MenuFlyout>
-                                <MenuFlyoutItem Text="Settings..."
+                    <Button.Content>
+                        <SymbolIcon Symbol="Contact" />
+                    </Button.Content>
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="Settings..."
                                                 Command="{x:Bind Vm.SettingsPage}"/>
-                                <MenuFlyoutItem Text="Logout"
+                            <MenuFlyoutItem Text="Logout"
                                                 Command="{x:Bind Vm.LogOutCommand}" />
-                            </MenuFlyout>
-                        </Button.Flyout>
-                    </Button>
-                </StackPanel>
-            </Grid>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
         </Grid>
-        <Frame x:Name="ContentFrame"
-               Content="{x:Bind Vm.F, Mode=OneWay}"
-               Grid.Row="1">
-            <interactivity:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="Navigated">
-                    <core:InvokeCommandAction Command="{x:Bind Vm.FNavigated, Mode=OneWay}"/>
-                </core:EventTriggerBehavior>
-            </interactivity:Interaction.Behaviors>
-        </Frame>
     </Grid>
 </Page>

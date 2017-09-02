@@ -29,6 +29,7 @@ namespace Cafeine {
                 titleBar.InactiveBackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
                 titleBar.ButtonBackgroundColor = Application.Current.Resources["SystemChromeMediumColor"] as Color?;
             }
+            RSSFeed.Navigate(typeof(RSSFeed));
         }
         //very ugly hack
         //private void TabChecked(object sender, RoutedEventArgs e) {
