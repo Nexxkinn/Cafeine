@@ -142,6 +142,9 @@
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LocalDirectorySetupViewModel.cs" />
     <Compile Include="ViewModel\RSSFeedViewModel.cs" />
+    <Compile Include="View\View_Resource\Generic.xaml.cs">
+      <DependentUpon>Generic.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CollectionLibrary.xaml.cs">
       <DependentUpon>CollectionLibrary.xaml</DependentUpon>
     </Compile>
@@ -156,15 +159,6 @@
     </Compile>
     <Compile Include="View\RSSFeedPage.xaml.cs">
       <DependentUpon>RSSFeedPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\View_Resource\DirectoryTemplate.cs">
-      <DependentUpon>DIrectoryTemplate.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\View_Resource\Generic.xaml.cs">
-      <DependentUpon>Generic.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\View_Resource\HomePageTemplate.cs">
-      <DependentUpon>HomePageTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DirectoryExplorer.xaml.cs">
       <DependentUpon>DirectoryExplorer.xaml</DependentUpon>
@@ -183,9 +177,6 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\SignInDialogViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\View_Resource\ItemTemplates.cs">
-      <DependentUpon>CollectionTemplate.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -243,7 +234,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Generic.xaml">
+    <Page Include="View\View_Resource\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -283,22 +274,6 @@
     <Page Include="View\RSSFeedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\View_Resource\CollectionTemplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\View_Resource\DIrectoryTemplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\View_Resource\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\View_Resource\HomePageTemplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup />

@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media.Animation;
+using Cafeine;
+using Cafeine.Model;
+namespace Cafeine {
+    public partial class Generics {
+        public Generics() {
+            InitializeComponent();
+        }
+        private void ImageEntered(object sender, PointerRoutedEventArgs e) {
+            Storyboard sb = ((Grid)sender).Resources["ImageOnHover"] as Storyboard;
+            sb.Begin();
+        }
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+        private void ImageExited(object sender, PointerRoutedEventArgs e) {
+            Storyboard sb = ((Grid)sender).Resources["ImageOffHover"] as Storyboard;
+            sb.Begin();
+        }
 
-namespace Cafeine.View_Resource {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class Generic {
-        public Generic() {
-            this.InitializeComponent();
+        private void theimage_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e) {
+            ((Image)sender).Source = null;
         }
     }
 }

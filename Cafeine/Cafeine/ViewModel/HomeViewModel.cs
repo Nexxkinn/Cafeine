@@ -19,33 +19,6 @@ namespace Cafeine.ViewModel {
         private INavigationService _navigationservice;
         private ICafeineNavigationService _Fnavigationservice;
         private Frame _frame = new Frame();
-
-        private RelayCommand _logoutCommand;
-        private RelayCommand<string> _AutoSuggestBoxTextChanged;
-        private RelayCommand<GroupedSearchResult> _AutoSuggestBoxQuerySubmited;
-        private List<IGrouping<string, GroupedSearchResult>> _cvs = new List<IGrouping<string, GroupedSearchResult>>();
-
-        public HomeViewModel(ICafeineNavigationService caf, INavigationService navigationservice) {
-            _navigationservice = navigationservice;
-            _Fnavigationservice = caf;
-            SystemNavigationManager.GetForCurrentView().BackRequested += HomeViewModel_BackRequested;
-            F.Navigated += F_Navigated;
-        }
-
-        private void F_Navigated(object sender, NavigationEventArgs e) {
-            if (F.CanGoBack) {
-                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                        }
-                        else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-        }
-
-        private void HomeViewModel_BackRequested(object sender, BackRequestedEventArgs e) {
-            if (F.CanGoBack) {
-                e.Handled = true;
-                F.GoBack();
-            }
-        }
-
         public Frame F {
             get {
                 return _frame;
@@ -55,6 +28,37 @@ namespace Cafeine.ViewModel {
             }
         }
 
+        public HomeViewModel(ICafeineNavigationService caf, INavigationService navigationservice) {
+            _navigationservice = navigationservice;
+            _Fnavigationservice = caf;
+            SystemNavigationManager.GetForCurrentView().BackRequested += HomeViewModel_BackRequested;
+            F.Navigated += F_Navigated;
+
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+        }
+
+        private void F_Navigated(object sender, NavigationEventArgs e) {
+            if (F.CanGoBack) {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            }
+            else SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+        }
+
+        private void HomeViewModel_BackRequested(object sender, BackRequestedEventArgs e) {
+            Frame root = (Frame)Window.Current.Content;
+            if (F.CanGoBack) {
+                e.Handled = true;
+                F.GoBack();
+            }
+        }
+        private void SettingPage_BackRequested(object sender, BackRequestedEventArgs e) {
+            _navigationservice.GoBack();
+
+            SystemNavigationManager.GetForCurrentView().BackRequested -= SettingPage_BackRequested;
+            SystemNavigationManager.GetForCurrentView().BackRequested += HomeViewModel_BackRequested;
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = (F.CanGoBack) ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+        }
+        private RelayCommand _logoutCommand;
         public RelayCommand LogOutCommand {
             get {
                 return _logoutCommand
@@ -78,6 +82,8 @@ namespace Cafeine.ViewModel {
                     }));
             }
         }
+
+        private RelayCommand<string> _AutoSuggestBoxTextChanged;
         public RelayCommand<string> AutoSuggestBoxTextChanged {
             get {
                 return _AutoSuggestBoxTextChanged
@@ -89,6 +95,7 @@ namespace Cafeine.ViewModel {
         }
 
         //TODO : connect it to ExpandItemDialog
+        private RelayCommand<GroupedSearchResult> _AutoSuggestBoxQuerySubmited;
         public RelayCommand<GroupedSearchResult> AutoSuggestBoxQuerySubmited {
             get {
                 return _AutoSuggestBoxQuerySubmited
@@ -99,6 +106,7 @@ namespace Cafeine.ViewModel {
             }
         }
 
+        private List<IGrouping<string, GroupedSearchResult>> _cvs = new List<IGrouping<string, GroupedSearchResult>>();
         public List<IGrouping<string, GroupedSearchResult>> CVS {
             get {
                 return _cvs;
@@ -119,7 +127,9 @@ namespace Cafeine.ViewModel {
                 return _SettingsPage
                     ?? (_SettingsPage = new RelayCommand(
                     () => {
-                        _Fnavigationservice.NavigateTo("SettingsPage");
+                        _navigationservice.NavigateTo("SettingsPage");
+                        SystemNavigationManager.GetForCurrentView().BackRequested += SettingPage_BackRequested;
+                        SystemNavigationManager.GetForCurrentView().BackRequested -= HomeViewModel_BackRequested;
                         SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                     }));
             }

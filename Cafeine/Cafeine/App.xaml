@@ -13,7 +13,7 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Generic.xaml"/>
+                <ResourceDictionary Source="/View/View_Resource/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!--Global View Model Locator-->

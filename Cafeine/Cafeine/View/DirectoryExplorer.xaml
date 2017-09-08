@@ -14,7 +14,7 @@
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:DirectoryTemplate />
+                <local:Generics />
             </ResourceDictionary.MergedDictionaries>
             <m:DirectoryClicked x:Key="DConv" />
         </ResourceDictionary>

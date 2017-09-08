@@ -165,7 +165,7 @@
             <x:Double x:Key="ContentDialogMaxWidth">600</x:Double>
             <x:Double x:Key="ContentDialogMaxHeight">500</x:Double>
             <ResourceDictionary.MergedDictionaries>
-                <vmr:Generic />
+                <local:Generics/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ContentDialog.Resources>

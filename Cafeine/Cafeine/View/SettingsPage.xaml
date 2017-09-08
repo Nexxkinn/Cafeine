@@ -8,6 +8,9 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="{ThemeResource SystemChromeLowColor}" />
+        </Grid.Background>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Hidden">
             <StackPanel Orientation="Vertical" Margin="16,8" ScrollViewer.VerticalScrollMode="Auto">
                 <TextBlock HorizontalAlignment="Left" Text="Bridge Collections" Width="246" FontSize="20" FontWeight="Normal"/>

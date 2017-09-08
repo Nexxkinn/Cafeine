@@ -15,7 +15,7 @@
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <local:CollectionTemplates />
+                <local:Generics />
             </ResourceDictionary.MergedDictionaries>
             <m:ItemClicked x:Key="ICConv" />
         </ResourceDictionary>

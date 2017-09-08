@@ -42,24 +42,26 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Pivot SelectionChanged="{x:Bind Vm.TabSelectionChanged, Mode=OneWay}" >
-            <Pivot.Resources>
-                <Style TargetType="PivotHeaderItem" BasedOn="{StaticResource PivotTitleTemplate}" />
-            </Pivot.Resources>
-            <PivotItem x:Name="Me" Header="Library" Margin="0">
-                <PivotItem.Content>
-                    <Frame x:Name="ContentFrame"
+        <Grid>
+            <Pivot SelectionChanged="{x:Bind Vm.TabSelectionChanged, Mode=OneWay}" >
+                <Pivot.Resources>
+                    <Style TargetType="PivotHeaderItem" BasedOn="{StaticResource PivotTitleTemplate}" />
+                </Pivot.Resources>
+                <PivotItem x:Name="Me" Header="Library" Margin="0">
+                    <PivotItem.Content>
+                        <Frame x:Name="ContentFrame"
                            Content="{x:Bind Vm.F, Mode=OneWay}"
                            Grid.Row="1">
-                    </Frame>
-                </PivotItem.Content>
-            </PivotItem>
-            <PivotItem Header="RSS Feed">
-                <PivotItem.Content>
-                    <Frame x:Name="RSSFeed"/>
-                </PivotItem.Content>
-            </PivotItem>
-        </Pivot>
+                        </Frame>
+                    </PivotItem.Content>
+                </PivotItem>
+                <PivotItem Header="RSS Feed">
+                    <PivotItem.Content>
+                        <Frame x:Name="RSSFeed"/>
+                    </PivotItem.Content>
+                </PivotItem>
+            </Pivot>
+        </Grid>
         <Grid x:Name="CommandBar" VerticalAlignment="Top" HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">

@@ -23,6 +23,7 @@ namespace Cafeine.ViewModel {
             var nav = new NavigationService();
             nav.Configure(SignInPageKey, typeof(LoginPage));
             nav.Configure("HomePage", typeof(HomePage));
+            nav.Configure("SettingsPage", typeof(SettingsPage));
             SimpleIoc.Default.Register<INavigationService>(() => nav);
 
             var F = new CafeineNavigationService();
