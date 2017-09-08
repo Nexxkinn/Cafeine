@@ -46,8 +46,10 @@ namespace Cafeine {
                     // parameter
                     rootFrame.Navigate(typeof(LoginPage), e.Arguments);
                 }
-                // Ensure the current window is active
                 ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(685, 600));
+                //setup
+
+                // Ensure the current window is active
                 Window.Current.Activate();
             }
             DispatcherHelper.Initialize();

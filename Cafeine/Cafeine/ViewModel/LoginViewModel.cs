@@ -9,6 +9,7 @@ using Cafeine.Design;
 using Cafeine.Model;
 using GalaSoft.MvvmLight.Views;
 using GalaSoft.MvvmLight.Messaging;
+using Windows.Storage;
 
 namespace Cafeine.ViewModel {
     public class LoginViewModel : ViewModelBase {
@@ -19,6 +20,7 @@ namespace Cafeine.ViewModel {
             _navigationService = navigationService;
             _Fnavigationservice = Fnavigationservice;
             AutoLogin();
+            SetupCacheFolder();
         }
 
         public RelayCommand ShowSignInDialog {
@@ -56,6 +58,13 @@ namespace Cafeine.ViewModel {
                     case false: break;
                 }
             }
+        }
+
+        private async Task SetupCacheFolder() {
+            var ImageCacheFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
+            Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("ImageCacheFolder", ImageCacheFolder);
+
+
         }
     }
 }

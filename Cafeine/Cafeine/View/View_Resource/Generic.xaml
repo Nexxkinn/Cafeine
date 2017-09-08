@@ -833,7 +833,8 @@
                    VerticalAlignment="Top"
                    RelativePanel.AlignLeftWithPanel="True"
                    Stretch="Fill"
-                   Unloaded="theimage_Unloaded"/>
+                   Unloaded="theimage_Unloaded"
+                   Loaded="theimage_Loaded"/>
             <TextBlock x:Name="thetitle" 
                        Grid.Row="1" 
                        Margin="8,4,8,0" 
