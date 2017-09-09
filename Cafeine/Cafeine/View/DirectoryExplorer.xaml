@@ -27,11 +27,11 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <GridView x:Name="VirDirInterface"
-                  Margin="17,8,0,0"
+                  Margin="12,8,0,0"
                   Foreground="{x:Null}"
                   IsItemClickEnabled="True"
                   ItemTemplate="{StaticResource DirectoryCollection}"
-                  ItemContainerStyle="{StaticResource WatchingTab}"
+                  ItemContainerStyle="{StaticResource DirectoryContainerStyle}"
                   ItemsPanel="{StaticResource Itemspanel}"
                   ItemsSource="{x:Bind Vm.DataReceived,Mode=OneWay}"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden"

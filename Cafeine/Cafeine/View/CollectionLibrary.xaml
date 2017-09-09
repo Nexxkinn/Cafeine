@@ -28,13 +28,13 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <GridView x:Name="watch"
-                  Margin="17,0,0,0"
+                  Margin="12,0,0,0"
                   Foreground="{x:Null}"
                   SelectionMode="None"
                   IsItemClickEnabled="True"
                   ItemTemplate="{StaticResource Collection}"
                   ItemsSource="{x:Bind Vm.ItemItemSource,Mode=OneWay}"
-                  ItemContainerStyle="{StaticResource WatchingTab}"
+                  ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"
                   animations:ReorderGridAnimation.Duration="300">
             <interactivity:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="ItemClick">

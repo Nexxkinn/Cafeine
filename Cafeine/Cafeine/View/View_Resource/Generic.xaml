@@ -91,11 +91,10 @@
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             FontSize="{TemplateBinding FontSize}"
-                            FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Regular.ttf#Montserrat"
                             FontWeight="{TemplateBinding FontWeight}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
-                            OpticalMarginAlignment="TrimSideBearings" />
+                            OpticalMarginAlignment="TrimSideBearings"/>
                         <Rectangle x:Name="FocusPipe"
                             Fill="{StaticResource SystemControlBackgroundAccentBrush}"
                             Height="4"
@@ -833,8 +832,7 @@
                    VerticalAlignment="Top"
                    RelativePanel.AlignLeftWithPanel="True"
                    Stretch="Fill"
-                   Unloaded="theimage_Unloaded"
-                   Loaded="theimage_Loaded"/>
+                   Unloaded="theimage_Unloaded"/>
             <TextBlock x:Name="thetitle" 
                        Grid.Row="1" 
                        Margin="8,4,8,0" 
@@ -847,7 +845,7 @@
                        CharacterSpacing="16" FontWeight="SemiBold"/>
         </Grid>
     </DataTemplate>
-    <Style x:Key="WatchingTab" TargetType="GridViewItem">
+    <Style x:Key="CollectionItemContainerStyle" TargetType="GridViewItem">
         <Setter Property="Margin" Value="0,12,8,0"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="FocusVisualMargin" Value="0" />
@@ -912,4 +910,9 @@
     <ItemsPanelTemplate x:Key="Itemspanel">
         <ItemsWrapGrid Orientation="Horizontal" MaxWidth="350" HorizontalAlignment="Left"/>
     </ItemsPanelTemplate>
+    <Style x:Key="DirectoryContainerStyle" TargetType="GridViewItem">
+        <Setter Property="Margin" Value="0,6,0,0"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="FocusVisualMargin" Value="0" />
+    </Style>
 </ResourceDictionary>
