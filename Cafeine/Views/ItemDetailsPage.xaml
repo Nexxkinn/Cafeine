@@ -1,0 +1,206 @@
+﻿<Page
+    x:Class="Cafeine.Views.ItemDetailsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:local="using:Cafeine.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:Cafeine.Models"
+    xmlns:prism="using:Prism.Windows.Mvvm"
+    xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
+    xmlns:vr="using:Cafeine.Views.Resources"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Loaded="Page_Loaded"
+    mc:Ignorable="d">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <DrillInNavigationTransitionInfo />
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <vr:Template />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    <interactivity:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemDetailPageLoad}" />
+        </core:EventTriggerBehavior>
+    </interactivity:Interaction.Behaviors>
+    <Grid>
+        <ScrollViewer x:Name="ItemDetailScroller">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid
+                    x:Name="ItemDetailHeader"
+                    Grid.Row="0"
+                    Grid.Column="0">
+                    <Grid x:Name="BackgroundGrid" VerticalAlignment="Stretch">
+                        <Grid.Background>
+                            <ImageBrush
+                                x:Name="BackgroundImage"
+                                AlignmentY="Top"
+                                ImageOpened="BackgroundImage_ImageOpened"
+                                ImageSource="{x:Bind Mode=OneWay, Path=Vm.ImageSource.Value.Path}"
+                                Opacity="0"
+                                Stretch="UniformToFill" />
+                        </Grid.Background>
+                        <Rectangle Fill="#66000000" />
+                    </Grid>
+                    <Grid Margin="28,20,28,20">
+                        <RelativePanel>
+                            <Image
+                                x:Name="cover"
+                                MinWidth="140"
+                                MinHeight="204"
+                                MaxWidth="142"
+                                MaxHeight="204"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                                <Image.Source>
+                                    <BitmapImage UriSource="{x:Bind Path=Vm.ImageSource.Value.Path, Mode=OneWay}" />
+                                </Image.Source>
+                            </Image>
+                            <StackPanel
+                                MaxHeight="204"
+                                Margin="14,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                RelativePanel.RightOf="cover">
+                                <TextBlock
+                                    FontSize="22"
+                                    FontWeight="SemiLight"
+                                    MaxLines="2"
+                                    Text="{x:Bind Path=Vm.item.Service['default'].Title}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    x:Name="ItemStatusTextBlock"
+                                    FontSize="14"
+                                    Text="{x:Bind Path=Vm.ItemStatusTextBlock.Value, Mode=OneWay}" />
+                                <RatingControl
+                                    HorizontalAlignment="Left"
+                                    Caption="{x:Bind Path=Vm.ItemScoreDetails.Value, Mode=OneWay}"
+                                    InitialSetValue="0"
+                                    IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"
+                                    PlaceholderValue="{x:Bind Path=Vm.ItemScore.Value, Mode=OneWay}" />
+                                <TextBlock
+                                    x:Name="UserWatched"
+                                    FontSize="14"
+                                    Text="12 / 12 Episodes Watched" />
+                                <TextBlock
+                                    MaxWidth="500"
+                                    HorizontalAlignment="Left"
+                                    FontSize="13"
+                                    Foreground="#D7FFFFFF"
+                                    MaxLines="5"
+                                    Text="{x:Bind Path=Vm.Description.Value, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </RelativePanel>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel x:Name="ItemOptions">
+                            <AppBarButton
+                                Width="52"
+                                Height="52"
+                                BorderThickness="0"
+                                Command="{x:Bind Vm.EpisodeListsClicked}"
+                                LabelPosition="Collapsed"
+                                Style="{StaticResource ReducedAppBarButtonRevealStyle}"
+                                ToolTipService.ToolTip="Episode Lists">
+                                <AppBarButton.Icon>
+                                    <FontIcon Glyph="&#xE173;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarButton
+                                Width="52"
+                                Height="52"
+                                BorderThickness="0"
+                                Command="{x:Bind Vm.EpisodeSettingsClicked}"
+                                Label=""
+                                LabelPosition="Collapsed"
+                                Style="{StaticResource ReducedAppBarButtonRevealStyle}"
+                                ToolTipService.ToolTip="Configure">
+                                <AppBarButton.Icon>
+                                    <FontIcon Glyph="&#xE783;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                        </StackPanel>
+                        <Grid Grid.Column="1">
+                            <GridView
+                                x:Name="episodesitem"
+                                Margin="8,14,0,0"
+                                x:Load="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}"
+                                ContainerContentChanging="Episodesitem_ContainerContentChanging"
+                                ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
+                                SizeChanged="OnGridViewSizeChanged">
+                                <GridView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Episode">
+                                        <RelativePanel>
+                                            <Image
+                                                x:Name="Thumbnail"
+                                                Grid.Column="0"
+                                                MaxWidth="144"
+                                                MaxHeight="81"
+                                                HorizontalAlignment="Left"
+                                                Source="{x:Bind Path=Image, Mode=OneWay}"
+                                                Stretch="UniformToFill" />
+                                            <StackPanel
+                                                Grid.Column="1"
+                                                Margin="8,0,0,0"
+                                                RelativePanel.RightOf="Thumbnail">
+                                                <TextBlock
+                                                    FontSize="15"
+                                                    FontWeight="SemiBold"
+                                                    Text="{x:Bind Path=Title, Mode=OneWay}" />
+                                            </StackPanel>
+                                        </RelativePanel>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Margin" Value="0,0,20,20" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                            </GridView>
+                            <StackPanel
+                                x:Name="EpisodeSettings"
+                                x:Load="{x:Bind Path=Vm.LoadEpisodeSettings.Value, Mode=OneWay}"
+                                Orientation="Vertical">
+                                <StackPanel.Transitions>
+                                    <TransitionCollection>
+                                        <EntranceThemeTransition />
+                                    </TransitionCollection>
+                                </StackPanel.Transitions>
+                                <TextBlock Text="Hell" />
+                            </StackPanel>
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

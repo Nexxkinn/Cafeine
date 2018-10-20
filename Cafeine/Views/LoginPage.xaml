@@ -1,0 +1,59 @@
+﻿<Page
+    x:Class="Cafeine.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="using:Cafeine.Models.Conversions"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:local="using:Cafeine.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="using:Prism.Windows.Mvvm"
+    xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <interactivity:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.LoginCheck}" />
+        </core:EventTriggerBehavior>
+    </interactivity:Interaction.Behaviors>
+    <Grid Background="#FF2F343B">
+        <Image
+            MinWidth="1920"
+            MinHeight="1080"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Source="/Assets/Background/cafeine_mascot.png" />
+        <Grid
+            Grid.Column="0"
+            Width="500"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
+            Background="#FF262A2F">
+            <TextBlock
+                Margin="12,8,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                CharacterSpacing="12"
+                FontSize="12"
+                Text="Cafeine Alpha" />
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    CharacterSpacing="150"
+                    FontFamily="Cuprum"
+                    FontSize="70"
+                    Text="CAFEINE"
+                    TextWrapping="Wrap" />
+                <Button
+                    Width="285"
+                    Height="135"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{x:Bind Path=Vm.Login, Mode=OneWay}"
+                    Content="Login (Anilist only)" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
