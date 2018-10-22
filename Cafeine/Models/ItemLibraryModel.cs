@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Cafeine.Models.Enums;
 using LiteDB;
-using NetJSON;
 using Reactive.Bindings;
 using Windows.Storage;
 using Windows.UI.Xaml.Media;

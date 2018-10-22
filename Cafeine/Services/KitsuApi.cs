@@ -1,4 +1,4 @@
-﻿using NetJSON;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,22 +10,22 @@ namespace Cafeine.Services
 {
     internal class AuthenticationModel
     {
-        [NetJSONProperty("access_token")]
+        [JsonProperty("access_token")]
         public string AccessToken { get; private set; }
 
-        [NetJSONProperty("created_at")]
+        [JsonProperty("created_at")]
         public ulong? CreatedAt { get; private set; }
 
-        [NetJSONProperty("expires_in")]
+        [JsonProperty("expires_in")]
         public ulong? ExpiresIn { get; private set; }
 
-        [NetJSONProperty("refresh_token")]
+        [JsonProperty("refresh_token")]
         public string RefreshToken { get; private set; }
 
-        [NetJSONProperty("scope")]
+        [JsonProperty("scope")]
         public string Scope { get; private set; }
 
-        [NetJSONProperty("token_type")]
+        [JsonProperty("token_type")]
         public string TokenType { get; private set; }
     }
     public static class KitsuApi
@@ -49,13 +49,13 @@ namespace Cafeine.Services
             var AuthPostAsync = await KitsuAuthClient.PostAsync($"{OauthURI}/token", content);
             AuthPostAsync.EnsureSuccessStatusCode();
             var AuthJson = await AuthPostAsync.Content.ReadAsStringAsync();
-            var AuthResponse = NetJSON.NetJSON.Deserialize<AuthenticationModel>(AuthJson);
+            var AuthResponse = JsonConvert.DeserializeObject<AuthenticationModel>(AuthJson);
             
             KitsuAuthClient.DefaultRequestHeaders.Add("Authorization", $"{AuthResponse.TokenType} {AuthResponse.AccessToken}");
             var UserResponse = await KitsuAuthClient.GetAsync($"{BaseURI}/users?filter[self]=true");
             UserResponse.EnsureSuccessStatusCode();
             var UserJson = await UserResponse.Content.ReadAsStringAsync();
-            var UserInfo = NetJSON.NetJSON.Deserialize<Dictionary<string,dynamic>>(UserJson);
+            var UserInfo = JsonConvert.DeserializeObject<Dictionary<string,dynamic>>(UserJson);
             UserName = UserInfo["data"][0]["attributes"]["name"];
             ID = UserInfo["data"][0]["id"];
         }

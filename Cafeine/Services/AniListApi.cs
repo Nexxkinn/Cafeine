@@ -20,15 +20,15 @@ namespace Cafeine.Services
         private static HttpClient AnilistAuthClient = new HttpClient();
         private static UserAccountModel UserCredentials { get; set; }
         private static readonly Uri HostUri = new Uri("https://graphql.anilist.co");
-        private static async Task<Dictionary<string, dynamic>> AnilistPostAsync(QueryQL query)
+        private static async Task<Dictionary<string, object>> AnilistPostAsync(QueryQL query)
         {
             HttpStringContent JSONRequest = new HttpStringContent(JsonConvert.SerializeObject(query),
                 Windows.Storage.Streams.UnicodeEncoding.Utf8,
                 "application/json");
             var Response = await AnilistAuthClient.PostAsync(HostUri, JSONRequest);
             string JSONResponse = await Response.Content.ReadAsStringAsync();
-            var ContentResponse = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(JSONResponse);
-            return ContentResponse;
+            var ContentResponse = JsonConvert.DeserializeObject(JSONResponse);
+            return ContentResponse as Dictionary<string, object>;
         }
         /// <summary>
         /// Authenticate is required to get the token
@@ -94,7 +94,7 @@ namespace Cafeine.Services
                             }
                         }"
             };
-            var ContentResponse = await AnilistPostAsync(Request);
+            dynamic ContentResponse = await AnilistPostAsync(Request);
             //Put it to the constructor
             UserCredentials = new UserAccountModel
             {
@@ -154,7 +154,7 @@ namespace Cafeine.Services
                     ["type"] = "ANIME"
                 }
             };
-            var Collection = await AnilistPostAsync(Query);
+            dynamic Collection = await AnilistPostAsync(Query);
             
             var localitem      = new List<ItemLibraryModel>();
             string ServiceName = (isdefaultservice) ? "default" : "AniList";
@@ -212,7 +212,7 @@ namespace Cafeine.Services
                     ["type"] = mediaType.ToString()
                 }
             };
-            var Content = await AnilistPostAsync(query);
+            dynamic Content = await AnilistPostAsync(query);
 
             // because Anilist is a fuckin moron, where the option asHTML:false
             // doesn't remove the <br> tag because "well, everyone is using browser
@@ -247,7 +247,7 @@ namespace Cafeine.Services
                     ["type"] = mediaType.ToString()
                 }
             };
-            var Content = await AnilistPostAsync(query);
+            dynamic Content = await AnilistPostAsync(query);
             var episodes = new List<Episode>();
             foreach (var item in Content["data"]["Media"]["streamingEpisodes"])
             {
@@ -278,7 +278,7 @@ namespace Cafeine.Services
                     ["status"] = "REPEATING"
                 }
             };
-            HttpStringContent RequestContent = new HttpStringContent(NetJSON.NetJSON.Serialize(Query), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
+            HttpStringContent RequestContent = new HttpStringContent(JsonConvert.SerializeObject(Query), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
             HttpResponseMessage Response = await AnilistAuthClient.PostAsync(new Uri("https://graphql.anilist.co"), RequestContent);
             string ResponseContent = await Response.Content.ReadAsStringAsync();
 
