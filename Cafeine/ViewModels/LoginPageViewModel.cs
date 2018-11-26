@@ -26,40 +26,40 @@ namespace Cafeine.ViewModels
             Login = new ReactiveCommand();
             Login.Subscribe( () => {
                     _navigationService.Navigate("BrowserAuthentication", null);
-                    _eventAggregator.GetEvent<IsKeyAvailable>().Subscribe(async x =>
-                    {
-                        var sw = new Stopwatch();
-                        Debug.Write("load one");
-                        sw.Start();
+                    //_eventAggregator.GetEvent<IsKeyAvailable>().Subscribe(async x =>
+                    //{
+                    //    var sw = new Stopwatch();
+                    //    Debug.Write("load one");
+                    //    sw.Start();
 
-                        var Raw_URI_Auth = await AniListApi.GetAuthenticationFromServer();
-                        AniListApi.BuildAuthenticator(Raw_URI_Auth);
+                    //    var Raw_URI_Auth = await AniListApi.GetAuthenticationFromServer();
+                    //    AniListApi.BuildAuthenticator(Raw_URI_Auth);
 
-                        sw.Stop();
-                        Debug.Write(sw.ElapsedMilliseconds);
-                        sw.Reset();
+                    //    sw.Stop();
+                    //    Debug.Write(sw.ElapsedMilliseconds);
+                    //    sw.Reset();
 
-                        Debug.Write("load two");
-                        sw.Start();
+                    //    Debug.Write("load two");
+                    //    sw.Start();
 
-                        await AniListApi.CreateAccount(true);
+                    //    await AniListApi.CreateAccount(true);
 
-                        sw.Stop();
-                        Debug.Write(sw.ElapsedMilliseconds);
-                        sw.Reset();
+                    //    sw.Stop();
+                    //    Debug.Write(sw.ElapsedMilliseconds);
+                    //    sw.Reset();
 
-                        Debug.Write("load three");
-                        sw.Start();
+                    //    Debug.Write("load three");
+                    //    sw.Start();
 
-                        var Raw_Database = await Database.GetDatabaseFromServices();
-                        Database.BuildDatabase(Raw_Database);
+                    //    var Raw_Database = await Database.CreateDBFromServices();
+                    //    Database.BuildDatabase(Raw_Database);
 
-                        sw.Stop();
-                        Debug.Write(sw.ElapsedMilliseconds);
-                        sw.Reset();
+                    //    sw.Stop();
+                    //    Debug.Write(sw.ElapsedMilliseconds);
+                    //    sw.Reset();
 
-                        _navigationService.Navigate("Main", null);
-                    });
+                    //    _navigationService.Navigate("Main", null);
+                    //});
             });
 
             LoginCheck = new AsyncReactiveCommand()
@@ -67,11 +67,8 @@ namespace Cafeine.ViewModels
                 {
                     if (!Database.IsAccountEmpty())
                     {
-                        Debug.WriteLine("ortello");
                         await Task.Delay(TimeSpan.FromSeconds(2));
                         _navigationService.Navigate("Main", null);
-                        //todo: order to force refresh 
-                        Debug.WriteLine("Heavy command finished.");
                     }
             });
         }

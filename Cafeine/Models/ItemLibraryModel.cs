@@ -32,6 +32,7 @@ namespace Cafeine.Models
         
         //[MAL ONLY] due to MAL being weird, data fetched from Anilist
         public MediaFormatEnum ShowType { get; set; }
+        public MediaTypeEnum MediaType { get; set; }
         public Dictionary<string,UserItem> Service { get; set; }
     }
     

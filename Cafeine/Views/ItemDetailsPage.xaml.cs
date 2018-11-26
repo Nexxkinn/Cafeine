@@ -154,5 +154,14 @@ namespace Cafeine.Views
             loadImageOpacity.Begin();
         }
 
+        private void OnBackgroundGridSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Visual blur = ElementCompositionPreview.GetElementChildVisual(BackgroundGrid);
+            if(blur != null)
+            {
+                blur.Size = new Vector2((float)BackgroundGrid.ActualWidth, (float)BackgroundGrid.ActualHeight);
+                ElementCompositionPreview.SetElementChildVisual(BackgroundGrid, blur);
+            }
+        }
     }
 }

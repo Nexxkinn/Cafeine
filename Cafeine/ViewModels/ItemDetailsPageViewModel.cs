@@ -9,29 +9,28 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Core;
 
 namespace Cafeine.ViewModels
 {
-    public class ItemDetailsID : PubSubEvent<int> { }
+    public class ItemDetailsID : PubSubEvent<UserItem> { }
     public class ItemDetailsPageViewModel : ViewModelBase, INavigationAware
     {
         private INavigationService _navigationService;
         private readonly IEventAggregator _eventAggregator;
 
-        public ReactiveCommand ItemDetailPageLoad { get; }
 
-        public ItemLibraryModel   item { get; set; }
-        public ReactiveProperty<StorageFile>ImageSource { get; }
-        public ReactiveCollection<Episode>  Episodelist { get; }
-        public ReactiveProperty<string>     Description { get; }
-        public ReactiveProperty<string>     ItemStatusTextBlock;
-        public ReactiveProperty<double>     ItemScore;
-        public ReactiveProperty<string>     ItemScoreDetails;
-        public ReactiveProperty<bool>       ItemScoreReadOnly;
-
+        public UserItem Item { get; set; }
+        public ReactiveProperty<StorageFile> ImageSource { get; }
+        public ReactiveCollection<Episode>   Episodelist { get; }
+        
         public ReactiveCommand EpisodeListsClicked { get; }
         public ReactiveCommand EpisodeSettingsClicked { get; }
-
+        public AsyncReactiveCommand PageLoaded { get; }
+        public ReactiveProperty<double> ScorePlaceHolderRating { get; set; }
+        public ReactiveProperty<string> StatusTextBlock { get; }
+        public ReactiveProperty<string> ScoreTextBlock { get; }
+        public ReactiveProperty<string> DescriptionTextBlock { get; }
         public ReactiveProperty<bool> LoadEpisodeSettings { get; }
         public ReactiveProperty<bool> LoadEpisodeLists { get; }
 
@@ -40,17 +39,16 @@ namespace Cafeine.ViewModels
             _navigationService = navigationService;
             _eventAggregator = eventAggregator;
 
-            item        = new ItemLibraryModel();
+            Item        = new UserItem();
             Episodelist = new ReactiveCollection<Episode>();
-            Description = new ReactiveProperty<string>();
-
             ImageSource = new ReactiveProperty<StorageFile>();
-            ItemScore           = new ReactiveProperty<double>();
-            ItemScoreDetails    = new ReactiveProperty<string>();
-            ItemStatusTextBlock = new ReactiveProperty<string>();
-            ItemScoreReadOnly   = new ReactiveProperty<bool>();
 
-            LoadEpisodeLists = new ReactiveProperty<bool>(true);
+            ScorePlaceHolderRating = new ReactiveProperty<double>();
+            StatusTextBlock        = new ReactiveProperty<string>();
+            DescriptionTextBlock   = new ReactiveProperty<string>();
+            ScoreTextBlock         = new ReactiveProperty<string>();
+
+            LoadEpisodeLists    = new ReactiveProperty<bool>(true);
             LoadEpisodeSettings = new ReactiveProperty<bool>(false);
             EpisodeListsClicked = new ReactiveCommand();
             EpisodeListsClicked.Subscribe(_ =>
@@ -65,71 +63,62 @@ namespace Cafeine.ViewModels
                 LoadEpisodeSettings.Value = true;
             });
 
-            ItemDetailPageLoad = new ReactiveCommand();
-            ItemDetailPageLoad.Subscribe(async _ => await DoTheMath());
+            PageLoaded = new AsyncReactiveCommand();
+            PageLoaded.Subscribe(async ()=> {
+                    await LoadAsync();
+                });
+            _eventAggregator.GetEvent<ItemDetailsID>().Subscribe(LoadItem);
         }
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
             _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(3);
-            _eventAggregator.GetEvent<ItemDetailsID>().Subscribe(x =>item = Database.ViewItem(x));
             base.OnNavigatedTo(e, viewModelState);
         }
+        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        {
+            _eventAggregator.GetEvent<ItemDetailsID>().Unsubscribe(LoadItem);
+            base.OnNavigatingFrom(e, viewModelState, suspending);
+        }
+        private void LoadItem(UserItem item)
+        {
+            Item = item;
+        }
         //TODO : Handle Manga/novel item type.
-        public async Task DoTheMath()
+        public async Task LoadAsync()
         {
             try
             {
-                ImageSource.Value = await ImageCache.GetFromCacheAsync(item.Service["default"].CoverImageUri);
-                var selecteditem = item.Service["default"];
+                StatusTextBlock.Value = $"{StatusEnum.Anilist_AnimeItemStatus[Item.Status]} • {Item.SeriesStart} • TV";
+                ScorePlaceHolderRating.Value = Item.AverageScore ?? -1;
+                ScoreTextBlock.Value = (Item.AverageScore.HasValue) ? $"( {Item.AverageScore.ToString()} )" : "( No score )";
+                List<Episode> EpisodeDB = new List<Episode>();
 
-                ItemStatusTextBlock.Value = $"{StatusEnum.Anilist_AnimeItemStatus[selecteditem.Status]} • {selecteditem.SeriesStart} • TV";
-                ItemScoreReadOnly.Value   = !selecteditem.AverageScore.HasValue;
+                List<Task> task = new List<Task>();
+                task.Add(Task.Run(async () => {
+                    Item.Details = await Database.ViewItemDetails(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
+                    DescriptionTextBlock.Value = Item.Details.Description;
+                }));
 
-                double score           = selecteditem.AverageScore ?? -1;
-                ItemScoreDetails.Value = (selecteditem.AverageScore.HasValue) ? $"( {selecteditem.AverageScore.ToString()} )" : "( No score )";
-                ItemScore.Value        = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(score, 0);
-
-                if (selecteditem.Details == null)
+                task.Add(Task.Run(async () =>
                 {
-                    var itemdetail = await Database.ViewItemDetails<ItemDetailsModel>(selecteditem.ItemId, MediaTypeEnum.ANIME, ServiceType.ANILIST);
-                    Description.Value = itemdetail.Description;
-                    selecteditem.Details = itemdetail;
-                }
-                else Description.Value = selecteditem.Details.Description;
+                    //load episode list from database.
+                    EpisodeDB = await Database.ViewItemEpisodes(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
+                }));
+                task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(Item.CoverImageUri)));
 
-                //load from online service 
-                if (item.Episodes == null)
-                {
-                    item.Episodes = await Database.ViewItemDetails<List<Episode>>(selecteditem.ItemId, MediaTypeEnum.ANIME, ServiceType.ANILIST);
-                }
-
-                //load episode list from database.
-                foreach (var episode in item.Episodes) Episodelist?.Add(episode);
-
-                //load episode updates;
-                var updatedEpisodes = await Database.ViewItemDetails<List<Episode>>(selecteditem.ItemId, MediaTypeEnum.ANIME, ServiceType.ANILIST);
+                await Task.WhenAll(task);
+                foreach (var episode in EpisodeDB) Episodelist?.Add(episode);
                 
-                foreach (var episode in item.Episodes)
-                {
-                    var offlineEpisodes = item.Episodes.Find(x => x.Title == episode.Title || x.Image == episode.Image);
-                    if( offlineEpisodes == null)
-                    {
-                        //add & load item if no episodes found in the database.
-                        item.Episodes.Add(episode);
-                        Episodelist?.Add(episode);
-                    }
-                }
-
-                Database.EditItem(item);
+                //Database.EditItem(item);
             }
             catch (Exception ex)
             {
                 //assume an exception exists?
-                ItemScoreReadOnly.Value   = true;
-                ItemScore.Value           = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(-1, 0);
+                //ItemScoreReadOnly.Value   = true;
+                //ItemScore.Value           = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(-1, 0);
 
-                ItemStatusTextBlock.Value = $"An error occured. {ex.Message}";
-                Description.Value         = $"{ex.StackTrace}\n" +
+                //ItemStatusTextBlock.Value = $"An error occured. {ex.Message}";
+                Item.Details.Description  = $"{ex.StackTrace}\n" +
                     $"Screenshot this image and contact to the developer.";
             }
         }

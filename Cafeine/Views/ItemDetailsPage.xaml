@@ -31,7 +31,7 @@
     </Page.Resources>
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
-            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemDetailPageLoad}" />
+            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.PageLoaded}" />
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
     <Grid>
@@ -48,7 +48,10 @@
                     x:Name="ItemDetailHeader"
                     Grid.Row="0"
                     Grid.Column="0">
-                    <Grid x:Name="BackgroundGrid" VerticalAlignment="Stretch">
+                    <Grid
+                        x:Name="BackgroundGrid"
+                        VerticalAlignment="Stretch"
+                        SizeChanged="OnBackgroundGridSizeChanged">
                         <Grid.Background>
                             <ImageBrush
                                 x:Name="BackgroundImage"
@@ -84,19 +87,19 @@
                                     FontSize="22"
                                     FontWeight="SemiLight"
                                     MaxLines="2"
-                                    Text="{x:Bind Path=Vm.item.Service['default'].Title}"
+                                    Text="{x:Bind Path=Vm.Item.Title}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="Wrap" />
                                 <TextBlock
                                     x:Name="ItemStatusTextBlock"
                                     FontSize="14"
-                                    Text="{x:Bind Path=Vm.ItemStatusTextBlock.Value, Mode=OneWay}" />
+                                    Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
                                 <RatingControl
                                     HorizontalAlignment="Left"
-                                    Caption="{x:Bind Path=Vm.ItemScoreDetails.Value, Mode=OneWay}"
+                                    Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
                                     InitialSetValue="0"
-                                    IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"
-                                    PlaceholderValue="{x:Bind Path=Vm.ItemScore.Value, Mode=OneWay}" />
+                                    PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating.Value, Mode=OneWay}" />
+                                <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
                                 <TextBlock
                                     x:Name="UserWatched"
                                     FontSize="14"
@@ -107,7 +110,7 @@
                                     FontSize="13"
                                     Foreground="#D7FFFFFF"
                                     MaxLines="5"
-                                    Text="{x:Bind Path=Vm.Description.Value, Mode=OneWay}"
+                                    Text="{x:Bind Path=Vm.DescriptionTextBlock.Value, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="Wrap" />
                             </StackPanel>

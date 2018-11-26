@@ -19,7 +19,7 @@
     mc:Ignorable="d">
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
-            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ForceDisplayItem}" />
+            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.MainPageLoaded}" />
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
     <Page.Resources>

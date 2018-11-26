@@ -52,7 +52,7 @@ namespace Cafeine.ViewModels
                }
             });
             SuggestionChosen = new ReactiveCommand<ItemLibraryModel>()
-                .WithSubscribe(x => _eventAggregator.GetEvent<NavigateItem>().Publish(x));
+                .WithSubscribe(x => _eventAggregator.GetEvent<NavigateItem>().Publish(x.Service["default"]));
             SuggestItemSource   = new ReactiveCollection<ItemLibraryModel>();
 
             GoBackButton = new ReactiveCommand();
@@ -91,6 +91,7 @@ namespace Cafeine.ViewModels
             });
             
             _eventAggregator.GetEvent<ChildFrameNavigating>().Subscribe(x => {
+
                 switch (x)
                 {
                     case 1:

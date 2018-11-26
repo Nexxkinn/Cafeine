@@ -11,11 +11,13 @@ using Reactive.Bindings;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 using Prism.Events;
+using Prism.Unity.Windows;
+using Unity;
 
 namespace Cafeine.ViewModels
 {
     public class LoadItemStatus    : PubSubEvent<int> { }
-    public class NavigateItem      : PubSubEvent<ItemLibraryModel> { }
+    public class NavigateItem      : PubSubEvent<UserItem> { }
     public class MainPageViewModel : ViewModelBase, INavigationAware
     {
         private static readonly string DB_FILE = Path.Combine(ApplicationData.Current.LocalFolder.Path, "BeaconData.db");
@@ -24,7 +26,7 @@ namespace Cafeine.ViewModels
 
         public ReactiveCollection<ItemLibraryModel> Library { get; set; }
         public ReactiveCommand<ItemLibraryModel>    ItemClicked { get; }
-        public ReactiveCommand                      ForceDisplayItem { get; }
+        public ReactiveCommand                      MainPageLoaded { get; }
 
         public MainPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
@@ -34,34 +36,35 @@ namespace Cafeine.ViewModels
 
             Library = new ReactiveCollection<ItemLibraryModel>();
 
-            ForceDisplayItem = new ReactiveCommand()
-                .WithSubscribe(async () =>
+            MainPageLoaded = new ReactiveCommand();
+            MainPageLoaded.Subscribe(async () =>
                {
-                    _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(async x => await DisplayItem(x));
-                   await DisplayItem(0);
+                   await ImageCache.CreateImageCacheFolder();
+                   DisplayItem(0);
                });
 
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(item =>
             {
-                Navigate(item);
+                Navigate(item.Service["default"]);
             });
+
+            _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(DisplayItem);
+            _eventAggregator.GetEvent<NavigateItem>().Subscribe(Navigate);
         }
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
             _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(2);
-            _eventAggregator.GetEvent<NavigateItem>().Subscribe(Navigate);
             _navigationService.ClearHistory();
             base.OnNavigatedTo(e, viewModelState);
         }
-        private async Task DisplayItem(int value)
+        private void DisplayItem(int value)
         {
-            await ImageCache.CreateImageCacheFolder();
             var localitems = Database.SearchBasedonCategory(value);
             Library.Clear();
             foreach(var item in localitems) Library?.Add(item);
         }
-        private void Navigate(ItemLibraryModel item)
+        private void Navigate(UserItem item)
         {
             #region rant
             // Why would you need to use EventAggregator to pass the data?
@@ -73,8 +76,13 @@ namespace Cafeine.ViewModels
             // Backup    : http://runtime117.rssing.com/chan-13993968/all_p3.html
 
             #endregion
+            if (_navigationService.CanGoBack())
+            {
+                _navigationService.GoBack();
+                _navigationService.RemoveLastPage();
+            }
             _navigationService.Navigate("ItemDetails", null);
-            _eventAggregator.GetEvent<ItemDetailsID>().Publish(item.Id);
+            _eventAggregator.GetEvent<ItemDetailsID>().Publish(item);
         }
         //Todo : Remove this
         private void updatedata()

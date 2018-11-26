@@ -35,35 +35,39 @@ namespace Cafeine.Services
         /// ASSUME there's at least one user account listed in the local database.
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<ItemLibraryModel>> GetDatabaseFromServices()
+        public static async Task CreateDBFromServices()
         {
-            //UNDONE: Universalize component?
             List<UserAccountModel> useraccounts = LocalUserAccount.FindAll().ToList();
             List<ItemLibraryModel> library = new List<ItemLibraryModel>();
 
             try
             {
-                //Grab all available collection from useraccounts to the library.
-                foreach (var list in useraccounts)
+                IService User;
+                //Get all available collection from useraccounts to the library.
+                foreach (var user in useraccounts)
                 {
-                    switch (list.Service)
+                    switch (user.Service)
                     {
                         case ServiceType.MYANIMELIST:
                             {
-                                MyAnimeListApi.HashID = list.HashID;
+                                //TODO: make it contractable.
+                                MyAnimeListApi.HashID = user.HashID;
                                 MyAnimeListApi.PopulateAuthentication();
                                 await MyAnimeListApi.Authenticate();
-                                var usercollection = await MyAnimeListApi.GetUserData(list.IsDefaultService);
+                                var usercollection = await MyAnimeListApi.GetUserData(user.IsDefaultService);
                                 library.AddRange(usercollection);
                                 usercollection.Clear();
                                 break;
                             }
                         case ServiceType.ANILIST:
                             {
-                                var usercollection = AniListApi.BuildUserCollection(list.IsDefaultService);
-                                library.AddRange(await usercollection);
-                                usercollection.Dispose();
+
+                                User = new AniListApi();
+                                var collection = User.CreateCollection(user);
+                                library.AddRange(await collection);
+                                collection.Dispose();
                                 break;
+                                
                             }
                         case ServiceType.KITSU:
                             {
@@ -73,40 +77,45 @@ namespace Cafeine.Services
                             }
                     }
                 }
+                
+                //drop old collection
+                db.DropCollection("library");
 
-                return library;
+                //reorganize library into the localitem.
+                Parallel.ForEach(library, (item) =>
+                {
+                    //Find if an item exists first in the local database
+                    var localitem = LocalItemCollections.FindOne(Query.EQ("MalID", item.MalID));
+                    if (localitem == null)
+                    {
+                        LocalItemCollections.Insert(item);
+                    }
+                    else
+                    {
+                        //Suppose other service already filled the MalID
+                        var x = item.Service.First();
+                        localitem.Service.Add(x.Key, x.Value);
+                        LocalItemCollections.Update(localitem);
+                    }
+                });
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new InvalidOperationException();
+                throw new Exception(e.Message, e);
+            }
+            finally
+            {
+                library.Clear();
+                useraccounts.Clear();
             }
         }
-        public static void BuildDatabase(List<ItemLibraryModel> library) {
-            //Delete old database.
-            db.DropCollection("library");
-            //reorganize library into the localitem.
-            Parallel.ForEach(library, (item) =>
-            {
-                //Find if an item exists first in the local database
-                var localitem = LocalItemCollections.FindOne(Query.EQ("MalID", item.MalID));
-                if (localitem == null)
-                {
-                    LocalItemCollections.Insert(item);
-                }
-                else
-                {
-                    //Suppose other service already filled the MalID
-                    var x = item.Service.First();
-                    localitem.Service.Add(x.Key, x.Value);
-                    LocalItemCollections.Update(localitem);
-                }
-            });
-        }
+
         public static void SyncDatabase(List<ItemLibraryModel> library)
         {
             foreach (var item in library)
             {
-                //Find if an item exists first in the local database
+                // Find if an item exists first in the local database
+                // 
                 var localitem = LocalItemCollections.FindOne(Query.EQ("MalID", item.MalID));
                 if (localitem == null)
                 {
@@ -132,52 +141,47 @@ namespace Cafeine.Services
         {
             LocalItemCollections.Update(Item);
         }
-        public static ItemLibraryModel ViewItem(int id)
+        public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)
         {
-            return LocalItemCollections.FindById(id);
-        }
-        public static async Task<T> ViewItemDetails<T>(int id, MediaTypeEnum media, ServiceType service)
-        {
-            
-            Type type = typeof(T);
-            if (type == typeof(ItemDetailsModel))
+            var output = new ItemDetailsModel();
+            switch (serviceType)
             {
-                var output = new ItemDetailsModel();
-                switch (service)
+                case ServiceType.ANILIST:
+                    {
+                        IService service = new AniListApi();
+                        output = await service.GetItemDetails(item,media);
+                        break;
+                    }
+            }
+            return output;
+
+        }
+        public static async Task<List<Episode>> ViewItemEpisodes(UserItem item, ServiceType serviceType, MediaTypeEnum media)
+        {
+            var output = new List<Episode>();
+            try
+            {
+                switch (serviceType)
                 {
                     case ServiceType.ANILIST:
                         {
-                            output = await AniListApi.GetItemDetailsFromService(id, media);
+
+                            IService service = new AniListApi();
+                            output = await service.GetItemEpisodes(item,media) as List<Episode>;
                             break;
                         }
                 }
-                return (T)Convert.ChangeType(output, typeof(T));
+            return output;
             }
-            else if (type == typeof(List<Episode>))
+            catch (Exception)
             {
-                var output = new List<Episode>();
-                try
-                {
-                    switch (service)
-                    {
-                        case ServiceType.ANILIST:
-                            {
-                                output = await AniListApi.GetItemEpisodesFromService(id, media);
-                                break;
-                            }
-                    }
-                    return (T)Convert.ChangeType(output, typeof(T));
-                }
-                catch (Exception ex)
-                {
-                    //offline mode, then.
-                    var offlineitem = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == id);
-                    output = offlineitem.Episodes ?? new List<Episode>();
-                    return (T)Convert.ChangeType(output, typeof(T));
-                }
+                //offline mode, then.
+                var offlineitem = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == item.ItemId);
+                output = offlineitem.Episodes ?? new List<Episode>();
+                return output;
             }
-            else throw new Exception("Unknown type");
         }
+
         public static IEnumerable<ItemLibraryModel> SearchItemCollection(string query)
         {
             return LocalItemCollections.Find(item => item.Service["default"].Title.ToLower().Contains(query));
