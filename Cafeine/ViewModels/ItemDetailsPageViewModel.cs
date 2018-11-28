@@ -7,7 +7,9 @@ using Prism.Windows.Navigation;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.UI.Core;
 
@@ -91,7 +93,7 @@ namespace Cafeine.ViewModels
                 StatusTextBlock.Value = $"{StatusEnum.Anilist_AnimeItemStatus[Item.Status]} • {Item.SeriesStart} • TV";
                 ScorePlaceHolderRating.Value = Item.AverageScore ?? -1;
                 ScoreTextBlock.Value = (Item.AverageScore.HasValue) ? $"( {Item.AverageScore.ToString()} )" : "( No score )";
-                List<Episode> EpisodeDB = new List<Episode>();
+                
 
                 List<Task> task = new List<Task>();
                 task.Add(Task.Run(async () => {
@@ -99,15 +101,23 @@ namespace Cafeine.ViewModels
                     DescriptionTextBlock.Value = Item.Details.Description;
                 }));
 
-                task.Add(Task.Run(async () =>
-                {
-                    //load episode list from database.
-                    EpisodeDB = await Database.ViewItemEpisodes(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
-                }));
+                task.Add(
+                    Task.Factory.StartNew(async () =>
+                    {
+                        List<Episode> EpisodeDB = await Database.ViewItemEpisodes(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
+                        foreach (var episode in EpisodeDB)
+                        {
+                            Episodelist?.Add(episode);
+                        }
+                    },
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    TaskScheduler.FromCurrentSynchronizationContext())
+                );
                 task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(Item.CoverImageUri)));
 
                 await Task.WhenAll(task);
-                foreach (var episode in EpisodeDB) Episodelist?.Add(episode);
+                
                 
                 //Database.EditItem(item);
             }
