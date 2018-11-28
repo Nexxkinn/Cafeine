@@ -8,7 +8,7 @@ namespace Cafeine.Models.Enums
 {
     public enum MediaTypeEnum
     {
-        ANIME=0,
+        ANIME = 0,
         MANGA,
         NOVEL
     }

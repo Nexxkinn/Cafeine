@@ -15,7 +15,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace Cafeine.Views
 {
     /// <summary>
@@ -28,6 +27,7 @@ namespace Cafeine.Views
                 return DataContext as HomePageViewModel;
             }
         }
+
         public HomePage()
         {
             this.InitializeComponent();

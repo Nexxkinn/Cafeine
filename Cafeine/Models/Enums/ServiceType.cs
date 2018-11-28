@@ -8,8 +8,8 @@ namespace Cafeine.Models.Enums
 {
     public enum ServiceType
     {
-        DEFAULT=0,
-        MYANIMELIST=1,
+        DEFAULT = 0,
+        MYANIMELIST = 1,
         ANILIST,
         KITSU
     }

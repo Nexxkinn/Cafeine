@@ -8,6 +8,7 @@
     xmlns:local="using:Cafeine.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:Cafeine.Models"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:prism="using:Prism.Windows.Mvvm"
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vr="using:Cafeine.Views.Resources"
@@ -94,7 +95,7 @@
                                     x:Name="ItemStatusTextBlock"
                                     FontSize="14"
                                     Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
-                                <RatingControl
+                                <muxc:RatingControl
                                     HorizontalAlignment="Left"
                                     Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
                                     InitialSetValue="0"
@@ -158,6 +159,7 @@
                                 ContainerContentChanging="Episodesitem_ContainerContentChanging"
                                 ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
                                 SizeChanged="OnGridViewSizeChanged">
+
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="model:Episode">
                                         <RelativePanel>

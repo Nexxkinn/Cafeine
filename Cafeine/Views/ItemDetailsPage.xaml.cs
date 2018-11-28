@@ -1,30 +1,17 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
 using Cafeine.ViewModels;
+using Microsoft.Graphics.Canvas.Effects;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Numerics;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Graphics.Canvas.Effects;
-using System.Numerics;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace Cafeine.Views
 {
     /// <summary>
@@ -37,6 +24,7 @@ namespace Cafeine.Views
                 return DataContext as ItemDetailsPageViewModel;
             }
         }
+
         public ItemDetailsPage()
         {
             this.InitializeComponent();
@@ -56,7 +44,6 @@ namespace Cafeine.Views
         }
 
         //View mode
-
         private void OnGridViewSizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Here I'm calculating the number of columns I want based on
@@ -71,7 +58,7 @@ namespace Cafeine.Views
 
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ItemDetailScroller);
             Compositor compositor = scrollerPropertySet.Compositor;
-            
+
             // Get the visual that represents our Header
             var headerVisual = ElementCompositionPreview.GetElementVisual(ItemDetailHeader);
             String progress = "Clamp(Abs(america.Translation.Y) / 244.0, 0.0, 1.0)";
@@ -84,29 +71,8 @@ namespace Cafeine.Views
             // Shift the option button by 244 pixel (?) when scrolling down
             var itemoptionsvisual = ElementCompositionPreview.GetElementVisual(ItemOptions);
             itemoptionsvisual.StartAnimation("offset.Y", offsetExpression);
-
-            #region unneeded
-            //// Logo scale and transform
-            //var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
-            //logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-
-            //var logoVisual = ElementCompositionPreview.GetElementVisual(HeaderLogo);
-            //logoVisual.StartAnimation("Scale.xy", logoHeaderScaleAnimation);
-
-            //var logoVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 50, {progress})");
-            //logoVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            //logoVisual.StartAnimation("Offset.Y", logoVisualOffsetAnimation);
-
-            //// Offset the header title
-            //Visual textVisual = ElementCompositionPreview.GetElementVisual(HeaderText);
-            //Vector3 finalOffset = new Vector3(-45, 22, 0);
-            //var headerOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(0,0,0), finalOffset, {progress})");
-            //headerOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            //headerOffsetAnimation.SetVector3Parameter("finalOffset", finalOffset);
-            //textVisual.StartAnimation(nameof(Visual.Offset), headerOffsetAnimation);
-            #endregion
         }
-        
+
         private void BackgroundImage_ImageOpened(object sender, RoutedEventArgs e)
         {
             GaussianBlurEffect blurEffect = new GaussianBlurEffect()
@@ -118,7 +84,7 @@ namespace Cafeine.Views
                 Source = new CompositionEffectSourceParameter("Backdrop")
             };
 
-            
+
             Visual _backgroundVisual = ElementCompositionPreview.GetElementVisual(BackgroundGrid);
             Compositor _backgroundCompositor = _backgroundVisual.Compositor;
 
@@ -143,7 +109,7 @@ namespace Cafeine.Views
                 Duration = new Duration(TimeSpan.FromSeconds(0.3))
             };
             animation.EnableDependentAnimation = true;
-            
+
             //create storyboard.
             Storyboard loadImageOpacity = new Storyboard();
             loadImageOpacity.Children.Add(animation);
@@ -157,7 +123,7 @@ namespace Cafeine.Views
         private void OnBackgroundGridSizeChanged(object sender, SizeChangedEventArgs e)
         {
             Visual blur = ElementCompositionPreview.GetElementChildVisual(BackgroundGrid);
-            if(blur != null)
+            if (blur != null)
             {
                 blur.Size = new Vector2((float)BackgroundGrid.ActualWidth, (float)BackgroundGrid.ActualHeight);
                 ElementCompositionPreview.SetElementChildVisual(BackgroundGrid, blur);

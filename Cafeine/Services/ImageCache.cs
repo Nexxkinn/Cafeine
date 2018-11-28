@@ -10,19 +10,22 @@ namespace Cafeine.Services
     public static class ImageCache
     {
         private static StorageFolder CacheFolder = ApplicationData.Current.LocalCacheFolder;
+
         private static StorageFolder ImageCacheFolder;
 
         private static HttpClient Httpclient;
+
         static ImageCache()
         {
             Httpclient = new HttpClient(new HttpClientHandler { MaxConnectionsPerServer = 100 });
         }
+
         public static async Task CreateImageCacheFolder()
         {
             ImageCacheFolder = await CacheFolder.CreateFolderAsync("ImageCache", CreationCollisionOption.OpenIfExists);
         }
 
-        public static async Task<StorageFile> GetFromCacheAsync(string url )
+        public static async Task<StorageFile> GetFromCacheAsync(string url)
         {
             StorageFile baseFile = null;
             var hash = GetCacheFileName(url);
@@ -44,10 +47,9 @@ namespace Cafeine.Services
                 baseFile = null;
                 hash = string.Empty;
             }
-            
         }
 
-        private static async Task<StorageFile> DownloadAsync(string url,string hash)
+        private static async Task<StorageFile> DownloadAsync(string url, string hash)
         {
             var file = await ImageCacheFolder.CreateFileAsync(hash, CreationCollisionOption.ReplaceExisting);
             using (MemoryStream ms = new MemoryStream())
@@ -72,7 +74,7 @@ namespace Cafeine.Services
         {
             return CreateHash64(uri).ToString();
         }
-        
+
         private static ulong CreateHash64(string str)
         {
             byte[] utf8 = Encoding.UTF8.GetBytes(str);
@@ -83,6 +85,5 @@ namespace Cafeine.Services
             }
             return value;
         }
-
     }
 }

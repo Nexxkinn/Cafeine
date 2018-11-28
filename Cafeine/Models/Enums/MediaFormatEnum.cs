@@ -9,8 +9,8 @@ namespace Cafeine.Models.Enums
     //based on Anilist's MediaFormat
     public enum MediaFormatEnum
     {
-        NONE=0,
-        TV=1,
+        NONE = 0,
+        TV = 1,
         TV_SHORT,
         MOVIE,
         SPECIAL,

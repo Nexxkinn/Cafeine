@@ -1,25 +1,31 @@
-﻿using Reactive.Bindings;
-using System;
-using System.Linq;
+﻿using Prism.Events;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
-using Windows.UI.Xaml.Controls;
+using Reactive.Bindings;
 using Reactive.Bindings.Interactivity;
+using System;
+using System.Linq;
 using System.Reactive.Linq;
-using Prism.Events;
+using Windows.UI.Xaml.Controls;
 
 namespace Cafeine.ViewModels
 {
     public sealed class BrowserAuthenticationPageViewModel : ViewModelBase, INavigationAware
     {
         private INavigationService _navigationService;
+
         public ReactiveProperty<Uri> Source;
+
         public ReactiveCommand<string> urlcheck;
+
         public ReactiveCommand GoBack { get; }
+
         public ReactiveProperty<string> HeaderTitle { get; }
 
         public IEventAggregator _eventAggregator;
-        public BrowserAuthenticationPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator) {
+
+        public BrowserAuthenticationPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+        {
             _navigationService = navigationService;
             _eventAggregator = eventAggregator;
 
@@ -43,11 +49,9 @@ namespace Cafeine.ViewModels
                 }
                 else HeaderTitle.Value = "Anilist Web Authentication";
             });
-
-
         }
     }
-    
+
     public class NavigationCompletedReactiveConverter : ReactiveConverter<WebViewNavigationCompletedEventArgs, string>
     {
         protected override IObservable<string> OnConvert(IObservable<WebViewNavigationCompletedEventArgs> source)

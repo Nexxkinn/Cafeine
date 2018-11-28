@@ -17,27 +17,32 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Cafeine.Views.Resources
 {
-    public partial class Template {
-
-        public Template() {
+    public partial class Template
+    {
+        public Template()
+        {
             InitializeComponent();
         }
-        private void ImageEntered(object sender, PointerRoutedEventArgs e) {
+
+        private void ImageEntered(object sender, PointerRoutedEventArgs e)
+        {
             Storyboard sb = ((Grid)sender).Resources["ImageOnHover"] as Storyboard;
             sb.Begin();
         }
 
-        private void ImageExited(object sender, PointerRoutedEventArgs e) {
+        private void ImageExited(object sender, PointerRoutedEventArgs e)
+        {
             Storyboard sb = ((Grid)sender).Resources["ImageOffHover"] as Storyboard;
             sb.Begin();
         }
-        
+
         private void SuggestionsList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             //Load grid background for autosuggestbox itemsuggested
             //Datatemplate -> SuggestItemTemplate -> SuggestedItemGrid.background
             args.RegisterUpdateCallback(LoadImage);
         }
+
         private async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;

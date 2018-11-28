@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Cafeine.Models;
+using Cafeine.Models.Enums;
+using LiteDB;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Cafeine.Models;
-using Cafeine.Models.Enums;
-using LiteDB;
 using Windows.Storage;
 
 namespace Cafeine.Services
@@ -15,7 +15,9 @@ namespace Cafeine.Services
         private static readonly string DB_FILE = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "Database.db");
 
         private static LiteCollection<UserAccountModel> LocalUserAccount { get; set; }
+
         private static LiteCollection<ItemLibraryModel> LocalItemCollections { get; set; }
+
         private static LiteDatabase db = new LiteDatabase(DB_FILE);
 
         static Database()
@@ -29,7 +31,7 @@ namespace Cafeine.Services
         public static void AddAccount(UserAccountModel account) => LocalUserAccount.Insert(account);
 
         public static void DeleteAccount(UserAccountModel account) => LocalUserAccount.Delete(x => x.ServiceId == account.ServiceId);
-        
+
         /// <summary>
         /// Build/rebuild database.
         /// ASSUME there's at least one user account listed in the local database.
@@ -65,9 +67,9 @@ namespace Cafeine.Services
                                 User = new AniListApi();
                                 var collection = User.CreateCollection(user);
                                 library.AddRange(await collection);
-                                collection.Dispose();
+                                collection.Result.Clear();
                                 break;
-                                
+
                             }
                         case ServiceType.KITSU:
                             {
@@ -77,7 +79,7 @@ namespace Cafeine.Services
                             }
                     }
                 }
-                
+
                 //drop old collection
                 db.DropCollection("library");
 
@@ -134,13 +136,18 @@ namespace Cafeine.Services
         public static void AddItem(ItemLibraryModel Item)
         {
         }
+
         public static void DeleteItem(ItemLibraryModel Item)
         {
         }
-        public static void EditItem(ItemLibraryModel Item)
+
+        public static void EditItem(UserItem Item)
         {
-            LocalItemCollections.Update(Item);
+            ItemLibraryModel itemlibrary = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == Item.ItemId);
+            itemlibrary.Service["default"] = Item;
+            LocalItemCollections.Update(itemlibrary);
         }
+
         public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)
         {
             var output = new ItemDetailsModel();
@@ -149,14 +156,14 @@ namespace Cafeine.Services
                 case ServiceType.ANILIST:
                     {
                         IService service = new AniListApi();
-                        output = await service.GetItemDetails(item,media);
+                        output = await service.GetItemDetails(item, media);
                         break;
                     }
             }
             return output;
-
         }
-        public static async Task<List<Episode>> ViewItemEpisodes(UserItem item, ServiceType serviceType, MediaTypeEnum media)
+
+        public static async Task<List<Episode>> UpdateItemEpisodes(UserItem item, ServiceType serviceType, MediaTypeEnum media)
         {
             var output = new List<Episode>();
             try
@@ -167,11 +174,14 @@ namespace Cafeine.Services
                         {
 
                             IService service = new AniListApi();
-                            output = await service.GetItemEpisodes(item,media) as List<Episode>;
+                            output = await service.GetItemEpisodes(item, media) as List<Episode>;
                             break;
                         }
                 }
-            return output;
+                ItemLibraryModel itemlibrary = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == item.ItemId);
+                itemlibrary.Episodes = output;
+                LocalItemCollections.Update(itemlibrary);
+                return output;
             }
             catch (Exception)
             {
@@ -182,19 +192,26 @@ namespace Cafeine.Services
             }
         }
 
+        public static List<Episode> ViewItemEpisodes(UserItem item)
+        {
+            ItemLibraryModel itemlibrary = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == item.ItemId);
+            return itemlibrary.Episodes;
+        }
+
         public static IEnumerable<ItemLibraryModel> SearchItemCollection(string query)
         {
             return LocalItemCollections.Find(item => item.Service["default"].Title.ToLower().Contains(query));
         }
+
         public static IEnumerable<ItemLibraryModel> SearchBasedonCategory(int category)
         {
             return LocalItemCollections.Find(x => x.Service["default"].UserStatus == category);
         }
+
         public static void ResetAll()
         {
             db.DropCollection("user");
             db.DropCollection("library");
-
         }
     }
 }

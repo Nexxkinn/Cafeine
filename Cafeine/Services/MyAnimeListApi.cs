@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Cafeine.Models;
+using Cafeine.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net.Http;
-using Windows.Security.Credentials;
 using System.Xml.Linq;
-using Cafeine.Models;
-using Cafeine.Models.Enums;
+using Windows.Security.Credentials;
 
 namespace Cafeine.Services
 {
@@ -17,9 +17,13 @@ namespace Cafeine.Services
         //UpdateData
         //DeleteData
         public static string Username { get; private set; }
+
         public static string Password { get; private set; }
+
         public static string HashID { get; set; } = string.Empty;
+
         private static HttpClient MALAuthClient = new HttpClient();
+
         public static void PopulateAuthentication()
         {
             if (HashID != string.Empty) throw new Exception("Hash hasn't been included");
@@ -37,7 +41,7 @@ namespace Cafeine.Services
         }
 
         //This method is only used once for setup, and intended as a password verification
-        //for other methods. 
+        //for other methods.
         public static async Task Authenticate()
         {
             var url = new Uri("https://myanimelist.net/api/account/verify_credentials.xml");
@@ -49,6 +53,7 @@ namespace Cafeine.Services
             response.EnsureSuccessStatusCode();
             response.Dispose();
         }
+
         public static void AddCredentials(bool isdefaultservice)
         {
             //store password
@@ -64,6 +69,7 @@ namespace Cafeine.Services
             var cred = new PasswordCredential("Cafeine-MAL", Username, Password);
             vault.Add(cred);
         }
+
         public static async Task<List<ItemLibraryModel>> GetUserData(bool IsDefaultService)
         {
 
@@ -154,6 +160,7 @@ namespace Cafeine.Services
                 GC.Collect();
             }
         }
+
         public static async Task<ItemDetailsModel> GetItemInfo(ItemLibraryModel item)
         {
             throw new NotImplementedException();

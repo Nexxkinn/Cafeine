@@ -1,32 +1,32 @@
-﻿using System.Reactive.Linq;
+﻿using Cafeine.Models;
+using Cafeine.Services;
+using Cafeine.ViewModels;
+using Cafeine.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Cafeine.ViewModels;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Cafeine.Models;
-using Cafeine.Views;
-using System.Reactive.Disposables;
-using Windows.Web.Http.Filters;
-using Windows.UI.Xaml.Documents;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Cafeine.Services;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http.Filters;
+
 //using Html2Markdown;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace Cafeine.Views
 {
     /// <summary>
@@ -39,12 +39,14 @@ namespace Cafeine.Views
                 return DataContext as MainPageViewModel;
             }
         }
+
         public MainPage()
         {
 
             //deletecookies();
             InitializeComponent();
         }
+
         private void deletecookies()
         {
             HttpBaseProtocolFilter handler = new HttpBaseProtocolFilter();
@@ -62,11 +64,12 @@ namespace Cafeine.Views
         {
             args.RegisterUpdateCallback(TestLoad);
         }
+
         private async void TestLoad(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
             var imageurl = (args.Item as ItemLibraryModel).Service["default"].CoverImageUri;
-            var cache = await ImageCache.GetFromCacheAsync(imageurl); 
+            var cache = await ImageCache.GetFromCacheAsync(imageurl);
             var image = templateRoot.Children[0] as Image;
             image.Source = new BitmapImage()
             {

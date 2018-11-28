@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using Cafeine.Views;
+﻿using Cafeine.Views;
 using Prism.Events;
 using Prism.Unity.Windows;
 using Prism.Windows.AppModel;
+using System.Threading.Tasks;
 using Unity;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
@@ -34,18 +34,21 @@ namespace Cafeine
             Container.RegisterInstance<IEventAggregator>(new EventAggregator());
             return base.OnInitializeAsync(args);
         }
+
         protected override UIElement CreateShell(Frame rootFrame)
         {
             var shell = Container.Resolve<HomePage>();
             shell.Vm.SetFrame(rootFrame);
             return shell;
         }
+
         protected override IDeviceGestureService OnCreateDeviceGestureService()
         {
             var svc = base.OnCreateDeviceGestureService();
             svc.UseTitleBarBackButton = false;
             return svc;
         }
+
         protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
             CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;

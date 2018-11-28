@@ -24,6 +24,7 @@ namespace Cafeine.Models.Enums
             ["POINT_5"] = 3,
             ["POINT_3"] = 4
         };
+
         public static double Anilist_ConvertToGlobalUnit(double value, int AnilistScoreFormat)
         {
             switch (AnilistScoreFormat)

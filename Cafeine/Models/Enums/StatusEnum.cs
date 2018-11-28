@@ -35,8 +35,8 @@ namespace Cafeine.Models.Enums
         };
 
         //probably unneeded.
-        public static readonly Dictionary<string,int> Anilist_ItemStatus = new Dictionary<string, int>()
-        { 
+        public static readonly Dictionary<string, int> Anilist_ItemStatus = new Dictionary<string, int>()
+        {
             ["FINISHED"] = 1,
             ["RELEASING"] = 2,
             ["NOT_YET_RELEASED"] = 3,

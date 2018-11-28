@@ -1,25 +1,28 @@
 ﻿using Cafeine.Models;
+using Cafeine.Models.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Web.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Cafeine.Models.Enums;
-using Newtonsoft.Json;
+using Windows.Web.Http;
 
 namespace Cafeine.Services
 {
     struct QueryQL
     {
         public string query;
+
         public dynamic variables;
     }
 
     public class AniListApi : IService
     {
         private static HttpClient AnilistAuthClient = new HttpClient();
+
         private static UserAccountModel UserCredentials { get; set; }
+
         private readonly Uri HostUri = new Uri("https://graphql.anilist.co");
 
         private async Task<Dictionary<string, dynamic>> AnilistPostAsync(QueryQL query)
@@ -43,7 +46,7 @@ namespace Cafeine.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ItemDetailsModel> GetItemDetails(UserItem item,MediaTypeEnum media)
+        public async Task<ItemDetailsModel> GetItemDetails(UserItem item, MediaTypeEnum media)
         {
             var output = new Dictionary<string, object>();
 
@@ -81,7 +84,7 @@ namespace Cafeine.Services
             };
             return itemdetailsmodel;
         }
-        
+
         public async Task<IList<Episode>> GetItemEpisodes(UserItem item, MediaTypeEnum media)
         {
             QueryQL query = new QueryQL
@@ -134,8 +137,6 @@ namespace Cafeine.Services
             HttpStringContent RequestContent = new HttpStringContent(JsonConvert.SerializeObject(Query), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
             HttpResponseMessage Response = await AnilistAuthClient.PostAsync(new Uri("https://graphql.anilist.co"), RequestContent);
             string ResponseContent = await Response.Content.ReadAsStringAsync();
-
-            //Console.WriteLine(res.Data);
         }
 
         public void DeleteItem(ItemLibraryModel item)
@@ -319,7 +320,5 @@ namespace Cafeine.Services
         {
             throw new NotImplementedException();
         }
-
     }
-
 }
