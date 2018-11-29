@@ -117,9 +117,12 @@
                     IsCompact="True"
                     LabelPosition="Collapsed"
                     Style="{StaticResource ReducedAppBarButtonRevealStyle}">
-                    <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xe13d;" />
-                    </AppBarButton.Icon>
+                    <AppBarButton.Content>
+                        <Ellipse
+                            Width="2"
+                            Height="2"
+                            Fill="Yellow" />
+                    </AppBarButton.Content>
                     <AppBarButton.Flyout>
                         <MenuFlyout>
                             <MenuFlyoutItem>

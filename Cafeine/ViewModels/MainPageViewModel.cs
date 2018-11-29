@@ -8,6 +8,8 @@ using Prism.Windows.Navigation;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -31,8 +33,20 @@ namespace Cafeine.ViewModels
         private INavigationService _navigationService;
 
         private readonly IEventAggregator _eventAggregator;
-
-        public ReactiveCollection<ItemLibraryModel> Library { get; set; }
+        
+        private ObservableCollection<ItemLibraryModel> _Library;
+        public ObservableCollection<ItemLibraryModel> Library {
+            get {
+                return _Library;
+            }
+            set {
+                if (_Library != value) // or the appropriate comparison for your specific case
+                {
+                    _Library = value;
+                    RaisePropertyChanged("Library");
+                }
+            }
+        }
 
         public ReactiveCommand<ItemLibraryModel> ItemClicked { get; }
 
@@ -43,8 +57,6 @@ namespace Cafeine.ViewModels
             //setup
             _navigationService = navigationService;
             _eventAggregator = eventAggregator;
-
-            Library = new ReactiveCollection<ItemLibraryModel>();
 
             MainPageLoaded = new ReactiveCommand();
             MainPageLoaded.Subscribe(async () =>
@@ -73,8 +85,7 @@ namespace Cafeine.ViewModels
         private void DisplayItem(int value)
         {
             var localitems = Database.SearchBasedonCategory(value);
-            Library.Clear();
-            foreach (var item in localitems) Library?.Add(item);
+            Library = new ObservableCollection<ItemLibraryModel>(localitems);
         }
 
         private void Navigate(UserItem item)

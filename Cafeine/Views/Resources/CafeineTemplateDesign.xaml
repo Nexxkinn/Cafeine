@@ -4,13 +4,49 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:m="using:Cafeine.Models">
 
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <RevealBorderBrush
+                x:Key="CustomReveal"
+                Opacity="0.5"
+                TargetTheme="Light" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <RevealBorderBrush
+                x:Key="CustomReveal"
+                Opacity="0.5"
+                TargetTheme="Dark" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
 
     <DataTemplate x:Name="Collection" x:DataType="m:ItemLibraryModel">
-        <Grid Width="140" Height="252">
+        <Grid
+            x:Name="item"
+            Width="140"
+            Height="252">
             <Grid.RowDefinitions>
                 <RowDefinition Height="198" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Grid.Triggers>
+                <EventTrigger>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetName="item"
+                                Storyboard.TargetProperty="Opacity"
+                                From="0"
+                                To="1"
+                                Duration="0:0:1">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
             <Image
                 x:Name="CoverImage"
                 Grid.Row="0"
@@ -71,6 +107,7 @@
                 </StackPanel>
             </Grid>-->
     </DataTemplate>
+
     <DataTemplate x:Name="SuggestItemTemplate" x:DataType="m:ItemLibraryModel">
         <Grid Height="50">
             <Grid.ColumnDefinitions>
@@ -493,20 +530,20 @@
                         x:Name="Root"
                         MinWidth="{TemplateBinding MinWidth}"
                         MaxWidth="{TemplateBinding MaxWidth}"
-                        Margin="1,0"
+                        Margin="0"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                         <Grid
                             x:Name="ContentRoot"
                             MinHeight="{ThemeResource AppBarThemeMinHeight}"
-                            Margin="-1,0">
+                            Margin="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Viewbox
                                 x:Name="ContentViewbox"
                                 Grid.Row="0"
-                                Height="20"
+                                Height="22"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw">
@@ -520,7 +557,7 @@
                                 Grid.RowSpan="2"
                                 Grid.ColumnSpan="2"
                                 Height="{TemplateBinding Height}"
-                                Margin="1,0"
+                                Margin="0,0"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="{TemplateBinding CornerRadius}" />
@@ -554,10 +591,14 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="Root.(RevealBrush.State)" Value="PointerOver" />
-                                        <Setter Target="Root.Background" Value="{ThemeResource AppBarButtonRevealBackgroundPointerOver}" />
+                                        <Setter Target="ContentRoot.Background" Value="{ThemeResource CustomReveal}" />
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarButtonRevealBorderBrushPointerOver}" />
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarButtonForegroundPointerOver}" />
                                     </VisualState.Setters>
+
+                                    <Storyboard>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="Root" />
+                                    </Storyboard>
                                 </VisualState>
 
                                 <VisualState x:Name="Pressed">
