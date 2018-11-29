@@ -33,8 +33,9 @@ namespace Cafeine.ViewModels
         private INavigationService _navigationService;
 
         private readonly IEventAggregator _eventAggregator;
-        
+
         private ObservableCollection<ItemLibraryModel> _Library;
+
         public ObservableCollection<ItemLibraryModel> Library {
             get {
                 return _Library;
