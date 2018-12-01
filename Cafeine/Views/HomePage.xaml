@@ -118,10 +118,18 @@
                     LabelPosition="Collapsed"
                     Style="{StaticResource ReducedAppBarButtonRevealStyle}">
                     <AppBarButton.Content>
-                        <Ellipse
-                            Width="2"
-                            Height="2"
-                            Fill="Yellow" />
+                        <Ellipse Width="2" Height="2">
+                            <Ellipse.Fill>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage
+                                            DecodePixelHeight="22"
+                                            DecodePixelWidth="22"
+                                            UriSource="{x:Bind Vm.AvatarURL.Avatar.Medium, Mode=OneWay}" />
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
                     </AppBarButton.Content>
                     <AppBarButton.Flyout>
                         <MenuFlyout>

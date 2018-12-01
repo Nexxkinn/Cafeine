@@ -38,6 +38,8 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<bool> DetailsTab_Visibility { get; }
 
+        public UserAccountModel AvatarURL { get; set; }
+
         public HomePageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
             _navigationService = navigationService;
@@ -52,7 +54,7 @@ namespace Cafeine.ViewModels
             //
             // System.Runtime.InteropServices.COMException with RPC_E_WRONG_THREAD tag
             //
-            // On Throttle() method but no guideline or documentation even mentioned it.
+            // On Throttle() method but no guideline or documentation mentioned it.
             // Even worse, only one source EVER give you a proper example of it.
             // http://rxwiki.wikidot.com/101samples --> Throttle - Simple.
             // Good job RX.Net and all of their team 👏.
@@ -134,6 +136,8 @@ namespace Cafeine.ViewModels
 
                 }
             });
+
+            AvatarURL = Database.GetCurrentUserAccount();
         }
 
         public Frame ChildFrame { get; set; } = new Frame();

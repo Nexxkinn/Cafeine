@@ -594,11 +594,8 @@
                                         <Setter Target="ContentRoot.Background" Value="{ThemeResource CustomReveal}" />
                                         <Setter Target="Border.BorderBrush" Value="{ThemeResource AppBarButtonRevealBorderBrushPointerOver}" />
                                         <Setter Target="Content.Foreground" Value="{ThemeResource AppBarButtonForegroundPointerOver}" />
+                                        <Setter Target="Border.Opacity" Value="0" />
                                     </VisualState.Setters>
-
-                                    <Storyboard>
-                                        <PointerUpThemeAnimation Storyboard.TargetName="Root" />
-                                    </Storyboard>
                                 </VisualState>
 
                                 <VisualState x:Name="Pressed">

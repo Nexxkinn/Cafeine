@@ -22,11 +22,16 @@ namespace Cafeine.Services
 
         static Database()
         {
-            LocalUserAccount = db.GetCollection<UserAccountModel>("user");
-            LocalItemCollections = db.GetCollection<ItemLibraryModel>("library");
+            if(LocalUserAccount == null || LocalItemCollections == null)
+            {
+                LocalUserAccount = db.GetCollection<UserAccountModel>("user");
+                LocalItemCollections = db.GetCollection<ItemLibraryModel>("library");
+            }
         }
 
         public static bool IsAccountEmpty() => (LocalUserAccount.Count() == 0) ? true : false;
+
+        public static UserAccountModel GetCurrentUserAccount() => LocalUserAccount.FindOne(x => x.IsDefaultService == true);
 
         public static void AddAccount(UserAccountModel account) => LocalUserAccount.Insert(account);
 

@@ -42,9 +42,14 @@
             ContainerContentChanging="Collection_ContainerContentChanging"
             IsItemClickEnabled="True"
             ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"
-            ItemContainerTransitions="{x:Null}"
             ItemTemplate="{StaticResource Collection}"
             ItemsSource="{x:Bind Vm.Library, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <GridView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <ContentThemeTransition />
+                    <EntranceThemeTransition IsStaggeringEnabled="True"/>
+                </TransitionCollection>
+            </GridView.ItemContainerTransitions>
             <interactivity:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="ItemClick">
                     <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemClicked}">
