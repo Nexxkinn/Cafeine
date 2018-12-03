@@ -2,6 +2,7 @@
     x:Class="Cafeine.Views.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:conv="using:Cafeine.Models.Conversions"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -132,17 +133,22 @@
                         </Ellipse>
                     </AppBarButton.Content>
                     <AppBarButton.Flyout>
-                        <MenuFlyout>
-                            <MenuFlyoutItem>
-                                <MenuFlyoutItem.Template>
-                                    <ControlTemplate>
-                                        <TextBlock Text="The Account" />
-                                    </ControlTemplate>
-                                </MenuFlyoutItem.Template>
-                            </MenuFlyoutItem>
-                            <!--<MenuFlyoutItem Icon="Setting" Text="Settings"/>-->
-                            <MenuFlyoutItem Command="{x:Bind Path=Vm.LogOutButton}" Text="Logout" />
-                        </MenuFlyout>
+                        <Flyout FlyoutPresenterStyle="{StaticResource CustomFlyoutPresenterStyle}">
+                            <StackPanel Orientation="Vertical">
+                                <Button>
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse
+                                                Width="30"
+                                                Height="30"
+                                                Fill="Yellow" />
+                                            <TextBlock Text="{x:Bind Path=Vm.AvatarURL.Name}" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <MenuFlyoutItem Command="{x:Bind Path=Vm.LogOutButton}" Text="Logout" />
+                            </StackPanel>
+                        </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
             </StackPanel>

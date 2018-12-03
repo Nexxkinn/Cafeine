@@ -128,7 +128,6 @@
                             <AppBarButton
                                 Width="52"
                                 Height="52"
-                                BorderThickness="0"
                                 Command="{x:Bind Vm.EpisodeListsClicked}"
                                 LabelPosition="Collapsed"
                                 Style="{StaticResource ReducedAppBarButtonRevealStyle}"
@@ -140,7 +139,6 @@
                             <AppBarButton
                                 Width="52"
                                 Height="52"
-                                BorderThickness="0"
                                 Command="{x:Bind Vm.EpisodeSettingsClicked}"
                                 Label=""
                                 LabelPosition="Collapsed"

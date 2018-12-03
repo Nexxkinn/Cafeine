@@ -137,7 +137,66 @@
     </DataTemplate>
     <Style x:Key="CollectionItemContainerStyle" TargetType="GridViewItem">
         <Setter Property="Margin" Value="0,20,8,0" />
+        <Setter Property="ContentTransitions">
+            <Setter.Value>
+                <!--
+                    Putting EntraceThemeTransition with IsStaggeringEnabled enabled
+                    on gridview.itemcontainertransition causes the transition to be
+                    fired only once, and doesn't run again for newer collection.
+                    
+                    A  quick  solution so far is by  placing  the transition inside
+                    ItemContainerStyle, and I don't think there'll be a fix for it.
+                -->
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True" />
+                </TransitionCollection>
+            </Setter.Value>
+        </Setter>
     </Style>
+    <ControlTemplate x:Key="CustomizedCollectionGridView" TargetType="GridView">
+        <Border
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            CornerRadius="{TemplateBinding CornerRadius}">
+            <ScrollViewer
+                x:Name="ScrollViewer"
+                Grid.RowSpan="2"
+                AutomationProperties.AccessibilityView="Raw"
+                BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+                IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+                Loaded="ScrollViewer_Loaded"
+                TabNavigation="{TemplateBinding TabNavigation}"
+                VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="CControl" Canvas.ZIndex="1">
+                        <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            Content="{TemplateBinding Header}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                            ContentTransitions="{TemplateBinding HeaderTransitions}" />
+                    </Grid>
+                    <ItemsPresenter
+                        Padding="{TemplateBinding Padding}"
+                        Canvas.ZIndex="0"
+                        Footer="{TemplateBinding Footer}"
+                        FooterTemplate="{TemplateBinding FooterTemplate}"
+                        FooterTransitions="{TemplateBinding FooterTransitions}" />
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </ControlTemplate>
 
     <!--  Modified version of AutoSuggestBox  -->
     <Style x:Key="ModifiedAutoSuggestBox" TargetType="AutoSuggestBox">
@@ -621,5 +680,9 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="CustomFlyoutPresenterStyle" TargetType="FlyoutPresenter">
+        <Setter Property="Padding" Value="0" />
     </Style>
 </ResourceDictionary>

@@ -13,11 +13,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
@@ -62,10 +64,10 @@ namespace Cafeine.Views
         //Reference : https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/optimize-gridview-and-listview#update-listview-and-gridview-items-progressively
         private void Collection_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
-            args.RegisterUpdateCallback(TestLoad);
+            args.RegisterUpdateCallback(LoadImage);
         }
 
-        private async void TestLoad(ListViewBase sender, ContainerContentChangingEventArgs args)
+        private async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
             var imageurl = (args.Item as ItemLibraryModel).Service["default"].CoverImageUri;

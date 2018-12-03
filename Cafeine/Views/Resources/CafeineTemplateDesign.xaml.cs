@@ -112,5 +112,19 @@ namespace Cafeine.Views.Resources
             Storyboard.SetTargetProperty(animation, "Opacity");
             loadImageOpacity.Begin();
         }
+        
+
+        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
+        {
+            var sv = sender as ScrollViewer;
+            var item = sv.FindName("CControl") as Grid;
+            var scrollpropertyset = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(sv);
+            var composition = scrollpropertyset.Compositor;
+            var offset = composition.CreateExpressionAnimation("-america.Translation.Y");
+            offset.SetReferenceParameter("america", scrollpropertyset);
+
+            var itemoption = ElementCompositionPreview.GetElementVisual(item);
+            itemoption.StartAnimation("Offset.Y", offset);
+        }
     }
 }
