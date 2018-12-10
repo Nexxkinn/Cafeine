@@ -43,10 +43,10 @@ namespace Cafeine.Models
 
     public class UserItem
     {
-        //Id based on main service
+        //Get Id number from the service
         public int ItemId { get; set; }
 
-        //Title from main service
+        //Title from the service
         public string Title { get; set; }
 
         public string CoverImageUri { get; set; }

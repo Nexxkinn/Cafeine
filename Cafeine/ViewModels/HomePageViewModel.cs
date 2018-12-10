@@ -73,11 +73,15 @@ namespace Cafeine.ViewModels
                    }
                });
             SuggestionChosen = new ReactiveCommand<ItemLibraryModel>()
-                .WithSubscribe(x => _eventAggregator.GetEvent<NavigateItem>().Publish(x.Service["default"]));
+                .WithSubscribe(x => _eventAggregator.GetEvent<NavigateItem>().Publish(x));
             SuggestItemSource = new ReactiveCollection<ItemLibraryModel>();
 
             GoBackButton = new ReactiveCommand();
-            GoBackButton.Subscribe(_ => _navigationService.GoBack());
+            GoBackButton.Subscribe(_ => {
+                _navigationService.GoBack();
+                _eventAggregator.GetEvent<LoadItemStatus>().Publish(TabbedIndex.Value);
+            }
+                );
 
             LogOutButton = new ReactiveCommand();
             LogOutButton.Subscribe(async _ =>
@@ -137,7 +141,7 @@ namespace Cafeine.ViewModels
                 }
             });
 
-            AvatarURL = Database.GetCurrentUserAccount();
+            AvatarURL = Database.GetCurrentUserAccount() ?? null;
         }
 
         public Frame ChildFrame { get; set; } = new Frame();

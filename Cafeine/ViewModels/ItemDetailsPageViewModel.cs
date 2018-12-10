@@ -14,7 +14,7 @@ using Windows.Storage;
 
 namespace Cafeine.ViewModels
 {
-    public class ItemDetailsID : PubSubEvent<UserItem>
+    public class ItemDetailsID : PubSubEvent<ItemLibraryModel>
     {
     }
 
@@ -25,6 +25,8 @@ namespace Cafeine.ViewModels
         private readonly IEventAggregator _eventAggregator;
 
         public UserItem Item { get; set; }
+
+        private ItemLibraryModel ItemBase { get; set; }
 
         public ReactiveProperty<StorageFile> ImageSource { get; }
 
@@ -97,9 +99,10 @@ namespace Cafeine.ViewModels
             base.OnNavigatingFrom(e, viewModelState, suspending);
         }
 
-        private void LoadItem(UserItem item)
+        private void LoadItem(ItemLibraryModel item)
         {
-            Item = item;
+            ItemBase = item;
+            Item = ItemBase.Service["default"];
         }
 
         //TODO : Handle Manga/novel item type.
@@ -111,6 +114,7 @@ namespace Cafeine.ViewModels
                 ScorePlaceHolderRating.Value = Item.AverageScore ?? -1;
                 ScoreTextBlock.Value = (Item.AverageScore.HasValue) ? $"( {Item.AverageScore.ToString()} )" : "( No score )";
 
+                //Parallel task.
                 List<Task> task = new List<Task>();
                 task.Add(Task.Run(async () =>
                 {
@@ -122,34 +126,41 @@ namespace Cafeine.ViewModels
 
                 }));
 
+                // Task.Factory.StartNew is the only logical option
+                // As it needs to set ThreadScheduler synchronous
+                // Reference  : https://blogs.msdn.microsoft.com/pfxteam/2011/10/24/task-run-vs-task-factory-startnew/ 
                 task.Add(Task.Factory.StartNew(async () =>
                 {
                     //load episode list from database.
-                    List<Episode> EpisodeDB = Database.ViewItemEpisodes(Item) ?? Enumerable.Empty<Episode>().ToList();
-                    foreach (var episode in EpisodeDB)
+                    if(ItemBase.Episodes != null)
                     {
-                        Episodelist?.Add(episode);
-                    };
+                        foreach (var episode in ItemBase.Episodes)
+                        {
+                            Episodelist.Add(episode);
+                        };
+                    }
+                    else ItemBase.Episodes = new List<Episode>();
 
                     //load episode list from service.
-                    List<Episode> EpisodeService = await Database.UpdateItemEpisodes(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
+                    List<Episode> EpisodeService = await Database.UpdateItemEpisodes(Item, ItemBase.Id, ServiceType.ANILIST, MediaTypeEnum.ANIME);
                     foreach (var episode in EpisodeService)
                     {
-                        bool EpisodeAlreadyListed = EpisodeDB.Exists(x => x.Title == episode.Title || x.Image == episode.Image);
+                        bool EpisodeAlreadyListed = ItemBase.Episodes.Exists(x => x.Title == episode.Title || x.Image == episode.Image);
                         if (!EpisodeAlreadyListed)
                         {
+                            //Only add new items to avoid overwriting old items that contains file path.
+                            ItemBase.Episodes.Add(episode);
                             Episodelist?.Add(episode);
                         }
                     }
                 },
                 CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext()));
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.FromCurrentSynchronizationContext()).Unwrap());
 
                 task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(Item.CoverImageUri)));
-
                 await Task.WhenAll(task);
-                Database.EditItem(Item);
+                Database.EditItem(ItemBase);
             }
             catch (Exception ex)
             {

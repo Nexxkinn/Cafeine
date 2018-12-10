@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity;
 using Windows.Storage;
@@ -22,7 +23,7 @@ namespace Cafeine.ViewModels
     {
     }
 
-    public class NavigateItem : PubSubEvent<UserItem>
+    public class NavigateItem : PubSubEvent<ItemLibraryModel>
     {
     }
 
@@ -62,17 +63,15 @@ namespace Cafeine.ViewModels
             MainPageLoaded = new ReactiveCommand();
             MainPageLoaded.Subscribe(async () =>
                {
-                   await ImageCache.CreateImageCacheFolder();
-                   DisplayItem(0);
+                   await DisplayItem(0);
                });
 
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(item =>
             {
-                Navigate(item.Service["default"]);
+                Navigate(item);
             });
-
-            _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(DisplayItem);
+            _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(async(x) => await DisplayItem(x));
             _eventAggregator.GetEvent<NavigateItem>().Subscribe(Navigate);
         }
 
@@ -83,13 +82,19 @@ namespace Cafeine.ViewModels
             base.OnNavigatedTo(e, viewModelState);
         }
 
-        private void DisplayItem(int value)
+        private async Task DisplayItem(int value)
         {
-            var localitems = Database.SearchBasedonCategory(value);
-            Library = new ObservableCollection<ItemLibraryModel>(localitems);
+            await Task.Factory.StartNew(() =>
+            {
+                var localitems = Database.SearchBasedonCategory(value);
+                Library = new ObservableCollection<ItemLibraryModel>(localitems);
+            },
+            CancellationToken.None,
+            TaskCreationOptions.None,
+            TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private void Navigate(UserItem item)
+        private void Navigate(ItemLibraryModel item)
         {
             // Why would you need to use EventAggregator to pass the data?
             // Because the navigation parameter is so shitty that it only
