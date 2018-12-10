@@ -49,8 +49,9 @@ namespace Cafeine
             return svc;
         }
 
-        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
+            await Services.ImageCache.CreateImageCacheFolder();
             CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
 
             ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
@@ -58,7 +59,6 @@ namespace Cafeine
             titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
 
             NavigationService.Navigate("Login", null);
-            return Task.FromResult(true);
         }
     }
 }

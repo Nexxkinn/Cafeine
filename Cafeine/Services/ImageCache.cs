@@ -17,7 +17,10 @@ namespace Cafeine.Services
 
         static ImageCache()
         {
-            Httpclient = new HttpClient(new HttpClientHandler { MaxConnectionsPerServer = 100 });
+            if(Httpclient == null)
+            {
+                Httpclient = new HttpClient(new HttpClientHandler { MaxConnectionsPerServer = 100 });
+            }
         }
 
         public static async Task CreateImageCacheFolder()

@@ -149,7 +149,7 @@ namespace Cafeine.Services
             throw new NotImplementedException();
         }
 
-        public async Task<UserAccountModel> CreateAccount()
+        public async Task<UserAccountModel> CreateAccount(bool isDefaultUser)
         {
             var Request = new QueryQL
             {
@@ -186,6 +186,7 @@ namespace Cafeine.Services
                     Large = ContentResponse["data"]["Viewer"]["avatar"]["large"],
                     Medium = ContentResponse["data"]["Viewer"]["avatar"]["medium"]
                 },
+                IsDefaultService = isDefaultUser,
                 AdditionalOption = ContentResponse["data"]["Viewer"]["mediaListOptions"]["scoreFormat"] as string
             };
             return UserCredentials;

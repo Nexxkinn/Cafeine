@@ -25,7 +25,7 @@ namespace Cafeine.Services
 
         void DeleteRange(IList<ItemLibraryModel> items);
 
-        Task<UserAccountModel> CreateAccount();
+        Task<UserAccountModel> CreateAccount(bool isDefaultUser);
 
         void DeleteAccount(UserAccountModel account);
 

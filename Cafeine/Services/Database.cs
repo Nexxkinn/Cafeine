@@ -1,6 +1,11 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
+using DBreeze;
+using DBreeze.DataTypes;
+using DBreeze.Objects;
+using DBreeze.Utils;
 using LiteDB;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,30 +17,60 @@ namespace Cafeine.Services
 {
     public static class Database
     {
-        private static readonly string DB_FILE = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "Database.db");
+        private static readonly string DB_FILE = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "db");
 
-        private static LiteCollection<UserAccountModel> LocalUserAccount { get; set; }
-
-        private static LiteCollection<ItemLibraryModel> LocalItemCollections { get; set; }
-
-        private static LiteDatabase db = new LiteDatabase(DB_FILE);
-
+        private static DBreezeEngine db = new DBreezeEngine(DB_FILE);
         static Database()
         {
-            if(LocalUserAccount == null || LocalItemCollections == null)
+            CustomSerializator.ByteArraySerializator = (object o) => { return JsonConvert.SerializeObject(o).To_UTF8Bytes(); };
+            CustomSerializator.ByteArrayDeSerializator = (byte[] bt,Type x) => { return JsonConvert.DeserializeObject(bt.UTF8_GetString(),x); };
+
+        }
+            public static bool IsAccountEmpty() {
+            using(var tr = db.GetTransaction())
             {
-                LocalUserAccount = db.GetCollection<UserAccountModel>("user");
-                LocalItemCollections = db.GetCollection<ItemLibraryModel>("library");
+                var e = tr.SelectForward<byte[], byte[]>("user").ToList();
+                return e.Count == 0;
+            }
+        } 
+
+        public static UserAccountModel GetCurrentUserAccount()
+        {
+            using(var tr = db.GetTransaction())
+            {
+                tr.SynchronizeTables("user");
+                var item = tr.Select<byte[], byte[]>("user", 1.ToIndex(true)).ObjectGet<UserAccountModel>();
+                return item?.Entity; 
+            }   
+        } 
+
+        public static void AddAccount(UserAccountModel account)
+        {
+            using (var tr = db.GetTransaction())
+            {
+                account.Id = tr.ObjectGetNewIdentity<int>("user");
+                tr.ObjectInsert("user", new DBreezeObject<UserAccountModel>
+                {
+                    NewEntity = true,
+                    Entity = account,
+                    Indexes = new List<DBreezeIndex>()
+                    {
+                        new DBreezeIndex(1,account.IsDefaultService){PrimaryIndex = true},
+                        new DBreezeIndex(2,account.Id)
+                    }
+                });
+                tr.Commit();
             }
         }
 
-        public static bool IsAccountEmpty() => (LocalUserAccount.Count() == 0) ? true : false;
-
-        public static UserAccountModel GetCurrentUserAccount() => LocalUserAccount.FindOne(x => x.IsDefaultService == true);
-
-        public static void AddAccount(UserAccountModel account) => LocalUserAccount.Insert(account);
-
-        public static void DeleteAccount(UserAccountModel account) => LocalUserAccount.Delete(x => x.ServiceId == account.ServiceId);
+        public static void DeleteAccount(UserAccountModel account)
+        {
+            using(var tr = db.GetTransaction())
+            {
+                tr.ObjectRemove("user", 1.ToIndex((int)account.Id));
+                tr.Commit();
+            }
+        }
 
         /// <summary>
         /// Build/rebuild database.
@@ -44,8 +79,21 @@ namespace Cafeine.Services
         /// <returns></returns>
         public static async Task CreateDBFromServices()
         {
-            List<UserAccountModel> useraccounts = LocalUserAccount.FindAll().ToList();
+            List<UserAccountModel> useraccounts = new List<UserAccountModel>();
             List<ItemLibraryModel> library = new List<ItemLibraryModel>();
+
+            using (var t = db.GetTransaction())
+            {
+                t.SynchronizeTables("user");
+                foreach(var item in t.SelectForwardFromTo<byte[], byte[]>("user",
+                    2.ToIndex(0),true,
+                    2.ToIndex(int.MaxValue),false))
+                {
+                    var w = item.ObjectGet<UserAccountModel>();
+                    useraccounts.Add(w.Entity);
+                }
+
+            }
 
             try
             {
@@ -86,25 +134,45 @@ namespace Cafeine.Services
                 }
 
                 //drop old collection
-                db.DropCollection("library");
+                db.Scheme.DeleteTable("library");
 
-                //reorganize library into the localitem.
-                Parallel.ForEach(library, (item) =>
+                using (var tr = db.GetTransaction())
                 {
-                    //Find if an item exists first in the local database
-                    var localitem = LocalItemCollections.FindOne(Query.EQ("MalID", item.MalID));
-                    if (localitem == null)
+                    //reorganize library into the localitem.
+                    foreach (var item in library)
                     {
-                        LocalItemCollections.Insert(item);
-                    }
-                    else
-                    {
-                        //Suppose other service already filled the MalID
-                        var x = item.Service.First();
-                        localitem.Service.Add(x.Key, x.Value);
-                        LocalItemCollections.Update(localitem);
-                    }
-                });
+                        //Find if an item exists first in the local database
+                        var localitem = tr.Select<byte[], byte[]>("library", 2.ToIndex(item.MalID,item.Id)).ObjectGet<ItemLibraryModel>();
+                        
+                        if (localitem == null)
+                        {
+                            item.Id = tr.ObjectGetNewIdentity<int>("library");
+                            var usertatus = item.Service.First().Value.UserStatus;
+                            var title = item.Service.First().Value.Title;
+                            var res = tr.ObjectInsert("library", new DBreezeObject<ItemLibraryModel>()
+                            {
+                                NewEntity = true,
+                                Entity = item,
+                                Indexes = new List<DBreezeIndex>()
+                                {
+                                    new DBreezeIndex(1,item.Id){PrimaryIndex = true},
+                                    new DBreezeIndex(2,item.MalID),
+                                    new DBreezeIndex(3,usertatus),
+                                }
+                            });
+                            tr.TextInsert("TS_Library", item.Id.ToBytes(),containsWords:title,fullMatchWords:"");
+                        }
+                        else
+                        {
+                            //Suppose other service already filled the MalID
+                            var service_item = item.Service.First();
+                            localitem.Entity.Service.Add(service_item.Key, service_item.Value);
+                            tr.ObjectInsert("library", localitem);
+                        }
+                    };
+                    tr.Commit();
+                }
+
             }
             catch (Exception e)
             {
@@ -117,26 +185,26 @@ namespace Cafeine.Services
             }
         }
 
-        public static void SyncDatabase(List<ItemLibraryModel> library)
-        {
-            foreach (var item in library)
-            {
-                // Find if an item exists first in the local database
-                // 
-                var localitem = LocalItemCollections.FindOne(Query.EQ("MalID", item.MalID));
-                if (localitem == null)
-                {
-                    LocalItemCollections.Insert(item);
-                }
-                else
-                {
-                    //Suppose other service already filled the MalID
-                    var x = item.Service.First();
-                    localitem.Service.Add(x.Key, x.Value);
-                    LocalItemCollections.Update(localitem);
-                }
-            }
-        }
+        //public static void SyncDatabase(List<ItemLibraryModel> library)
+        //{
+        //    foreach (var item in library)
+        //    {
+        //        // Find if an item exists first in the local database
+        //        // 
+        //        var localitem = LocalItemCollections.FindOne(Query.EQ("MalID", item.MalID));
+        //        if (localitem == null)
+        //        {
+        //            LocalItemCollections.Insert(item);
+        //        }
+        //        else
+        //        {
+        //            //Suppose other service already filled the MalID
+        //            var x = item.Service.First();
+        //            localitem.Service.Add(x.Key, x.Value);
+        //            LocalItemCollections.Update(localitem);
+        //        }
+        //    }
+        //}
 
         public static void AddItem(ItemLibraryModel Item)
         {
@@ -146,11 +214,22 @@ namespace Cafeine.Services
         {
         }
 
-        public static void EditItem(UserItem Item)
+        public static void EditItem(ItemLibraryModel Item)
         {
-            ItemLibraryModel itemlibrary = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == Item.ItemId);
-            itemlibrary.Service["default"] = Item;
-            LocalItemCollections.Update(itemlibrary);
+            //assuming the item is from "default" UserItem 
+            using(var tr = db.GetTransaction())
+            {
+                DBreezeObject<ItemLibraryModel> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)Item.Id)).ObjectGet<ItemLibraryModel>();
+                localitem.Entity = Item;
+                localitem.Indexes = new List<DBreezeIndex>()
+                    {
+                        new DBreezeIndex(1,localitem.Entity.Id){PrimaryIndex = true},
+                        new DBreezeIndex(2,localitem.Entity.MalID),
+                        new DBreezeIndex(3,localitem.Entity.Service.First().Value.UserStatus),
+                    };
+                tr.ObjectInsert("library", localitem, false);
+                tr.Commit();
+            }
         }
 
         public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)
@@ -168,7 +247,7 @@ namespace Cafeine.Services
             return output;
         }
 
-        public static async Task<List<Episode>> UpdateItemEpisodes(UserItem item, ServiceType serviceType, MediaTypeEnum media)
+        public static async Task<List<Episode>> UpdateItemEpisodes(UserItem item, int ItemLibraryID, ServiceType serviceType, MediaTypeEnum media)
         {
             var output = new List<Episode>();
             try
@@ -183,40 +262,47 @@ namespace Cafeine.Services
                             break;
                         }
                 }
-                ItemLibraryModel itemlibrary = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == item.ItemId);
-                itemlibrary.Episodes = output;
-                LocalItemCollections.Update(itemlibrary);
                 return output;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //offline mode, then.
-                var offlineitem = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == item.ItemId);
-                output = offlineitem.Episodes ?? new List<Episode>();
-                return output;
+                return new List<Episode>();
             }
-        }
-
-        public static List<Episode> ViewItemEpisodes(UserItem item)
-        {
-            ItemLibraryModel itemlibrary = LocalItemCollections.FindOne(x => x.Service["default"].ItemId == item.ItemId);
-            return itemlibrary.Episodes;
         }
 
         public static IEnumerable<ItemLibraryModel> SearchItemCollection(string query)
         {
-            return LocalItemCollections.Find(item => item.Service["default"].Title.ToLower().Contains(query));
+            using(var tr = db.GetTransaction())
+            {
+                List<ItemLibraryModel> items = new List<ItemLibraryModel>();
+                foreach (var id in tr.TextSearch("TS_Library").BlockAnd(query).GetDocumentIDs())
+                {
+                    var localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex(id)).ObjectGet<ItemLibraryModel>();
+                    items.Add(localitem.Entity);
+                }
+                return items;
+            }
         }
 
         public static IEnumerable<ItemLibraryModel> SearchBasedonCategory(int category)
         {
-            return LocalItemCollections.Find(x => x.Service["default"].UserStatus == category);
+            using (var tr = db.GetTransaction())
+            {
+                tr.SynchronizeTables("library");
+                List<ItemLibraryModel> items = new List<ItemLibraryModel>();
+                foreach (var localitem in tr.SelectForwardStartsWith<byte[], byte[]>("library",3.ToIndex(category))){
+                    var item = localitem.ObjectGet<ItemLibraryModel>();
+                    items.Add(item.Entity);
+                }
+                return items;
+            }
         }
 
         public static void ResetAll()
         {
-            db.DropCollection("user");
-            db.DropCollection("library");
+            db.Scheme.DeleteTable("user");
+            db.Scheme.DeleteTable("library");
         }
     }
 }
