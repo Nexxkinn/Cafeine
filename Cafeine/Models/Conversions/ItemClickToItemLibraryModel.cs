@@ -17,4 +17,11 @@ namespace Cafeine.Models.Conversions
             return source.Select(x => x.ClickedItem as ItemLibraryModel);
         }
     }
+    public class ItemClickToString : ReactiveConverter<ItemClickEventArgs, string>
+    {
+        protected override IObservable<string> OnConvert(IObservable<ItemClickEventArgs> source)
+        {
+            return source.Select(x => x.ClickedItem as string);
+        }
+    }
 }

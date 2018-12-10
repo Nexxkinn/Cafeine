@@ -12,10 +12,11 @@
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
-            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.LoginCheck}" />
+            <core:InvokeCommandAction Command="{x:Bind Path=Vm.LoginPageLoaded}" />
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
     <Grid Background="#FF2F343B">
@@ -39,6 +40,11 @@
                 FontSize="12"
                 Text="Cafeine Alpha" />
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel.Transitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True" />
+                    </TransitionCollection>
+                </StackPanel.Transitions>
                 <TextBlock
                     HorizontalAlignment="Center"
                     CharacterSpacing="150"
@@ -46,13 +52,48 @@
                     FontSize="70"
                     Text="CAFEINE"
                     TextWrapping="Wrap" />
-                <Button
-                    Width="285"
-                    Height="135"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Command="{x:Bind Path=Vm.Login, Mode=OneWay}"
-                    Content="Login (Anilist only)" />
+                <StackPanel
+                    x:Name="UserPanel"
+                    x:Load="{x:Bind Path=Vm.UserPanelVisibility, Mode=OneWay}"
+                    Orientation="Vertical">
+                    <Ellipse
+                        Width="108"
+                        Height="108"
+                        Margin="0,24"
+                        Loaded="Ellipse_Loaded" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Text="{x:Bind Path=Vm.welcometext, Mode=OneWay}" />
+                </StackPanel>
+                <StackPanel
+                    x:Name="SetupPanel"
+                    Margin="0,24,0,0"
+                    x:Load="{x:Bind Path=Vm.SetupPanelVisibility, Mode=OneWay}"
+                    Orientation="Vertical">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="Hi there." />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Text="Which service do you want to use?" />
+                    <ListView Margin="0,12,0,0" IsItemClickEnabled="True">
+                        <ListViewItem x:Name="Anilist">Anilist</ListViewItem>
+                        <ListViewItem x:Name="MAL" IsEnabled="False">MyAnimeList ( coming soon )</ListViewItem>
+                        <ListViewItem x:Name="Kitsu" IsEnabled="False">Kitsu.io ( coming soon )</ListViewItem>
+                        <interactivity:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="ItemClick">
+                                <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.LoginClicked}">
+                                    <conv:ItemClickToString />
+                                </reactiveProperty:EventToReactiveCommand>
+                            </core:EventTriggerBehavior>
+                        </interactivity:Interaction.Behaviors>
+                    </ListView>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>

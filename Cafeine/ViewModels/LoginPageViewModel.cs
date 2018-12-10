@@ -1,4 +1,6 @@
-﻿using Cafeine.Services;
+﻿using Cafeine.Models;
+using Cafeine.Services;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
@@ -8,80 +10,91 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace Cafeine.ViewModels
 {
     public class LoginPageViewModel : ViewModelBase, INavigationAware
     {
-        //list accounts
-        //basic login
-        public ReactiveCommand Login { get; }
+        public DelegateCommand LoginPageLoaded { get; }
 
-        public AsyncReactiveCommand LoginCheck { get; }
+        public ReactiveCommand<string> LoginClicked { get; }
 
         private INavigationService _navigationService;
 
         private IEventAggregator _eventAggregator;
 
+        public bool UserPanelVisibility;
+
+        public bool SetupPanelVisibility;
+
+        public UserAccountModel CurrentUserAccount;
+
+        public string welcometext;
+
         public LoginPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
             _navigationService = navigationService;
+
             _eventAggregator = eventAggregator;
-            Login = new ReactiveCommand();
-            Login.Subscribe(() =>
-            {
-                _navigationService.Navigate("BrowserAuthentication", null);
-                //_eventAggregator.GetEvent<IsKeyAvailable>().Subscribe(async x =>
-                //{
-                //    var sw = new Stopwatch();
-                //    Debug.Write("load one");
-                //    sw.Start();
 
-                //    var Raw_URI_Auth = await AniListApi.GetAuthenticationFromServer();
-                //    AniListApi.BuildAuthenticator(Raw_URI_Auth);
+            UserPanelVisibility = false;
 
-                //    sw.Stop();
-                //    Debug.Write(sw.ElapsedMilliseconds);
-                //    sw.Reset();
+            SetupPanelVisibility = true;
 
-                //    Debug.Write("load two");
-                //    sw.Start();
-
-                //    await AniListApi.CreateAccount(true);
-
-                //    sw.Stop();
-                //    Debug.Write(sw.ElapsedMilliseconds);
-                //    sw.Reset();
-
-                //    Debug.Write("load three");
-                //    sw.Start();
-
-                //    var Raw_Database = await Database.CreateDBFromServices();
-                //    Database.BuildDatabase(Raw_Database);
-
-                //    sw.Stop();
-                //    Debug.Write(sw.ElapsedMilliseconds);
-                //    sw.Reset();
-
-                //    _navigationService.Navigate("Main", null);
-                //});
-            });
-
-            LoginCheck = new AsyncReactiveCommand()
-                .WithSubscribe(async () =>
+            LoginPageLoaded = new DelegateCommand(async () =>
                 {
                     if (!Database.IsAccountEmpty())
                     {
+                        CurrentUserAccount = Database.GetCurrentUserAccount();
+                        showUserPanel();
                         await Task.Delay(TimeSpan.FromSeconds(2));
                         _navigationService.Navigate("Main", null);
                     }
+
                 });
+
+            LoginClicked = new ReactiveCommand<string>();
+            LoginClicked.Subscribe(item =>
+            {
+                switch (item)
+                {
+                    case "Anilist":
+                        {
+                            _eventAggregator.GetEvent<IsKeyAvailable>().Subscribe(async x => await AnilistLogin(x));
+                            _navigationService.Navigate("BrowserAuthentication", null);
+                            break;
+                        }
+                }
+            });
+        }
+
+        public async Task AnilistLogin(bool x)
+        {
+            IService service = new AniListApi();
+            await service.VerifyAccount();
+            CurrentUserAccount = await service.CreateAccount(true);
+            Database.AddAccount(CurrentUserAccount);
+            showUserPanel();
+            await Database.CreateDBFromServices();
+            _navigationService.Navigate("Main", null);
         }
 
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
             _navigationService.ClearHistory();
             base.OnNavigatedTo(e, viewModelState);
+        }
+
+        public void showUserPanel()
+        {
+            welcometext = $"Welcome back, {CurrentUserAccount.Name}";
+            UserPanelVisibility = true;
+            SetupPanelVisibility = false;
+            RaisePropertyChanged(nameof(welcometext));
+            RaisePropertyChanged(nameof(CurrentUserAccount));
+            RaisePropertyChanged(nameof(UserPanelVisibility));
+            RaisePropertyChanged(nameof(SetupPanelVisibility));
         }
     }
 

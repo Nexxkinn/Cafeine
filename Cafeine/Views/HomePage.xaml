@@ -138,10 +138,18 @@
                                 <Button>
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
-                                            <Ellipse
-                                                Width="30"
-                                                Height="30"
-                                                Fill="Yellow" />
+                                            <Ellipse Width="30" Height="30">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush>
+                                                        <ImageBrush.ImageSource>
+                                                            <BitmapImage
+                                                                DecodePixelHeight="30"
+                                                                DecodePixelWidth="30"
+                                                                UriSource="{x:Bind Vm.AvatarURL.Avatar.Medium, Mode=OneWay}" />
+                                                        </ImageBrush.ImageSource>
+                                                    </ImageBrush>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
                                             <TextBlock Text="{x:Bind Path=Vm.AvatarURL.Name}" />
                                         </StackPanel>
                                     </Button.Content>
