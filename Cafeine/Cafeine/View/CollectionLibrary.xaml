@@ -1,0 +1,72 @@
+﻿<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Cafeine"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
+      xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+      xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+      xmlns:vm="using:Cafeine.ViewModel"
+      xmlns:m="using:Cafeine.Model"
+      x:Class="Cafeine.CollectionLibraryFrame"
+      mc:Ignorable="d"
+      NavigationCacheMode="Required"
+      DataContext="{Binding CollectionFrame,Source={StaticResource Locator}}">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <local:Generics />
+            </ResourceDictionary.MergedDictionaries>
+            <m:ItemClicked x:Key="ICConv" />
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <GridView x:Name="watch"
+                  Margin="12,0,0,0"
+                  Foreground="{x:Null}"
+                  SelectionMode="None"
+                  IsItemClickEnabled="True"
+                  ItemTemplate="{StaticResource Collection}"
+                  ItemsSource="{x:Bind Vm.ItemItemSource,Mode=OneWay}"
+                  ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"
+                  animations:ReorderGridAnimation.Duration="300">
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="ItemClick">
+                    <core:InvokeCommandAction Command="{x:Bind Vm.ExpandItem, Mode=OneWay}"
+                                              InputConverter="{StaticResource ICConv}"/>
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
+            <!--
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapGrid Orientation="Horizontal" HorizontalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>-->
+        </GridView>
+        <StackPanel Visibility="{x:Bind Vm.ErrorVisibility, Mode=OneWay}"
+                    Orientation="Vertical"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Opacity="0.7">
+            <TextBlock Text="Hmm..."
+                       FontSize="32"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-SemiBold.ttf#Montserrat SemiBold" FontWeight="SemiBold" />
+            <TextBlock Text="Why is it empty, I wonder..." Margin="0,0,0,24" HorizontalAlignment="Center"/>
+            <TextBlock Text="0"
+                       Canvas.ZIndex="0"
+                       Grid.Row="0" Grid.Column="0"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       FontFamily="ms-appx:/Assets/Fonts/Cafeine_font.ttf#Untitled1" 
+                       FontSize="200"/>
+        </StackPanel>
+    </Grid>
+</Page>

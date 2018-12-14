@@ -1,0 +1,47 @@
+﻿<Page x:Class="Cafeine.DirectoryExplorer"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Cafeine"
+      xmlns:m="using:Cafeine.Model"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+      xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+      xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
+      mc:Ignorable="d"
+      NavigationCacheMode="Enabled"
+      DataContext="{Binding DirectoryExFrame, Source={StaticResource Locator}}">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <local:Generics />
+            </ResourceDictionary.MergedDictionaries>
+            <m:DirectoryClicked x:Key="DConv" />
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <GridView x:Name="VirDirInterface"
+                  Margin="12,8,0,0"
+                  Foreground="{x:Null}"
+                  IsItemClickEnabled="True"
+                  ItemTemplate="{StaticResource DirectoryCollection}"
+                  ItemContainerStyle="{StaticResource DirectoryContainerStyle}"
+                  ItemsPanel="{StaticResource Itemspanel}"
+                  ItemsSource="{x:Bind Vm.DataReceived,Mode=OneWay}"
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                  animations:ReorderGridAnimation.Duration="300">
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="ItemClick">
+                    <core:InvokeCommandAction Command="{x:Bind Vm.DirectoryItemClick}"
+                                              InputConverter="{StaticResource DConv}" />
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
+        </GridView>
+    </Grid>
+</Page>

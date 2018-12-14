@@ -1,0 +1,29 @@
+﻿<ContentDialog
+    x:Class="Cafeine.SignInDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Cafeine"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="SIGN IN"
+    PrimaryButtonText="Login"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    >
+
+    <StackPanel VerticalAlignment="Center" Margin="0,12,0,0">
+        <TextBox x:Name="usrnm"
+                 Height="20"
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Center"
+                 Width="242"
+                 PlaceholderText="Username" />
+        <PasswordBox x:Name="psswd"
+                     Margin="0,4,0,0"
+                     VerticalAlignment="Center"
+                     Width="242"
+                     PlaceholderText="Password" />
+    </StackPanel>
+</ContentDialog>
