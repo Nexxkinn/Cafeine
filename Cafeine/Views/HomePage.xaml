@@ -1,0 +1,169 @@
+﻿<Page
+    x:Class="Cafeine.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:conv="using:Cafeine.Models.Conversions"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:local="using:Cafeine.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="using:Prism.Windows.Mvvm"
+    xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
+    xmlns:vm="using:Cafeine.ViewModels"
+    xmlns:vr="using:Cafeine.Views.Resources"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <vr:Template />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid x:Name="thegrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{x:Bind Path=Vm.InvisibleTab.Value, Mode=TwoWay}" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" MinWidth="312" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Margin="12,8,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                CharacterSpacing="12"
+                FontSize="12"
+                Text="Cafeine Alpha" />
+            <Pivot
+                Grid.Row="0"
+                Margin="28,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                SelectedIndex="{x:Bind Path=Vm.TabbedIndex.Value, Mode=TwoWay}"
+                Visibility="{x:Bind Path=Vm.WatchHoldPivot_Visibility.Value, Mode=OneWay}">
+                <Pivot.Resources>
+                    <Style TargetType="PivotHeaderItem">
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="FontSize" Value="17" />
+                        <Setter Property="Padding" Value="8,0,8,0" />
+                    </Style>
+                </Pivot.Resources>
+                <PivotItem Header="Watching" />
+                <PivotItem Header="Completed" />
+                <PivotItem Header="Hold" />
+                <PivotItem Header="Dropped" />
+                <PivotItem Header="Planned" />
+
+            </Pivot>
+            <StackPanel
+                VerticalAlignment="Bottom"
+                Orientation="Horizontal"
+                Visibility="{x:Bind Path=Vm.DetailsTab_Visibility.Value, Mode=OneWay}">
+                <AppBarButton
+                    Width="48"
+                    Height="48"
+                    Command="{x:Bind Path=Vm.GoBackButton}"
+                    LabelPosition="Collapsed"
+                    Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE0A6;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <TextBlock
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="17"
+                    FontWeight="SemiBold"
+                    Text="Details" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                Height="80"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Orientation="Horizontal">
+                <AutoSuggestBox
+                    x:Name="Search"
+                    Width="250"
+                    Height="36"
+                    Margin="0,0,6,6"
+                    VerticalAlignment="Bottom"
+                    IsTabStop="True"
+                    ItemContainerStyle="{StaticResource AutoSuggestBoxItemContainerStyle}"
+                    ItemTemplate="{StaticResource SuggestItemTemplate}"
+                    ItemsSource="{x:Bind Path=Vm.SuggestItemSource, Mode=OneWay}"
+                    PlaceholderText="Search"
+                    Style="{StaticResource ModifiedAutoSuggestBox}"
+                    Text="{x:Bind Path=Vm.SuggestText.Value, Mode=TwoWay}"
+                    UpdateTextOnSelect="False">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="SuggestionChosen">
+                            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.SuggestionChosen}">
+                                <conv:SuggestionChosenToItemLibraryModel />
+                            </reactiveProperty:EventToReactiveCommand>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </AutoSuggestBox>
+                <AppBarButton
+                    Width="48"
+                    Height="48"
+                    VerticalAlignment="Bottom"
+                    IsCompact="True"
+                    LabelPosition="Collapsed"
+                    Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                    <AppBarButton.Content>
+                        <Ellipse Width="2" Height="2">
+                            <Ellipse.Fill>
+                                <ImageBrush>
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage
+                                            DecodePixelHeight="22"
+                                            DecodePixelWidth="22"
+                                            UriSource="{x:Bind Vm.AvatarURL.Avatar.Medium, Mode=OneWay}" />
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </AppBarButton.Content>
+                    <AppBarButton.Flyout>
+                        <Flyout FlyoutPresenterStyle="{StaticResource CustomFlyoutPresenterStyle}">
+                            <StackPanel Orientation="Vertical">
+                                <Button>
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse Width="30" Height="30">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush>
+                                                        <ImageBrush.ImageSource>
+                                                            <BitmapImage
+                                                                DecodePixelHeight="30"
+                                                                DecodePixelWidth="30"
+                                                                UriSource="{x:Bind Vm.AvatarURL.Avatar.Medium, Mode=OneWay}" />
+                                                        </ImageBrush.ImageSource>
+                                                    </ImageBrush>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                            <TextBlock Text="{x:Bind Path=Vm.AvatarURL.Name, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <MenuFlyoutItem Command="{x:Bind Path=Vm.LogOutButton}" Text="Logout" />
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+            </StackPanel>
+        </Grid>
+        <Frame
+            x:Name="contentFrame"
+            Grid.Row="1"
+            Content="{x:Bind Path=Vm.ChildFrame, Mode=OneWay}" />
+    </Grid>
+</Page>
