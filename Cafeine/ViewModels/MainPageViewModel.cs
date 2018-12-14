@@ -1,6 +1,5 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
-using LiteDB;
 using Prism.Events;
 using Prism.Unity.Windows;
 using Prism.Windows.Mvvm;
@@ -90,8 +89,8 @@ namespace Cafeine.ViewModels
                 Library = new ObservableCollection<ItemLibraryModel>(localitems);
             },
             CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskScheduler.FromCurrentSynchronizationContext());
+            TaskCreationOptions.DenyChildAttach,
+            TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(false);
         }
 
         private void Navigate(ItemLibraryModel item)
@@ -111,21 +110,6 @@ namespace Cafeine.ViewModels
             }
             _navigationService.Navigate("ItemDetails", null);
             _eventAggregator.GetEvent<ItemDetailsID>().Publish(item);
-        }
-
-        //Todo : Remove this
-        private void updatedata()
-        {
-            using (var db = new LiteDatabase(DB_FILE))
-            {
-                var col = db.GetCollection<ItemLibraryModel>("items");
-                //col.Insert(new Item { Id = 1, Name = Name.Value });
-                //var getdata = col.FindOne(x => x.Name.StartsWith("Jo"));
-                //getdata.Name = Name.Value;
-                //col.Update(getdata);
-                //NameTextblock.Value = getdata.Name;
-
-            }
         }
     }
 }

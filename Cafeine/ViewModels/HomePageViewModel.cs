@@ -140,8 +140,11 @@ namespace Cafeine.ViewModels
 
                 }
             });
-
-            AvatarURL = Database.GetCurrentUserAccount() ?? null;
+            _eventAggregator.GetEvent<HomePageAvatarLoad>().Subscribe(() =>
+           {
+               AvatarURL = Database.GetCurrentUserAccount() ?? null;
+               RaisePropertyChanged(nameof(AvatarURL));
+           });
         }
 
         public Frame ChildFrame { get; set; } = new Frame();
@@ -173,4 +176,5 @@ namespace Cafeine.ViewModels
     public class ChildFrameNavigating : PubSubEvent<int>
     {
     }
+    public class HomePageAvatarLoad : PubSubEvent { }
 }

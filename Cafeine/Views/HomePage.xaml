@@ -150,7 +150,7 @@
                                                     </ImageBrush>
                                                 </Ellipse.Fill>
                                             </Ellipse>
-                                            <TextBlock Text="{x:Bind Path=Vm.AvatarURL.Name}" />
+                                            <TextBlock Text="{x:Bind Path=Vm.AvatarURL.Name, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>

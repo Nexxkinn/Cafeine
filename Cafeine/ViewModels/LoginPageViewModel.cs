@@ -48,6 +48,7 @@ namespace Cafeine.ViewModels
                     {
                         CurrentUserAccount = Database.GetCurrentUserAccount();
                         showUserPanel();
+                        _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
                         await Task.Delay(TimeSpan.FromSeconds(2));
                         _navigationService.Navigate("Main", null);
                     }
@@ -77,6 +78,7 @@ namespace Cafeine.ViewModels
             Database.AddAccount(CurrentUserAccount);
             showUserPanel();
             await Database.CreateDBFromServices();
+            _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
             _navigationService.Navigate("Main", null);
         }
 

@@ -7,6 +7,7 @@ using Prism.Windows.Navigation;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<StorageFile> ImageSource { get; }
 
-        public ReactiveCollection<Episode> Episodelist { get; }
+        public ObservableCollection<Episode> Episodelist { get; private set; }
 
         public ReactiveCommand EpisodeListsClicked { get; }
 
@@ -56,7 +57,6 @@ namespace Cafeine.ViewModels
             _eventAggregator = eventAggregator;
 
             Item = new UserItem();
-            Episodelist = new ReactiveCollection<Episode>();
             ImageSource = new ReactiveProperty<StorageFile>();
 
             ScorePlaceHolderRating = new ReactiveProperty<double>();
@@ -64,6 +64,7 @@ namespace Cafeine.ViewModels
             DescriptionTextBlock = new ReactiveProperty<string>();
             ScoreTextBlock = new ReactiveProperty<string>();
 
+            Episodelist = new ObservableCollection<Episode>();
             LoadEpisodeLists = new ReactiveProperty<bool>(true);
             LoadEpisodeSettings = new ReactiveProperty<bool>(false);
             EpisodeListsClicked = new ReactiveCommand();
@@ -132,12 +133,10 @@ namespace Cafeine.ViewModels
                 task.Add(Task.Factory.StartNew(async () =>
                 {
                     //load episode list from database.
-                    if(ItemBase.Episodes != null)
+                    if (ItemBase.Episodes != null)
                     {
-                        foreach (var episode in ItemBase.Episodes)
-                        {
-                            Episodelist.Add(episode);
-                        };
+                        Episodelist = new ObservableCollection<Episode>(ItemBase.Episodes);
+                        RaisePropertyChanged(nameof(Episodelist));
                     }
                     else ItemBase.Episodes = new List<Episode>();
 
@@ -153,6 +152,7 @@ namespace Cafeine.ViewModels
                             Episodelist?.Add(episode);
                         }
                     }
+                    RaisePropertyChanged("Episodelist");
                 },
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,

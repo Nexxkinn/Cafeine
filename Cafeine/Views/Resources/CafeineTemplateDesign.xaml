@@ -107,34 +107,6 @@
                 </StackPanel>
             </Grid>-->
     </DataTemplate>
-
-    <DataTemplate x:Name="SuggestItemTemplate" x:DataType="m:ItemLibraryModel">
-        <Grid Height="50">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid
-                x:Name="SuggestedItemGrid"
-                MinWidth="250"
-                VerticalAlignment="Stretch">
-                <!--<Grid.Background>
-                    <ImageBrush
-                        x:Name="SuggestedItemBackground"
-                        ImageSource="{x:Bind Mode=OneWay, Path=Service['default'].CoverImage.Path}"
-                        Opacity="0"
-                        Stretch="UniformToFill"
-                        AlignmentY="Top"
-                        />
-                </Grid.Background>-->
-                <Rectangle Fill="#CC000000" />
-            </Grid>
-            <TextBlock
-                Margin="8,0"
-                VerticalAlignment="Center"
-                FontWeight="SemiBold"
-                Text="{x:Bind Path=Service['default'].Title}" />
-        </Grid>
-    </DataTemplate>
     <Style x:Key="CollectionItemContainerStyle" TargetType="GridViewItem">
         <Setter Property="Margin" Value="0,20,8,0" />
         <Setter Property="ContentTransitions">
@@ -207,6 +179,33 @@
         <Setter Property="Template" Value="{StaticResource AutoSuggestBoxTemplate}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource AutoSuggestBoxItemContainerStyle}" />
     </Style>
+    <DataTemplate x:Name="SuggestItemTemplate" x:DataType="m:ItemLibraryModel">
+        <Grid Height="50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid
+                x:Name="SuggestedItemGrid"
+                MinWidth="250"
+                VerticalAlignment="Stretch">
+                <!--<Grid.Background>
+                    <ImageBrush
+                        x:Name="SuggestedItemBackground"
+                        ImageSource="{x:Bind Mode=OneWay, Path=Service['default'].CoverImage.Path}"
+                        Opacity="0"
+                        Stretch="UniformToFill"
+                        AlignmentY="Top"
+                        />
+                </Grid.Background>-->
+                <Rectangle Fill="#CC000000" />
+            </Grid>
+            <TextBlock
+                Margin="8,0"
+                VerticalAlignment="Center"
+                FontWeight="SemiBold"
+                Text="{x:Bind Path=Service['default'].Title}" />
+        </Grid>
+    </DataTemplate>
     <ControlTemplate x:Key="AutoSuggestBoxTemplate" TargetType="AutoSuggestBox">
         <Grid x:Name="LayoutRoot">
             <TextBox
@@ -681,7 +680,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
     <Style x:Key="CustomFlyoutPresenterStyle" TargetType="FlyoutPresenter">
         <Setter Property="Padding" Value="0" />
     </Style>

@@ -113,7 +113,6 @@ namespace Cafeine.Views.Resources
             loadImageOpacity.Begin();
         }
         
-
         private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
         {
             var sv = sender as ScrollViewer;

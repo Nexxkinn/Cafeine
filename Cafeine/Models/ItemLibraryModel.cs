@@ -1,14 +1,6 @@
 ﻿using Cafeine.Models.Enums;
-using LiteDB;
-using Reactive.Bindings;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace Cafeine.Models
 {
@@ -21,7 +13,6 @@ namespace Cafeine.Models
         /// 3 - ?
         /// </summary>
         //local database id, totally not related to any service's id.
-        [BsonId]
         public int Id { get; set; }
 
         //Ironically accepted ID for all services.
@@ -60,7 +51,6 @@ namespace Cafeine.Models
         public int SeriesStart { get; set; }
 
         //public MediaTypeEnum Category { get; set; }
-        [BsonIgnore]
         public StorageFile CoverImage { get; set; }
 
         public string Category { get; set; }

@@ -4,9 +4,9 @@ using DBreeze;
 using DBreeze.DataTypes;
 using DBreeze.Objects;
 using DBreeze.Utils;
-using LiteDB;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,29 +20,51 @@ namespace Cafeine.Services
         private static readonly string DB_FILE = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "db");
 
         private static DBreezeEngine db = new DBreezeEngine(DB_FILE);
+
         static Database()
         {
             CustomSerializator.ByteArraySerializator = (object o) => { return JsonConvert.SerializeObject(o).To_UTF8Bytes(); };
-            CustomSerializator.ByteArrayDeSerializator = (byte[] bt,Type x) => { return JsonConvert.DeserializeObject(bt.UTF8_GetString(),x); };
-
+            CustomSerializator.ByteArrayDeSerializator = (byte[] bt, Type x) => { return JsonConvert.DeserializeObject(bt.UTF8_GetString(), x); };
         }
-            public static bool IsAccountEmpty() {
-            using(var tr = db.GetTransaction())
+
+        public static bool IsAccountEmpty()
+        {
+            using (var tr = db.GetTransaction())
             {
                 var e = tr.SelectForward<byte[], byte[]>("user").ToList();
                 return e.Count == 0;
             }
-        } 
+        }
 
         public static UserAccountModel GetCurrentUserAccount()
         {
-            using(var tr = db.GetTransaction())
+            using (var tr = db.GetTransaction())
             {
                 tr.SynchronizeTables("user");
                 var item = tr.Select<byte[], byte[]>("user", 1.ToIndex(true)).ObjectGet<UserAccountModel>();
-                return item?.Entity; 
-            }   
-        } 
+                return item?.Entity;
+            }
+        }
+
+        public static List<UserAccountModel> GetAllUserAccounts()
+        {
+            using (var tr = db.GetTransaction())
+            {
+                var accounts = new List<UserAccountModel>();
+                using (var t = db.GetTransaction())
+                {
+                    t.SynchronizeTables("user");
+                    foreach (var item in t.SelectForwardFromTo<byte[], byte[]>("user",
+                        2.ToIndex(0), true,
+                        2.ToIndex(int.MaxValue), false))
+                    {
+                        var w = item.ObjectGet<UserAccountModel>();
+                        accounts.Add(w.Entity);
+                    }
+                }
+                return accounts;
+            }
+        }
 
         public static void AddAccount(UserAccountModel account)
         {
@@ -65,7 +87,7 @@ namespace Cafeine.Services
 
         public static void DeleteAccount(UserAccountModel account)
         {
-            using(var tr = db.GetTransaction())
+            using (var tr = db.GetTransaction())
             {
                 tr.ObjectRemove("user", 1.ToIndex((int)account.Id));
                 tr.Commit();
@@ -79,59 +101,54 @@ namespace Cafeine.Services
         /// <returns></returns>
         public static async Task CreateDBFromServices()
         {
-            List<UserAccountModel> useraccounts = new List<UserAccountModel>();
-            List<ItemLibraryModel> library = new List<ItemLibraryModel>();
-
-            using (var t = db.GetTransaction())
-            {
-                t.SynchronizeTables("user");
-                foreach(var item in t.SelectForwardFromTo<byte[], byte[]>("user",
-                    2.ToIndex(0),true,
-                    2.ToIndex(int.MaxValue),false))
-                {
-                    var w = item.ObjectGet<UserAccountModel>();
-                    useraccounts.Add(w.Entity);
-                }
-
-            }
-
+            List<UserAccountModel> useraccounts = GetAllUserAccounts();
+            List<List<ItemLibraryModel>> Listedlibrary = new List<List<ItemLibraryModel>>();
             try
             {
-                IService User;
+                List<Task> tasks = new List<Task>();
                 //Get all available collection from useraccounts to the library.
                 foreach (var user in useraccounts)
                 {
-                    switch (user.Service)
+                    tasks.Add(Task.Run(async () =>
                     {
-                        case ServiceType.MYANIMELIST:
-                            {
-                                //TODO: make it contractable.
-                                MyAnimeListApi.HashID = user.HashID;
-                                MyAnimeListApi.PopulateAuthentication();
-                                await MyAnimeListApi.Authenticate();
-                                var usercollection = await MyAnimeListApi.GetUserData(user.IsDefaultService);
-                                library.AddRange(usercollection);
-                                usercollection.Clear();
-                                break;
-                            }
-                        case ServiceType.ANILIST:
-                            {
+                        switch (user.Service)
+                        {
+                            case ServiceType.MYANIMELIST:
+                                {
+                                    //TODO: make it contractable.
+                                    MyAnimeListApi.HashID = user.HashID;
+                                    MyAnimeListApi.PopulateAuthentication();
+                                    await MyAnimeListApi.Authenticate();
+                                    var usercollection = await MyAnimeListApi.GetUserData(user.IsDefaultService);
+                                    lock (Listedlibrary)
+                                    {
+                                        Listedlibrary.Add(new List<ItemLibraryModel>(usercollection));
+                                    }
+                                    usercollection.Clear();
+                                    break;
+                                }
+                            case ServiceType.ANILIST:
+                                {
+                                    IService User = new AniListApi();
+                                    var collection = await User.CreateCollection(user);
+                                    lock (Listedlibrary)
+                                    {
+                                        Listedlibrary.Add(new List<ItemLibraryModel>(collection));
+                                    }
+                                    collection.Clear();
+                                    break;
 
-                                User = new AniListApi();
-                                var collection = User.CreateCollection(user);
-                                library.AddRange(await collection);
-                                collection.Result.Clear();
-                                break;
-
-                            }
-                        case ServiceType.KITSU:
-                            {
-                                //TODO : Build database for Kitsu
-                                //TODO : add IsDefaultService option
-                                break;
-                            }
-                    }
+                                }
+                            case ServiceType.KITSU:
+                                {
+                                    //TODO : Build database for Kitsu
+                                    //TODO : add IsDefaultService option
+                                    break;
+                                }
+                        }
+                    }));
                 }
+                await Task.WhenAll(tasks);
 
                 //drop old collection
                 db.Scheme.DeleteTable("library");
@@ -139,38 +156,42 @@ namespace Cafeine.Services
                 using (var tr = db.GetTransaction())
                 {
                     //reorganize library into the localitem.
-                    foreach (var item in library)
+                    foreach (var library in Listedlibrary)
                     {
-                        //Find if an item exists first in the local database
-                        var localitem = tr.Select<byte[], byte[]>("library", 2.ToIndex(item.MalID,item.Id)).ObjectGet<ItemLibraryModel>();
-                        
-                        if (localitem == null)
+                        foreach (var item in library)
                         {
-                            item.Id = tr.ObjectGetNewIdentity<int>("library");
-                            var usertatus = item.Service.First().Value.UserStatus;
-                            var title = item.Service.First().Value.Title;
-                            var res = tr.ObjectInsert("library", new DBreezeObject<ItemLibraryModel>()
+                            //Find if an item exists first in the local database
+                            var localitem = tr.Select<byte[], byte[]>("library", 2.ToIndex(item.MalID, item.Id)).ObjectGet<ItemLibraryModel>();
+
+                            if (localitem == null)
                             {
-                                NewEntity = true,
-                                Entity = item,
-                                Indexes = new List<DBreezeIndex>()
+                                item.Id = tr.ObjectGetNewIdentity<int>("library");
+                                var usertatus = item.Service.First().Value.UserStatus;
+                                var title = item.Service.First().Value.Title;
+                                var res = tr.ObjectInsert("library", new DBreezeObject<ItemLibraryModel>()
                                 {
-                                    new DBreezeIndex(1,item.Id){PrimaryIndex = true},
-                                    new DBreezeIndex(2,item.MalID),
-                                    new DBreezeIndex(3,usertatus),
-                                }
-                            });
-                            tr.TextInsert("TS_Library", item.Id.ToBytes(),containsWords:title,fullMatchWords:"");
+                                    NewEntity = true,
+                                    Entity = item,
+                                    Indexes = new List<DBreezeIndex>()
+                                    {
+                                        new DBreezeIndex(1,item.Id){PrimaryIndex = true},
+                                        new DBreezeIndex(2,item.MalID),
+                                        new DBreezeIndex(3,usertatus),
+                                    }
+                                });
+                                tr.TextInsert("TS_Library", item.Id.ToBytes(), containsWords: title, fullMatchWords: "");
+                            }
+                            else
+                            {
+                                //Suppose other service already filled the MalID
+                                var service_item = item.Service.First();
+                                localitem.Entity.Service.Add(service_item.Key, service_item.Value);
+                                tr.ObjectInsert("library", localitem);
+                            }
                         }
-                        else
-                        {
-                            //Suppose other service already filled the MalID
-                            var service_item = item.Service.First();
-                            localitem.Entity.Service.Add(service_item.Key, service_item.Value);
-                            tr.ObjectInsert("library", localitem);
-                        }
+                        // Blame this one line of code that causes this mess lol
+                        tr.Commit();
                     };
-                    tr.Commit();
                 }
 
             }
@@ -180,7 +201,7 @@ namespace Cafeine.Services
             }
             finally
             {
-                library.Clear();
+                Listedlibrary.Clear();
                 useraccounts.Clear();
             }
         }
@@ -205,19 +226,40 @@ namespace Cafeine.Services
         //        }
         //    }
         //}
-
         public static void AddItem(ItemLibraryModel Item)
         {
+            // Item must be at least from one currently used service.
+            // Assume the current service is "default".
+            using (var tr = db.GetTransaction())
+            {
+                DBreezeObject<ItemLibraryModel> localitem = new DBreezeObject<ItemLibraryModel>()
+                {
+                    Entity = Item,
+                    Indexes = new List<DBreezeIndex>()
+                    {
+                        new DBreezeIndex(1,Item.Id){PrimaryIndex = true},
+                        new DBreezeIndex(2,Item.MalID),
+                        new DBreezeIndex(3,Item.Service["default"].UserStatus),
+                    }
+                };
+                tr.ObjectInsert("library", localitem, false);
+                tr.Commit();
+            }
         }
 
         public static void DeleteItem(ItemLibraryModel Item)
         {
+            using (var tr = db.GetTransaction())
+            {
+                tr.ObjectRemove("library", 1.ToIndex(Item.Id));
+                tr.Commit();
+            }
         }
 
         public static void EditItem(ItemLibraryModel Item)
         {
             //assuming the item is from "default" UserItem 
-            using(var tr = db.GetTransaction())
+            using (var tr = db.GetTransaction())
             {
                 DBreezeObject<ItemLibraryModel> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)Item.Id)).ObjectGet<ItemLibraryModel>();
                 localitem.Entity = Item;
@@ -225,7 +267,7 @@ namespace Cafeine.Services
                     {
                         new DBreezeIndex(1,localitem.Entity.Id){PrimaryIndex = true},
                         new DBreezeIndex(2,localitem.Entity.MalID),
-                        new DBreezeIndex(3,localitem.Entity.Service.First().Value.UserStatus),
+                        new DBreezeIndex(3,localitem.Entity.Service["default"].UserStatus),
                     };
                 tr.ObjectInsert("library", localitem, false);
                 tr.Commit();
@@ -273,7 +315,7 @@ namespace Cafeine.Services
 
         public static IEnumerable<ItemLibraryModel> SearchItemCollection(string query)
         {
-            using(var tr = db.GetTransaction())
+            using (var tr = db.GetTransaction())
             {
                 List<ItemLibraryModel> items = new List<ItemLibraryModel>();
                 foreach (var id in tr.TextSearch("TS_Library").BlockAnd(query).GetDocumentIDs())
@@ -291,7 +333,8 @@ namespace Cafeine.Services
             {
                 tr.SynchronizeTables("library");
                 List<ItemLibraryModel> items = new List<ItemLibraryModel>();
-                foreach (var localitem in tr.SelectForwardStartsWith<byte[], byte[]>("library",3.ToIndex(category))){
+                foreach (var localitem in tr.SelectForwardStartsWith<byte[], byte[]>("library", 3.ToIndex(category)))
+                {
                     var item = localitem.ObjectGet<ItemLibraryModel>();
                     items.Add(item.Entity);
                 }

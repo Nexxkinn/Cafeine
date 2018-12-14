@@ -49,7 +49,7 @@
             Template="{StaticResource CustomizedCollectionGridView}">
             <GridView.Header>
                 <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                    <TextBlock Text="HELLO" />
+                    <TextBlock Text="HELLO" Visibility="Collapsed" />
                 </StackPanel>
             </GridView.Header>
             <interactivity:Interaction.Behaviors>

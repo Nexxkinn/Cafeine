@@ -160,7 +160,7 @@
 
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="model:Episode">
-                                        <RelativePanel>
+                                        <RelativePanel Height="81">
                                             <Image
                                                 x:Name="Thumbnail"
                                                 Grid.Column="0"
@@ -185,6 +185,13 @@
                                     <Style TargetType="GridViewItem">
                                         <Setter Property="Margin" Value="0,0,20,20" />
                                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="ContentTransitions">
+                                            <Setter.Value>
+                                                <TransitionCollection>
+                                                    <EntranceThemeTransition IsStaggeringEnabled="True" />
+                                                </TransitionCollection>
+                                            </Setter.Value>
+                                        </Setter>
                                     </Style>
                                 </GridView.ItemContainerStyle>
                             </GridView>
