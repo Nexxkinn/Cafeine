@@ -51,14 +51,16 @@ namespace Cafeine
 
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
-            await Services.ImageCache.CreateImageCacheFolder();
-            CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+            if(args.PreviousExecutionState != ApplicationExecutionState.Running)
+            {
+                await Services.ImageCache.CreateImageCacheFolder();
+                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
 
-            ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.ButtonBackgroundColor = Colors.Transparent;
-            titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-
-            NavigationService.Navigate("Login", null);
+                ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                NavigationService.Navigate("Login", null);
+            }
         }
     }
 }
