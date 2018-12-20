@@ -6,6 +6,8 @@ using Prism.Windows.Navigation;
 using Reactive.Bindings;
 using System;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -113,7 +115,14 @@ namespace Cafeine.ViewModels
             TabbedIndex = new ReactiveProperty<int>();
             TabbedIndex.Subscribe(x =>
             {
-                _eventAggregator.GetEvent<LoadItemStatus>().Publish(x);
+                // The method below requires a lot of time to process, so
+                // running it under task factory under UI thread would be
+                // a better choice, for now.
+                Task.Factory.StartNew(()=> _eventAggregator.GetEvent<LoadItemStatus>().Publish(x),
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    TaskScheduler.FromCurrentSynchronizationContext()
+                    );
             });
 
             _eventAggregator.GetEvent<ChildFrameNavigating>().Subscribe(x =>

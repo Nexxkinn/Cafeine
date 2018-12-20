@@ -48,9 +48,43 @@
             ItemsSource="{x:Bind Vm.Library, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Template="{StaticResource CustomizedCollectionGridView}">
             <GridView.Header>
-                <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                    <TextBlock Text="HELLO" Visibility="Collapsed" />
-                </StackPanel>
+                <Grid Height="40" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <ComboBox
+                            Margin="8,0"
+                            Header="Sort by:"
+                            LightDismissOverlayMode="On"
+                            SelectedIndex="{x:Bind Vm.SortBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Template="{StaticResource CustomizedComboBox}">
+                            <ComboBoxItem Content="A to Z" />
+                            <ComboBoxItem Content="Z to A" />
+                            <ComboBoxItem Content="Date Added" IsEnabled="False" />
+                        </ComboBox>
+                        <ComboBox
+                            Margin="8,0"
+                            Header="Filter:"
+                            LightDismissOverlayMode="On"
+                            SelectedIndex="{x:Bind Vm.FilterBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Template="{StaticResource CustomizedComboBox}">
+                            <ComboBoxItem Content="All" />
+                            <ComboBoxItem Content="Finished Airing" />
+                            <ComboBoxItem Content="Currently Airing" />
+                            <ComboBoxItem Content="Not Yet Airing" />
+                        </ComboBox>
+                        <ComboBox
+                            Margin="8,0"
+                            Header="Type:"
+                            IsEnabled="False"
+                            LightDismissOverlayMode="On"
+                            SelectedIndex="0"
+                            Template="{StaticResource CustomizedComboBox}">
+                            <ComboBoxItem Content="Anime" />
+                            <ComboBoxItem Content="Manga" />
+                            <ComboBoxItem Content="All" />
+                            <ComboBoxItem Content="Both" />
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
             </GridView.Header>
             <interactivity:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="ItemClick">
