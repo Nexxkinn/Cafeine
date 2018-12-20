@@ -77,7 +77,6 @@ namespace Cafeine.Views
             {
                 UriSource = new Uri(cache.Path)
             };
-            image.Opacity = 1;
         }
     }
 }

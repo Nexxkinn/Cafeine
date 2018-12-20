@@ -36,6 +36,12 @@ namespace Cafeine.Views.Resources
             sb.Begin();
         }
 
+        private void CoverImage_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            Storyboard sb = ((Image)sender).Resources["ImageOpened"] as Storyboard;
+            sb.Begin();
+        }
+
         private void SuggestionsList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             //Load grid background for autosuggestbox itemsuggested
@@ -125,5 +131,7 @@ namespace Cafeine.Views.Resources
             var itemoption = ElementCompositionPreview.GetElementVisual(item);
             itemoption.StartAnimation("Offset.Y", offset);
         }
+
+       
     }
 }

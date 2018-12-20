@@ -99,6 +99,7 @@
                     ItemContainerStyle="{StaticResource AutoSuggestBoxItemContainerStyle}"
                     ItemTemplate="{StaticResource SuggestItemTemplate}"
                     ItemsSource="{x:Bind Path=Vm.SuggestItemSource, Mode=OneWay}"
+                    LightDismissOverlayMode="On"
                     PlaceholderText="Search"
                     Style="{StaticResource ModifiedAutoSuggestBox}"
                     Text="{x:Bind Path=Vm.SuggestText.Value, Mode=TwoWay}"
