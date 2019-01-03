@@ -21,6 +21,8 @@ namespace Cafeine.Services
 
         private static DBreezeEngine db = new DBreezeEngine(DB_FILE);
 
+        private static Dictionary<int, IService> services = new Dictionary<int, IService>();
+
         static Database()
         {
             CustomSerializator.ByteArraySerializator = (object o) => { return JsonConvert.SerializeObject(o).To_UTF8Bytes(); };
@@ -44,6 +46,43 @@ namespace Cafeine.Services
                 var item = tr.Select<byte[], byte[]>("user", 1.ToIndex(true)).ObjectGet<UserAccountModel>();
                 return item?.Entity;
             }
+        }
+
+        public static async Task CreateServicesFromUserAccounts()
+        {
+            List<UserAccountModel> userAccounts = GetAllUserAccounts();
+            List<Task> tasks = new List<Task>();
+
+            foreach (var account in userAccounts)
+            {
+                tasks.Add(Task.Run(async () =>
+                {
+                    switch (account.Service)
+                    {
+                        case ServiceType.ANILIST:
+                            {
+                                IService service = new AniListApi();
+                                await service.VerifyAccount();
+                                lock (services)
+                                {
+                                    services.Add(account.Id, service);
+                                }
+                                break;
+                            }
+                        case ServiceType.MYANIMELIST:
+                            {
+                                break;
+                            }
+                        case ServiceType.KITSU:
+                            {
+                                break;
+                            }
+                        default: break;
+                    }
+                }));
+            }
+            await Task.WhenAll(tasks);
+
         }
 
         public static List<UserAccountModel> GetAllUserAccounts()
@@ -111,41 +150,13 @@ namespace Cafeine.Services
                 {
                     tasks.Add(Task.Run(async () =>
                     {
-                        switch (user.Service)
+                        IService service = services[user.Id];
+                        var collection = await service.CreateCollection(user);
+                        lock (Listedlibrary)
                         {
-                            case ServiceType.MYANIMELIST:
-                                {
-                                    //TODO: make it contractable.
-                                    MyAnimeListApi.HashID = user.HashID;
-                                    MyAnimeListApi.PopulateAuthentication();
-                                    await MyAnimeListApi.Authenticate();
-                                    var usercollection = await MyAnimeListApi.GetUserData(user.IsDefaultService);
-                                    lock (Listedlibrary)
-                                    {
-                                        Listedlibrary.Add(new List<ItemLibraryModel>(usercollection));
-                                    }
-                                    usercollection.Clear();
-                                    break;
-                                }
-                            case ServiceType.ANILIST:
-                                {
-                                    IService User = new AniListApi();
-                                    var collection = await User.CreateCollection(user);
-                                    lock (Listedlibrary)
-                                    {
-                                        Listedlibrary.Add(new List<ItemLibraryModel>(collection));
-                                    }
-                                    collection.Clear();
-                                    break;
-
-                                }
-                            case ServiceType.KITSU:
-                                {
-                                    //TODO : Build database for Kitsu
-                                    //TODO : add IsDefaultService option
-                                    break;
-                                }
+                            Listedlibrary.Add(new List<ItemLibraryModel>(collection));
                         }
+                        collection.Clear();
                     }));
                 }
                 await Task.WhenAll(tasks);
@@ -193,7 +204,6 @@ namespace Cafeine.Services
                         tr.Commit();
                     };
                 }
-
             }
             catch (Exception e)
             {
@@ -226,6 +236,7 @@ namespace Cafeine.Services
         //        }
         //    }
         //}
+
         public static void AddItem(ItemLibraryModel Item)
         {
             // Item must be at least from one currently used service.
@@ -277,15 +288,9 @@ namespace Cafeine.Services
         public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)
         {
             var output = new ItemDetailsModel();
-            switch (serviceType)
-            {
-                case ServiceType.ANILIST:
-                    {
-                        IService service = new AniListApi();
-                        output = await service.GetItemDetails(item, media);
-                        break;
-                    }
-            }
+            UserAccountModel userAccount = GetCurrentUserAccount();
+            IService service = services[userAccount.Id];
+            output = await service.GetItemDetails(item, media);
             return output;
         }
 
@@ -294,16 +299,9 @@ namespace Cafeine.Services
             var output = new List<Episode>();
             try
             {
-                switch (serviceType)
-                {
-                    case ServiceType.ANILIST:
-                        {
-
-                            IService service = new AniListApi();
-                            output = await service.GetItemEpisodes(item, media) as List<Episode>;
-                            break;
-                        }
-                }
+                UserAccountModel user = GetCurrentUserAccount();
+                IService service = services[user.Id];
+                output = await service.GetItemEpisodes(item, media) as List<Episode>;
                 return output;
             }
             catch (Exception ex)
@@ -311,6 +309,15 @@ namespace Cafeine.Services
                 //offline mode, then.
                 return new List<Episode>();
             }
+        }
+
+        public static async Task<IList<ItemLibraryModel>> SearchOnline(string keyword,MediaTypeEnum mediatype = MediaTypeEnum.ANIME)
+        {
+            if (keyword == string.Empty) return null;
+            UserAccountModel account = GetCurrentUserAccount();
+            IService service = services[account.Id];
+            IList<ItemLibraryModel> results = await service.OnlineSearch(keyword,mediatype);
+            return results;
         }
 
         public static IEnumerable<ItemLibraryModel> SearchItemCollection(string query)

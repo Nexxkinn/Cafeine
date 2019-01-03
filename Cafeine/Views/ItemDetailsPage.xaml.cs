@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 namespace Cafeine.Views
@@ -42,7 +43,14 @@ namespace Cafeine.Views
             };
             image.Opacity = 1;
         }
-
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                NavigationCacheMode = NavigationCacheMode.Disabled;
+            }
+        }
         //View mode
         private void OnGridViewSizeChanged(object sender, SizeChangedEventArgs e)
         {

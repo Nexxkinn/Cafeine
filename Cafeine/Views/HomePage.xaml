@@ -89,36 +89,37 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Orientation="Horizontal">
-                <AutoSuggestBox
-                    x:Name="Search"
+                <TextBox
+                    x:Name="SearchBox"
                     Width="250"
                     Height="36"
                     Margin="0,0,6,6"
                     VerticalAlignment="Bottom"
-                    IsTabStop="True"
-                    ItemContainerStyle="{StaticResource AutoSuggestBoxItemContainerStyle}"
-                    ItemTemplate="{StaticResource SuggestItemTemplate}"
-                    ItemsSource="{x:Bind Path=Vm.SuggestItemSource, Mode=OneWay}"
-                    LightDismissOverlayMode="On"
-                    PlaceholderText="Search"
-                    Style="{StaticResource ModifiedAutoSuggestBox}"
-                    Text="{x:Bind Path=Vm.SuggestText.Value, Mode=TwoWay}"
-                    UpdateTextOnSelect="False">
+                    PlaceholderText="I'm looking for..."
+                    ScrollViewer.BringIntoViewOnFocusChange="False"
+                    Style="{StaticResource FluentTextBoxStyle}"
+                    Text="{x:Bind Vm.SuggestText.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="SearchBox_TextChanged">
                     <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="SuggestionChosen">
-                            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.SuggestionChosen}">
-                                <conv:SuggestionChosenToItemLibraryModel />
-                            </reactiveProperty:EventToReactiveCommand>
+                        <core:EventTriggerBehavior EventName="TextChanged">
+                            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.SearchBoxTextChanged}" />
+                        </core:EventTriggerBehavior>
+                        <core:EventTriggerBehavior EventName="GotFocus">
+                            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.SearchBoxGotFocused}" />
+                        </core:EventTriggerBehavior>
+                        <core:EventTriggerBehavior EventName="LostFocus">
+                            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.SearchBoxLostFocused}" />
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
-                </AutoSuggestBox>
+                </TextBox>
                 <AppBarButton
                     Width="48"
                     Height="48"
                     VerticalAlignment="Bottom"
                     IsCompact="True"
                     LabelPosition="Collapsed"
-                    Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                    Style="{StaticResource ReducedAppBarButtonRevealStyle}"
+                    TabIndex="0">
                     <AppBarButton.Content>
                         <Ellipse Width="2" Height="2">
                             <Ellipse.Fill>

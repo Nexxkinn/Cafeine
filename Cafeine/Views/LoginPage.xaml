@@ -12,7 +12,6 @@
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">

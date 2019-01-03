@@ -15,6 +15,7 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="Page_Loaded"
+    NavigationCacheMode="Required"
     mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>

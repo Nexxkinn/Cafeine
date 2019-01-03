@@ -5,6 +5,7 @@ using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 using Reactive.Bindings;
 using System;
+using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,12 @@ namespace Cafeine.ViewModels
 
         public ReactiveCommand LogOutButton { get; }
 
+        public ReactiveCommand SearchBoxTextChanged { get; }
+
+        public ReactiveCommand SearchBoxGotFocused { get; }
+
+        public ReactiveCommand SearchBoxLostFocused { get; }
+        
         public ReactiveProperty<int> TabbedIndex { get; }
 
         public ReactiveProperty<string> SuggestText { get; }
@@ -60,27 +67,42 @@ namespace Cafeine.ViewModels
             // Even worse, only one source EVER give you a proper example of it.
             // http://rxwiki.wikidot.com/101samples --> Throttle - Simple.
             // Good job RX.Net and all of their team 👏.
-            SuggestText.Throttle(TimeSpan.FromSeconds(.5)).ObserveOnDispatcher()
-                .Subscribe(x =>
-               {
-                   SuggestItemSource?.Clear();
-                   if (x != null && x != "")
-                   {
-                       var finditem = Database.SearchItemCollection(x);
-                       foreach (var item in finditem)
-                       {
-                            //item.Service["default"].CoverImage = await ImageCache.GetFromCacheAsync(item.Service["default"].CoverImageUri);
-                            SuggestItemSource?.Add(item);
-                       }
-                   }
-               });
+                   //SuggestItemSource?.Clear();
+                   //if (x != null && x != "")
+                   //{
+                   //    var finditem = Database.SearchItemCollection(x);
+                   //    foreach (var item in finditem)
+                   //    {
+                   //         //item.Service["default"].CoverImage = await ImageCache.GetFromCacheAsync(item.Service["default"].CoverImageUri);
+                   //         SuggestItemSource?.Add(item);
+                   //    }
+                   //}
             SuggestionChosen = new ReactiveCommand<ItemLibraryModel>()
                 .WithSubscribe(x => _eventAggregator.GetEvent<NavigateItem>().Publish(x));
             SuggestItemSource = new ReactiveCollection<ItemLibraryModel>();
 
+            SearchBoxTextChanged = new ReactiveCommand();
+            SearchBoxTextChanged.Subscribe(_ =>
+            {
+                if (SuggestText.Value != string.Empty)
+                    _eventAggregator.GetEvent<Keyword>().Publish(SuggestText.Value);
+            });
+
+            SearchBoxGotFocused = new ReactiveCommand();
+            SearchBoxGotFocused.Subscribe( _=> _eventAggregator.GetEvent<NavigateSearchPage>().Publish(1));
+
+            SearchBoxLostFocused = new ReactiveCommand();
+            SearchBoxLostFocused.Subscribe(_ =>
+            {
+                if (SuggestText.Value == string.Empty || SuggestText.Value == null)
+                    _eventAggregator.GetEvent<NavigateSearchPage>().Publish(2);
+
+            });
+
             GoBackButton = new ReactiveCommand();
             GoBackButton.Subscribe(_ => {
                 _navigationService.GoBack();
+                _navigationService.RemoveLastPage();
                 _eventAggregator.GetEvent<LoadItemStatus>().Publish(TabbedIndex.Value);
             }
                 );

@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="Cafeine.Views.SearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Cafeine.Views"
+    xmlns:m="using:Cafeine.Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="using:Prism.Windows.Mvvm"
+    xmlns:vr="using:Cafeine.Views.Resources"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <vr:Template />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="In your library" />
+                <GridView ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="m:ItemLibraryModel">
+                            <Grid>
+                                <TextBlock Text="{x:Bind Path=Service['default'].Title, Mode=OneWay}" />
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+                <TextBlock Text="Online results" />
+                <GridView ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="m:ItemLibraryModel">
+                            <Grid>
+                                <TextBlock Text="{x:Bind Path=Service['default'].Title, Mode=OneWay}" />
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </StackPanel>
+
+        </ScrollViewer>
+    </Grid>
+</Page>

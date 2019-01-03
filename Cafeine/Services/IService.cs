@@ -36,5 +36,9 @@ namespace Cafeine.Services
         Task<IList<ItemLibraryModel>> CreateCollection(UserAccountModel account);
 
         void ClearCollection(UserAccountModel account);
+
+        Task<IList<ItemLibraryModel>> OnlineSearch(string keyword, MediaTypeEnum media);
+
+        Task<IList<ItemLibraryModel>> OnlineSearch(string keyword);
     }
 }

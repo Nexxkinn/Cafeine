@@ -28,6 +28,8 @@ namespace Cafeine.ViewModels
     {
     }
 
+    public class NavigateSearchPage : PubSubEvent<int> { }
+
     public class MainPageViewModel : ViewModelBase, INavigationAware
     { 
         private INavigationService _navigationService;
@@ -94,11 +96,23 @@ namespace Cafeine.ViewModels
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(item =>
             {
-                Navigate(item);
+                NavigateToItemDetails(item);
             });
 
             _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(async(x) => await DisplayItem(x));
-            _eventAggregator.GetEvent<NavigateItem>().Subscribe(Navigate);
+            _eventAggregator.GetEvent<NavigateItem>().Subscribe(NavigateToItemDetails);
+            _eventAggregator.GetEvent<NavigateSearchPage>().Subscribe(x =>
+            {
+                switch (x)
+                {
+                    case 1:
+                        _navigationService.Navigate("Search", null);
+                        return;
+                    case 2:
+                        _navigationService.GoBack();
+                        return;
+                }
+            });
         }
 
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
@@ -155,7 +169,7 @@ namespace Cafeine.ViewModels
             };
         }
 
-        private void Navigate(ItemLibraryModel item)
+        private void NavigateToItemDetails(ItemLibraryModel item)
         {
             // Why would you need to use EventAggregator to pass the data?
             // Because the navigation parameter is so shitty that it only

@@ -73,7 +73,7 @@ namespace Cafeine.Services
             // doesn't remove the <br> tag because "well, everyone is using browser
             // so let's just keep it WHILE AT THE SAME TIME ALSO INCLUDE \n
             // FOR NO PURPOSE. smh wtf is wrong with them??
-            var brfilter = Regex.Replace(Content["data"]["Media"]["description"].Value, @"<br><br>", "");
+            dynamic brfilter = Regex.Replace(Content["data"]["Media"]["description"].Value, @"<[^>]+>|&nbsp;", "").Trim();
             var desc = Regex.Replace(brfilter, @"\\n", "\r\n");
 
             //TODO : add more itemdetails
@@ -318,6 +318,54 @@ namespace Cafeine.Services
         }
 
         public void ClearCollection(UserAccountModel account)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IList<ItemLibraryModel>> OnlineSearch(string keyword, MediaTypeEnum media)
+        {
+            QueryQL query = new QueryQL()
+            {
+                query = @"
+                            query ($search: String, $type: MediaType) {
+                              anime: Page(perPage: 0) {
+                                media(search: $search, type: $type) {
+                                  id
+                                  idMal
+                                  title {
+                                    romaji
+                                  }
+                                  description(asHtml: false)
+                                }
+                              }
+                            }",
+                variables = new Dictionary<string, dynamic>
+                {
+                    ["search"] = keyword,
+                    ["type"] = media.ToString()
+                }
+            };
+            Dictionary<string, dynamic> result = await AnilistPostAsync(query);
+            IList < ItemLibraryModel > items = new List<ItemLibraryModel>();
+            foreach(var item in result["data"]["anime"]["media"])
+            {
+                items.Add(new ItemLibraryModel()
+                {
+                    Id = item["id"],
+                    MalID = item["idMal"],
+                    Service = new Dictionary<string, UserItem>()
+                    {
+                        ["default"] = new UserItem()
+                        {
+                            Title = item["title"]["romaji"]
+                        }
+                    }
+                });
+            }
+            return items;
+        }
+
+        public Task<IList<ItemLibraryModel>> OnlineSearch(string keyword)
         {
             throw new NotImplementedException();
         }
