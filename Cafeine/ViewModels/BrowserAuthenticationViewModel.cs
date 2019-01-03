@@ -1,4 +1,5 @@
-﻿using Prism.Events;
+﻿using Cafeine.Services;
+using Prism.Events;
 using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 using Reactive.Bindings;
@@ -40,12 +41,16 @@ namespace Cafeine.ViewModels
                 _navigationService.ClearHistory();
             });
             urlcheck = new ReactiveCommand<string>();
-            urlcheck.Subscribe(x =>
+            urlcheck.Subscribe(async x =>
             {
                 if (x.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))
                 {
+                    IService service = new AniListApi();
+                    await service.VerifyAccount();
+                    var CurrentUserAccount = await service.CreateAccount(true);
+                    Database.AddAccount(CurrentUserAccount);
+
                     _navigationService.GoBack();
-                    _eventAggregator.GetEvent<IsKeyAvailable>().Publish(true);
                 }
                 else HeaderTitle.Value = "Anilist Web Authentication";
             });

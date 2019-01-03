@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
@@ -32,6 +33,8 @@ namespace Cafeine.ViewModels
 
         public string welcometext;
 
+        public bool FromWebsiteRegistration = false;
+
         public LoginPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
             _navigationService = navigationService;
@@ -44,7 +47,7 @@ namespace Cafeine.ViewModels
 
             LoginPageLoaded = new DelegateCommand(async () =>
                 {
-                    if (!Database.IsAccountEmpty())
+                    if (!Database.IsAccountEmpty() && !FromWebsiteRegistration)
                     {
                         CurrentUserAccount = Database.GetCurrentUserAccount();
                         showUserPanel();
@@ -62,7 +65,6 @@ namespace Cafeine.ViewModels
                 {
                     case "Anilist":
                         {
-                            _eventAggregator.GetEvent<IsKeyAvailable>().Subscribe(async x => await AnilistLogin(x));
                             _navigationService.Navigate("BrowserAuthentication", null);
                             break;
                         }
@@ -70,20 +72,22 @@ namespace Cafeine.ViewModels
             });
         }
 
-        public async Task AnilistLogin(bool x)
-        {
-            IService service = new AniListApi();
-            await service.VerifyAccount();
-            CurrentUserAccount = await service.CreateAccount(true);
-            Database.AddAccount(CurrentUserAccount);
-            showUserPanel();
-            await Database.CreateDBFromServices();
-            _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
-            _navigationService.Navigate("Main", null);
-        }
-
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
+            if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back) {
+                FromWebsiteRegistration = true;
+                Task.Factory.StartNew(async () =>
+                {
+                    CurrentUserAccount = Database.GetCurrentUserAccount();
+                    showUserPanel();
+                    await Database.CreateDBFromServices();
+                    _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
+                    _navigationService.Navigate("Main", null);
+                },
+                CancellationToken.None,
+                TaskCreationOptions.None,
+                TaskScheduler.FromCurrentSynchronizationContext());
+            }
             _navigationService.ClearHistory();
             base.OnNavigatedTo(e, viewModelState);
         }
@@ -98,9 +102,5 @@ namespace Cafeine.ViewModels
             RaisePropertyChanged(nameof(UserPanelVisibility));
             RaisePropertyChanged(nameof(SetupPanelVisibility));
         }
-    }
-
-    public class IsKeyAvailable : PubSubEvent<bool>
-    {
     }
 }

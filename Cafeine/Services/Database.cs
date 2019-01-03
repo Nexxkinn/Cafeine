@@ -346,6 +346,7 @@ namespace Cafeine.Services
         {
             db.Scheme.DeleteTable("user");
             db.Scheme.DeleteTable("library");
+            db.Scheme.DeleteTable("TS_Library");
         }
     }
 }
