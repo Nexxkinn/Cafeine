@@ -328,8 +328,12 @@ namespace Cafeine.Services
             {
                 query = @"
                             query ($search: String, $type: MediaType) {
-                              anime: Page(perPage: 0) {
+                              anime: Page {
                                 media(search: $search, type: $type) {
+                                  coverImage {
+                                    large
+                                    color
+                                  }
                                   id
                                   idMal
                                   title {
@@ -352,12 +356,18 @@ namespace Cafeine.Services
                 items.Add(new ItemLibraryModel()
                 {
                     Id = item["id"],
-                    MalID = item["idMal"],
+                    //using coalese expression (?? argument) can cause an exception.
+                    MalID = (item["idMal"] != null) ? item["idMal"] : item["id"],
                     Service = new Dictionary<string, UserItem>()
                     {
                         ["default"] = new UserItem()
                         {
-                            Title = item["title"]["romaji"]
+                            Title = item["title"]["romaji"],
+                            CoverImageUri = item["coverImage"]["large"],
+                            Details = new ItemDetailsModel()
+                            {
+                                Description = item["description"]
+                            }
                         }
                     }
                 });

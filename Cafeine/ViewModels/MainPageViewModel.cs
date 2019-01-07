@@ -107,8 +107,10 @@ namespace Cafeine.ViewModels
                 {
                     case 1:
                         _navigationService.Navigate("Search", null);
+                        _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(4);
                         return;
                     case 2:
+                        _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(2);
                         _navigationService.GoBack();
                         return;
                 }

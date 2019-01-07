@@ -96,7 +96,6 @@ namespace Cafeine.ViewModels
             {
                 if (SuggestText.Value == string.Empty || SuggestText.Value == null)
                     _eventAggregator.GetEvent<NavigateSearchPage>().Publish(2);
-
             });
 
             GoBackButton = new ReactiveCommand();
@@ -167,6 +166,9 @@ namespace Cafeine.ViewModels
                         break;
                     //TODO: add functionality when settings made.
                     case 4:
+                        InvisibleTab.Value = new GridLength();
+                        WatchHoldPivot_Visibility.Value = false;
+                        DetailsTab_Visibility.Value = false;
                         break;
 
                 }

@@ -187,6 +187,64 @@
         </Border>
     </ControlTemplate>
 
+    <!--  Template for SearchPage.xaml  -->
+    <DataTemplate x:Name="OnlineSearchResult" x:DataType="m:ItemLibraryModel">
+        <Grid Width="280" Height="198">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image
+                x:Name="CoverImage"
+                Grid.RowSpan="2"
+                MaxWidth="140"
+                MaxHeight="194"
+                Margin="2,2,8,2"
+                ImageOpened="CoverImage_ImageOpened"
+                Opacity="0"
+                Stretch="UniformToFill">
+                <Image.Resources>
+                    <Storyboard x:Key="ImageOpened">
+                        <DoubleAnimation
+                            Storyboard.TargetName="CoverImage"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0"
+                            To="1"
+                            Duration="0:0:0.7">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="7" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </Image.Resources>
+            </Image>
+            <TextBlock
+                Grid.Column="1"
+                Padding="0,4,4,0"
+                CharacterSpacing="14"
+                FontSize="14"
+                FontWeight="SemiBold"
+                MaxLines="2"
+                Text="{x:Bind Path=Service['default'].Title, Mode=OneWay}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Padding="0,0,4,0"
+                FontSize="12"
+                MaxLines="7"
+                Opacity="0.8"
+                Text="{x:Bind Path=Service['default'].Details.Description, Mode=OneWay}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap" />
+        </Grid>
+    </DataTemplate>
+
     <!--  Modified version of AutoSuggestBox  -->
     <!--  Unused, but probably useful for future project  -->
     <Style x:Key="ModifiedAutoSuggestBox" TargetType="AutoSuggestBox">
