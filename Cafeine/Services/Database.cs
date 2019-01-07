@@ -21,7 +21,7 @@ namespace Cafeine.Services
 
         private static DBreezeEngine db = new DBreezeEngine(DB_FILE);
 
-        private static Dictionary<int, IService> services = new Dictionary<int, IService>();
+        private static Dictionary<int, IService> services;
 
         static Database()
         {
@@ -52,7 +52,7 @@ namespace Cafeine.Services
         {
             List<UserAccountModel> userAccounts = GetAllUserAccounts();
             List<Task> tasks = new List<Task>();
-
+            services = new Dictionary<int, IService>();
             foreach (var account in userAccounts)
             {
                 tasks.Add(Task.Run(async () =>
@@ -63,11 +63,11 @@ namespace Cafeine.Services
                             {
                                 IService service = new AniListApi();
                                 await service.VerifyAccount();
-                                lock (services)
-                                {
-                                    services.Add(account.Id, service);
-                                }
-                                break;
+                                    lock (services)
+                                    {
+                                        services.Add(account.Id, service);
+                                    }
+                                    break;
                             }
                         case ServiceType.MYANIMELIST:
                             {
