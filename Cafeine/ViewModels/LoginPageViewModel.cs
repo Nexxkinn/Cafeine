@@ -45,18 +45,7 @@ namespace Cafeine.ViewModels
 
             SetupPanelVisibility = true;
 
-            LoginPageLoaded = new DelegateCommand(async () =>
-                {
-                    if (!Database.IsAccountEmpty() && !FromWebsiteRegistration)
-                    {
-                        CurrentUserAccount = Database.GetCurrentUserAccount();
-                        showUserPanel();
-                        _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
-                        await Database.CreateServicesFromUserAccounts();
-                        _navigationService.Navigate("Main", null);
-                    }
-
-                });
+            LoginPageLoaded = new DelegateCommand(async () => await LoadTask());
 
             LoginClicked = new ReactiveCommand<string>();
             LoginClicked.Subscribe(item =>
@@ -76,15 +65,7 @@ namespace Cafeine.ViewModels
         {
             if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back) {
                 FromWebsiteRegistration = true;
-                Task.Factory.StartNew(async () =>
-                {
-                    CurrentUserAccount = Database.GetCurrentUserAccount();
-                    showUserPanel();
-                    await Database.CreateServicesFromUserAccounts();
-                    await Database.CreateDBFromServices();
-                    _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
-                    _navigationService.Navigate("Main", null);
-                },
+                Task.Factory.StartNew(async () => await LoadTask(),
                 CancellationToken.None,
                 TaskCreationOptions.None,
                 TaskScheduler.FromCurrentSynchronizationContext());
@@ -93,8 +74,22 @@ namespace Cafeine.ViewModels
             base.OnNavigatedTo(e, viewModelState);
         }
 
+        public async Task LoadTask()
+        {
+            showUserPanel();
+            _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
+            await Database.CreateServicesFromUserAccounts();
+
+            if (!Database.IsAccountEmpty() && !FromWebsiteRegistration)
+            {
+                await Database.CreateDBFromServices();
+            }
+            _navigationService.Navigate("Main", null);
+        }
+
         public void showUserPanel()
         {
+            CurrentUserAccount = Database.GetCurrentUserAccount();
             welcometext = $"Welcome back, {CurrentUserAccount.Name}";
             UserPanelVisibility = true;
             SetupPanelVisibility = false;
