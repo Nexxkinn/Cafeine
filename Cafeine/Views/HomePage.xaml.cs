@@ -35,12 +35,28 @@ namespace Cafeine.Views
             this.InitializeComponent();
         }
         
-        // I don't really know if this one is allowed in MVVM pattern.
+        // I don't really know if these are allowed in MVVM pattern.
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string text = (sender as TextBox).Text;
             if(text == string.Empty)
             this.Focus(FocusState.Programmatic);
+        }
+        
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchButton.Visibility = Visibility.Collapsed;
+            SearchBox.Visibility = Visibility.Visible;
+            SearchBox.Focus(FocusState.Programmatic);
+        }
+
+        private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if(SearchBox.Text == string.Empty)
+            {
+                SearchBox.Visibility = Visibility.Collapsed;
+                SearchButton.Visibility = Visibility.Visible;
+            }
         }
     }
 }

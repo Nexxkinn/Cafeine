@@ -32,7 +32,7 @@
         <Grid Grid.Row="0" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" MinWidth="312" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock
                 Margin="12,8,0,0"
@@ -42,9 +42,7 @@
                 FontSize="12"
                 Text="Cafeine Alpha" />
             <Pivot
-                Grid.Row="0"
                 Margin="28,0,0,0"
-                HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
                 SelectedIndex="{x:Bind Path=Vm.TabbedIndex.Value, Mode=TwoWay}"
                 Visibility="{x:Bind Path=Vm.WatchHoldPivot_Visibility.Value, Mode=OneWay}">
@@ -63,6 +61,7 @@
 
             </Pivot>
             <StackPanel
+                Grid.Column="0"
                 VerticalAlignment="Bottom"
                 Orientation="Horizontal"
                 Visibility="{x:Bind Path=Vm.DetailsTab_Visibility.Value, Mode=OneWay}">
@@ -95,11 +94,13 @@
                     Height="36"
                     Margin="0,0,6,6"
                     VerticalAlignment="Bottom"
+                    LostFocus="SearchBox_LostFocus"
                     PlaceholderText="I'm looking for..."
                     ScrollViewer.BringIntoViewOnFocusChange="False"
                     Style="{StaticResource FluentTextBoxStyle}"
                     Text="{x:Bind Vm.SuggestText.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    TextChanged="SearchBox_TextChanged">
+                    TextChanged="SearchBox_TextChanged"
+                    Visibility="Collapsed">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="TextChanged">
                             <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.SearchBoxTextChanged}" />
@@ -112,6 +113,17 @@
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </TextBox>
+                <AppBarButton
+                    x:Name="SearchButton"
+                    Width="48"
+                    Height="48"
+                    VerticalAlignment="Bottom"
+                    Click="AppBarButton_Click"
+                    Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                    <AppBarButton.Content>
+                        <FontIcon Glyph="&#xE11A;" />
+                    </AppBarButton.Content>
+                </AppBarButton>
                 <AppBarButton
                     Width="48"
                     Height="48"

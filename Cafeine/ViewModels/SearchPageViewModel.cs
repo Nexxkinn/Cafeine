@@ -25,7 +25,11 @@ namespace Cafeine.ViewModels
 
         public bool LoadResults = false;
 
-        public bool OnlineResultsProgressRing = true;
+        public bool OnlineResultsProgressRing;
+
+        public bool OfflineResultsNoMatches;
+
+        public bool OnlineResultsNoMatches;
 
         public ObservableCollection<ItemLibraryModel> OfflineResults;
 
@@ -56,24 +60,35 @@ namespace Cafeine.ViewModels
         {
             if (keyword != null && keyword != string.Empty)
             {
-                //cleaning first
+                //cleaning first & startup
+                OfflineResultsNoMatches = false;
                 OnlineResults = new ObservableCollection<ItemLibraryModel>();
+                OnlineResultsNoMatches = false;
                 OnlineResultsProgressRing = true;
-                RaisePropertyChanged("OnlineResultsProgressRing");
-                RaisePropertyChanged("OnlineResults");
+                RaisePropertyChanged(nameof(OfflineResultsNoMatches));
+                RaisePropertyChanged(nameof(OnlineResults));
+                RaisePropertyChanged(nameof(OnlineResultsNoMatches));
+                RaisePropertyChanged(nameof(OnlineResultsProgressRing));
 
-                var finditem = Database.SearchItemCollection(keyword);
-                OfflineResults = new ObservableCollection<ItemLibraryModel>(finditem);
                 LoadResults = true;
-                RaisePropertyChanged("LoadResults");
-                RaisePropertyChanged("OfflineResults");
+                RaisePropertyChanged(nameof(LoadResults));
 
-                IList<ItemLibraryModel> onlineresult = await Database.SearchOnline(keyword);
-                var filteredOnlineResult = onlineresult.Except(finditem,new Itemcomparer()).ToList();
+                IList<ItemLibraryModel> offlineresultslist = Database.SearchItemCollection(keyword);
+                OfflineResults = new ObservableCollection<ItemLibraryModel>(offlineresultslist);
+                OfflineResultsNoMatches = (offlineresultslist.Count == 0);
+
+                RaisePropertyChanged(nameof(OfflineResults));
+                RaisePropertyChanged(nameof(OfflineResultsNoMatches));
+
+                IList<ItemLibraryModel> onlineresultlist = await Database.SearchOnline(keyword);
+                var filteredOnlineResult = onlineresultlist.Except(offlineresultslist,new Itemcomparer()).ToList();
                 OnlineResults = new ObservableCollection<ItemLibraryModel>(filteredOnlineResult);
+                OnlineResultsNoMatches = (onlineresultlist.Count == 0);
                 OnlineResultsProgressRing = false;
-                RaisePropertyChanged("OnlineResultsProgressRing");
-                RaisePropertyChanged("OnlineResults");
+
+                RaisePropertyChanged(nameof(OnlineResults));
+                RaisePropertyChanged(nameof(OnlineResultsNoMatches));
+                RaisePropertyChanged(nameof(OnlineResultsProgressRing));
             }
         }
 

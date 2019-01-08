@@ -320,7 +320,7 @@ namespace Cafeine.Services
             return results;
         }
 
-        public static IEnumerable<ItemLibraryModel> SearchItemCollection(string query)
+        public static IList<ItemLibraryModel> SearchItemCollection(string query)
         {
             using (var tr = db.GetTransaction())
             {
@@ -334,7 +334,7 @@ namespace Cafeine.Services
             }
         }
 
-        public static IEnumerable<ItemLibraryModel> SearchBasedonCategory(int category)
+        public static IList<ItemLibraryModel> SearchBasedonCategory(int category)
         {
             using (var tr = db.GetTransaction())
             {
