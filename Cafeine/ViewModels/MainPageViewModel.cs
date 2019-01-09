@@ -94,10 +94,7 @@ namespace Cafeine.ViewModels
                });
 
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
-            ItemClicked.Subscribe(item =>
-            {
-                NavigateToItemDetails(item);
-            });
+            ItemClicked.Subscribe(NavigateToItemDetails);
 
             _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(async(x) => await DisplayItem(x));
             _eventAggregator.GetEvent<NavigateItem>().Subscribe(NavigateToItemDetails);
@@ -106,11 +103,12 @@ namespace Cafeine.ViewModels
                 switch (x)
                 {
                     case 1:
-                        _navigationService.Navigate("Search", null);
-                        _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(4);
+                        // can't go back -> assume it's the main page
+                        // can go back -> assume it's details page
+                        int state = _navigationService.CanGoBack() ? 1 : 0;
+                        _navigationService.Navigate("Search", state);
                         return;
                     case 2:
-                        _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(2);
                         _navigationService.GoBack();
                         return;
                 }

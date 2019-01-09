@@ -23,23 +23,28 @@ namespace Cafeine.ViewModels
 
         private IEventAggregator _eventAggregator;
 
+        #region setup
         public ReactiveCommand GoBackButton { get; }
+
+        public ReactiveProperty<string> NavigationTitle { get; }
 
         public ReactiveCommand LogOutButton { get; }
 
+        public ReactiveProperty<Visibility> SearchBoxLoad { get; }
+
+        public ReactiveProperty<bool> SearchBoxFocus { get; }
+
+        public ReactiveProperty<bool> SearchButtonLoad { get; }
+
         public ReactiveCommand SearchBoxTextChanged { get; }
 
-        public ReactiveCommand SearchBoxGotFocused { get; }
+        public ReactiveCommand SearchButtonClicked { get; }
 
         public ReactiveCommand SearchBoxLostFocused { get; }
         
         public ReactiveProperty<int> TabbedIndex { get; }
 
         public ReactiveProperty<string> SuggestText { get; }
-
-        public ReactiveCommand<ItemLibraryModel> SuggestionChosen { get; }
-
-        public ReactiveCollection<ItemLibraryModel> SuggestItemSource { get; }
 
         public ReactiveProperty<GridLength> InvisibleTab { get; }
 
@@ -48,6 +53,7 @@ namespace Cafeine.ViewModels
         public ReactiveProperty<bool> DetailsTab_Visibility { get; }
 
         public UserAccountModel AvatarURL { get; set; }
+        #endregion
 
         public HomePageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
@@ -58,51 +64,31 @@ namespace Cafeine.ViewModels
             DetailsTab_Visibility = new ReactiveProperty<bool>(false);
 
             SuggestText = new ReactiveProperty<string>();
-            // RX.NET RANT:
-            // Not implementing .ObserveOnDispatcher() causes
-            //
-            // System.Runtime.InteropServices.COMException with RPC_E_WRONG_THREAD tag
-            //
-            // On Throttle() method but no guideline or documentation mentioned it.
-            // Even worse, only one source EVER give you a proper example of it.
-            // http://rxwiki.wikidot.com/101samples --> Throttle - Simple.
-            // Good job RX.Net and all of their team 👏.
-                   //SuggestItemSource?.Clear();
-                   //if (x != null && x != "")
-                   //{
-                   //    var finditem = Database.SearchItemCollection(x);
-                   //    foreach (var item in finditem)
-                   //    {
-                   //         //item.Service["default"].CoverImage = await ImageCache.GetFromCacheAsync(item.Service["default"].CoverImageUri);
-                   //         SuggestItemSource?.Add(item);
-                   //    }
-                   //}
-            SuggestionChosen = new ReactiveCommand<ItemLibraryModel>()
-                .WithSubscribe(x => _eventAggregator.GetEvent<NavigateItem>().Publish(x));
-            SuggestItemSource = new ReactiveCollection<ItemLibraryModel>();
 
+            NavigationTitle = new ReactiveProperty<string>("Details");
+
+            SearchButtonLoad = new ReactiveProperty<bool>();
+            SearchBoxLoad = new ReactiveProperty<Visibility>(Visibility.Collapsed);
+            SearchBoxLoad.Subscribe(x => SearchButtonLoad.Value = (SearchBoxLoad.Value == Visibility.Collapsed));
+            SearchBoxFocus = new ReactiveProperty<bool>();
             SearchBoxTextChanged = new ReactiveCommand();
             SearchBoxTextChanged.Subscribe(_ =>
             {
-                if (SuggestText.Value != string.Empty)
-                    _eventAggregator.GetEvent<Keyword>().Publish(SuggestText.Value);
+                _eventAggregator.GetEvent<Keyword>().Publish(SuggestText.Value);
             });
 
-            SearchBoxGotFocused = new ReactiveCommand();
-            SearchBoxGotFocused.Subscribe( _=> _eventAggregator.GetEvent<NavigateSearchPage>().Publish(1));
-
-            SearchBoxLostFocused = new ReactiveCommand();
-            SearchBoxLostFocused.Subscribe(_ =>
+            SearchButtonClicked = new ReactiveCommand();
+            SearchButtonClicked.Subscribe(_ =>
             {
-                if (SuggestText.Value == string.Empty || SuggestText.Value == null)
-                    _eventAggregator.GetEvent<NavigateSearchPage>().Publish(2);
+                SearchBoxLoad.Value = Visibility.Visible;
+                _eventAggregator.GetEvent<NavigateSearchPage>().Publish(1);
+                SearchBoxFocus.Value = true;
             });
 
             GoBackButton = new ReactiveCommand();
             GoBackButton.Subscribe(_ => {
                 _navigationService.GoBack();
-                _navigationService.RemoveLastPage();
-                _eventAggregator.GetEvent<LoadItemStatus>().Publish(TabbedIndex.Value);
+                //_eventAggregator.GetEvent<LoadItemStatus>().Publish(TabbedIndex.Value);
             }
                 );
 
@@ -152,32 +138,41 @@ namespace Cafeine.ViewModels
                 switch (x)
                 {
                     case 1:
+                        //login phase
                         InvisibleTab.Value = new GridLength(0, GridUnitType.Star);
                         break;
                     case 2:
+                        //main phase
                         InvisibleTab.Value = new GridLength();
                         WatchHoldPivot_Visibility.Value = true;
                         DetailsTab_Visibility.Value = false;
+                        SearchBoxLoad.Value = Visibility.Collapsed;
                         break;
                     case 3:
+                        //details phase
                         InvisibleTab.Value = new GridLength();
                         WatchHoldPivot_Visibility.Value = false;
                         DetailsTab_Visibility.Value = true;
+                        SearchBoxLoad.Value = Visibility.Collapsed;
+                        NavigationTitle.Value = "Details";
                         break;
                     //TODO: add functionality when settings made.
                     case 4:
+                        //search phase
                         InvisibleTab.Value = new GridLength();
                         WatchHoldPivot_Visibility.Value = false;
-                        DetailsTab_Visibility.Value = false;
+                        DetailsTab_Visibility.Value = true;
+                        SearchBoxLoad.Value = Visibility.Visible;
+                        NavigationTitle.Value = "Search";
                         break;
 
                 }
             });
             _eventAggregator.GetEvent<HomePageAvatarLoad>().Subscribe(() =>
-           {
-               AvatarURL = Database.GetCurrentUserAccount() ?? null;
-               RaisePropertyChanged(nameof(AvatarURL));
-           });
+            {
+                AvatarURL = Database.GetCurrentUserAccount() ?? null;
+                RaisePropertyChanged(nameof(AvatarURL));
+            });
         }
 
         public Frame ChildFrame { get; set; } = new Frame();
@@ -206,8 +201,6 @@ namespace Cafeine.ViewModels
     /// 4 : Show Settings text.
     /// </summary>
     /// <param name="state"></param>
-    public class ChildFrameNavigating : PubSubEvent<int>
-    {
-    }
+    public class ChildFrameNavigating : PubSubEvent<int>{ }
     public class HomePageAvatarLoad : PubSubEvent { }
 }

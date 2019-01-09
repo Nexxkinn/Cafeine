@@ -34,29 +34,53 @@ namespace Cafeine.Views
         {
             this.InitializeComponent();
         }
-        
-        // I don't really know if these are allowed in MVVM pattern.
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    }
+    public static class FocusExtension
+    {
+        public static bool GetIsFocused(Control obj)
         {
-            string text = (sender as TextBox).Text;
-            if(text == string.Empty)
-            this.Focus(FocusState.Programmatic);
-        }
-        
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            SearchButton.Visibility = Visibility.Collapsed;
-            SearchBox.Visibility = Visibility.Visible;
-            SearchBox.Focus(FocusState.Programmatic);
+            return (bool)obj.GetValue(IsFocusedProperty);
         }
 
-        private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
+        public static void SetIsFocused(Control obj, bool value)
         {
-            if(SearchBox.Text == string.Empty)
+            obj.SetValue(IsFocusedProperty, value);
+        }
+
+        public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached(
+            "IsFocused", typeof(bool), typeof(FocusExtension),
+            new PropertyMetadata(false, OnIsFocusedPropertyChanged));
+
+        private static void OnIsFocusedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (Control)d;
+
+            if ((bool)e.NewValue != (bool)e.OldValue)
             {
-                SearchBox.Visibility = Visibility.Collapsed;
-                SearchButton.Visibility = Visibility.Visible;
+                if ((bool)e.NewValue)
+                {
+                    control.Focus(FocusState.Programmatic);
+                    control.LostFocus += Control_LostFocus;
+                }
+                else
+                {
+                    control.GotFocus += Control_GotFocus;
+                }
             }
+        }
+
+        private static void Control_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var control = (Control)sender;
+            control.SetValue(IsFocusedProperty, true);
+            control.GotFocus -= Control_GotFocus;
+        }
+
+        private static void Control_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var control = (Control)sender;
+            control.SetValue(IsFocusedProperty, false);
+            control.LostFocus -= Control_LostFocus;
         }
     }
 }

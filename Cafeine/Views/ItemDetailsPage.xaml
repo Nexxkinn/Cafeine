@@ -15,7 +15,6 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="Page_Loaded"
-    NavigationCacheMode="Required"
     mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>
@@ -31,11 +30,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
-    <interactivity:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Loaded">
-            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.PageLoaded}" />
-        </core:EventTriggerBehavior>
-    </interactivity:Interaction.Behaviors>
     <Grid>
         <ScrollViewer x:Name="ItemDetailScroller">
             <Grid>
@@ -89,7 +83,7 @@
                                     FontSize="22"
                                     FontWeight="SemiLight"
                                     MaxLines="2"
-                                    Text="{x:Bind Path=Vm.Item.Title}"
+                                    Text="{x:Bind Path=Vm.Item.Title, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="Wrap" />
                                 <TextBlock
@@ -97,6 +91,7 @@
                                     FontSize="14"
                                     Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
                                 <muxc:RatingControl
+                                    x:Name="rating"
                                     HorizontalAlignment="Left"
                                     Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
                                     InitialSetValue="0"
@@ -106,9 +101,16 @@
                                     x:Name="UserWatched"
                                     FontSize="14"
                                     Text="12 / 12 Episodes Watched" />
+                                <ProgressRing
+                                    x:Name="progressring"
+                                    HorizontalAlignment="Left"
+                                    x:Load="{x:Bind Vm.ItemDetailsProgressRing.Value, Mode=OneWay}"
+                                    IsActive="True" />
                                 <TextBlock
+                                    x:Name="description"
                                     MaxWidth="500"
                                     HorizontalAlignment="Left"
+                                    x:Load="{x:Bind Vm.LoadItemDetails.Value, Mode=OneWay}"
                                     FontSize="13"
                                     Foreground="#D7FFFFFF"
                                     MaxLines="5"

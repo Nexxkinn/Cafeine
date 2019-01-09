@@ -45,6 +45,7 @@ namespace Cafeine.Models.Enums
 
         public static readonly Dictionary<int, string> Anilist_AnimeItemStatus = new Dictionary<int, string>()
         {
+            [0] = "Debug mode",
             [1] = "Finished Airing",
             [2] = "Currently Airing",
             [3] = "Not Yet Released",

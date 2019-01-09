@@ -188,6 +188,9 @@
     </ControlTemplate>
 
     <!--  Template for SearchPage.xaml  -->
+    <DataTemplate x:Name="OfflineSearchResult" x:DataType="m:ItemLibraryModel">
+        <Grid />
+    </DataTemplate>
     <DataTemplate x:Name="OnlineSearchResult" x:DataType="m:ItemLibraryModel">
         <Grid Width="280" Height="198">
             <Grid.RowDefinitions>

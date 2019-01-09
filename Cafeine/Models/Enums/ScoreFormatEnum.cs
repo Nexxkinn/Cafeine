@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cafeine.Models.Enums
 {
-    class ScoreFormatEnum
+    public static class ScoreFormatEnum
     {
         /// <summary>
         /// Anilist Only. Default for UI : Point_5
@@ -25,7 +25,7 @@ namespace Cafeine.Models.Enums
             ["POINT_3"] = 4
         };
 
-        public static double Anilist_ConvertToGlobalUnit(double value, int AnilistScoreFormat)
+        public static double Anilist_ConvertToGlobalUnit(double value, int AnilistScoreFormat = 0)
         {
             switch (AnilistScoreFormat)
             {

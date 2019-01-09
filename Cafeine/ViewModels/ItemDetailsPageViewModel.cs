@@ -51,6 +51,10 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<bool> LoadEpisodeLists { get; }
 
+        public ReactiveProperty<bool> LoadItemDetails { get; }
+
+        public ReactiveProperty<bool> ItemDetailsProgressRing { get; }
+
         public ItemDetailsPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
             _navigationService = navigationService;
@@ -58,6 +62,10 @@ namespace Cafeine.ViewModels
 
             Item = new UserItem();
             ImageSource = new ReactiveProperty<StorageFile>();
+
+            ItemDetailsProgressRing = new ReactiveProperty<bool>();
+            LoadItemDetails = new ReactiveProperty<bool>(false);
+            LoadItemDetails.Subscribe(x => ItemDetailsProgressRing.Value = !x);
 
             ScorePlaceHolderRating = new ReactiveProperty<double>();
             StatusTextBlock = new ReactiveProperty<string>();
@@ -80,12 +88,8 @@ namespace Cafeine.ViewModels
                 LoadEpisodeSettings.Value = true;
             });
 
-            PageLoaded = new AsyncReactiveCommand();
-            PageLoaded.Subscribe(async () =>
-            {
-                await LoadAsync();
-            });
             _eventAggregator.GetEvent<ItemDetailsID>().Subscribe(LoadItem);
+
         }
 
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
@@ -104,6 +108,11 @@ namespace Cafeine.ViewModels
         {
             ItemBase = item;
             Item = ItemBase.Service["default"];
+            RaisePropertyChanged(nameof(Item));
+            Task.Factory.StartNew(async () => await LoadAsync(),
+                CancellationToken.None,
+                TaskCreationOptions.None,
+                TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         //TODO : Handle Manga/novel item type.
@@ -112,7 +121,8 @@ namespace Cafeine.ViewModels
             try
             {
                 StatusTextBlock.Value = $"{StatusEnum.Anilist_AnimeItemStatus[Item.Status]} • {Item.SeriesStart} • TV";
-                ScorePlaceHolderRating.Value = Item.AverageScore ?? -1;
+                double score = Item.AverageScore ?? -1;
+                ScorePlaceHolderRating.Value = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(score);
                 ScoreTextBlock.Value = (Item.AverageScore.HasValue) ? $"( {Item.AverageScore.ToString()} )" : "( No score )";
 
                 //Parallel task.
@@ -123,6 +133,7 @@ namespace Cafeine.ViewModels
                     {
                         Item.Details = await Database.ViewItemDetails(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
                     }
+                    LoadItemDetails.Value = true;
                     DescriptionTextBlock.Value = Item.Details.Description;
 
                 }));
