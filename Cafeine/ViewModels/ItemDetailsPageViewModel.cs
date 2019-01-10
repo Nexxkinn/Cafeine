@@ -29,31 +29,33 @@ namespace Cafeine.ViewModels
 
         private ItemLibraryModel ItemBase { get; set; }
 
-        public ReactiveProperty<StorageFile> ImageSource { get; }
-
         public ObservableCollection<Episode> Episodelist { get; private set; }
 
+        public CafeineProperty<StorageFile> ImageSource { get; }
+
+        #region mvvm setup properties
         public ReactiveCommand EpisodeListsClicked { get; }
 
         public ReactiveCommand EpisodeSettingsClicked { get; }
 
         public AsyncReactiveCommand PageLoaded { get; }
 
-        public ReactiveProperty<double> ScorePlaceHolderRating { get; set; }
+        public CafeineProperty<double> ScorePlaceHolderRating { get; set; }
 
-        public ReactiveProperty<string> StatusTextBlock { get; }
+        public CafeineProperty<string> StatusTextBlock { get; }
 
-        public ReactiveProperty<string> ScoreTextBlock { get; }
+        public CafeineProperty<string> ScoreTextBlock { get; }
 
-        public ReactiveProperty<string> DescriptionTextBlock { get; }
+        public CafeineProperty<string> DescriptionTextBlock { get; }
 
-        public ReactiveProperty<bool> LoadEpisodeSettings { get; }
+        public CafeineProperty<bool> LoadEpisodeSettings { get; }
 
-        public ReactiveProperty<bool> LoadEpisodeLists { get; }
+        public CafeineProperty<bool> LoadEpisodeLists { get; }
 
         public ReactiveProperty<bool> LoadItemDetails { get; }
 
-        public ReactiveProperty<bool> ItemDetailsProgressRing { get; }
+        public CafeineProperty<bool> ItemDetailsProgressRing { get; }
+        #endregion
 
         public ItemDetailsPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
@@ -61,20 +63,20 @@ namespace Cafeine.ViewModels
             _eventAggregator = eventAggregator;
 
             Item = new UserItem();
-            ImageSource = new ReactiveProperty<StorageFile>();
+            ImageSource = new CafeineProperty<StorageFile>();
 
-            ItemDetailsProgressRing = new ReactiveProperty<bool>();
+            ItemDetailsProgressRing = new CafeineProperty<bool>();
             LoadItemDetails = new ReactiveProperty<bool>(false);
             LoadItemDetails.Subscribe(x => ItemDetailsProgressRing.Value = !x);
 
-            ScorePlaceHolderRating = new ReactiveProperty<double>();
-            StatusTextBlock = new ReactiveProperty<string>();
-            DescriptionTextBlock = new ReactiveProperty<string>();
-            ScoreTextBlock = new ReactiveProperty<string>();
+            ScorePlaceHolderRating = new CafeineProperty<double>();
+            StatusTextBlock = new CafeineProperty<string>();
+            DescriptionTextBlock = new CafeineProperty<string>();
+            ScoreTextBlock = new CafeineProperty<string>();
 
             Episodelist = new ObservableCollection<Episode>();
-            LoadEpisodeLists = new ReactiveProperty<bool>(true);
-            LoadEpisodeSettings = new ReactiveProperty<bool>(false);
+            LoadEpisodeLists = new CafeineProperty<bool>(true);
+            LoadEpisodeSettings = new CafeineProperty<bool>(false);
             EpisodeListsClicked = new ReactiveCommand();
             EpisodeListsClicked.Subscribe(_ =>
             {

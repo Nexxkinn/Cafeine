@@ -22,8 +22,6 @@ namespace Cafeine.ViewModels
 
         public IEventAggregator _eventAggregator;
 
-        private bool lr, onrnm, offrnm, onrpr;
-
         private int? MainPageCurrentState;
 
         public ReactiveProperty<string> Keyword { get; }
@@ -34,49 +32,13 @@ namespace Cafeine.ViewModels
 
         public ObservableCollection<ItemLibraryModel> OnlineResults;
 
-        public bool LoadResults {
-            get => lr;
-            set {
-                if (lr != value)
-                {
-                    lr = value;
-                    RaisePropertyChanged(nameof(LoadResults));
-                }
-            }
-        }
+        public CafeineProperty<bool> LoadResults = new CafeineProperty<bool>();
 
-        public bool OnlineResultsProgressRing {
-            get => onrpr;
-            set {
-                if (onrpr != value)
-                {
-                    onrpr = value;
-                    RaisePropertyChanged(nameof(OnlineResultsProgressRing));
-                }
-            }
-        }
+        public CafeineProperty<bool> OnlineResultsProgressRing = new CafeineProperty<bool>();
 
-        public bool OfflineResultsNoMatches {
-            get => offrnm;
-            set {
-                if (offrnm != value)
-                {
-                    offrnm = value;
-                    RaisePropertyChanged(nameof(OfflineResultsNoMatches));
-                }
-            }
-        }
+        public CafeineProperty<bool> OfflineResultsNoMatches = new CafeineProperty<bool>();
 
-        public bool OnlineResultsNoMatches {
-            get => onrnm;
-            set {
-                if (onrnm != value)
-                {
-                    onrnm = value;
-                    RaisePropertyChanged(nameof(OnlineResultsNoMatches));
-                }
-            }
-        }
+        public CafeineProperty<bool> OnlineResultsNoMatches = new CafeineProperty<bool>();
         
         public SearchPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
         {
@@ -143,24 +105,24 @@ namespace Cafeine.ViewModels
             if (keyword != null && keyword != string.Empty)
             {
                 //cleaning first & startup
-                OfflineResultsNoMatches = false;
+                OfflineResultsNoMatches.Value = false;
                 OnlineResults = new ObservableCollection<ItemLibraryModel>();
-                OnlineResultsNoMatches = false;
-                OnlineResultsProgressRing = true;
+                OnlineResultsNoMatches.Value = false;
+                OnlineResultsProgressRing.Value = true;
                 RaisePropertyChanged(nameof(OnlineResults));
 
-                LoadResults = true;
+                LoadResults.Value = true;
 
                 IList<ItemLibraryModel> offlineresultslist = Database.SearchItemCollection(keyword);
                 OfflineResults = new ObservableCollection<ItemLibraryModel>(offlineresultslist);
-                OfflineResultsNoMatches = (offlineresultslist.Count == 0);
+                OfflineResultsNoMatches.Value = (offlineresultslist.Count == 0);
                 RaisePropertyChanged(nameof(OfflineResults));
 
                 IList<ItemLibraryModel> onlineresultlist = await Database.SearchOnline(keyword);
                 var filteredOnlineResult = onlineresultlist.Except(offlineresultslist,new Itemcomparer()).ToList();
                 OnlineResults = new ObservableCollection<ItemLibraryModel>(filteredOnlineResult);
-                OnlineResultsNoMatches = (onlineresultlist.Count == 0);
-                OnlineResultsProgressRing = false;
+                OnlineResultsNoMatches.Value = (onlineresultlist.Count == 0);
+                OnlineResultsProgressRing.Value = false;
 
                 RaisePropertyChanged(nameof(OnlineResults));
             }

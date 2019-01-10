@@ -39,7 +39,7 @@
             <StackPanel
                 x:Name="results"
                 Margin="28,14,0,0"
-                x:Load="{x:Bind Vm.LoadResults, Mode=OneWay}"
+                x:Load="{x:Bind Vm.LoadResults.Value, Mode=OneWay}"
                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                 Orientation="Vertical">
                 <TextBlock
@@ -49,7 +49,7 @@
                 <TextBlock
                     x:Name="offlinenomatches"
                     Margin="0,0,0,28"
-                    x:Load="{x:Bind Vm.OfflineResultsNoMatches, Mode=OneWay}"
+                    x:Load="{x:Bind Vm.OfflineResultsNoMatches.Value, Mode=OneWay}"
                     Opacity="0.8"
                     Text="No matches found." />
                 <GridView IsItemClickEnabled="True" ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}">
@@ -74,7 +74,7 @@
                     Text="Online results" />
                 <TextBlock
                     x:Name="onlinenomatches"
-                    x:Load="{x:Bind Vm.OnlineResultsNoMatches, Mode=OneWay}"
+                    x:Load="{x:Bind Vm.OnlineResultsNoMatches.Value, Mode=OneWay}"
                     Opacity="0.8"
                     Text="No matches found." />
                 <GridView
@@ -91,7 +91,7 @@
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </GridView>
-                <ProgressRing HorizontalAlignment="Left" IsActive="{x:Bind Vm.OnlineResultsProgressRing, Mode=OneWay}" />
+                <ProgressRing HorizontalAlignment="Left" IsActive="{x:Bind Vm.OnlineResultsProgressRing.Value, Mode=OneWay}" />
             </StackPanel>
 
         </ScrollViewer>

@@ -101,6 +101,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\CafeineProperty.cs" />
     <Compile Include="Models\Conversions\ItemClickToItemLibraryModel.cs" />
     <Compile Include="Models\Conversions\SelectedIndexToIntConversion.cs" />
     <Compile Include="Models\Conversions\SuggestionChosenToItemLibraryModel.cs" />
