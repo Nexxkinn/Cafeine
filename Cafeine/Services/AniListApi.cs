@@ -355,13 +355,13 @@ namespace Cafeine.Services
             {
                 items.Add(new ItemLibraryModel()
                 {
-                    Id = item["id"],
                     //using coalese expression (?? argument) can cause an exception.
                     MalID = (item["idMal"] != null) ? item["idMal"] : item["id"],
                     Service = new Dictionary<string, UserItem>()
                     {
                         ["default"] = new UserItem()
                         {
+                            ItemId = item["id"],
                             Title = item["title"]["romaji"],
                             CoverImageUri = item["coverImage"]["large"],
                             Details = new ItemDetailsModel()

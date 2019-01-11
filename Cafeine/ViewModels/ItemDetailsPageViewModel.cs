@@ -200,7 +200,9 @@ namespace Cafeine.ViewModels
 
                 task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(Item.CoverImageUri)));
                 await Task.WhenAll(task);
-                Database.EditItem(ItemBase);
+
+                // Check if item source is from library or search query
+                if(ItemBase.Id != default(int)) Database.EditItem(ItemBase);
             }
             catch (Exception ex)
             {

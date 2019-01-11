@@ -153,13 +153,24 @@
                             </AppBarButton>
                         </StackPanel>
                         <Grid Grid.Column="1" Margin="8,0,0,0">
-                            <Grid
+                            <StackPanel
                                 x:Name="episodenotfound"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                x:Load="{x:Bind Vm.LoadEpisodeNotFound.Value, Mode=OneWay}">
-                                <TextBlock Opacity="0.5" Text="🤔" />
-                            </Grid>
+                                x:Load="{x:Bind Vm.LoadEpisodeNotFound.Value, Mode=OneWay}"
+                                Opacity="0.5"
+                                Orientation="Vertical">
+                                <FontIcon
+                                    Margin="12"
+                                    FontSize="40"
+                                    Glyph="&#xea39;" />
+                                <TextBlock
+                                    Width="200"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap">
+                                    No Episodes found<LineBreak />
+                                    Try to use another source</TextBlock>
+                            </StackPanel>
                             <GridView
                                 x:Name="episodesitem"
                                 Grid.Row="1"
@@ -254,7 +265,6 @@
                                     FontSize="16"
                                     Text="Episode lists" />
                                 <CheckBox Content="Match local files with episodes list" />
-
 
                                 <TextBlock
                                     Margin="0,24,0,4"
