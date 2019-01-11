@@ -82,7 +82,7 @@
                 FontSize="14"
                 FontWeight="SemiBold"
                 Foreground="#D1D1D1"
-                Text="{x:Bind Path=Service['default'].Title, Mode=OneWay}"
+                Text="{x:Bind Path=Item.Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap" />
         </Grid>
@@ -232,7 +232,7 @@
                 FontSize="14"
                 FontWeight="SemiBold"
                 MaxLines="2"
-                Text="{x:Bind Path=Service['default'].Title, Mode=OneWay}"
+                Text="{x:Bind Path=Item.Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap" />
             <TextBlock
@@ -242,7 +242,7 @@
                 FontSize="12"
                 MaxLines="7"
                 Opacity="0.8"
-                Text="{x:Bind Path=Service['default'].Details.Description, Mode=OneWay}"
+                Text="{x:Bind Path=Item.Details.Description, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap" />
         </Grid>
@@ -283,7 +283,7 @@
                 Margin="8,0"
                 VerticalAlignment="Center"
                 FontWeight="SemiBold"
-                Text="{x:Bind Path=Service['default'].Title}" />
+                Text="{x:Bind Path=Item.Title}" />
         </Grid>
     </DataTemplate>
     <ControlTemplate x:Key="AutoSuggestBoxTemplate" TargetType="AutoSuggestBox">

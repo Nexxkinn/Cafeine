@@ -29,6 +29,8 @@ namespace Cafeine.ViewModels
 
         private ItemLibraryModel ItemBase { get; set; }
 
+        private List<ItemLibraryModel> OpenedItems;
+
         public ObservableCollection<Episode> Episodelist { get; private set; }
 
         public CafeineProperty<StorageFile> ImageSource { get; }
@@ -48,11 +50,13 @@ namespace Cafeine.ViewModels
 
         public CafeineProperty<string> DescriptionTextBlock { get; }
 
-        public CafeineProperty<bool> LoadEpisodeSettings { get; }
+        public ReactiveProperty<bool> LoadItemDetails { get; }
 
         public CafeineProperty<bool> LoadEpisodeLists { get; }
 
-        public ReactiveProperty<bool> LoadItemDetails { get; }
+        public CafeineProperty<bool> LoadEpisodeSettings { get; }
+
+        public CafeineProperty<bool> LoadEpisodeNotFound { get; }
 
         public CafeineProperty<bool> ItemDetailsProgressRing { get; }
         #endregion
@@ -63,6 +67,7 @@ namespace Cafeine.ViewModels
             _eventAggregator = eventAggregator;
 
             Item = new UserItem();
+            OpenedItems = new List<ItemLibraryModel>();
             ImageSource = new CafeineProperty<StorageFile>();
 
             ItemDetailsProgressRing = new CafeineProperty<bool>();
@@ -75,18 +80,29 @@ namespace Cafeine.ViewModels
             ScoreTextBlock = new CafeineProperty<string>();
 
             Episodelist = new ObservableCollection<Episode>();
-            LoadEpisodeLists = new CafeineProperty<bool>(true);
+            LoadEpisodeLists = new CafeineProperty<bool>(false);
             LoadEpisodeSettings = new CafeineProperty<bool>(false);
+            LoadEpisodeNotFound = new CafeineProperty<bool>(false);
             EpisodeListsClicked = new ReactiveCommand();
             EpisodeListsClicked.Subscribe(_ =>
             {
-                LoadEpisodeLists.Value = true;
+                if (ItemBase.Episodes.Count == 0)
+                {
+                    LoadEpisodeNotFound.Value = true;
+                    LoadEpisodeLists.Value = false;
+                }
+                else
+                {
+                    LoadEpisodeNotFound.Value = false;
+                    LoadEpisodeLists.Value = true;
+                }
                 LoadEpisodeSettings.Value = false;
             });
             EpisodeSettingsClicked = new ReactiveCommand();
             EpisodeSettingsClicked.Subscribe(_ =>
             {
                 LoadEpisodeLists.Value = false;
+                LoadEpisodeNotFound.Value = false;
                 LoadEpisodeSettings.Value = true;
             });
 
@@ -102,7 +118,8 @@ namespace Cafeine.ViewModels
 
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
-            _eventAggregator.GetEvent<ItemDetailsID>().Unsubscribe(LoadItem);
+            if(e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back)
+                _eventAggregator.GetEvent<ItemDetailsID>().Unsubscribe(LoadItem);
             base.OnNavigatingFrom(e, viewModelState, suspending);
         }
 
@@ -164,6 +181,16 @@ namespace Cafeine.ViewModels
                             ItemBase.Episodes.Add(episode);
                             Episodelist?.Add(episode);
                         }
+                    }
+                    if(ItemBase.Episodes.Count == 0)
+                    {
+                        LoadEpisodeNotFound.Value = true;
+                        LoadEpisodeLists.Value = false;
+                    }
+                    else
+                    {
+                        LoadEpisodeNotFound.Value = false;
+                        LoadEpisodeLists.Value = true;
                     }
                     RaisePropertyChanged("Episodelist");
                 },

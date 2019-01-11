@@ -60,7 +60,7 @@ namespace Cafeine.ViewModels
             // Good job RX.Net and all of their team 👏.
             //SuggestItemSource?.Clear();
             Keyword = new ReactiveProperty<string>();
-            this.Keyword.Throttle(TimeSpan.FromSeconds(0.3)).ObserveOnDispatcher().Subscribe(async x => await GetResults(x));
+            Keyword.Throttle(TimeSpan.FromSeconds(0.3)).ObserveOnDispatcher().Subscribe(async x => await GetResults(x));
 
             OnlineResults = new ObservableCollection<ItemLibraryModel>();
             

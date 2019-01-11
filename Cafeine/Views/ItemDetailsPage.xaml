@@ -15,6 +15,7 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="Page_Loaded"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>
@@ -129,38 +130,63 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel x:Name="ItemOptions">
                             <AppBarButton
-                                Width="52"
-                                Height="52"
+                                Width="48"
+                                Height="48"
                                 Command="{x:Bind Vm.EpisodeListsClicked}"
                                 LabelPosition="Collapsed"
                                 Style="{StaticResource ReducedAppBarButtonRevealStyle}"
                                 ToolTipService.ToolTip="Episode Lists">
                                 <AppBarButton.Icon>
-                                    <FontIcon Glyph="&#xE173;" />
+                                    <FontIcon Glyph="&#xE188;" />
                                 </AppBarButton.Icon>
                             </AppBarButton>
                             <AppBarButton
-                                Width="52"
-                                Height="52"
+                                Width="48"
+                                Height="48"
                                 Command="{x:Bind Vm.EpisodeSettingsClicked}"
-                                Label=""
                                 LabelPosition="Collapsed"
                                 Style="{StaticResource ReducedAppBarButtonRevealStyle}"
                                 ToolTipService.ToolTip="Configure">
                                 <AppBarButton.Icon>
-                                    <FontIcon Glyph="&#xE783;" />
+                                    <FontIcon Margin="3" Glyph="&#xE15E;" />
                                 </AppBarButton.Icon>
                             </AppBarButton>
                         </StackPanel>
-                        <Grid Grid.Column="1">
+                        <Grid Grid.Column="1" Margin="8,0,0,0">
+                            <Grid
+                                x:Name="episodenotfound"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                x:Load="{x:Bind Vm.LoadEpisodeNotFound.Value, Mode=OneWay}">
+                                <TextBlock Opacity="0.5" Text="🤔" />
+                            </Grid>
                             <GridView
                                 x:Name="episodesitem"
-                                Margin="8,14,0,0"
+                                Grid.Row="1"
                                 x:Load="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}"
                                 ContainerContentChanging="Episodesitem_ContainerContentChanging"
                                 ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
                                 SizeChanged="OnGridViewSizeChanged">
-
+                                <GridView.Header>
+                                    <Grid Height="44" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <StackPanel.Transitions>
+                                                <TransitionCollection>
+                                                    <EntranceThemeTransition />
+                                                </TransitionCollection>
+                                            </StackPanel.Transitions>
+                                            <ComboBox
+                                                Margin="0"
+                                                Header="Sort:"
+                                                LightDismissOverlayMode="On"
+                                                SelectedIndex="0"
+                                                Template="{StaticResource CustomizedComboBox}">
+                                                <ComboBoxItem Content="Ascending" />
+                                                <ComboBoxItem Content="Descending" />
+                                            </ComboBox>
+                                        </StackPanel>
+                                    </Grid>
+                                </GridView.Header>
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="model:Episode">
                                         <RelativePanel Height="81">
@@ -200,6 +226,7 @@
                             </GridView>
                             <StackPanel
                                 x:Name="EpisodeSettings"
+                                Margin="0,14"
                                 x:Load="{x:Bind Path=Vm.LoadEpisodeSettings.Value, Mode=OneWay}"
                                 Orientation="Vertical">
                                 <StackPanel.Transitions>
@@ -207,10 +234,43 @@
                                         <EntranceThemeTransition />
                                     </TransitionCollection>
                                 </StackPanel.Transitions>
-                                <TextBlock Text="Hell" />
+                                <TextBlock FontSize="16" Text="Directory Source" />
+                                <Grid Margin="0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <SymbolIcon Symbol="Folder" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="8,0"
+                                        Opacity="0.8"
+                                        Text="/Videos/AlicetoZouroku/" />
+                                </Grid>
+                                <Button Content="Browse" />
+
+                                <TextBlock
+                                    Margin="0,24,0,8"
+                                    FontSize="16"
+                                    Text="Episode lists" />
+                                <CheckBox Content="Match local files with episodes list" />
+
+
+                                <TextBlock
+                                    Margin="0,24,0,4"
+                                    FontSize="16"
+                                    Text="Thumbnail" />
+                                <RadioButton
+                                    Margin="0,4"
+                                    Content="From service"
+                                    GroupName="w" />
+                                <RadioButton
+                                    Margin="0,4"
+                                    Content="From local file"
+                                    GroupName="w" />
+
                             </StackPanel>
                         </Grid>
-
                     </Grid>
                 </Grid>
             </Grid>

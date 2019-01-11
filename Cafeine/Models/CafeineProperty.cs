@@ -12,9 +12,23 @@ namespace Cafeine.Models
 {
     public class CafeineProperty<T> : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public CafeineProperty(T val = default(T)) => Value = val;
 
-        // Adapted from Reactive Property.
+        private T v;
+
+        public T Value {
+            get => v;
+            set {
+                v = value;
+                Scheduler.Schedule(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value))));
+            }
+        }
+
+        public static IScheduler Scheduler => synccontext.Value;
+
+        // Adapted from neuecc's ReactiveProperty.
         private static Lazy<SynchronizationContextScheduler> synccontext { get; } =
             new Lazy<SynchronizationContextScheduler>(() =>
             {
@@ -25,19 +39,5 @@ namespace Cafeine.Models
 
                 return new SynchronizationContextScheduler(SynchronizationContext.Current);
             });
-        
-        public static IScheduler Scheduler => synccontext.Value;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private T v;
-
-        public T Value {
-            get => v;
-            set {
-                v = value;
-                Scheduler.Schedule(()=> PropertyChanged?.Invoke(this,new PropertyChangedEventArgs(nameof(Value))));
-            }
-        }
     }
 }

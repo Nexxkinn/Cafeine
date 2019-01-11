@@ -6,6 +6,7 @@ using Prism.Windows.Navigation;
 using Reactive.Bindings;
 using System;
 using System.Diagnostics;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,9 +89,12 @@ namespace Cafeine.ViewModels
             GoBackButton = new ReactiveCommand();
             GoBackButton.Subscribe(_ => {
                 _navigationService.GoBack();
-                //_eventAggregator.GetEvent<LoadItemStatus>().Publish(TabbedIndex.Value);
-            }
-                );
+                if (WatchHoldPivot_Visibility.Value)
+                {
+                    IScheduler scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
+                    scheduler.Schedule(() => _eventAggregator.GetEvent<LoadItemStatus>().Publish(TabbedIndex.Value));
+                }
+            });
 
             LogOutButton = new ReactiveCommand();
             LogOutButton.Subscribe(async _ =>

@@ -18,11 +18,11 @@ namespace Cafeine.Models
         //Ironically accepted ID for all services.
         public int MalID { get; set; }
 
+        public UserItem Item => Service?["default"];
+
         //Fetch from Anilist only
         //[MAL ONLY] since MyAnimeList doesn't have any feature to list episodes title
         public List<Episode> Episodes { get; set; }
-
-        //Fetch from main service
 
         //[MAL ONLY] due to MAL being weird, data fetched from Anilist
         public MediaFormatEnum ShowType { get; set; }
