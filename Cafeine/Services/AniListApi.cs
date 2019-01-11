@@ -110,7 +110,7 @@ namespace Cafeine.Services
                 episodes.Add(new Episode
                 {
                     Title = episode["title"],
-                    Image = episode["thumbnail"]
+                    OnlineThumbnail = episode["thumbnail"]
                 });
             };
             return episodes;
@@ -265,7 +265,7 @@ namespace Cafeine.Services
                                             idMal
                                             status
                                             averageScore
-                                            season
+                                            seasonInt
                                             format
                                         }
                                     }
@@ -293,6 +293,7 @@ namespace Cafeine.Services
                 {
                     var itemstatus = StatusEnum.Anilist_ItemStatus[item["media"]["status"].Value];
                     var userstatus = StatusEnum.UserStatus[status];
+                    int season = ((int?)item["media"]["seasonInt"]).HasValue ? item["media"]["seasonInt"] : 0;
                     var GeneratedItem = new ItemLibraryModel()
                     {
                         MalID = item["media"]["idMal"],
@@ -307,7 +308,8 @@ namespace Cafeine.Services
                                 UserScore = (double)item["score"],
                                 AverageScore = (double?)item["media"]["averageScore"],
                                 UserStatus = userstatus,
-                                Status = itemstatus
+                                Status = itemstatus,
+                                Season = season % 10
                             }
                         }
                     };
@@ -334,6 +336,10 @@ namespace Cafeine.Services
                                     large
                                     color
                                   }
+                                  startDate {
+                                    year
+                                  }
+                                  seasonInt
                                   id
                                   idMal
                                   title {
@@ -353,6 +359,10 @@ namespace Cafeine.Services
             IList < ItemLibraryModel > items = new List<ItemLibraryModel>();
             foreach(var item in result["data"]["anime"]["media"])
             {
+                //using coalese expression (?? argument) can cause an exception.
+                int? seasonint = (int?)item["seasonInt"];
+                int season = seasonint.HasValue ? seasonint.Value % 10 : 0;
+                int? startdate = (int?)item["startDate"]["year"];
                 items.Add(new ItemLibraryModel()
                 {
                     //using coalese expression (?? argument) can cause an exception.
@@ -361,13 +371,15 @@ namespace Cafeine.Services
                     {
                         ["default"] = new UserItem()
                         {
-                            ItemId = item["id"],
+                            ItemId = (int)item["id"],
                             Title = item["title"]["romaji"],
                             CoverImageUri = item["coverImage"]["large"],
                             Details = new ItemDetailsModel()
                             {
                                 Description = item["description"]
-                            }
+                            },
+                            SeriesStart = startdate ?? 0,
+                            Season = season
                         }
                     }
                 });

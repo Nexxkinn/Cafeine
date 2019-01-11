@@ -52,22 +52,46 @@
                     x:Load="{x:Bind Vm.OfflineResultsNoMatches.Value, Mode=OneWay}"
                     Opacity="0.8"
                     Text="No matches found." />
-                <GridView IsItemClickEnabled="True" ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}">
-                    <GridView.ItemTemplate>
-                        <DataTemplate x:DataType="m:ItemLibraryModel">
-                            <Grid>
-                                <TextBlock Text="{x:Bind Path=Service['default'].Title, Mode=OneWay}" />
-                            </Grid>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="ItemClick">
-                            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemClicked}">
-                                <conv:ItemClickToItemLibraryModel />
-                            </reactiveProperty:EventToReactiveCommand>
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </GridView>
+                <Grid Margin="0,8,28,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MaxWidth="850" />
+                    </Grid.ColumnDefinitions>
+                    <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="m:ItemLibraryModel">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" MaxWidth="636" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind Path=Item.Title, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Center"
+                                        Text="{x:Bind Path=Item.GetUserStatus()}" />
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        Text="{x:Bind Path=Item.GetItemSeasonYear()}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <interactivity:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="ItemClick">
+                                <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemClicked}">
+                                    <conv:ItemClickToItemLibraryModel />
+                                </reactiveProperty:EventToReactiveCommand>
+                            </core:EventTriggerBehavior>
+                        </interactivity:Interaction.Behaviors>
+                    </ListView>
+
+                </Grid>
                 <TextBlock
                     FontSize="20"
                     FontWeight="SemiBold"
@@ -79,6 +103,7 @@
                     Text="No matches found." />
                 <GridView
                     x:Name="onlineresultgridview"
+                    Margin="0,8"
                     ContainerContentChanging="GridView_ContainerContentChanging"
                     IsItemClickEnabled="True"
                     ItemTemplate="{StaticResource OnlineSearchResult}"

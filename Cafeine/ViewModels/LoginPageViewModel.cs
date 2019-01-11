@@ -80,7 +80,7 @@ namespace Cafeine.ViewModels
             _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
             await Database.CreateServicesFromUserAccounts();
 
-            if (!Database.IsAccountEmpty() && !FromWebsiteRegistration)
+            if (!Database.IsAccountEmpty() && FromWebsiteRegistration)
             {
                 await Database.CreateDBFromServices();
             }

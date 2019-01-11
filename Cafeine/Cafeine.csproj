@@ -108,6 +108,7 @@
     <Compile Include="Models\Enums\MediaFormatEnum.cs" />
     <Compile Include="Models\Enums\MediaTypeEnum.cs" />
     <Compile Include="Models\Enums\ScoreFormatEnum.cs" />
+    <Compile Include="Models\Enums\SeasonsEnum.cs" />
     <Compile Include="Models\Enums\ServiceType.cs" />
     <Compile Include="Models\Enums\StatusEnum.cs" />
     <Compile Include="Models\ItemLibraryModel.cs" />

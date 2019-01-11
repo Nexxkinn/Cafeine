@@ -34,7 +34,7 @@ namespace Cafeine.Views
         private async void Episodesitem_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             var templateRoot = args.ItemContainer.ContentTemplateRoot as RelativePanel;
-            var imageurl = (args.Item as Episode).Image;
+            var imageurl = (args.Item as Episode).OnlineThumbnail;
             var cache = await ImageCache.GetFromCacheAsync(imageurl);
             var image = templateRoot.Children[0] as Image;
             image.Source = new BitmapImage()

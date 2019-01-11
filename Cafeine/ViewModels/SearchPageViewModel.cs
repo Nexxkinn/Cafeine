@@ -61,7 +61,13 @@ namespace Cafeine.ViewModels
             //SuggestItemSource?.Clear();
             Keyword = new ReactiveProperty<string>();
             Keyword.Throttle(TimeSpan.FromSeconds(0.3)).ObserveOnDispatcher().Subscribe(async x => await GetResults(x));
-
+            Keyword.Subscribe(x =>
+            {
+                if (x == string.Empty)
+                {
+                    LoadResults.Value = false;
+                }
+            });
             OnlineResults = new ObservableCollection<ItemLibraryModel>();
             
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
@@ -90,7 +96,6 @@ namespace Cafeine.ViewModels
             //
             // Reference : http://archive.is/L1v1H
             // Backup    : http://runtime117.rssing.com/chan-13993968/all_p3.html
-            FrameNavigationService test = _navigationService as FrameNavigationService;
             if(MainPageCurrentState.Value == 1)
             {
                 _navigationService.RemoveLastPage();

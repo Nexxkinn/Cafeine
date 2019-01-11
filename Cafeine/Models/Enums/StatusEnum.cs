@@ -34,6 +34,15 @@ namespace Cafeine.Models.Enums
             ["MAL_6"] = 4,
         };
 
+        public static readonly string[] UserStatus_int2String = new string[5]
+        {
+            "Watching",
+            "Completed",
+            "On Hold",
+            "Dropped",
+            "Planned"
+        };
+
         //probably unneeded.
         public static readonly Dictionary<string, int> Anilist_ItemStatus = new Dictionary<string, int>()
         {

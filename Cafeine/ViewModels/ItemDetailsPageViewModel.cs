@@ -174,7 +174,7 @@ namespace Cafeine.ViewModels
                     List<Episode> EpisodeService = await Database.UpdateItemEpisodes(Item, ItemBase.Id, ServiceType.ANILIST, MediaTypeEnum.ANIME);
                     foreach (var episode in EpisodeService)
                     {
-                        bool EpisodeAlreadyListed = ItemBase.Episodes.Exists(x => x.Title == episode.Title || x.Image == episode.Image);
+                        bool EpisodeAlreadyListed = ItemBase.Episodes.Exists(x => x.Title == episode.Title || x.OnlineThumbnail == episode.OnlineThumbnail);
                         if (!EpisodeAlreadyListed)
                         {
                             //Only add new items to avoid overwriting old items that contains file path.

@@ -92,6 +92,7 @@
                                     FontSize="14"
                                     Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
                                 <muxc:RatingControl
+                                    IsReadOnly="True"
                                     x:Name="rating"
                                     HorizontalAlignment="Left"
                                     Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
@@ -207,7 +208,7 @@
                                                 MaxWidth="144"
                                                 MaxHeight="81"
                                                 HorizontalAlignment="Left"
-                                                Source="{x:Bind Path=Image, Mode=OneWay}"
+                                                Source="{x:Bind Path=OnlineThumbnail, Mode=OneWay}"
                                                 Stretch="UniformToFill" />
                                             <StackPanel
                                                 Grid.Column="1"
@@ -263,22 +264,28 @@
                                 <TextBlock
                                     Margin="0,24,0,8"
                                     FontSize="16"
-                                    Text="Episode lists" />
-                                <CheckBox Content="Match local files with episodes list" />
-
+                                    Text="Episodes list" />
+                                <CheckBox Content="Get episode list from service" />
+                                <CheckBox Margin="0,4" Content="Do not use thumbnail from service" />
+                                <CheckBox Content="Use custom regex to detect local files" />
+                                <TextBox
+                                    Width="400"
+                                    Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsEnabled="False"
+                                    Text="Default" />
+                                <StackPanel Margin="0,8" Orientation="Horizontal">
+                                    <Button Content="Save" IsEnabled="False" />
+                                </StackPanel>
                                 <TextBlock
                                     Margin="0,24,0,4"
                                     FontSize="16"
-                                    Text="Thumbnail" />
-                                <RadioButton
-                                    Margin="0,4"
-                                    Content="From service"
-                                    GroupName="w" />
-                                <RadioButton
-                                    Margin="0,4"
-                                    Content="From local file"
-                                    GroupName="w" />
-
+                                    Text="Reset" />
+                                <TextBlock Opacity="0.8">
+                                    <Run>Use this function if you want to rescan the folder and reconnect</Run>
+                                    <LineBreak /><Run>all files with corresponded episodes listed.</Run>
+                                </TextBlock>
+                                <Button Margin="0,4" Content="Reset and Reconnect" />
                             </StackPanel>
                         </Grid>
                     </Grid>

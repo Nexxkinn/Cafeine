@@ -160,7 +160,6 @@ namespace Cafeine.ViewModels
                         SearchBoxLoad.Value = Visibility.Collapsed;
                         NavigationTitle.Value = "Details";
                         break;
-                    //TODO: add functionality when settings made.
                     case 4:
                         //search phase
                         InvisibleTab.Value = new GridLength();
@@ -169,6 +168,7 @@ namespace Cafeine.ViewModels
                         SearchBoxLoad.Value = Visibility.Visible;
                         NavigationTitle.Value = "Search";
                         break;
+                    //TODO: add functionality when settings made.
 
                 }
             });

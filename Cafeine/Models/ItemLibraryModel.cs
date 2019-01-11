@@ -1,6 +1,8 @@
 ﻿using Cafeine.Models.Enums;
 using System.Collections.Generic;
 using Windows.Storage;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Cafeine.Models
 {
@@ -44,6 +46,8 @@ namespace Cafeine.Models
 
         public double? AverageScore { get; set; }
 
+        public int Season { get; set; }
+
         public int Status { get; set; }
 
         public int TotalEpisodes { get; set; }
@@ -63,15 +67,30 @@ namespace Cafeine.Models
 
         //This instance is filled when user clicked the item.
         public ItemDetailsModel Details { get; set; }
+
+        public string GetUserStatus() => StatusEnum.UserStatus_int2String[UserStatus];
+
+        public string GetItemSeasonYear() => $"{Seasons.Seasons_int2string[Season]} {SeriesStart}";
     }
 
     public class Episode
     {
+        /// <summary>
+        /// Key are used for getting details about localfile.
+        /// </summary>
+        public string HashKey { get; set; }
+
+        public StorageFile LocalFile;
+
         public string Title { get; set; }
 
-        public string Image { get; set; }
+        public BitmapImage LocalThumbnail;
 
-        public StorageFile file { get; set; }
+        public string OnlineThumbnail;
+
+        public string LocalFileName => LocalFile?.Name;
+
+        public string UrlLink { get; set; }
     }
 
     public class ItemDetailsModel
