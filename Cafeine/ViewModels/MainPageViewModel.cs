@@ -96,7 +96,15 @@ namespace Cafeine.ViewModels
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(NavigateToItemDetails);
 
-            _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(async(x) => await DisplayItem(x));
+            _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(async (x) =>
+                {
+                    await Task.Yield();
+
+                    await Task.Factory.StartNew(() => DisplayItem(x),
+                        CancellationToken.None,
+                        TaskCreationOptions.None,
+                        TaskScheduler.FromCurrentSynchronizationContext());
+                });
             _eventAggregator.GetEvent<NavigateItem>().Subscribe(NavigateToItemDetails);
             _eventAggregator.GetEvent<NavigateSearchPage>().Subscribe(x =>
             {

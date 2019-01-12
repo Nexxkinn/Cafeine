@@ -52,6 +52,8 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<bool> LoadItemDetails { get; }
 
+        public CafeineProperty<bool> LoadEpisodesListConfiguration { get; }
+
         public CafeineProperty<bool> LoadEpisodeLists { get; }
 
         public CafeineProperty<bool> LoadEpisodeSettings { get; }
@@ -83,6 +85,8 @@ namespace Cafeine.ViewModels
             LoadEpisodeLists = new CafeineProperty<bool>(false);
             LoadEpisodeSettings = new CafeineProperty<bool>(false);
             LoadEpisodeNotFound = new CafeineProperty<bool>(false);
+            LoadEpisodesListConfiguration = new CafeineProperty<bool>(true);
+
             EpisodeListsClicked = new ReactiveCommand();
             EpisodeListsClicked.Subscribe(_ =>
             {
@@ -97,13 +101,16 @@ namespace Cafeine.ViewModels
                     LoadEpisodeLists.Value = true;
                 }
                 LoadEpisodeSettings.Value = false;
+                LoadEpisodesListConfiguration.Value = true;
             });
+
             EpisodeSettingsClicked = new ReactiveCommand();
             EpisodeSettingsClicked.Subscribe(_ =>
             {
                 LoadEpisodeLists.Value = false;
                 LoadEpisodeNotFound.Value = false;
                 LoadEpisodeSettings.Value = true;
+                LoadEpisodesListConfiguration.Value = false;
             });
 
             _eventAggregator.GetEvent<ItemDetailsID>().Subscribe(LoadItem);
@@ -169,7 +176,9 @@ namespace Cafeine.ViewModels
                         RaisePropertyChanged(nameof(Episodelist));
                     }
                     else ItemBase.Episodes = new List<Episode>();
-
+                    await Task.Delay(100);
+                    LoadEpisodeLists.Value = (ItemBase.Episodes.Count != 0);
+                    
                     //load episode list from service.
                     List<Episode> EpisodeService = await Database.UpdateItemEpisodes(Item, ItemBase.Id, ServiceType.ANILIST, MediaTypeEnum.ANIME);
                     foreach (var episode in EpisodeService)

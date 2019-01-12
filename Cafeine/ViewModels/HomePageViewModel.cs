@@ -124,16 +124,13 @@ namespace Cafeine.ViewModels
             });
 
             TabbedIndex = new ReactiveProperty<int>();
-            TabbedIndex.Subscribe(x =>
+            TabbedIndex.Subscribe(async x =>
             {
                 // The method below requires a lot of time to process, so
                 // running it under task factory under UI thread would be
-                // a better choice, for now.
-                Task.Factory.StartNew(()=> _eventAggregator.GetEvent<LoadItemStatus>().Publish(x),
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskScheduler.FromCurrentSynchronizationContext()
-                    );
+                // a better choice, for now. 
+                IScheduler scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
+                scheduler.Schedule(() => _eventAggregator.GetEvent<LoadItemStatus>().Publish(x));
             });
 
             _eventAggregator.GetEvent<ChildFrameNavigating>().Subscribe(x =>

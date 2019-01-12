@@ -39,12 +39,10 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Grid
-                    x:Name="ItemDetailHeader"
-                    Grid.Row="0"
-                    Grid.Column="0">
+                <Grid x:Name="ItemDetailHeader" Grid.ColumnSpan="2">
                     <Grid
                         x:Name="BackgroundGrid"
                         VerticalAlignment="Stretch"
@@ -92,11 +90,11 @@
                                     FontSize="14"
                                     Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
                                 <muxc:RatingControl
-                                    IsReadOnly="True"
                                     x:Name="rating"
                                     HorizontalAlignment="Left"
                                     Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
                                     InitialSetValue="0"
+                                    IsReadOnly="True"
                                     PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating.Value, Mode=OneWay}" />
                                 <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
                                 <TextBlock
@@ -123,172 +121,177 @@
                         </RelativePanel>
                     </Grid>
                 </Grid>
-                <Grid Grid.Row="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel x:Name="ItemOptions">
-                            <AppBarButton
-                                Width="48"
-                                Height="48"
-                                Command="{x:Bind Vm.EpisodeListsClicked}"
-                                LabelPosition="Collapsed"
-                                Style="{StaticResource ReducedAppBarButtonRevealStyle}"
-                                ToolTipService.ToolTip="Episode Lists">
-                                <AppBarButton.Icon>
-                                    <FontIcon Glyph="&#xE188;" />
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                            <AppBarButton
-                                Width="48"
-                                Height="48"
-                                Command="{x:Bind Vm.EpisodeSettingsClicked}"
-                                LabelPosition="Collapsed"
-                                Style="{StaticResource ReducedAppBarButtonRevealStyle}"
-                                ToolTipService.ToolTip="Configure">
-                                <AppBarButton.Icon>
-                                    <FontIcon Margin="3" Glyph="&#xE15E;" />
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                        </StackPanel>
-                        <Grid Grid.Column="1" Margin="8,0,0,0">
+                <Border Grid.Row="1">
+                    <StackPanel x:Name="ItemOptions">
+                        <AppBarButton
+                            Width="48"
+                            Height="48"
+                            Command="{x:Bind Vm.EpisodeListsClicked}"
+                            LabelPosition="Collapsed"
+                            Style="{StaticResource ReducedAppBarButtonRevealStyle}"
+                            ToolTipService.ToolTip="Episode Lists">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xE188;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
+                        <AppBarButton
+                            Width="48"
+                            Height="48"
+                            Command="{x:Bind Vm.EpisodeSettingsClicked}"
+                            LabelPosition="Collapsed"
+                            Style="{StaticResource ReducedAppBarButtonRevealStyle}"
+                            ToolTipService.ToolTip="Configure">
+                            <AppBarButton.Icon>
+                                <FontIcon Margin="3" Glyph="&#xE15E;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
+                    </StackPanel>
+                </Border>
+                <Grid
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="8,0,0,0">
+                    <StackPanel
+                        x:Name="episodenotfound"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        x:Load="{x:Bind Vm.LoadEpisodeNotFound.Value, Mode=OneWay}"
+                        Opacity="0.5"
+                        Orientation="Vertical">
+                        <FontIcon
+                            Margin="12"
+                            FontSize="40"
+                            Glyph="&#xea39;" />
+                        <TextBlock
+                            Width="200"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap">
+                            No Episodes found<LineBreak />
+                            Try to use another source</TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <StackPanel
+                            x:Name="EpisodesListConfiguration"
+                            Height="48"
+                            VerticalAlignment="Top"
+                            x:Load="{x:Bind Vm.LoadEpisodesListConfiguration.Value, Mode=OneWay}"
+                            Orientation="Horizontal">
                             <StackPanel
-                                x:Name="episodenotfound"
-                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                x:Load="{x:Bind Vm.LoadEpisodeNotFound.Value, Mode=OneWay}"
-                                Opacity="0.5"
-                                Orientation="Vertical">
-                                <FontIcon
-                                    Margin="12"
-                                    FontSize="40"
-                                    Glyph="&#xea39;" />
-                                <TextBlock
-                                    Width="200"
-                                    TextAlignment="Center"
-                                    TextWrapping="Wrap">
-                                    No Episodes found<LineBreak />
-                                    Try to use another source</TextBlock>
-                            </StackPanel>
-                            <GridView
-                                x:Name="episodesitem"
-                                Grid.Row="1"
-                                x:Load="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}"
-                                ContainerContentChanging="Episodesitem_ContainerContentChanging"
-                                ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
-                                SizeChanged="OnGridViewSizeChanged">
-                                <GridView.Header>
-                                    <Grid Height="44" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                            <StackPanel.Transitions>
-                                                <TransitionCollection>
-                                                    <EntranceThemeTransition />
-                                                </TransitionCollection>
-                                            </StackPanel.Transitions>
-                                            <ComboBox
-                                                Margin="0"
-                                                Header="Sort:"
-                                                LightDismissOverlayMode="On"
-                                                SelectedIndex="0"
-                                                Template="{StaticResource CustomizedComboBox}">
-                                                <ComboBoxItem Content="Ascending" />
-                                                <ComboBoxItem Content="Descending" />
-                                            </ComboBox>
-                                        </StackPanel>
-                                    </Grid>
-                                </GridView.Header>
-                                <GridView.ItemTemplate>
-                                    <DataTemplate x:DataType="model:Episode">
-                                        <RelativePanel Height="81">
-                                            <Image
-                                                x:Name="Thumbnail"
-                                                Grid.Column="0"
-                                                MaxWidth="144"
-                                                MaxHeight="81"
-                                                HorizontalAlignment="Left"
-                                                Source="{x:Bind Path=OnlineThumbnail, Mode=OneWay}"
-                                                Stretch="UniformToFill" />
-                                            <StackPanel
-                                                Grid.Column="1"
-                                                Margin="8,0,0,0"
-                                                RelativePanel.RightOf="Thumbnail">
-                                                <TextBlock
-                                                    FontSize="15"
-                                                    FontWeight="SemiBold"
-                                                    Text="{x:Bind Path=Title, Mode=OneWay}" />
-                                            </StackPanel>
-                                        </RelativePanel>
-                                    </DataTemplate>
-                                </GridView.ItemTemplate>
-                                <GridView.ItemContainerStyle>
-                                    <Style TargetType="GridViewItem">
-                                        <Setter Property="Margin" Value="0,0,20,20" />
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                        <Setter Property="ContentTransitions">
-                                            <Setter.Value>
-                                                <TransitionCollection>
-                                                    <EntranceThemeTransition IsStaggeringEnabled="True" />
-                                                </TransitionCollection>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                            <StackPanel
-                                x:Name="EpisodeSettings"
-                                Margin="0,14"
-                                x:Load="{x:Bind Path=Vm.LoadEpisodeSettings.Value, Mode=OneWay}"
-                                Orientation="Vertical">
+                                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                Orientation="Horizontal">
                                 <StackPanel.Transitions>
                                     <TransitionCollection>
                                         <EntranceThemeTransition />
                                     </TransitionCollection>
                                 </StackPanel.Transitions>
-                                <TextBlock FontSize="16" Text="Directory Source" />
-                                <Grid Margin="0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <SymbolIcon Symbol="Folder" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Margin="8,0"
-                                        Opacity="0.8"
-                                        Text="/Videos/AlicetoZouroku/" />
-                                </Grid>
-                                <Button Content="Browse" />
-
-                                <TextBlock
-                                    Margin="0,24,0,8"
-                                    FontSize="16"
-                                    Text="Episodes list" />
-                                <CheckBox Content="Get episode list from service" />
-                                <CheckBox Margin="0,4" Content="Do not use thumbnail from service" />
-                                <CheckBox Content="Use custom regex to detect local files" />
-                                <TextBox
-                                    Width="400"
-                                    Margin="0,8,0,0"
-                                    HorizontalAlignment="Left"
-                                    IsEnabled="False"
-                                    Text="Default" />
-                                <StackPanel Margin="0,8" Orientation="Horizontal">
-                                    <Button Content="Save" IsEnabled="False" />
-                                </StackPanel>
-                                <TextBlock
-                                    Margin="0,24,0,4"
-                                    FontSize="16"
-                                    Text="Reset" />
-                                <TextBlock Opacity="0.8">
-                                    <Run>Use this function if you want to rescan the folder and reconnect</Run>
-                                    <LineBreak /><Run>all files with corresponded episodes listed.</Run>
-                                </TextBlock>
-                                <Button Margin="0,4" Content="Reset and Reconnect" />
+                                <ComboBox
+                                    Margin="0"
+                                    Header="Sort:"
+                                    LightDismissOverlayMode="On"
+                                    SelectedIndex="0"
+                                    Template="{StaticResource CustomizedComboBox}">
+                                    <ComboBoxItem Content="Ascending" />
+                                    <ComboBoxItem Content="Descending" />
+                                </ComboBox>
                             </StackPanel>
+                        </StackPanel>
+                        <GridView
+                            x:Name="episodesitem"
+                            x:Load="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}"
+                            ContainerContentChanging="Episodesitem_ContainerContentChanging"
+                            ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
+                            SizeChanged="OnGridViewSizeChanged">
+                            <GridView.ItemTemplate>
+                                <DataTemplate x:DataType="model:Episode">
+                                    <RelativePanel Height="81">
+                                        <Image
+                                            x:Name="Thumbnail"
+                                            Grid.Column="0"
+                                            MaxWidth="144"
+                                            MaxHeight="81"
+                                            HorizontalAlignment="Left"
+                                            Source="{x:Bind Path=OnlineThumbnail, Mode=OneWay}"
+                                            Stretch="UniformToFill" />
+                                        <StackPanel
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"
+                                            RelativePanel.RightOf="Thumbnail">
+                                            <TextBlock
+                                                FontSize="15"
+                                                FontWeight="SemiBold"
+                                                Text="{x:Bind Path=Title, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </RelativePanel>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                            <GridView.ItemContainerStyle>
+                                <Style TargetType="GridViewItem">
+                                    <Setter Property="Margin" Value="0,0,20,20" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="ContentTransitions">
+                                        <Setter.Value>
+                                            <TransitionCollection>
+                                                <EntranceThemeTransition IsStaggeringEnabled="True" />
+                                            </TransitionCollection>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GridView.ItemContainerStyle>
+                        </GridView>
+                    </StackPanel>
+                    <StackPanel
+                        x:Name="EpisodeSettings"
+                        Grid.RowSpan="2"
+                        Margin="0,14"
+                        x:Load="{x:Bind Path=Vm.LoadEpisodeSettings.Value, Mode=OneWay}"
+                        Orientation="Vertical">
+                        <StackPanel.Transitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition />
+                            </TransitionCollection>
+                        </StackPanel.Transitions>
+                        <TextBlock FontSize="16" Text="Directory Source" />
+                        <Grid Margin="0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <SymbolIcon Symbol="Folder" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="8,0"
+                                Opacity="0.8"
+                                Text="/Videos/AlicetoZouroku/" />
                         </Grid>
-                    </Grid>
+                        <Button Content="Browse" />
+
+                        <TextBlock
+                            Margin="0,24,0,8"
+                            FontSize="16"
+                            Text="Episodes list" />
+                        <CheckBox Content="Get episode list from service" />
+                        <CheckBox Margin="0,4" Content="Do not use thumbnail from service" />
+                        <CheckBox Content="Use custom regex to detect local files" />
+                        <TextBox
+                            Width="400"
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Left"
+                            IsEnabled="False"
+                            Text="Default" />
+                        <StackPanel Margin="0,8" Orientation="Horizontal">
+                            <Button Content="Save" IsEnabled="False" />
+                        </StackPanel>
+                        <TextBlock
+                            Margin="0,24,0,4"
+                            FontSize="16"
+                            Text="Reset" />
+                        <TextBlock Opacity="0.8">
+                            <Run>Use this function if you want to rescan the folder and reconnect</Run>
+                            <LineBreak /><Run>all files with corresponded episodes listed.</Run>
+                        </TextBlock>
+                        <Button Margin="0,4" Content="Reset and Reconnect" />
+                    </StackPanel>
                 </Grid>
             </Grid>
         </ScrollViewer>
