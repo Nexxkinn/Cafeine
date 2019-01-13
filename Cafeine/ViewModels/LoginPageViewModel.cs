@@ -76,15 +76,18 @@ namespace Cafeine.ViewModels
 
         public async Task LoadTask()
         {
-            showUserPanel();
-            _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
-            await Database.CreateServicesFromUserAccounts();
 
-            if (!Database.IsAccountEmpty() && FromWebsiteRegistration)
+            if (Database.DoesAccountExists())
             {
-                await Database.CreateDBFromServices();
+                _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
+                showUserPanel();
+                await Database.CreateServicesFromUserAccounts();
+                if (FromWebsiteRegistration)
+                {
+                    await Database.CreateDBFromServices();
+                }
+                _navigationService.Navigate("Main", null);
             }
-            _navigationService.Navigate("Main", null);
         }
 
         public void showUserPanel()

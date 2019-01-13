@@ -29,12 +29,12 @@ namespace Cafeine.Services
             CustomSerializator.ByteArrayDeSerializator = (byte[] bt, Type x) => { return JsonConvert.DeserializeObject(bt.UTF8_GetString(), x); };
         }
 
-        public static bool IsAccountEmpty()
+        public static bool DoesAccountExists()
         {
             using (var tr = db.GetTransaction())
             {
                 var e = tr.SelectForward<byte[], byte[]>("user").ToList();
-                return e.Count == 0;
+                return e.Count != 0;
             }
         }
 
