@@ -180,11 +180,6 @@
                                 VerticalAlignment="Center"
                                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                                 Orientation="Horizontal">
-                                <StackPanel.Transitions>
-                                    <TransitionCollection>
-                                        <EntranceThemeTransition />
-                                    </TransitionCollection>
-                                </StackPanel.Transitions>
                                 <ComboBox
                                     Margin="0"
                                     Header="Sort:"
@@ -198,7 +193,7 @@
                         </StackPanel>
                         <GridView
                             x:Name="episodesitem"
-                            x:Load="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}"
+                            Visibility="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}"
                             ContainerContentChanging="Episodesitem_ContainerContentChanging"
                             ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
                             SizeChanged="OnGridViewSizeChanged">
@@ -246,11 +241,6 @@
                         Margin="0,14"
                         x:Load="{x:Bind Path=Vm.LoadEpisodeSettings.Value, Mode=OneWay}"
                         Orientation="Vertical">
-                        <StackPanel.Transitions>
-                            <TransitionCollection>
-                                <EntranceThemeTransition />
-                            </TransitionCollection>
-                        </StackPanel.Transitions>
                         <TextBlock FontSize="16" Text="Directory Source" />
                         <Grid Margin="0,12">
                             <Grid.ColumnDefinitions>

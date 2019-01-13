@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml;
 
 namespace Cafeine.ViewModels
 {
@@ -54,7 +55,7 @@ namespace Cafeine.ViewModels
 
         public CafeineProperty<bool> LoadEpisodesListConfiguration { get; }
 
-        public CafeineProperty<bool> LoadEpisodeLists { get; }
+        public CafeineProperty<Visibility> LoadEpisodeLists { get; }
 
         public CafeineProperty<bool> LoadEpisodeSettings { get; }
 
@@ -82,7 +83,7 @@ namespace Cafeine.ViewModels
             ScoreTextBlock = new CafeineProperty<string>();
 
             Episodelist = new ObservableCollection<Episode>();
-            LoadEpisodeLists = new CafeineProperty<bool>(false);
+            LoadEpisodeLists = new CafeineProperty<Visibility>(Visibility.Collapsed);
             LoadEpisodeSettings = new CafeineProperty<bool>(false);
             LoadEpisodeNotFound = new CafeineProperty<bool>(false);
             LoadEpisodesListConfiguration = new CafeineProperty<bool>(true);
@@ -93,12 +94,12 @@ namespace Cafeine.ViewModels
                 if (ItemBase.Episodes.Count == 0)
                 {
                     LoadEpisodeNotFound.Value = true;
-                    LoadEpisodeLists.Value = false;
+                    LoadEpisodeLists.Value = Visibility.Collapsed;
                 }
                 else
                 {
                     LoadEpisodeNotFound.Value = false;
-                    LoadEpisodeLists.Value = true;
+                    LoadEpisodeLists.Value = Visibility.Visible;
                 }
                 LoadEpisodeSettings.Value = false;
                 LoadEpisodesListConfiguration.Value = true;
@@ -107,7 +108,7 @@ namespace Cafeine.ViewModels
             EpisodeSettingsClicked = new ReactiveCommand();
             EpisodeSettingsClicked.Subscribe(_ =>
             {
-                LoadEpisodeLists.Value = false;
+                LoadEpisodeLists.Value = Visibility.Collapsed;
                 LoadEpisodeNotFound.Value = false;
                 LoadEpisodeSettings.Value = true;
                 LoadEpisodesListConfiguration.Value = false;
@@ -177,7 +178,7 @@ namespace Cafeine.ViewModels
                     }
                     else ItemBase.Episodes = new List<Episode>();
                     await Task.Delay(100);
-                    LoadEpisodeLists.Value = (ItemBase.Episodes.Count != 0);
+                    LoadEpisodeLists.Value = (ItemBase.Episodes.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
                     
                     //load episode list from service.
                     List<Episode> EpisodeService = await Database.UpdateItemEpisodes(Item, ItemBase.Id, ServiceType.ANILIST, MediaTypeEnum.ANIME);
@@ -194,12 +195,12 @@ namespace Cafeine.ViewModels
                     if(ItemBase.Episodes.Count == 0)
                     {
                         LoadEpisodeNotFound.Value = true;
-                        LoadEpisodeLists.Value = false;
+                        LoadEpisodeLists.Value = Visibility.Collapsed;
                     }
                     else
                     {
                         LoadEpisodeNotFound.Value = false;
-                        LoadEpisodeLists.Value = true;
+                        LoadEpisodeLists.Value = Visibility.Visible;
                     }
                     RaisePropertyChanged("Episodelist");
                 },
