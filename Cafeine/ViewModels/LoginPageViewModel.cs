@@ -65,10 +65,6 @@ namespace Cafeine.ViewModels
         {
             if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back) {
                 FromWebsiteRegistration = true;
-                Task.Factory.StartNew(async () => await LoadTask(),
-                CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
             }
             _navigationService.ClearHistory();
             base.OnNavigatedTo(e, viewModelState);
