@@ -35,22 +35,5 @@ namespace Cafeine.Views
         {
             this.InitializeComponent();
         }
-
-        private void GridView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
-        {
-            args.RegisterUpdateCallback(LoadImage);
-        }
-
-        private async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
-        {
-            var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
-            var imageurl = (args.Item as ItemLibraryModel).Service["default"].CoverImageUri;
-            var cache = await ImageCache.GetFromCacheAsync(imageurl);
-            var image = templateRoot.Children[0] as Image;
-            image.Source = new BitmapImage()
-            {
-                UriSource = new Uri(cache.Path)
-            };
-        }
     }
 }

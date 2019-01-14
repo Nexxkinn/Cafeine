@@ -1,6 +1,13 @@
 ﻿using Cafeine.Models.Enums;
+using Cafeine.Services;
+using System;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -71,6 +78,12 @@ namespace Cafeine.Models
         public string GetUserStatus() => StatusEnum.UserStatus_int2String[UserStatus];
 
         public string GetItemSeasonYear() => $"{Seasons.Seasons_int2string[Season]} {SeriesStart}";
+
+        public ImageSource GetItemCoverAsync()
+        {
+            var file = ImageCache.GetFromCacheAsync(CoverImageUri);
+            return new BitmapImage() { UriSource = new Uri(file.Result.Path) };
+        }
     }
 
     public class Episode
@@ -84,13 +97,23 @@ namespace Cafeine.Models
 
         public string Title { get; set; }
 
-        public BitmapImage LocalThumbnail;
-
         public string OnlineThumbnail;
 
         public string LocalFileName => LocalFile?.Name;
 
         public string UrlLink { get; set; }
+
+        public ImageSource GetEpisodeThumbnail()
+        {
+            var file = ImageCache.GetFromCacheAsync(OnlineThumbnail);
+            return new BitmapImage() { UriSource = new Uri(file.Result.Path) };
+        }
+
+        public void ImageOpened(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            image.Opacity = 1;
+        }
     }
 
     public class ItemDetailsModel

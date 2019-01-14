@@ -41,7 +41,6 @@
             Grid.RowSpan="2"
             Margin="28,0,0,0"
             Canvas.ZIndex="-1"
-            ContainerContentChanging="Collection_ContainerContentChanging"
             IsItemClickEnabled="True"
             ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"
             ItemTemplate="{StaticResource Collection}"

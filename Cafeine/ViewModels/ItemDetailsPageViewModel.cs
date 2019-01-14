@@ -33,9 +33,7 @@ namespace Cafeine.ViewModels
         private List<ItemLibraryModel> OpenedItems;
 
         public ObservableCollection<Episode> Episodelist { get; private set; }
-
-        public CafeineProperty<StorageFile> ImageSource { get; }
-
+        
         #region mvvm setup properties
         public ReactiveCommand EpisodeListsClicked { get; }
 
@@ -71,7 +69,6 @@ namespace Cafeine.ViewModels
 
             Item = new UserItem();
             OpenedItems = new List<ItemLibraryModel>();
-            ImageSource = new CafeineProperty<StorageFile>();
 
             ItemDetailsProgressRing = new CafeineProperty<bool>();
             LoadItemDetails = new ReactiveProperty<bool>(false);
@@ -207,8 +204,6 @@ namespace Cafeine.ViewModels
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.FromCurrentSynchronizationContext()).Unwrap());
-
-                task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(Item.CoverImageUri)));
                 await Task.WhenAll(task);
 
                 // Check if item source is from library or search query

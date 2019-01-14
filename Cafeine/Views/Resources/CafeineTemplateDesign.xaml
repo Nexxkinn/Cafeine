@@ -47,7 +47,7 @@
                 </EventTrigger>
             </Grid.Triggers>
             <Image
-                x:Name="CoverImage"
+                x:Name="cover"
                 Grid.Row="0"
                 MaxWidth="140"
                 MaxHeight="198"
@@ -57,12 +57,14 @@
                 ImageOpened="CoverImage_ImageOpened"
                 Opacity="0"
                 RelativePanel.AlignLeftWithPanel="True"
+                Source="{x:Bind Item.GetItemCoverAsync()}"
                 Stretch="Fill">
+
                 <Image.Resources>
                     <Storyboard x:Key="ImageOpened">
                         <DoubleAnimation
-                            Storyboard.TargetName="CoverImage"
-                            Storyboard.TargetProperty="Opacity"
+                            Storyboard.TargetName="cover"
+                            Storyboard.TargetProperty="(UIElement.Opacity)"
                             From="0"
                             To="1"
                             Duration="0:0:0.7">
@@ -188,9 +190,6 @@
     </ControlTemplate>
 
     <!--  Template for SearchPage.xaml  -->
-    <DataTemplate x:Name="OfflineSearchResult" x:DataType="m:ItemLibraryModel">
-        <Grid />
-    </DataTemplate>
     <DataTemplate x:Name="OnlineSearchResult" x:DataType="m:ItemLibraryModel">
         <Grid Width="280" Height="198">
             <Grid.RowDefinitions>
@@ -209,6 +208,7 @@
                 Margin="2,2,8,2"
                 ImageOpened="CoverImage_ImageOpened"
                 Opacity="0"
+                Source="{x:Bind Item.GetItemCoverAsync()}"
                 Stretch="UniformToFill">
                 <Image.Resources>
                     <Storyboard x:Key="ImageOpened">

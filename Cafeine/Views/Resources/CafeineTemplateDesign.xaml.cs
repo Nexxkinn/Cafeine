@@ -23,25 +23,32 @@ namespace Cafeine.Views.Resources
         {
             InitializeComponent();
         }
-
-        private void ImageEntered(object sender, PointerRoutedEventArgs e)
-        {
-            Storyboard sb = ((Grid)sender).Resources["ImageOnHover"] as Storyboard;
-            sb.Begin();
-        }
-
-        private void ImageExited(object sender, PointerRoutedEventArgs e)
-        {
-            Storyboard sb = ((Grid)sender).Resources["ImageOffHover"] as Storyboard;
-            sb.Begin();
-        }
-
+        
         private void CoverImage_ImageOpened(object sender, RoutedEventArgs e)
         {
             Storyboard sb = ((Image)sender).Resources["ImageOpened"] as Storyboard;
             sb.Begin();
         }
 
+        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
+        {
+            var sv = sender as ScrollViewer;
+            var item = sv.FindName("CControl") as Grid;
+            var scrollpropertyset = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(sv);
+            var composition = scrollpropertyset.Compositor;
+            var offset = composition.CreateExpressionAnimation("-america.Translation.Y");
+            offset.SetReferenceParameter("america", scrollpropertyset);
+
+            var itemoption = ElementCompositionPreview.GetElementVisual(item);
+            itemoption.StartAnimation("Offset.Y", offset);
+        }
+
+
+        //for suggestedsearchresult
+        #region unused_but_good_enough_for_potential_research
+        //WHAT IS THIS BLACK MAGIC??
+        //HOW DOES ANY OF THIS WORKS?!?!
+        //Reference : https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/optimize-gridview-and-listview#update-listview-and-gridview-items-progressively
         private void SuggestionsList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             //Load grid background for autosuggestbox itemsuggested
@@ -118,20 +125,7 @@ namespace Cafeine.Views.Resources
             Storyboard.SetTargetProperty(animation, "Opacity");
             loadImageOpacity.Begin();
         }
-        
-        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
-        {
-            var sv = sender as ScrollViewer;
-            var item = sv.FindName("CControl") as Grid;
-            var scrollpropertyset = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(sv);
-            var composition = scrollpropertyset.Compositor;
-            var offset = composition.CreateExpressionAnimation("-america.Translation.Y");
-            offset.SetReferenceParameter("america", scrollpropertyset);
-
-            var itemoption = ElementCompositionPreview.GetElementVisual(item);
-            itemoption.StartAnimation("Offset.Y", offset);
-        }
-
+        #endregion
        
     }
 }

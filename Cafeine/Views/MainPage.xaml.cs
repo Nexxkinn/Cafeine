@@ -24,39 +24,7 @@ namespace Cafeine.Views
 
         public MainPage()
         {
-
-            //deletecookies();
             InitializeComponent();
-        }
-
-        private void deletecookies()
-        {
-            HttpBaseProtocolFilter handler = new HttpBaseProtocolFilter();
-            var cookies = handler.CookieManager.GetCookies(new Uri("https://anilist.co"));
-            foreach (var i in cookies)
-            {
-                handler.CookieManager.DeleteCookie(i);
-            }
-        }
-
-        //WHAT IS THIS BLACK MAGIC??
-        //HOW DOES ANY OF THIS WORKS?!?!
-        //Reference : https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/optimize-gridview-and-listview#update-listview-and-gridview-items-progressively
-        private void Collection_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
-        {
-            args.RegisterUpdateCallback(LoadImage);
-        }
-
-        private async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
-        {
-            var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
-            var imageurl = (args.Item as ItemLibraryModel).Service["default"].CoverImageUri;
-            var cache = await ImageCache.GetFromCacheAsync(imageurl);
-            var image = templateRoot.Children[0] as Image;
-            image.Source = new BitmapImage()
-            {
-                UriSource = new Uri(cache.Path)
-            };
         }
     }
 }

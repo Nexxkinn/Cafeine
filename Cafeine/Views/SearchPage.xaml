@@ -104,7 +104,6 @@
                 <GridView
                     x:Name="onlineresultgridview"
                     Margin="0,8"
-                    ContainerContentChanging="GridView_ContainerContentChanging"
                     IsItemClickEnabled="True"
                     ItemTemplate="{StaticResource OnlineSearchResult}"
                     ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}">

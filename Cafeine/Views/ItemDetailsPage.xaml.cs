@@ -31,18 +31,9 @@ namespace Cafeine.Views
             this.InitializeComponent();
         }
 
-        private async void Episodesitem_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
-        {
-            var templateRoot = args.ItemContainer.ContentTemplateRoot as RelativePanel;
-            var imageurl = (args.Item as Episode).OnlineThumbnail;
-            var cache = await ImageCache.GetFromCacheAsync(imageurl);
-            var image = templateRoot.Children[0] as Image;
-            image.Source = new BitmapImage()
-            {
-                UriSource = new Uri(cache.Path)
-            };
-            image.Opacity = 1;
-        }
+        // TODO : use composition to enable gridview virtualization
+
+
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);

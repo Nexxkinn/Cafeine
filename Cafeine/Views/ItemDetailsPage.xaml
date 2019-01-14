@@ -52,7 +52,7 @@
                                 x:Name="BackgroundImage"
                                 AlignmentY="Top"
                                 ImageOpened="BackgroundImage_ImageOpened"
-                                ImageSource="{x:Bind Mode=OneWay, Path=Vm.ImageSource.Value.Path}"
+                                ImageSource="{x:Bind Mode=OneWay, Path=Vm.Item.GetItemCoverAsync()}"
                                 Opacity="0"
                                 Stretch="UniformToFill" />
                         </Grid.Background>
@@ -67,11 +67,8 @@
                                 MaxWidth="142"
                                 MaxHeight="204"
                                 HorizontalAlignment="Left"
-                                VerticalAlignment="Top">
-                                <Image.Source>
-                                    <BitmapImage UriSource="{x:Bind Path=Vm.ImageSource.Value.Path, Mode=OneWay}" />
-                                </Image.Source>
-                            </Image>
+                                VerticalAlignment="Top"
+                                Source="{x:Bind Vm.Item.GetItemCoverAsync()}" />
                             <StackPanel
                                 MaxHeight="204"
                                 Margin="14,0,0,0"
@@ -193,10 +190,9 @@
                         </StackPanel>
                         <GridView
                             x:Name="episodesitem"
-                            Visibility="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}"
-                            ContainerContentChanging="Episodesitem_ContainerContentChanging"
                             ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
-                            SizeChanged="OnGridViewSizeChanged">
+                            SizeChanged="OnGridViewSizeChanged"
+                            Visibility="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}">
                             <GridView.ItemTemplate>
                                 <DataTemplate x:DataType="model:Episode">
                                     <RelativePanel Height="81">
@@ -206,7 +202,9 @@
                                             MaxWidth="144"
                                             MaxHeight="81"
                                             HorizontalAlignment="Left"
-                                            Source="{x:Bind Path=OnlineThumbnail, Mode=OneWay}"
+                                            ImageOpened="{x:Bind ImageOpened}"
+                                            Opacity="0"
+                                            Source="{x:Bind Path=GetEpisodeThumbnail(), Mode=OneWay}"
                                             Stretch="UniformToFill" />
                                         <StackPanel
                                             Grid.Column="1"

@@ -31,14 +31,10 @@ namespace Cafeine.Views
                 return DataContext as LoginPageViewModel;
             }
         }
-
+        
         public LoginPage()
         {
             this.InitializeComponent();
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
         }
 
         private async void Ellipse_Loaded(object sender, RoutedEventArgs e)
