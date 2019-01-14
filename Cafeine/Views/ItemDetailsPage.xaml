@@ -202,17 +202,18 @@
                                             MaxWidth="144"
                                             MaxHeight="81"
                                             HorizontalAlignment="Left"
+                                            x:Phase="2"
                                             ImageOpened="{x:Bind ImageOpened}"
                                             Opacity="0"
                                             Source="{x:Bind Path=GetEpisodeThumbnail(), Mode=OneWay}"
                                             Stretch="UniformToFill" />
                                         <StackPanel
-                                            Grid.Column="1"
                                             Margin="8,0,0,0"
                                             RelativePanel.RightOf="Thumbnail">
                                             <TextBlock
                                                 FontSize="15"
                                                 FontWeight="SemiBold"
+                                                x:Phase="1"
                                                 Text="{x:Bind Path=Title, Mode=OneWay}" />
                                         </StackPanel>
                                     </RelativePanel>
