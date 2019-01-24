@@ -79,11 +79,22 @@ namespace Cafeine.Models
 
         public string GetItemSeasonYear() => $"{Seasons.Seasons_int2string[Season]} {SeriesStart}";
 
-        public ImageSource GetItemCoverAsync()
+        public async void CoverImage_Loaded(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var file = await ImageCache.GetFromCacheAsync(CoverImageUri);
+            image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
+        }
+
+        public ImageSource GetItemCover()
         {
             var file = ImageCache.GetFromCacheAsync(CoverImageUri);
             return new BitmapImage() { UriSource = new Uri(file.Result.Path) };
         }
+        /// <summary>
+        /// Intended only if the service use an overengineered method to identify user's item.
+        /// </summary>
+        public object AdditionalInfo;
     }
 
     public class Episode
@@ -103,10 +114,11 @@ namespace Cafeine.Models
 
         public string UrlLink { get; set; }
 
-        public ImageSource GetEpisodeThumbnail()
+        public async void Thumbnail_Loaded(object sender, RoutedEventArgs e)
         {
-            var file = ImageCache.GetFromCacheAsync(OnlineThumbnail);
-            return new BitmapImage() { UriSource = new Uri(file.Result.Path) };
+            var image = sender as Image;
+            var file = await ImageCache.GetFromCacheAsync(OnlineThumbnail);
+            image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
         }
 
         public void ImageOpened(object sender, RoutedEventArgs e)

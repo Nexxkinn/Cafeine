@@ -58,7 +58,7 @@
                 ImageOpened="CoverImage_ImageOpened"
                 Opacity="0"
                 RelativePanel.AlignLeftWithPanel="True"
-                Source="{x:Bind Item.GetItemCoverAsync()}"
+                Loaded="{x:Bind Item.CoverImage_Loaded}"
                 Stretch="Fill">
 
                 <Image.Resources>
@@ -211,7 +211,7 @@
                 x:Phase="3"
                 ImageOpened="CoverImage_ImageOpened"
                 Opacity="0"
-                Source="{x:Bind Item.GetItemCoverAsync()}"
+                Loaded="{x:Bind Item.CoverImage_Loaded}"
                 Stretch="UniformToFill">
                 <Image.Resources>
                     <Storyboard x:Key="ImageOpened">
@@ -1104,6 +1104,7 @@
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Width" Value="68" />
+        <Setter Property="MinHeight" Value="22" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="AllowFocusOnInteraction" Value="False" />
         <Setter Property="Template">
@@ -1126,7 +1127,7 @@
                             <Viewbox
                                 x:Name="ContentViewbox"
                                 Grid.Row="0"
-                                Height="22"
+                                Height="{TemplateBinding MinHeight}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw">

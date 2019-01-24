@@ -174,6 +174,7 @@ namespace Cafeine.ViewModels
                 AvatarURL = Database.GetCurrentUserAccount() ?? null;
                 RaisePropertyChanged(nameof(AvatarURL));
             });
+            _eventAggregator.GetEvent<GoBack>().Subscribe(GoBackButton.Execute);
         }
 
         public Frame ChildFrame { get; set; } = new Frame();
@@ -204,4 +205,5 @@ namespace Cafeine.ViewModels
     /// <param name="state"></param>
     public class ChildFrameNavigating : PubSubEvent<int>{ }
     public class HomePageAvatarLoad : PubSubEvent { }
+    public class GoBack : PubSubEvent { }
 }

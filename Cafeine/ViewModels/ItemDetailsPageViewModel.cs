@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
 namespace Cafeine.ViewModels
@@ -39,6 +40,8 @@ namespace Cafeine.ViewModels
 
         public ReactiveCommand EpisodeSettingsClicked { get; }
 
+        public AsyncReactiveCommand DeleteButtonClicked { get; }
+
         public AsyncReactiveCommand PageLoaded { get; }
 
         public CafeineProperty<double> ScorePlaceHolderRating { get; set; }
@@ -60,6 +63,8 @@ namespace Cafeine.ViewModels
         public CafeineProperty<bool> LoadEpisodeNotFound { get; }
 
         public CafeineProperty<bool> ItemDetailsProgressRing { get; }
+        
+        public CafeineProperty<bool> DeleteItemButton_Enabled { get; }
         #endregion
 
         public ItemDetailsPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
@@ -70,6 +75,7 @@ namespace Cafeine.ViewModels
             Item = new UserItem();
             OpenedItems = new List<ItemLibraryModel>();
 
+            //set initial value
             ItemDetailsProgressRing = new CafeineProperty<bool>();
             LoadItemDetails = new ReactiveProperty<bool>(false);
             LoadItemDetails.Subscribe(x => ItemDetailsProgressRing.Value = !x);
@@ -84,6 +90,8 @@ namespace Cafeine.ViewModels
             LoadEpisodeSettings = new CafeineProperty<bool>(false);
             LoadEpisodeNotFound = new CafeineProperty<bool>(false);
             LoadEpisodesListConfiguration = new CafeineProperty<bool>(true);
+            
+            DeleteItemButton_Enabled = new CafeineProperty<bool>(true);
 
             EpisodeListsClicked = new ReactiveCommand();
             EpisodeListsClicked.Subscribe(_ =>
@@ -111,6 +119,24 @@ namespace Cafeine.ViewModels
                 LoadEpisodesListConfiguration.Value = false;
             });
 
+            DeleteButtonClicked = new AsyncReactiveCommand();
+            DeleteButtonClicked.Subscribe( async _ =>
+            {
+                MessageDialog popup = new MessageDialog($"You are going to delete {Item.Title} from your list.\n" +
+                    $"Removing this item will also unlink your local directory in this item.\n" +
+                    $"Do you really want to Remove it?", $"Remove this item?");
+                popup.Commands.Add(new UICommand("Remove") { Id = 0 });
+                popup.Commands.Add(new UICommand("Cancel") { Id = 1 });
+                popup.DefaultCommandIndex = 0;
+                popup.CancelCommandIndex = 1;
+                var result = await popup.ShowAsync();
+                if ((int)result.Id == 0)
+                {
+                    await Database.DeleteItem(ItemBase);
+                    _eventAggregator.GetEvent<GoBack>().Publish();
+                }
+            });
+
             _eventAggregator.GetEvent<ItemDetailsID>().Subscribe(LoadItem);
 
         }
@@ -133,6 +159,7 @@ namespace Cafeine.ViewModels
             ItemBase = item;
             Item = ItemBase.Service["default"];
             RaisePropertyChanged(nameof(Item));
+            DeleteItemButton_Enabled.Value = ItemBase.Id != default(int);
             Task.Factory.StartNew(async () => await LoadAsync(),
                 CancellationToken.None,
                 TaskCreationOptions.None,

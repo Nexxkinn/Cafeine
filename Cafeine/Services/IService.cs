@@ -1,17 +1,14 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Web.Http;
 
 namespace Cafeine.Services
 {
     public interface IService
     {
-        void AddItem(ItemLibraryModel item);
+        
+        Task<UserItem> AddItem(ItemLibraryModel item);
 
         void GetItem(ItemLibraryModel item);
 
@@ -21,7 +18,7 @@ namespace Cafeine.Services
 
         void UpdateItem(ItemLibraryModel item);
 
-        void DeleteItem(ItemLibraryModel item);
+        Task DeleteItem(ItemLibraryModel item);
 
         void DeleteRange(IList<ItemLibraryModel> items);
 

@@ -52,71 +52,116 @@
                                 x:Name="BackgroundImage"
                                 AlignmentY="Top"
                                 ImageOpened="BackgroundImage_ImageOpened"
-                                ImageSource="{x:Bind Mode=OneWay, Path=Vm.Item.GetItemCoverAsync()}"
+                                ImageSource="{x:Bind Mode=OneWay, Path=Vm.Item.GetItemCover()}"
                                 Opacity="0"
                                 Stretch="UniformToFill" />
                         </Grid.Background>
                         <Rectangle Fill="#66000000" />
                     </Grid>
-                    <Grid Margin="28,20,28,20">
-                        <RelativePanel>
-                            <Image
-                                x:Name="cover"
-                                MinWidth="140"
-                                MinHeight="204"
-                                MaxWidth="142"
-                                MaxHeight="204"
+                </Grid>
+                <Border Grid.Column="0">
+                    <StackPanel Orientation="Vertical">
+                        <AppBarButton
+                            Width="48"
+                            Height="56"
+                            MinHeight="28"
+                            LabelPosition="Collapsed"
+                            Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                            <AppBarButton.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock
+                                        FontWeight="Bold"
+                                        Text="{x:Bind Vm.Item.Total_Watched_Read, Mode=OneWay}"
+                                        TextAlignment="Center"
+                                        TextLineBounds="Tight" />
+                                    <Line
+                                        Margin="0,4"
+                                        HorizontalAlignment="Center"
+                                        Stretch="Fill"
+                                        Stroke="White"
+                                        StrokeDashCap="Square"
+                                        StrokeEndLineCap="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="1.5"
+                                        X2="20" />
+                                    <TextBlock
+                                        Text="{x:Bind Vm.Item.TotalEpisodes, Mode=OneWay}"
+                                        TextAlignment="Center"
+                                        TextLineBounds="Tight" />
+                                </StackPanel>
+                            </AppBarButton.Content>
+                        </AppBarButton>
+                        <AppBarButton Width="48" Height="48" Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                            <AppBarButton.Content>
+                                <TextBlock Text="N"/>
+                            </AppBarButton.Content>
+                        </AppBarButton>
+                        <AppBarButton
+                            IsEnabled="{x:Bind Vm.DeleteItemButton_Enabled.Value}"
+                            Width="48"
+                            Height="48"
+                            Command="{x:Bind Vm.DeleteButtonClicked}"
+                            Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                            <AppBarButton.Icon>
+                                <FontIcon Margin="3" Glyph="&#xE107;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
+                    </StackPanel>
+                </Border>
+                <Grid Grid.Column="1" Margin="8,20,28,20">
+                    <RelativePanel>
+                        <Image
+                            x:Name="cover"
+                            MinWidth="140"
+                            MinHeight="204"
+                            MaxWidth="142"
+                            MaxHeight="204"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Source="{x:Bind Vm.Item.GetItemCover()}" />
+                        <StackPanel
+                            MaxHeight="204"
+                            Margin="14,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            RelativePanel.RightOf="cover">
+                            <TextBlock
+                                FontSize="22"
+                                FontWeight="SemiLight"
+                                MaxLines="2"
+                                Text="{x:Bind Path=Vm.Item.Title, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                x:Name="ItemStatusTextBlock"
+                                FontSize="14"
+                                Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
+                            <muxc:RatingControl
+                                x:Name="rating"
                                 HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Source="{x:Bind Vm.Item.GetItemCoverAsync()}" />
-                            <StackPanel
-                                MaxHeight="204"
-                                Margin="14,0,0,0"
+                                Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
+                                InitialSetValue="0"
+                                IsReadOnly="True"
+                                PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating.Value, Mode=OneWay}" />
+                            <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
+                            <ProgressRing
+                                x:Name="progressring"
                                 HorizontalAlignment="Left"
-                                VerticalAlignment="Stretch"
-                                RelativePanel.RightOf="cover">
-                                <TextBlock
-                                    FontSize="22"
-                                    FontWeight="SemiLight"
-                                    MaxLines="2"
-                                    Text="{x:Bind Path=Vm.Item.Title, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="Wrap" />
-                                <TextBlock
-                                    x:Name="ItemStatusTextBlock"
-                                    FontSize="14"
-                                    Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
-                                <muxc:RatingControl
-                                    x:Name="rating"
-                                    HorizontalAlignment="Left"
-                                    Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
-                                    InitialSetValue="0"
-                                    IsReadOnly="True"
-                                    PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating.Value, Mode=OneWay}" />
-                                <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
-                                <TextBlock
-                                    x:Name="UserWatched"
-                                    FontSize="14"
-                                    Text="12 / 12 Episodes Watched" />
-                                <ProgressRing
-                                    x:Name="progressring"
-                                    HorizontalAlignment="Left"
-                                    x:Load="{x:Bind Vm.ItemDetailsProgressRing.Value, Mode=OneWay}"
-                                    IsActive="True" />
-                                <TextBlock
-                                    x:Name="description"
-                                    MaxWidth="500"
-                                    HorizontalAlignment="Left"
-                                    x:Load="{x:Bind Vm.LoadItemDetails.Value, Mode=OneWay}"
-                                    FontSize="13"
-                                    Foreground="#D7FFFFFF"
-                                    MaxLines="5"
-                                    Text="{x:Bind Path=Vm.DescriptionTextBlock.Value, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                        </RelativePanel>
-                    </Grid>
+                                x:Load="{x:Bind Vm.ItemDetailsProgressRing.Value, Mode=OneWay}"
+                                IsActive="True" />
+                            <TextBlock
+                                x:Name="description"
+                                MaxWidth="500"
+                                HorizontalAlignment="Left"
+                                x:Load="{x:Bind Vm.LoadItemDetails.Value, Mode=OneWay}"
+                                FontSize="13"
+                                Foreground="#D7FFFFFF"
+                                MaxLines="5"
+                                Text="{x:Bind Path=Vm.DescriptionTextBlock.Value, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </RelativePanel>
                 </Grid>
                 <Border Grid.Row="1">
                     <StackPanel x:Name="ItemOptions">
@@ -205,15 +250,13 @@
                                             x:Phase="2"
                                             ImageOpened="{x:Bind ImageOpened}"
                                             Opacity="0"
-                                            Source="{x:Bind Path=GetEpisodeThumbnail(), Mode=OneWay}"
+                                            Loaded="{x:Bind Path=Thumbnail_Loaded, Mode=OneWay}"
                                             Stretch="UniformToFill" />
-                                        <StackPanel
-                                            Margin="8,0,0,0"
-                                            RelativePanel.RightOf="Thumbnail">
+                                        <StackPanel Margin="8,0,0,0" RelativePanel.RightOf="Thumbnail">
                                             <TextBlock
+                                                x:Phase="1"
                                                 FontSize="15"
                                                 FontWeight="SemiBold"
-                                                x:Phase="1"
                                                 Text="{x:Bind Path=Title, Mode=OneWay}" />
                                         </StackPanel>
                                     </RelativePanel>

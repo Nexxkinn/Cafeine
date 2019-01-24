@@ -258,8 +258,12 @@ namespace Cafeine.Services
             }
         }
 
-        public static void DeleteItem(ItemLibraryModel Item)
+        public static async Task DeleteItem(ItemLibraryModel Item)
         {
+            UserAccountModel user = GetCurrentUserAccount();
+            IService service = services[user.Id];
+            await service.DeleteItem(Item);
+
             using (var tr = db.GetTransaction())
             {
                 tr.ObjectRemove("library", 1.ToIndex(Item.Id));
