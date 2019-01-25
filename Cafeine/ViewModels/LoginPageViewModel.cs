@@ -1,29 +1,29 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
-using Prism.Commands;
-using Prism.Events;
-using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+using Cafeine.Services.Mvvm;
+using Cafeine.Views;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class LoginPageViewModel : ViewModelBase, INavigationAware
+    public class LoginPageViewModel : ViewModelBase
     {
-        public DelegateCommand LoginPageLoaded { get; }
+        public ReactiveCommand LoginPageLoaded { get; }
 
         public ReactiveCommand<string> LoginClicked { get; }
 
-        private INavigationService _navigationService;
+        private NavigationService _navigationService;
 
-        private IEventAggregator _eventAggregator;
+        private ViewModelLink _eventAggregator;
 
         public bool UserPanelVisibility;
 
@@ -35,17 +35,18 @@ namespace Cafeine.ViewModels
 
         public bool FromWebsiteRegistration = false;
 
-        public LoginPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+        public LoginPageViewModel()
         {
-            _navigationService = navigationService;
+            _navigationService = new NavigationService();
 
-            _eventAggregator = eventAggregator;
+            _eventAggregator = new ViewModelLink();
 
             UserPanelVisibility = false;
 
             SetupPanelVisibility = true;
 
-            LoginPageLoaded = new DelegateCommand(async () => await LoadTask());
+            LoginPageLoaded = new ReactiveCommand();
+            LoginPageLoaded.Subscribe(async () => await LoadTask());
 
             LoginClicked = new ReactiveCommand<string>();
             LoginClicked.Subscribe(item =>
@@ -54,20 +55,19 @@ namespace Cafeine.ViewModels
                 {
                     case "Anilist":
                         {
-                            _navigationService.Navigate("BrowserAuthentication", null);
+                            _navigationService.Navigate(typeof(BrowserAuthenticationPage), null);
                             break;
                         }
                 }
             });
         }
-
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back) {
+            if (e.NavigationMode == NavigationMode.Back) {
                 FromWebsiteRegistration = true;
             }
             _navigationService.ClearHistory();
-            base.OnNavigatedTo(e, viewModelState);
+            base.OnNavigatedTo(e);
         }
 
         public async Task LoadTask()
@@ -75,14 +75,14 @@ namespace Cafeine.ViewModels
 
             if (Database.DoesAccountExists())
             {
-                _eventAggregator.GetEvent<HomePageAvatarLoad>().Publish();
+                _eventAggregator.Publish("HomePageAvatarLoad");
                 showUserPanel();
                 await Database.CreateServicesFromUserAccounts();
                 if (FromWebsiteRegistration)
                 {
                     await Database.CreateDBFromServices();
                 }
-                _navigationService.Navigate("Main", null);
+                _navigationService.Navigate(typeof(MainPage), null);
             }
         }
 

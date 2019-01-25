@@ -1,31 +1,24 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
 using Cafeine.Services;
-using Prism.Events;
-using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+using Cafeine.Services.Mvvm;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class ItemDetailsID : PubSubEvent<ItemLibraryModel>
+    public class ItemDetailsPageViewModel : ViewModelBase
     {
-    }
+        private NavigationService _navigationService;
 
-    public class ItemDetailsPageViewModel : ViewModelBase, INavigationAware
-    {
-        private INavigationService _navigationService;
-
-        private readonly IEventAggregator _eventAggregator;
+        private readonly ViewModelLink VMLink;
 
         public UserItem Item { get; set; }
 
@@ -67,10 +60,10 @@ namespace Cafeine.ViewModels
         public CafeineProperty<bool> DeleteItemButton_Enabled { get; }
         #endregion
 
-        public ItemDetailsPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+        public ItemDetailsPageViewModel()
         {
-            _navigationService = navigationService;
-            _eventAggregator = eventAggregator;
+            _navigationService = new NavigationService();
+            VMLink = new ViewModelLink();
 
             Item = new UserItem();
             OpenedItems = new List<ItemLibraryModel>();
@@ -133,25 +126,24 @@ namespace Cafeine.ViewModels
                 if ((int)result.Id == 0)
                 {
                     await Database.DeleteItem(ItemBase);
-                    _eventAggregator.GetEvent<GoBack>().Publish();
+                    VMLink.Publish("GoBack");
                 }
             });
 
-            _eventAggregator.GetEvent<ItemDetailsID>().Subscribe(LoadItem);
+            VMLink.Subscribe<ItemLibraryModel>(LoadItem, "ItemDetailsID");
 
         }
 
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(3);
-            base.OnNavigatedTo(e, viewModelState);
+            VMLink.Publish(3, "ChildFrameNavigating");
+            base.OnNavigatedTo(e);
         }
-
-        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        public override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            if(e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back)
-                _eventAggregator.GetEvent<ItemDetailsID>().Unsubscribe(LoadItem);
-            base.OnNavigatingFrom(e, viewModelState, suspending);
+            if (e.NavigationMode == NavigationMode.Back)
+                VMLink.Unsubscribe("ItemDetailsID");
+            base.OnNavigatedFrom(e);
         }
 
         private void LoadItem(ItemLibraryModel item)

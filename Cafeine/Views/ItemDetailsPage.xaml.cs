@@ -1,5 +1,6 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
+using Cafeine.Services.Mvvm;
 using Cafeine.ViewModels;
 using Microsoft.Graphics.Canvas.Effects;
 using System;
@@ -18,13 +19,9 @@ namespace Cafeine.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class ItemDetailsPage : Page
+    public sealed partial class ItemDetailsPage : BasePage
     {
-        public ItemDetailsPageViewModel Vm {
-            get {
-                return DataContext as ItemDetailsPageViewModel;
-            }
-        }
+        public ItemDetailsPageViewModel Vm  => DataContext as ItemDetailsPageViewModel;
 
         public ItemDetailsPage()
         {

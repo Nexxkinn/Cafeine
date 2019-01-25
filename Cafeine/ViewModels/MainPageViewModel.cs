@@ -1,10 +1,8 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
 using Cafeine.Services;
-using Prism.Events;
-using Prism.Unity.Windows;
-using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+using Cafeine.Services.Mvvm;
+using Cafeine.Views;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
@@ -15,26 +13,16 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity;
 using Windows.Storage;
+using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class LoadItemStatus : PubSubEvent<int>
-    {
-    }
-
-    public class NavigateItem : PubSubEvent<ItemLibraryModel>
-    {
-    }
-
-    public class NavigateSearchPage : PubSubEvent<int> { }
-
-    public class MainPageViewModel : ViewModelBase, INavigationAware
+    public class MainPageViewModel : ViewModelBase
     { 
-        private INavigationService _navigationService;
+        private NavigationService _navigationService;
 
-        private readonly IEventAggregator _eventAggregator;
+        private ViewModelLink VMLink;
 
         private IEnumerable<ItemLibraryModel> ListedItems;
 
@@ -63,11 +51,11 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<int> TypeBy { get; set; }
         
-        public MainPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+        public MainPageViewModel()
         {
             //setup
-            _navigationService = navigationService;
-            _eventAggregator = eventAggregator;
+            _navigationService = new NavigationService();
+            VMLink = new ViewModelLink();
 
             SortBy = new ReactiveProperty<int>(0);
             SortBy.PropertyChanged += (_, e) =>
@@ -96,7 +84,7 @@ namespace Cafeine.ViewModels
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(NavigateToItemDetails);
 
-            _eventAggregator.GetEvent<LoadItemStatus>().Subscribe(async (x) =>
+            VMLink.Subscribe<int>(async (x) =>
                 {
                     await Task.Yield();
 
@@ -104,9 +92,10 @@ namespace Cafeine.ViewModels
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         TaskScheduler.FromCurrentSynchronizationContext());
-                });
-            _eventAggregator.GetEvent<NavigateItem>().Subscribe(NavigateToItemDetails);
-            _eventAggregator.GetEvent<NavigateSearchPage>().Subscribe(x =>
+                }
+                , "LoadItemStatus");
+            VMLink.Subscribe<ItemLibraryModel>(NavigateToItemDetails, "NavigateItem");
+            VMLink.Subscribe(x =>
             {
                 switch (x)
                 {
@@ -114,20 +103,20 @@ namespace Cafeine.ViewModels
                         // can't go back -> assume it's the main page
                         // can go back -> assume it's details page
                         int state = _navigationService.CanGoBack() ? 1 : 0;
-                        _navigationService.Navigate("Search", state);
+                        _navigationService.Navigate(typeof(SearchPage), state);
                         return;
                     case 2:
                         _navigationService.GoBack();
                         return;
                 }
-            });
+            }
+            , "NavigateSearchPage");
         }
-
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(2);
+            VMLink.Publish(2, "ChildFrameNavigating");
             _navigationService.ClearHistory();
-            base.OnNavigatedTo(e, viewModelState);
+            base.OnNavigatedTo(e);
         }
 
         private async Task DisplayItem(int value)
@@ -192,8 +181,8 @@ namespace Cafeine.ViewModels
                 _navigationService.GoBack();
                 _navigationService.RemoveLastPage();
             }
-            _navigationService.Navigate("ItemDetails", null);
-            _eventAggregator.GetEvent<ItemDetailsID>().Publish(item);
+            _navigationService.Navigate(typeof(ItemDetailsPage), null);
+            VMLink.Publish(item, "ItemDetailsID");
         }
     }
 }

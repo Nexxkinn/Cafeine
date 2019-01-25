@@ -1,9 +1,7 @@
 ﻿using Cafeine.Views;
-using Prism.Events;
-using Prism.Unity.Windows;
-using Prism.Windows.AppModel;
+using System;
 using System.Threading.Tasks;
-using Unity;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
@@ -11,56 +9,68 @@ using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
-    sealed partial class App : PrismUnityApplication
+    sealed partial class App : Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
         public App()
         {
             this.InitializeComponent();
+            this.Suspending += OnSuspending;
         }
 
-        protected override Task OnInitializeAsync(IActivatedEventArgs args)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Container.RegisterInstance(NavigationService);
-            Container.RegisterInstance<IEventAggregator>(new EventAggregator());
-            return base.OnInitializeAsync(args);
-        }
+            Frame rootFrame = Window.Current.Content as Frame;
 
-        protected override UIElement CreateShell(Frame rootFrame)
-        {
-            var shell = Container.Resolve<HomePage>();
-            shell.Vm.SetFrame(rootFrame);
-            return shell;
-        }
-
-        protected override IDeviceGestureService OnCreateDeviceGestureService()
-        {
-            var svc = base.OnCreateDeviceGestureService();
-            svc.UseTitleBarBackButton = false;
-            return svc;
-        }
-
-        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
-        {
-            if(args.PreviousExecutionState != ApplicationExecutionState.Running)
+            if (rootFrame == null)
             {
-                await Services.ImageCache.CreateImageCacheFolder();
-                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+                rootFrame = new Frame();
 
-                ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                titleBar.ButtonBackgroundColor = Colors.Transparent;
-                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                NavigationService.Navigate("Login", null);
+                rootFrame.NavigationFailed += OnNavigationFailed;
+
+                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                {
+                    //TODO: Load state from previously suspended application
+                }
+                if (e.PreviousExecutionState != ApplicationExecutionState.Running)
+                {
+                    await Services.ImageCache.CreateImageCacheFolder();
+                    CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+
+                    ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                    titleBar.ButtonBackgroundColor = Colors.Transparent;
+                    titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                }
+
+                HomePage page = new HomePage();
+                page.Vm.SetFrame(rootFrame);
+                // Place the frame in the current Window
+                Window.Current.Content = page;
             }
+
+            if (e.PrelaunchActivated == false)
+            {
+                if (rootFrame.Content == null)
+                {
+                    rootFrame.Navigate(typeof(LoginPage), e.Arguments);
+                }
+                Window.Current.Activate();
+            }
+        }
+        
+        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+        }
+        
+        private void OnSuspending(object sender, SuspendingEventArgs e)
+        {
+            var deferral = e.SuspendingOperation.GetDeferral();
+            //TODO: Save application state and stop any background activity
+            deferral.Complete();
         }
     }
 }

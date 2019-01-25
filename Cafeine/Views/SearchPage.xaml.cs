@@ -1,5 +1,6 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
+using Cafeine.Services.Mvvm;
 using Cafeine.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -24,13 +25,10 @@ namespace Cafeine.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SearchPage : Page
+    public sealed partial class SearchPage : BasePage
     {
-        public SearchPageViewModel Vm {
-            get {
-                return DataContext as SearchPageViewModel;
-            }
-        }
+        public SearchPageViewModel Vm => DataContext as SearchPageViewModel;
+
         public SearchPage()
         {
             this.InitializeComponent();

@@ -1,4 +1,4 @@
-﻿<Page
+﻿<mvvm:BasePage
     x:Class="Cafeine.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,12 +7,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:Cafeine.Views"
+    xmlns:vm="using:Cafeine.ViewModels"
+    xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:prism="using:Prism.Windows.Mvvm"
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
-    prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
+    <mvvm:BasePage.DataContext>
+        <vm:LoginPageViewModel />
+    </mvvm:BasePage.DataContext>
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{x:Bind Path=Vm.LoginPageLoaded}" />
@@ -53,7 +56,7 @@
                     TextWrapping="Wrap" />
                 <StackPanel
                     x:Name="UserPanel"
-                    x:Load="{x:Bind Path=Vm.UserPanelVisibility, Mode=OneWay}"
+                    x:Load="{x:Bind Vm.UserPanelVisibility, Mode=OneWay}"
                     Orientation="Vertical">
                     <Ellipse
                         Width="108"
@@ -69,7 +72,7 @@
                 <StackPanel
                     x:Name="SetupPanel"
                     Margin="0,24,0,0"
-                    x:Load="{x:Bind Path=Vm.SetupPanelVisibility, Mode=OneWay}"
+                    x:Load="{x:Bind Vm.SetupPanelVisibility, Mode=OneWay}"
                     Orientation="Vertical">
                     <TextBlock
                         HorizontalAlignment="Center"
@@ -96,4 +99,4 @@
             </StackPanel>
         </Grid>
     </Grid>
-</Page>
+</mvvm:BasePage>

@@ -1,22 +1,21 @@
-﻿<Page
+﻿<mvvm:BasePage
     x:Class="Cafeine.Views.ItemDetailsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:local="using:Cafeine.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:Cafeine.Models"
+    xmlns:vm="using:Cafeine.ViewModels"
+    xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:prism="using:Prism.Windows.Mvvm"
-    xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vr="using:Cafeine.Views.Resources"
-    prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     Loaded="Page_Loaded"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <vm:ItemDetailsPageViewModel/>
+    </Page.DataContext>
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -328,4 +327,4 @@
             </Grid>
         </ScrollViewer>
     </Grid>
-</Page>
+</mvvm:BasePage>

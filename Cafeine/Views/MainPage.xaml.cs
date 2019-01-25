@@ -1,5 +1,6 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
+using Cafeine.Services.Mvvm;
 using Cafeine.ViewModels;
 using System;
 using Windows.UI.Xaml.Controls;
@@ -14,13 +15,9 @@ namespace Cafeine.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : BasePage
     {
-        public MainPageViewModel Vm {
-            get {
-                return DataContext as MainPageViewModel;
-            }
-        }
+        public MainPageViewModel Vm => DataContext as MainPageViewModel;
 
         public MainPage()
         {

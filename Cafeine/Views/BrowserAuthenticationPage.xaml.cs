@@ -1,4 +1,5 @@
 ﻿using Cafeine.Services;
+using Cafeine.Services.Mvvm;
 using Cafeine.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -23,18 +24,14 @@ namespace Cafeine.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class BrowserAuthenticationPage : Page
+    public sealed partial class BrowserAuthenticationPage : BasePage
     {
         public BrowserAuthenticationPage()
         {
             this.InitializeComponent();
         }
 
-        public BrowserAuthenticationPageViewModel Vm {
-            get {
-                return DataContext as BrowserAuthenticationPageViewModel;
-            }
-        }
+        public BrowserAuthenticationPageViewModel Vm => DataContext as BrowserAuthenticationPageViewModel;
 
         private void CloseFrame()
         {

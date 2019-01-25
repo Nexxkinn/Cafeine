@@ -1,19 +1,18 @@
 ﻿using Cafeine.Services;
-using Prism.Events;
-using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+using Cafeine.Services.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Interactivity;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using Windows.UI.Xaml.Controls;
 
 namespace Cafeine.ViewModels
 {
-    public sealed class BrowserAuthenticationPageViewModel : ViewModelBase, INavigationAware
+    public class BrowserAuthenticationPageViewModel : ViewModelBase, IViewModel
     {
-        private INavigationService _navigationService;
+        private NavigationService _navigationService;
 
         public ReactiveProperty<Uri> Source;
 
@@ -23,12 +22,9 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<string> HeaderTitle { get; }
 
-        public IEventAggregator _eventAggregator;
-
-        public BrowserAuthenticationPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+        public BrowserAuthenticationPageViewModel()
         {
-            _navigationService = navigationService;
-            _eventAggregator = eventAggregator;
+            _navigationService = new NavigationService();
 
             HeaderTitle = new ReactiveProperty<string>("Loading...");
 

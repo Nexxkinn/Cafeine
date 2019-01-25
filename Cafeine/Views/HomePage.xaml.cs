@@ -28,6 +28,7 @@ namespace Cafeine.Views
             get {
                 return DataContext as HomePageViewModel;
             }
+            set { }
         }
 
         public HomePage()

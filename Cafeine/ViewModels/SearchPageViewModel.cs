@@ -1,8 +1,7 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
-using Prism.Events;
-using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+using Cafeine.Services.Mvvm;
+using Cafeine.Views;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
@@ -13,14 +12,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class SearchPageViewModel : ViewModelBase, INavigationAware
+    public class SearchPageViewModel : ViewModelBase
     {
-        private INavigationService _navigationService;
+        private NavigationService _navigationService;
 
-        public IEventAggregator _eventAggregator;
+        public ViewModelLink _eventAggregator;
 
         private int? MainPageCurrentState;
 
@@ -40,14 +40,14 @@ namespace Cafeine.ViewModels
 
         public CafeineProperty<bool> OnlineResultsNoMatches = new CafeineProperty<bool>();
         
-        public SearchPageViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+        public SearchPageViewModel()
         {
-            _navigationService = navigationService;
-            _eventAggregator = eventAggregator;
+            _navigationService = new NavigationService();
+            _eventAggregator = new ViewModelLink();
             
             OfflineResults = new ObservableCollection<ItemLibraryModel>();
 
-            _eventAggregator.GetEvent<Keyword>().Subscribe(x=> Keyword.Value = x);
+            _eventAggregator.Subscribe<string>(x=> Keyword.Value = x, "Keyword");
 
             // RX.NET RANT:
             // Not implementing .ObserveOnDispatcher() causes
@@ -73,18 +73,17 @@ namespace Cafeine.ViewModels
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(NavigateToItemDetails);
         }
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        public override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            _eventAggregator.GetEvent<ChildFrameNavigating>().Publish(4);
-            MainPageCurrentState = e.Parameter as int?;
-            base.OnNavigatedTo(e, viewModelState);
+            _eventAggregator.Unsubscribe("Keyword");
+            _eventAggregator.Publish(2, "NavigateSearchPage");
+            base.OnNavigatedFrom(e);
         }
-
-        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _eventAggregator.GetEvent<Keyword>().Unsubscribe(async x => await GetResults(x));
-            _eventAggregator.GetEvent<NavigateSearchPage>().Publish(2);
-            base.OnNavigatingFrom(e, viewModelState, suspending);
+            _eventAggregator.Publish(4, "ChildFrameNavigating");
+            MainPageCurrentState = e.Parameter as int?;
+            base.OnNavigatedTo(e);
         }
 
         private void NavigateToItemDetails(ItemLibraryModel item)
@@ -101,8 +100,8 @@ namespace Cafeine.ViewModels
                 _navigationService.RemoveLastPage();
                 _navigationService.GoBack();
             }
-            _navigationService.Navigate("ItemDetails", null);
-            _eventAggregator.GetEvent<ItemDetailsID>().Publish(item);
+            _navigationService.Navigate(typeof(ItemDetailsPage), null);
+            _eventAggregator.Publish(item, "ItemDetailsID");
         }
 
         private async Task GetResults(string keyword)
@@ -134,8 +133,6 @@ namespace Cafeine.ViewModels
         }
 
     }
-
-    public class Keyword : PubSubEvent<string> { }
     public class Itemcomparer : IEqualityComparer<ItemLibraryModel>
     {
         public bool Equals(ItemLibraryModel x, ItemLibraryModel y)
