@@ -1,42 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Reactive.Concurrency;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Cafeine.Services.Mvvm
 {
-    public class ViewModelLink
+    public class ViewModelLink : CafeineScheduler
     {
-        private static Dictionary<string, Actions> ActionBase = new Dictionary<string, Actions>();
+        private static Dictionary<Type, Actions> ActionBase = new Dictionary<Type, Actions>();
 
         private static readonly SynchronizationContext syncContext = SynchronizationContext.Current;
 
-        public void Publish(string key) => Publish(payload: null, key: key);
+        public void Publish(Type key) => Publish(payload: null, key: key);
 
-        public void Publish(object payload,string key)
+        public void Publish(object payload,Type key)
         {
             if (ActionBase.ContainsKey(key))
             {
                 var action = ActionBase[key];
                 if (action.Action == null)
                 {
-                    action.Actiononly();
+                    Scheduler.Schedule(()=> action.Actiononly());
                 }
                 else
                 {
-                    action.Action(payload);
+                    Scheduler.Schedule(() => action.Action(payload));
                 }
             }
         }
-        public void Subscribe<T>(Action<T> action,string key)
+        public void Subscribe<T>(Action<T> action,Type key)
         {
             Actions actions = new Actions();
             actions.Action = new Action<object>(o => action((T)o));
             ActionBase.Add(key, actions);
         }
-        public void Subscribe(Action<object> action, string key)
+        public void Subscribe(Action<object> action, Type key)
         {
             Actions actions = new Actions();
 
@@ -44,7 +42,7 @@ namespace Cafeine.Services.Mvvm
 
             ActionBase.Add(key, actions);
         }
-        public void Subscribe(Action action,string key)
+        public void Subscribe(Action action,Type key)
         {
             Actions actions = new Actions();
 
@@ -52,7 +50,7 @@ namespace Cafeine.Services.Mvvm
 
             ActionBase.Add(key, actions);
         }
-        public void Unsubscribe(string key)
+        public void Unsubscribe(Type key)
         {
             ActionBase.Remove(key);
         }
@@ -62,4 +60,14 @@ namespace Cafeine.Services.Mvvm
         public Action<object> Action;
         public Action Actiononly;
     }
+
+    // Write all Type here
+    public class Keyword { }
+    public class NavigateItem { }
+    public class NavigateSearchPage { }
+    public class LoadItemStatus { }
+    public class ChildFrameNavigating { }
+    public class ItemDetailsID { }
+    public class GoBack { }
+    public class HomePageAvatarLoad { }
 }

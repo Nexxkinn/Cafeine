@@ -75,7 +75,7 @@ namespace Cafeine.ViewModels
 
             if (Database.DoesAccountExists())
             {
-                _eventAggregator.Publish("HomePageAvatarLoad");
+                _eventAggregator.Publish(typeof(HomePageAvatarLoad));
                 showUserPanel();
                 await Database.CreateServicesFromUserAccounts();
                 if (FromWebsiteRegistration)

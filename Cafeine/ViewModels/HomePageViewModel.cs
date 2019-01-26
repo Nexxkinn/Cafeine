@@ -74,14 +74,14 @@ namespace Cafeine.ViewModels
             SearchBoxTextChanged = new ReactiveCommand();
             SearchBoxTextChanged.Subscribe(_ =>
             {
-                _eventAggregator.Publish(SuggestText.Value,"keyword");
+                _eventAggregator.Publish(SuggestText.Value,typeof(Keyword));
             });
 
             SearchButtonClicked = new ReactiveCommand();
             SearchButtonClicked.Subscribe(_ =>
             {
                 SearchBoxLoad.Value = Visibility.Visible;
-                _eventAggregator.Publish(1, "NavigateSearchPage");
+                _eventAggregator.Publish(1, typeof(NavigateSearchPage));
                 SearchBoxFocus.Value = true;
             });
 
@@ -91,7 +91,7 @@ namespace Cafeine.ViewModels
                 if (WatchHoldPivot_Visibility.Value)
                 {
                     IScheduler scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
-                    scheduler.Schedule(() => _eventAggregator.Publish(TabbedIndex.Value, "LoadItemStatus"));
+                    scheduler.Schedule(() => _eventAggregator.Publish(TabbedIndex.Value, typeof(LoadItemStatus)));
                 }
             });
 
@@ -118,7 +118,7 @@ namespace Cafeine.ViewModels
 
                     //navigate to login
                     _navigationService.Navigate(typeof(LoginPage), null);
-                    _eventAggregator.Publish(1, "ChildFrameNavigating");
+                    _eventAggregator.Publish(1, typeof(ChildFrameNavigating));
                 }
             });
 
@@ -129,7 +129,7 @@ namespace Cafeine.ViewModels
                 // running it under task factory under UI thread would be
                 // a better choice, for now. 
                 IScheduler scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
-                scheduler.Schedule(() => _eventAggregator.Publish(x, "LoadItemStatus"));
+                scheduler.Schedule(() => _eventAggregator.Publish(x, typeof(LoadItemStatus)));
             });
 
             _eventAggregator.Subscribe(
@@ -168,15 +168,15 @@ namespace Cafeine.ViewModels
 
                         }
                     }
-                    , "ChildFrameNavigating");
+                    , typeof(ChildFrameNavigating));
             _eventAggregator.Subscribe(
                 () =>
                     {
                         AvatarURL = Database.GetCurrentUserAccount() ?? null;
                         RaisePropertyChanged(nameof(AvatarURL));
                     }
-                    , "HomePageAvatarLoad");
-            _eventAggregator.Subscribe( ()=> GoBackButton.Execute(), "GoBack");
+                    , typeof(HomePageAvatarLoad));
+            _eventAggregator.Subscribe( ()=> GoBackButton.Execute(), typeof(GoBack));
         }
 
         public Frame ChildFrame { get; set; } = new Frame();
