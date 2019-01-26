@@ -47,7 +47,7 @@ namespace Cafeine.ViewModels
             
             OfflineResults = new ObservableCollection<ItemLibraryModel>();
 
-            _eventAggregator.Subscribe<string>(x=> Keyword.Value = x, "Keyword");
+            _eventAggregator.Subscribe<string>(x=> Keyword.Value = x, typeof(Keyword));
 
             // RX.NET RANT:
             // Not implementing .ObserveOnDispatcher() causes
@@ -75,13 +75,13 @@ namespace Cafeine.ViewModels
         }
         public override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            _eventAggregator.Unsubscribe("Keyword");
-            _eventAggregator.Publish(2, "NavigateSearchPage");
+            _eventAggregator.Unsubscribe(typeof(Keyword));
+            _eventAggregator.Publish(2, typeof(NavigateSearchPage));
             base.OnNavigatedFrom(e);
         }
         public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _eventAggregator.Publish(4, "ChildFrameNavigating");
+            _eventAggregator.Publish(4, typeof(ChildFrameNavigating));
             MainPageCurrentState = e.Parameter as int?;
             base.OnNavigatedTo(e);
         }
@@ -101,7 +101,7 @@ namespace Cafeine.ViewModels
                 _navigationService.GoBack();
             }
             _navigationService.Navigate(typeof(ItemDetailsPage), null);
-            _eventAggregator.Publish(item, "ItemDetailsID");
+            _eventAggregator.Publish(item, typeof(ItemDetailsID));
         }
 
         private async Task GetResults(string keyword)

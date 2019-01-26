@@ -14,7 +14,6 @@
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vr="using:Cafeine.Views.Resources"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
         <vm:SearchPageViewModel/>

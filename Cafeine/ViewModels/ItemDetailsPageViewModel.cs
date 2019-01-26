@@ -126,23 +126,23 @@ namespace Cafeine.ViewModels
                 if ((int)result.Id == 0)
                 {
                     await Database.DeleteItem(ItemBase);
-                    VMLink.Publish("GoBack");
+                    VMLink.Publish(typeof(GoBack));
                 }
             });
 
-            VMLink.Subscribe<ItemLibraryModel>(LoadItem, "ItemDetailsID");
+            VMLink.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetailsID));
 
         }
 
         public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            VMLink.Publish(3, "ChildFrameNavigating");
+            VMLink.Publish(3, typeof(ChildFrameNavigating));
             base.OnNavigatedTo(e);
         }
         public override void OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back)
-                VMLink.Unsubscribe("ItemDetailsID");
+                VMLink.Unsubscribe(typeof(ItemDetailsID));
             base.OnNavigatedFrom(e);
         }
 

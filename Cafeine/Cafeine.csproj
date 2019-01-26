@@ -125,6 +125,7 @@
     <Compile Include="Services\Mvvm\ViewModelBase.cs" />
     <Compile Include="Services\Mvvm\ViewModelLink.cs" />
     <Compile Include="Services\MyAnimeListApi.cs" />
+    <Compile Include="Services\CafeineScheduler.cs" />
     <Compile Include="ViewModels\BrowserAuthenticationViewModel.cs" />
     <Compile Include="ViewModels\HomePageViewModel.cs" />
     <Compile Include="ViewModels\ItemDetailsPageViewModel.cs" />

@@ -93,8 +93,8 @@ namespace Cafeine.ViewModels
                         TaskCreationOptions.None,
                         TaskScheduler.FromCurrentSynchronizationContext());
                 }
-                , "LoadItemStatus");
-            VMLink.Subscribe<ItemLibraryModel>(NavigateToItemDetails, "NavigateItem");
+                , typeof(LoadItemStatus));
+            VMLink.Subscribe<ItemLibraryModel>(NavigateToItemDetails, typeof(NavigateItem));
             VMLink.Subscribe(x =>
             {
                 switch (x)
@@ -110,11 +110,11 @@ namespace Cafeine.ViewModels
                         return;
                 }
             }
-            , "NavigateSearchPage");
+            , typeof(NavigateSearchPage));
         }
         public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            VMLink.Publish(2, "ChildFrameNavigating");
+            VMLink.Publish(2, typeof(ChildFrameNavigating));
             _navigationService.ClearHistory();
             base.OnNavigatedTo(e);
         }
@@ -182,7 +182,7 @@ namespace Cafeine.ViewModels
                 _navigationService.RemoveLastPage();
             }
             _navigationService.Navigate(typeof(ItemDetailsPage), null);
-            VMLink.Publish(item, "ItemDetailsID");
+            VMLink.Publish(item, typeof(ItemDetailsID));
         }
     }
 }

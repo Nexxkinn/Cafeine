@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Reactive.Concurrency;
-using System.Threading;
-using System.Text;
-using System.Threading.Tasks;
+using Cafeine.Services;
 
 namespace Cafeine.Models
 {
-    public class CafeineProperty<T> : INotifyPropertyChanged
+    public class CafeineProperty<T> : CafeineScheduler, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -24,19 +19,5 @@ namespace Cafeine.Models
                 Scheduler.Schedule(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value))));
             }
         }
-
-        public static IScheduler Scheduler => synccontext.Value;
-
-        // Adapted from neuecc's ReactiveProperty.
-        private static Lazy<SynchronizationContextScheduler> synccontext { get; } =
-            new Lazy<SynchronizationContextScheduler>(() =>
-            {
-                if (SynchronizationContext.Current == null)
-                {
-                    throw new InvalidOperationException("SynchronizationContext.Current is null");
-                }
-
-                return new SynchronizationContextScheduler(SynchronizationContext.Current);
-            });
     }
 }
