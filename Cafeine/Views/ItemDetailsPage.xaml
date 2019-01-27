@@ -51,7 +51,7 @@
                                 x:Name="BackgroundImage"
                                 AlignmentY="Top"
                                 ImageOpened="BackgroundImage_ImageOpened"
-                                ImageSource="{x:Bind Mode=OneWay, Path=Vm.Item.GetItemCover()}"
+                                ImageSource="{x:Bind Mode=OneWay, Path=Vm.ImageSource.Value.Path}"
                                 Opacity="0"
                                 Stretch="UniformToFill" />
                         </Grid.Background>
@@ -117,7 +117,7 @@
                             MaxHeight="204"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Source="{x:Bind Vm.Item.GetItemCover()}" />
+                            Loaded="{x:Bind Vm.Item.CoverImage_Loaded}"/>
                         <StackPanel
                             MaxHeight="204"
                             Margin="14,0,0,0"

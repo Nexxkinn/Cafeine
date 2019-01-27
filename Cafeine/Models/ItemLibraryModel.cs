@@ -2,18 +2,21 @@
 using Cafeine.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Cafeine.Models
 {
-    public sealed class ItemLibraryModel
+    public sealed class ItemLibraryModel 
     {
         /// <summary>
         /// 0 - MyanimeList
@@ -41,7 +44,7 @@ namespace Cafeine.Models
         public Dictionary<string, UserItem> Service { get; set; }
     }
 
-    public class UserItem
+    public class UserItem 
     {
         //Get Id number from the service
         public int ItemId { get; set; }
@@ -82,14 +85,30 @@ namespace Cafeine.Models
         public async void CoverImage_Loaded(object sender, RoutedEventArgs e)
         {
             var image = sender as Image;
+            
+            // bypass it if it already is loaded
+            if (image.Source != null) return;
+
             var file = await ImageCache.GetFromCacheAsync(CoverImageUri);
             image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
-        }
 
-        public ImageSource GetItemCover()
-        {
-            var file = ImageCache.GetFromCacheAsync(CoverImageUri);
-            return new BitmapImage() { UriSource = new Uri(file.Result.Path) };
+            DoubleAnimation animation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromMilliseconds(700)),
+                EasingFunction = new ExponentialEase
+                {
+                    Exponent = 7,
+                    EasingMode = EasingMode.EaseOut
+                }
+            };
+            Storyboard ImageOpenedOpacity = new Storyboard();
+            ImageOpenedOpacity.Children.Add(animation);
+
+            Storyboard.SetTarget(ImageOpenedOpacity, image);
+            Storyboard.SetTargetProperty(ImageOpenedOpacity, "Opacity");
+            ImageOpenedOpacity.Begin();
         }
         /// <summary>
         /// Intended only if the service use an overengineered method to identify user's item.

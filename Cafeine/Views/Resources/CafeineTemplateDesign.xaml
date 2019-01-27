@@ -54,34 +54,16 @@
                 Margin="2,2,2,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
-                x:Phase="2"
-                ImageOpened="CoverImage_ImageOpened"
                 Opacity="0"
                 RelativePanel.AlignLeftWithPanel="True"
                 Loaded="{x:Bind Item.CoverImage_Loaded}"
                 Stretch="Fill">
-
-                <Image.Resources>
-                    <Storyboard x:Key="ImageOpened">
-                        <DoubleAnimation
-                            Storyboard.TargetName="cover"
-                            Storyboard.TargetProperty="(UIElement.Opacity)"
-                            From="0"
-                            To="1"
-                            Duration="0:0:0.7">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseOut" Exponent="7" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                    </Storyboard>
-                </Image.Resources>
             </Image>
 
             <TextBlock
                 x:Name="thetitle"
                 Grid.Row="1"
                 Margin="8,4,8,0"
-                x:Phase="1"
                 CharacterSpacing="14"
                 FontSize="14"
                 FontWeight="SemiBold"
