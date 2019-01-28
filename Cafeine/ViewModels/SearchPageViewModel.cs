@@ -75,13 +75,10 @@ namespace Cafeine.ViewModels
         }
         public override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            _eventAggregator.Unsubscribe(typeof(Keyword));
-            _eventAggregator.Publish(2, typeof(NavigateSearchPage));
             base.OnNavigatedFrom(e);
         }
         public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _eventAggregator.Publish(4, typeof(ChildFrameNavigating));
             MainPageCurrentState = e.Parameter as int?;
             base.OnNavigatedTo(e);
         }
@@ -98,9 +95,8 @@ namespace Cafeine.ViewModels
             if(MainPageCurrentState.Value == 1)
             {
                 _navigationService.RemoveLastPage();
-                _navigationService.GoBack();
             }
-            _navigationService.Navigate(typeof(ItemDetailsPage), null);
+            _navigationService.Navigate(typeof(ItemDetailsPage));
             _eventAggregator.Publish(item, typeof(ItemDetailsID));
         }
 

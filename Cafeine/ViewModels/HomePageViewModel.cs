@@ -88,11 +88,6 @@ namespace Cafeine.ViewModels
             GoBackButton = new ReactiveCommand();
             GoBackButton.Subscribe(_ => {
                 _navigationService.GoBack();
-                if (WatchHoldPivot_Visibility.Value)
-                {
-                    IScheduler scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
-                    scheduler.Schedule(() => _eventAggregator.Publish(TabbedIndex.Value, typeof(LoadItemStatus)));
-                }
             });
 
             LogOutButton = new ReactiveCommand();
@@ -117,58 +112,16 @@ namespace Cafeine.ViewModels
                     foreach (var i in cookies) handler.CookieManager.DeleteCookie(i);
 
                     //navigate to login
-                    _navigationService.Navigate(typeof(LoginPage), null);
-                    _eventAggregator.Publish(1, typeof(ChildFrameNavigating));
+                    _navigationService.Navigate(typeof(LoginPage));
                 }
             });
 
             TabbedIndex = new ReactiveProperty<int>();
-            TabbedIndex.Subscribe(async x =>
-            {
-                // The method below requires a lot of time to process, so
-                // running it under task factory under UI thread would be
-                // a better choice, for now. 
-                IScheduler scheduler = new SynchronizationContextScheduler(SynchronizationContext.Current);
-                scheduler.Schedule(() => _eventAggregator.Publish(x, typeof(LoadItemStatus)));
-            });
-
-            _eventAggregator.Subscribe(
+            TabbedIndex.Subscribe(
                 x =>
                     {
-                        switch (x)
-                        {
-                            case 1:
-                                //login phase
-                                InvisibleTab.Value = new GridLength(0, GridUnitType.Star);
-                                break;
-                            case 2:
-                                //main phase
-                                InvisibleTab.Value = new GridLength();
-                                WatchHoldPivot_Visibility.Value = true;
-                                DetailsTab_Visibility.Value = false;
-                                SearchBoxLoad.Value = Visibility.Collapsed;
-                                break;
-                            case 3:
-                                //details phase
-                                InvisibleTab.Value = new GridLength();
-                                WatchHoldPivot_Visibility.Value = false;
-                                DetailsTab_Visibility.Value = true;
-                                SearchBoxLoad.Value = Visibility.Collapsed;
-                                NavigationTitle.Value = "Details";
-                                break;
-                            case 4:
-                                //search phase
-                                InvisibleTab.Value = new GridLength();
-                                WatchHoldPivot_Visibility.Value = false;
-                                DetailsTab_Visibility.Value = true;
-                                SearchBoxLoad.Value = Visibility.Visible;
-                                NavigationTitle.Value = "Search";
-                                break;
-                            //TODO: add functionality when settings made.
-
-                        }
-                    }
-                    , typeof(ChildFrameNavigating));
+                        _eventAggregator.Publish(x, typeof(LoadItemStatus));
+                    });
             _eventAggregator.Subscribe(
                 () =>
                     {
@@ -176,10 +129,42 @@ namespace Cafeine.ViewModels
                         RaisePropertyChanged(nameof(AvatarURL));
                     }
                     , typeof(HomePageAvatarLoad));
-            _eventAggregator.Subscribe( ()=> GoBackButton.Execute(), typeof(GoBack));
         }
 
         public Frame ChildFrame { get; set; } = new Frame();
+
+        public void SetWindowState(string page)
+        {
+            switch (page)
+            {
+                case nameof(LoginPage):
+                    InvisibleTab.Value = new GridLength(0, GridUnitType.Star);
+                    break;
+                case nameof(MainPage):
+                    InvisibleTab.Value = new GridLength();
+                    WatchHoldPivot_Visibility.Value = true;
+                    DetailsTab_Visibility.Value = false;
+                    SearchBoxLoad.Value = Visibility.Collapsed;
+                    break;
+                case nameof(ItemDetailsPage):
+                    InvisibleTab.Value = new GridLength();
+                    WatchHoldPivot_Visibility.Value = false;
+                    DetailsTab_Visibility.Value = true;
+                    SearchBoxLoad.Value = Visibility.Collapsed;
+                    NavigationTitle.Value = "Details";
+                    break;
+                case nameof(SearchPage):
+                    InvisibleTab.Value = new GridLength();
+                    WatchHoldPivot_Visibility.Value = false;
+                    DetailsTab_Visibility.Value = true;
+                    SearchBoxLoad.Value = Visibility.Visible;
+                    NavigationTitle.Value = "Search";
+                    break;
+                default:
+                    break;
+
+            }
+        }
 
         public void SetFrame(Frame frame)
         {

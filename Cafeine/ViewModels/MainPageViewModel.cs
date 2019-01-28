@@ -86,15 +86,12 @@ namespace Cafeine.ViewModels
 
             VMLink.Subscribe<int>(async (x) =>
                 {
-                    await Task.Yield();
-
                     await Task.Factory.StartNew(() => DisplayItem(x),
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         TaskScheduler.FromCurrentSynchronizationContext());
                 }
                 , typeof(LoadItemStatus));
-            VMLink.Subscribe<ItemLibraryModel>(NavigateToItemDetails, typeof(NavigateItem));
             VMLink.Subscribe(x =>
             {
                 switch (x)
@@ -112,10 +109,14 @@ namespace Cafeine.ViewModels
             }
             , typeof(NavigateSearchPage));
         }
-        public override void OnNavigatedTo(NavigationEventArgs e)
+        public override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            VMLink.Publish(2, typeof(ChildFrameNavigating));
+            await Task.Yield();
             _navigationService.ClearHistory();
+            if(e.NavigationMode == NavigationMode.Back)
+            {
+                Library = new ObservableCollection<ItemLibraryModel>(Library);
+            }
             base.OnNavigatedTo(e);
         }
 
@@ -181,7 +182,7 @@ namespace Cafeine.ViewModels
                 _navigationService.GoBack();
                 _navigationService.RemoveLastPage();
             }
-            _navigationService.Navigate(typeof(ItemDetailsPage), null);
+            _navigationService.Navigate(typeof(ItemDetailsPage));
             VMLink.Publish(item, typeof(ItemDetailsID));
         }
     }

@@ -5,12 +5,10 @@ using System.Threading;
 
 namespace Cafeine.Services.Mvvm
 {
-    public class ViewModelLink : CafeineScheduler
+    public class ViewModelLink 
     {
         private static Dictionary<Type, Actions> ActionBase = new Dictionary<Type, Actions>();
-
-        private static readonly SynchronizationContext syncContext = SynchronizationContext.Current;
-
+        
         public void Publish(Type key) => Publish(payload: null, key: key);
 
         public void Publish(object payload,Type key)
@@ -20,11 +18,11 @@ namespace Cafeine.Services.Mvvm
                 var action = ActionBase[key];
                 if (action.Action == null)
                 {
-                    Scheduler.Schedule(()=> action.Actiononly());
+                    action.Actiononly();
                 }
                 else
                 {
-                    Scheduler.Schedule(() => action.Action(payload));
+                    action.Action(payload);
                 }
             }
         }
@@ -63,11 +61,9 @@ namespace Cafeine.Services.Mvvm
 
     // Write all Type here
     public class Keyword { }
-    public class NavigateItem { }
     public class NavigateSearchPage { }
     public class LoadItemStatus { }
     public class ChildFrameNavigating { }
     public class ItemDetailsID { }
-    public class GoBack { }
     public class HomePageAvatarLoad { }
 }

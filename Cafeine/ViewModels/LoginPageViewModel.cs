@@ -17,6 +17,7 @@ namespace Cafeine.ViewModels
 {
     public class LoginPageViewModel : ViewModelBase
     {
+
         public ReactiveCommand LoginPageLoaded { get; }
 
         public ReactiveCommand<string> LoginClicked { get; }
@@ -55,7 +56,8 @@ namespace Cafeine.ViewModels
                 {
                     case "Anilist":
                         {
-                            _navigationService.Navigate(typeof(BrowserAuthenticationPage), null);
+                            _navigationService.Navigate(typeof(BrowserAuthenticationPage));
+
                             break;
                         }
                 }
@@ -82,7 +84,7 @@ namespace Cafeine.ViewModels
                 {
                     await Database.CreateDBFromServices();
                 }
-                _navigationService.Navigate(typeof(MainPage), null);
+                _navigationService.Navigate(typeof(MainPage));
             }
         }
 

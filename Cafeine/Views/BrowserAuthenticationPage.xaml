@@ -11,6 +11,7 @@
     xmlns:vm="using:Cafeine.ViewModels"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
         <vm:BrowserAuthenticationPageViewModel/>

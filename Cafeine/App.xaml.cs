@@ -24,6 +24,7 @@ namespace Cafeine
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
+            HomePage page = new HomePage();
 
             if (rootFrame == null)
             {
@@ -45,17 +46,17 @@ namespace Cafeine
                     titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 }
 
-                HomePage page = new HomePage();
                 page.Vm.SetFrame(rootFrame);
-                // Place the frame in the current Window
                 Window.Current.Content = page;
+
             }
 
             if (e.PrelaunchActivated == false)
             {
                 if (rootFrame.Content == null)
                 {
-                    rootFrame.Navigate(typeof(LoginPage), e.Arguments);
+                    // Place the frame in the current Window
+                    page.Vm.ChildFrame.Navigate(typeof(LoginPage), e.Arguments);
                 }
                 Window.Current.Activate();
             }

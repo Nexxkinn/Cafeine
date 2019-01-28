@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
@@ -58,6 +59,8 @@ namespace Cafeine.ViewModels
         public CafeineProperty<bool> ItemDetailsProgressRing { get; }
         
         public CafeineProperty<bool> DeleteItemButton_Enabled { get; }
+
+        public CafeineProperty<StorageFile> ImageSource { get; }
         #endregion
 
         public ItemDetailsPageViewModel()
@@ -69,6 +72,7 @@ namespace Cafeine.ViewModels
             OpenedItems = new List<ItemLibraryModel>();
 
             //set initial value
+            ImageSource = new CafeineProperty<StorageFile>();
             ItemDetailsProgressRing = new CafeineProperty<bool>();
             LoadItemDetails = new ReactiveProperty<bool>(false);
             LoadItemDetails.Subscribe(x => ItemDetailsProgressRing.Value = !x);
@@ -126,7 +130,7 @@ namespace Cafeine.ViewModels
                 if ((int)result.Id == 0)
                 {
                     await Database.DeleteItem(ItemBase);
-                    VMLink.Publish(typeof(GoBack));
+                    _navigationService.GoBack();
                 }
             });
 
@@ -136,7 +140,6 @@ namespace Cafeine.ViewModels
 
         public override void OnNavigatedTo(NavigationEventArgs e)
         {
-            VMLink.Publish(3, typeof(ChildFrameNavigating));
             base.OnNavigatedTo(e);
         }
         public override void OnNavigatedFrom(NavigationEventArgs e)
@@ -223,6 +226,8 @@ namespace Cafeine.ViewModels
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.FromCurrentSynchronizationContext()).Unwrap());
+
+                task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(Item.CoverImageUri)));
                 await Task.WhenAll(task);
 
                 // Check if item source is from library or search query

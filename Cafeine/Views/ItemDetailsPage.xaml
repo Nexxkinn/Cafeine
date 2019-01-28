@@ -117,7 +117,7 @@
                             MaxHeight="204"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Loaded="{x:Bind Vm.Item.CoverImage_Loaded}"/>
+                            Source="{x:Bind Vm.ImageSource.Value.Path,Mode=OneWay}"/>
                         <StackPanel
                             MaxHeight="204"
                             Margin="14,0,0,0"

@@ -32,10 +32,5 @@ namespace Cafeine.Views
         }
 
         public BrowserAuthenticationPageViewModel Vm => DataContext as BrowserAuthenticationPageViewModel;
-
-        private void CloseFrame()
-        {
-            this.Frame.GoBack();
-        }
     }
 }
