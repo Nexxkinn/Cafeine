@@ -82,34 +82,6 @@ namespace Cafeine.Models
 
         public string GetItemSeasonYear() => $"{Seasons.Seasons_int2string[Season]} {SeriesStart}";
 
-        public async void CoverImage_Loaded(object sender, RoutedEventArgs e)
-        {
-            var image = sender as Image;
-            
-            // bypass it if it already is loaded
-            if (image.Source != null) return;
-
-            var file = await ImageCache.GetFromCacheAsync(CoverImageUri);
-            image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
-
-            DoubleAnimation animation = new DoubleAnimation
-            {
-                From = 0,
-                To = 1,
-                Duration = new Duration(TimeSpan.FromMilliseconds(700)),
-                EasingFunction = new ExponentialEase
-                {
-                    Exponent = 7,
-                    EasingMode = EasingMode.EaseOut
-                }
-            };
-            Storyboard ImageOpenedOpacity = new Storyboard();
-            ImageOpenedOpacity.Children.Add(animation);
-
-            Storyboard.SetTarget(ImageOpenedOpacity, image);
-            Storyboard.SetTargetProperty(ImageOpenedOpacity, "Opacity");
-            ImageOpenedOpacity.Begin();
-        }
         /// <summary>
         /// Intended only if the service use an overengineered method to identify user's item.
         /// </summary>

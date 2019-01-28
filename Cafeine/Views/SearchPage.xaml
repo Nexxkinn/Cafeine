@@ -14,6 +14,7 @@
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vr="using:Cafeine.Views.Resources"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
         <vm:SearchPageViewModel/>
@@ -108,7 +109,8 @@
                     Margin="0,8"
                     IsItemClickEnabled="True"
                     ItemTemplate="{StaticResource OnlineSearchResult}"
-                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}">
+                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}"
+                    ContainerContentChanging="Onlineresultgridview_ContainerContentChanging">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="ItemClick">
                             <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemClicked}">

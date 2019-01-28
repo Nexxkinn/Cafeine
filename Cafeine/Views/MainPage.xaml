@@ -14,7 +14,7 @@
     xmlns:views="using:Cafeine.Views"
     xmlns:vr="using:Cafeine.Views.Resources"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    NavigationCacheMode="Required"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
         <vm:MainPageViewModel/>
@@ -46,6 +46,7 @@
             IsItemClickEnabled="True"
             ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"
             ItemTemplate="{StaticResource Collection}"
+            ContainerContentChanging="Collection_ContainerContentChanging"
             ItemsSource="{x:Bind Vm.Library, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Template="{StaticResource CustomizedCollectionGridView}">
             <GridView.Header>
