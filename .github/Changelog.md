@@ -1,3 +1,10 @@
+### v0.11.0a:
+[Change] Drop Prism MVVM framework for flexibility
+
+[Fix] Item list does not load image cover properly 
+
+[Fix] General bugfixes
+
 ### v0.10.1a:
 [Fix] general bugfixes
 
