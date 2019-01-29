@@ -23,12 +23,13 @@ namespace Cafeine
 
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-            HomePage page = new HomePage();
+            Page rootpage = Window.Current.Content as Page;
 
-            if (rootFrame == null)
+            if (rootpage == null)
             {
-                rootFrame = new Frame();
+                HomePage page= new HomePage();
+
+                Frame rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
@@ -47,18 +48,20 @@ namespace Cafeine
                 }
 
                 page.Vm.SetFrame(rootFrame);
-                Window.Current.Content = page;
 
+                Window.Current.Content = page;
+                
+                page.Vm.ChildFrame.Navigate(typeof(LoginPage), e.Arguments);
+
+                Window.Current.Activate();
             }
 
             if (e.PrelaunchActivated == false)
             {
-                if (rootFrame.Content == null)
+                if (rootpage == null)
                 {
                     // Place the frame in the current Window
-                    page.Vm.ChildFrame.Navigate(typeof(LoginPage), e.Arguments);
                 }
-                Window.Current.Activate();
             }
         }
         
