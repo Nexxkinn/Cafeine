@@ -1,3 +1,6 @@
+### v0.11.1a:
+[Fix] App crashed when launched twice 
+
 ### v0.11.0a:
 [Change] Drop Prism MVVM framework for flexibility
 
