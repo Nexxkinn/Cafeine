@@ -45,10 +45,7 @@ namespace Cafeine.ViewModels
             UserPanelVisibility = false;
 
             SetupPanelVisibility = true;
-
-            LoginPageLoaded = new ReactiveCommand();
-            LoginPageLoaded.Subscribe(async () => await LoadTask());
-
+            
             LoginClicked = new ReactiveCommand<string>();
             LoginClicked.Subscribe(item =>
             {
@@ -72,20 +69,25 @@ namespace Cafeine.ViewModels
             base.OnNavigatedTo(e);
         }
 
-        public async Task LoadTask()
+        public override async void OnLoaded(object sender, RoutedEventArgs e)
         {
-
-            if (Database.DoesAccountExists())
+            await Task.Factory.StartNew(async () =>
             {
-                _eventAggregator.Publish(typeof(HomePageAvatarLoad));
-                showUserPanel();
-                await Database.CreateServicesFromUserAccounts();
-                if (FromWebsiteRegistration)
+                if (Database.DoesAccountExists())
                 {
-                    await Database.CreateDBFromServices();
+                    _eventAggregator.Publish(typeof(HomePageAvatarLoad));
+                    showUserPanel();
+                    await Database.CreateServicesFromUserAccounts();
+                    if (FromWebsiteRegistration)
+                    {
+                        await Database.CreateDBFromServices();
+                    }
+                    _navigationService.Navigate(typeof(MainPage));
                 }
-                _navigationService.Navigate(typeof(MainPage));
-            }
+            },
+            CancellationToken.None,
+            TaskCreationOptions.None,
+            TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void showUserPanel()

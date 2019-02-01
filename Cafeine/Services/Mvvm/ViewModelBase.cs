@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.Services.Mvvm
@@ -18,6 +19,6 @@ namespace Cafeine.Services.Mvvm
         }
         public virtual void OnNavigatedTo(NavigationEventArgs e) { }
         public virtual void OnNavigatedFrom(NavigationEventArgs e) { }
-
+        public virtual void OnLoaded(object sender, RoutedEventArgs e) { }
     }
 }

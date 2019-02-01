@@ -8,22 +8,17 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:Cafeine"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
-    xmlns:vm="using:Cafeine.ViewModels"
+    xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:views="using:Cafeine.Views"
+    xmlns:vm="using:Cafeine.ViewModels"
     xmlns:vr="using:Cafeine.Views.Resources"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
-        <vm:MainPageViewModel/>
+        <vm:MainPageViewModel />
     </mvvm:BasePage.DataContext>
-    <interactivity:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Loaded">
-            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.MainPageLoaded}" />
-        </core:EventTriggerBehavior>
-    </interactivity:Interaction.Behaviors>
     <mvvm:BasePage.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -43,10 +38,10 @@
             Grid.RowSpan="2"
             Margin="28,0,0,0"
             Canvas.ZIndex="-1"
+            ContainerContentChanging="Collection_ContainerContentChanging"
             IsItemClickEnabled="True"
             ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"
             ItemTemplate="{StaticResource Collection}"
-            ContainerContentChanging="Collection_ContainerContentChanging"
             ItemsSource="{x:Bind Vm.Library, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Template="{StaticResource CustomizedCollectionGridView}">
             <GridView.Header>

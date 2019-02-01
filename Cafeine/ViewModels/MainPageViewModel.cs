@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
@@ -71,12 +72,6 @@ namespace Cafeine.ViewModels
                 Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
             };
 
-            MainPageLoaded = new ReactiveCommand();
-            MainPageLoaded.Subscribe(async () =>
-               {
-                   await DisplayItem(0);
-               });
-
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(NavigateToItemDetails);
 
@@ -104,6 +99,14 @@ namespace Cafeine.ViewModels
                     }
                 }
                 , typeof(NavigateSearchPage));
+        }
+        public override async void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            await Task.Factory.StartNew(async () => await DisplayItem(0),
+                CancellationToken.None,
+                TaskCreationOptions.None,
+                TaskScheduler.FromCurrentSynchronizationContext());
+            base.OnLoaded(sender, e);
         }
         public override async void OnNavigatedTo(NavigationEventArgs e)
         {
