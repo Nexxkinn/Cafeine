@@ -1,5 +1,4 @@
 ﻿using Cafeine.Models;
-using Cafeine.Models.Enums;
 using Cafeine.Services;
 using Cafeine.Services.Mvvm;
 using Cafeine.Views;
@@ -7,13 +6,10 @@ using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
@@ -93,21 +89,21 @@ namespace Cafeine.ViewModels
                 }
                 , typeof(LoadItemStatus));
             VMLink.Subscribe(x =>
-            {
-                switch (x)
                 {
-                    case 1:
-                        // can't go back -> assume it's the main page
-                        // can go back -> assume it's details page
-                        int state = _navigationService.CanGoBack() ? 1 : 0;
-                        _navigationService.Navigate(typeof(SearchPage), state);
-                        return;
-                    case 2:
-                        _navigationService.GoBack();
-                        return;
+                    switch (x)
+                    {
+                        case 1:
+                            // can't go back -> assume it's the main page
+                            // can go back -> assume it's details page
+                            int state = _navigationService.CanGoBack() ? 1 : 0;
+                            _navigationService.Navigate(typeof(SearchPage), state);
+                            return;
+                        case 2:
+                            _navigationService.GoBack();
+                            return;
+                    }
                 }
-            }
-            , typeof(NavigateSearchPage));
+                , typeof(NavigateSearchPage));
         }
         public override async void OnNavigatedTo(NavigationEventArgs e)
         {

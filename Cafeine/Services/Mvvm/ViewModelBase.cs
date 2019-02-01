@@ -14,11 +14,7 @@ namespace Cafeine.Services.Mvvm
         public event PropertyChangedEventHandler PropertyChanged ;
         public void RaisePropertyChanged([CallerMemberName]string property = null)
         {
-            if (Equals(PropertyChanged, null))
-            {
-                return;
-            }
-            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
         public virtual void OnNavigatedTo(NavigationEventArgs e) { }
         public virtual void OnNavigatedFrom(NavigationEventArgs e) { }

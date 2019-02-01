@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
@@ -33,6 +34,8 @@ namespace Cafeine.ViewModels
         public ReactiveCommand EpisodeListsClicked { get; }
 
         public ReactiveCommand EpisodeSettingsClicked { get; }
+
+        public ReactiveCommand UserItemDetailsClicked { get; }
 
         public AsyncReactiveCommand DeleteButtonClicked { get; }
 
@@ -60,6 +63,10 @@ namespace Cafeine.ViewModels
         
         public CafeineProperty<bool> DeleteItemButton_Enabled { get; }
 
+        public ReactiveProperty<bool> IsPaneOpened { get; }
+
+        public CafeineProperty<Brush> PaneBackground { get; }
+
         public CafeineProperty<StorageFile> ImageSource { get; }
         #endregion
 
@@ -72,6 +79,18 @@ namespace Cafeine.ViewModels
             OpenedItems = new List<ItemLibraryModel>();
 
             //set initial value
+            PaneBackground = new CafeineProperty<Brush>(new SolidColorBrush(Windows.UI.Colors.Transparent));
+            IsPaneOpened = new ReactiveProperty<bool>(false);
+            IsPaneOpened.Subscribe((ipo) =>
+            {
+                PaneBackground.Value = ipo
+                    ? Application.Current.Resources["SystemControlBackgroundChromeMediumLowBrush"] as SolidColorBrush
+                    : new SolidColorBrush(Windows.UI.Colors.Transparent);
+            });
+
+            UserItemDetailsClicked = new ReactiveCommand();
+            UserItemDetailsClicked.Subscribe(()=> IsPaneOpened.Value = !IsPaneOpened.Value);
+
             ImageSource = new CafeineProperty<StorageFile>();
             ItemDetailsProgressRing = new CafeineProperty<bool>();
             LoadItemDetails = new ReactiveProperty<bool>(false);

@@ -5,6 +5,7 @@ using Cafeine.ViewModels;
 using Microsoft.Graphics.Canvas.Effects;
 using System;
 using System.Numerics;
+using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -68,20 +69,29 @@ namespace Cafeine.Views
 
         private void BackgroundImage_ImageOpened(object sender, RoutedEventArgs e)
         {
-            GaussianBlurEffect blurEffect = new GaussianBlurEffect()
+            var gfxEffect = new BlendEffect
             {
-                Name = "Blur",
-                BlurAmount = 20.0f,
-                BorderMode = EffectBorderMode.Hard,
-                Optimization = EffectOptimization.Speed,
-                Source = new CompositionEffectSourceParameter("Backdrop")
+                Mode = BlendEffectMode.Multiply,
+                Background = new ColorSourceEffect
+                {
+                    Name = "Darken",
+                    Color = Color.FromArgb(102, 0, 0, 0)
+                },
+                Foreground = new GaussianBlurEffect()
+                {
+                    Name = "Blur",
+                    BlurAmount = 20.0f,
+                    BorderMode = EffectBorderMode.Hard,
+                    Optimization = EffectOptimization.Speed,
+                    Source = new CompositionEffectSourceParameter("Backdrop")
+                }
             };
 
 
             Visual _backgroundVisual = ElementCompositionPreview.GetElementVisual(BackgroundGrid);
             Compositor _backgroundCompositor = _backgroundVisual.Compositor;
 
-            var effectBrush = _backgroundCompositor.CreateEffectFactory(blurEffect).CreateBrush();
+            var effectBrush = _backgroundCompositor.CreateEffectFactory(gfxEffect).CreateBrush();
 
             var destinationBrush = _backgroundCompositor.CreateBackdropBrush();
             effectBrush.SetSourceParameter("Backdrop", destinationBrush);
