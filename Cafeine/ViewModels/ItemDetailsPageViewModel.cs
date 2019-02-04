@@ -156,16 +156,12 @@ namespace Cafeine.ViewModels
             VMLink.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetailsID));
 
         }
-
-        public override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-        }
-        public override void OnNavigatedFrom(NavigationEventArgs e)
+        
+        public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back)
                 VMLink.Unsubscribe(typeof(ItemDetailsID));
-            base.OnNavigatedFrom(e);
+            await base.OnNavigatedFrom(e);
         }
 
         private void LoadItem(ItemLibraryModel item)

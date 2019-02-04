@@ -10,15 +10,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.Services.Mvvm
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : IViewModel, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged ;
         public void RaisePropertyChanged([CallerMemberName]string property = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public virtual void OnNavigatedTo(NavigationEventArgs e) { }
-        public virtual void OnNavigatedFrom(NavigationEventArgs e) { }
-        public virtual void OnLoaded(object sender, RoutedEventArgs e) { }
+        public virtual Task OnNavigatedTo(NavigationEventArgs e) { return Task.CompletedTask; }
+        public virtual Task OnNavigatedFrom(NavigationEventArgs e) { return Task.CompletedTask; }
+        public virtual Task OnLoaded(object sender, RoutedEventArgs e) { return Task.CompletedTask; }
     }
 }

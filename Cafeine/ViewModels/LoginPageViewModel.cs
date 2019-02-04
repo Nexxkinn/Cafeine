@@ -60,16 +60,16 @@ namespace Cafeine.ViewModels
                 }
             });
         }
-        public override void OnNavigatedTo(NavigationEventArgs e)
+        public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back) {
                 FromWebsiteRegistration = true;
             }
             _navigationService.ClearHistory();
-            base.OnNavigatedTo(e);
+            await base.OnNavigatedTo(e);
         }
 
-        public override async void OnLoaded(object sender, RoutedEventArgs e)
+        public override async Task OnLoaded(object sender, RoutedEventArgs e)
         {
             await Task.Factory.StartNew(async () =>
             {

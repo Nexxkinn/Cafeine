@@ -100,15 +100,15 @@ namespace Cafeine.ViewModels
                 }
                 , typeof(NavigateSearchPage));
         }
-        public override async void OnLoaded(object sender, RoutedEventArgs e)
+        public override async Task OnLoaded(object sender, RoutedEventArgs e)
         {
             await Task.Factory.StartNew(async () => await DisplayItem(0),
                 CancellationToken.None,
                 TaskCreationOptions.None,
                 TaskScheduler.FromCurrentSynchronizationContext());
-            base.OnLoaded(sender, e);
+            await base.OnLoaded(sender, e);
         }
-        public override async void OnNavigatedTo(NavigationEventArgs e)
+        public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             await Task.Yield();
             _navigationService.ClearHistory();
@@ -116,7 +116,7 @@ namespace Cafeine.ViewModels
             {
                 Library = new ObservableCollection<ItemLibraryModel>(Library);
             }
-            base.OnNavigatedTo(e);
+            await base.OnNavigatedTo(e);
         }
 
         private async Task DisplayItem(int value)

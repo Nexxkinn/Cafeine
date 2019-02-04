@@ -73,14 +73,11 @@ namespace Cafeine.ViewModels
             ItemClicked = new ReactiveCommand<ItemLibraryModel>();
             ItemClicked.Subscribe(NavigateToItemDetails);
         }
-        public override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-        }
-        public override void OnNavigatedTo(NavigationEventArgs e)
+
+        public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             MainPageCurrentState = e.Parameter as int?;
-            base.OnNavigatedTo(e);
+            await base.OnNavigatedTo(e);
         }
 
         private void NavigateToItemDetails(ItemLibraryModel item)
