@@ -162,6 +162,9 @@ namespace Cafeine.ViewModels
             AddButtonClicked = new AsyncReactiveCommand();
             AddButtonClicked.Subscribe(async _ =>
             {
+                //await Database.AddItem(ItemBase);
+                //Item = ItemBase.Item;
+                //RaisePropertyChanged(nameof(Item));
                 SetDeleteButtonLoad.Value = true;
             });
 
@@ -202,7 +205,7 @@ namespace Cafeine.ViewModels
                     Item.UserStatus = 1;
                     Item.Total_Watched_Read = Item.TotalEpisodes;
                 }
-                await Database.EditItem(ItemBase,userItemChanged:true);
+                await Database.UpdateItem(ItemBase,userItemChanged:true);
             }
 
             await base.OnNavigatedFrom(e);
@@ -294,7 +297,7 @@ namespace Cafeine.ViewModels
                 await Task.WhenAll(task);
 
                 // Check if item source is from library or search query
-                if(ItemBase.Id != default(int)) await Database.EditItem(ItemBase);
+                if(ItemBase.Id != default(int)) await Database.UpdateItem(ItemBase);
             }
             catch (Exception ex)
             {

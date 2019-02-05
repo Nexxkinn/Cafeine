@@ -79,7 +79,7 @@
                         FontWeight="SemiBold"
                         Text="Which service do you want to use?" />
                     <ListView Margin="0,12,0,0" IsItemClickEnabled="True">
-                        <ListViewItem x:Name="Anilist">Anilist</ListViewItem>
+                        <ListViewItem x:Name="Anilist">AniList</ListViewItem>
                         <ListViewItem x:Name="MAL" IsEnabled="False">MyAnimeList ( coming soon )</ListViewItem>
                         <ListViewItem x:Name="Kitsu" IsEnabled="False">Kitsu.io ( coming soon )</ListViewItem>
                         <interactivity:Interaction.Behaviors>

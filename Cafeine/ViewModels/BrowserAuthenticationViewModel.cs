@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text.RegularExpressions;
 using Windows.UI.Xaml.Controls;
 
 namespace Cafeine.ViewModels
@@ -42,7 +43,12 @@ namespace Cafeine.ViewModels
                 if (x.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))
                 {
                     IService service = new AniListApi();
-                    await service.VerifyAccount();
+
+                    //get the token
+                    Regex r = new Regex(@"(?<==).+?(?=&|$)");
+                    Match m = r.Match(x);
+                    await service.VerifyAccount(m.Value);
+
                     var CurrentUserAccount = await service.CreateAccount(true);
                     Database.AddAccount(CurrentUserAccount);
 

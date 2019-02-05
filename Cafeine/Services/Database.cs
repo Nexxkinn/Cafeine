@@ -62,7 +62,8 @@ namespace Cafeine.Services
                         case ServiceType.ANILIST:
                             {
                                 IService service = new AniListApi();
-                                await service.VerifyAccount();
+                                var additionalinfo = JsonConvert.DeserializeObject<Tuple<string, string>>(account.AdditionalOption.ToString());
+                                await service.VerifyAccount(additionalinfo.Item2);
                                     lock (services)
                                     {
                                         services.Add(account.Id, service);
@@ -237,12 +238,17 @@ namespace Cafeine.Services
         //    }
         //}
 
-        public static void AddItem(ItemLibraryModel Item)
+        public static async Task AddItem(ItemLibraryModel Item)
         {
             // Item must be at least from one currently used service.
             // Assume the current service is "default".
+            UserAccountModel user = GetCurrentUserAccount();
+            IService service = services[user.Id];
+            await service.AddItem(Item);
+
             using (var tr = db.GetTransaction())
             {
+                Item.Id = tr.ObjectGetNewIdentity<int>("library");
                 DBreezeObject<ItemLibraryModel> localitem = new DBreezeObject<ItemLibraryModel>()
                 {
                     Entity = Item,
@@ -250,7 +256,7 @@ namespace Cafeine.Services
                     {
                         new DBreezeIndex(1,Item.Id){PrimaryIndex = true},
                         new DBreezeIndex(2,Item.MalID),
-                        new DBreezeIndex(3,Item.Service["default"].UserStatus),
+                        new DBreezeIndex(3,Item.Item.UserStatus),
                     }
                 };
                 tr.ObjectInsert("library", localitem, false);
@@ -271,7 +277,7 @@ namespace Cafeine.Services
             }
         }
 
-        public static async Task EditItem(ItemLibraryModel Item,bool userItemChanged = false)
+        public static async Task UpdateItem(ItemLibraryModel Item,bool userItemChanged = false)
         {
             //assuming the item is from "default" UserItem 
             if (userItemChanged)

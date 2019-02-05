@@ -8,7 +8,7 @@ namespace Cafeine.Services
     public interface IService
     {
         
-        Task<UserItem> AddItem(ItemLibraryModel item);
+        Task AddItem(ItemLibraryModel item);
 
         void GetItem(ItemLibraryModel item);
 
@@ -27,6 +27,8 @@ namespace Cafeine.Services
         void DeleteAccount(UserAccountModel account);
 
         Task VerifyAccount();
+
+        Task VerifyAccount(string token);
 
         Task VerifyAccount(UserAccountModel account);
 

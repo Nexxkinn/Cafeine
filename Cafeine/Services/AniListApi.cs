@@ -76,12 +76,15 @@ namespace Cafeine.Services
                     Medium = ContentResponse["data"]["Viewer"]["avatar"]["medium"]
                 },
                 IsDefaultService = isDefaultUser,
-                AdditionalOption = ContentResponse["data"]["Viewer"]["mediaListOptions"]["scoreFormat"] as string
+                AdditionalOption = new Tuple<string, string>(
+                    ContentResponse["data"]["Viewer"]["mediaListOptions"]["scoreFormat"] as string,
+                    AnilistAuthClient.DefaultRequestHeaders.Authorization.Token)
+                    
             };
             return UserCredentials;
         }
 
-        public async Task VerifyAccount()
+        public async Task VerifyAccount(string token = default(string))
         {
             //Anilist's Oauth is PITA
             // You need to READ the url's redirect uri to get the token. But to get it, 
@@ -95,26 +98,23 @@ namespace Cafeine.Services
             // because fuck you and see ya."
             // Source 1 : https://www.hasaltaiar.com.au/sharing-sessions-between-httpclient-and-webviews-on-windows-phones-2/
             // Source 2 : https://github.com/Microsoft/WindowsCommunityToolkit/issues/1289#issuecomment-313020485
-
-            Uri uri = new Uri("https://anilist.co/api/v2/oauth/authorize?client_id=873&response_type=token");
-            var Api = await AnilistAuthClient.GetAsync(uri);
-            string output = Api.RequestMessage.RequestUri.AbsoluteUri;
-            if (!output.StartsWith("https://anilist.co/api/v2/oauth/Annalihation#access_token"))
-            {
-                throw new OperationCanceledException();
-            }
-            //Take token
-            Regex r = new Regex(@"(?<==).+?(?=&|$)");
-
-            Match m = r.Match(output);
-
-            //Add headers
+            
+            // Add headers
             AnilistAuthClient.DefaultRequestHeaders.Clear();
-            AnilistAuthClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + m.Value);
+            AnilistAuthClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
             AnilistAuthClient.DefaultRequestHeaders.Add("Accept", "application/json");
 
-            //Final setup
-            output = string.Empty;
+            // verify by requesting a viewer
+            var Request = new QueryQL
+            {
+                query = @"{ 
+                            Viewer{
+                                id
+                                name
+                                }
+                          }"
+            };
+            await AnilistPostAsync(Request);
         }
 
         public void DeleteAccount(UserAccountModel account)
@@ -129,28 +129,30 @@ namespace Cafeine.Services
         #endregion
 
         #region items
-        public async Task<UserItem> AddItem(ItemLibraryModel itemModel)
+        public async Task AddItem(ItemLibraryModel itemModel)
         {
             QueryQL query = new QueryQL()
             {
                 query = @"
-                        mutation ($mediaid: Int,$userstatus:MediaListStatus) {
-                          SaveMediaListEntry(mediaId:$mediaid status:$userstatus){
+                        mutation ($mediaid: Int) {
+                          SaveMediaListEntry(mediaId:$mediaid){
                             id
-                            status
                             media {
-      
+
                             }
                           }
                         }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["mediaid"] = itemModel.Item.ItemId,
-                    ["userstatus"] = StatusEnum.UserStatus_Int2Str[itemModel.Item.UserStatus],
+                    ["mediaid"] = itemModel.Item.ItemId
                 }
             };
-            var result = await AnilistPostAsync(query);
-            return new UserItem();
+            dynamic result = await AnilistPostAsync(query);
+
+            // Generate / populate userItem
+            UserItem Item = itemModel.Service.ContainsKey("default") ? itemModel.Item : new UserItem();
+            //Item.ItemId = result["data"][]
+            
         }
 
         public void GetItem(ItemLibraryModel item)
@@ -188,7 +190,6 @@ namespace Cafeine.Services
 
         public async Task UpdateItem(ItemLibraryModel itemModel)
         {
-            Debug.WriteLine("Starting POST test");
             var additionalinfo = JsonConvert.DeserializeObject<Tuple<int,string>>(itemModel.Item.AdditionalInfo.ToString());
             var Query = new QueryQL
             {
@@ -207,7 +208,7 @@ namespace Cafeine.Services
                     ["progress"] = itemModel.Item.Total_Watched_Read
                 }
             };
-            var result = await AnilistPostAsync(Query);
+            await AnilistPostAsync(Query);
         }
 
         public async Task<ItemDetailsModel> GetItemDetails(UserItem item, MediaTypeEnum media)
@@ -441,6 +442,11 @@ namespace Cafeine.Services
         }
 
         public Task<IList<ItemLibraryModel>> OnlineSearch(string keyword)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task VerifyAccount()
         {
             throw new NotImplementedException();
         }
