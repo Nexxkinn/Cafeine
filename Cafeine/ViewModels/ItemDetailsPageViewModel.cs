@@ -24,22 +24,22 @@ namespace Cafeine.ViewModels
 
         public UserItem Item { get; set; }
 
-        private ItemLibraryModel ItemBase { get; set; }
-
-        private List<ItemLibraryModel> OpenedItems;
-
+        private ItemLibraryModel ItemBase;
+        
         public ObservableCollection<Episode> Episodelist { get; private set; }
         
         #region mvvm setup properties
+        public ReactiveCommand PlusOneTotalSeenTextBlock { get; }
+
         public ReactiveCommand EpisodeListsClicked { get; }
 
         public ReactiveCommand EpisodeSettingsClicked { get; }
 
         public ReactiveCommand UserItemDetailsClicked { get; }
 
-        public AsyncReactiveCommand DeleteButtonClicked { get; }
+        public AsyncReactiveCommand AddButtonClicked { get; }
 
-        public AsyncReactiveCommand PageLoaded { get; }
+        public AsyncReactiveCommand DeleteButtonClicked { get; }
 
         public CafeineProperty<double> ScorePlaceHolderRating { get; set; }
 
@@ -60,8 +60,10 @@ namespace Cafeine.ViewModels
         public CafeineProperty<bool> LoadEpisodeNotFound { get; }
 
         public CafeineProperty<bool> ItemDetailsProgressRing { get; }
-        
-        public CafeineProperty<bool> DeleteItemButton_Enabled { get; }
+
+        public CafeineProperty<bool> SetAddButtonLoad { get; }
+
+        public ReactiveProperty<bool> SetDeleteButtonLoad { get; }
 
         public ReactiveProperty<bool> IsPaneOpened { get; }
 
@@ -70,23 +72,28 @@ namespace Cafeine.ViewModels
         public CafeineProperty<StorageFile> ImageSource { get; }
         #endregion
 
+        #region mvvm TwoWay properties
+        public CafeineProperty<int> TotalSeenTextBox { get; }
+
+        public CafeineProperty<int> UserStatusComboBox { get; }
+        #endregion
+
         public ItemDetailsPageViewModel()
         {
             _navigationService = new NavigationService();
             VMLink = new ViewModelLink();
 
             Item = new UserItem();
-            OpenedItems = new List<ItemLibraryModel>();
-
-            //set initial value
             PaneBackground = new CafeineProperty<Brush>(new SolidColorBrush(Windows.UI.Colors.Transparent));
             IsPaneOpened = new ReactiveProperty<bool>(false);
-            IsPaneOpened.Subscribe((ipo) =>
+            IsPaneOpened.Subscribe(async (ipo) =>
             {
                 PaneBackground.Value = ipo
                     ? Application.Current.Resources["SystemControlBackgroundChromeMediumLowBrush"] as SolidColorBrush
                     : new SolidColorBrush(Windows.UI.Colors.Transparent);
             });
+
+            #region Set initial value
 
             UserItemDetailsClicked = new ReactiveCommand();
             UserItemDetailsClicked.Subscribe(()=> IsPaneOpened.Value = !IsPaneOpened.Value);
@@ -106,8 +113,25 @@ namespace Cafeine.ViewModels
             LoadEpisodeSettings = new CafeineProperty<bool>(false);
             LoadEpisodeNotFound = new CafeineProperty<bool>(false);
             LoadEpisodesListConfiguration = new CafeineProperty<bool>(true);
-            
-            DeleteItemButton_Enabled = new CafeineProperty<bool>(true);
+
+            SetAddButtonLoad = new CafeineProperty<bool>(false);
+            SetDeleteButtonLoad = new ReactiveProperty<bool>(true);
+            SetDeleteButtonLoad.Subscribe(sdb =>
+            {
+                SetAddButtonLoad.Value = !sdb;
+            });
+            #endregion
+
+            #region TwoWay Initial Value
+            TotalSeenTextBox = new CafeineProperty<int>();
+            UserStatusComboBox = new CafeineProperty<int>();
+            #endregion
+
+            PlusOneTotalSeenTextBlock = new ReactiveCommand();
+            PlusOneTotalSeenTextBlock.Subscribe(_ =>
+            {
+                TotalSeenTextBox.Value += 1;
+            });
 
             EpisodeListsClicked = new ReactiveCommand();
             EpisodeListsClicked.Subscribe(_ =>
@@ -133,6 +157,12 @@ namespace Cafeine.ViewModels
                 LoadEpisodeNotFound.Value = false;
                 LoadEpisodeSettings.Value = true;
                 LoadEpisodesListConfiguration.Value = false;
+            });
+
+            AddButtonClicked = new AsyncReactiveCommand();
+            AddButtonClicked.Subscribe(async _ =>
+            {
+                SetDeleteButtonLoad.Value = true;
             });
 
             DeleteButtonClicked = new AsyncReactiveCommand();
@@ -161,15 +191,33 @@ namespace Cafeine.ViewModels
         {
             if (e.NavigationMode == NavigationMode.Back)
                 VMLink.Unsubscribe(typeof(ItemDetailsID));
+
+            if ( ItemBase != null && 
+                ( Item.UserStatus != UserStatusComboBox.Value || Item.Total_Watched_Read != TotalSeenTextBox.Value))
+            {
+                Item.Total_Watched_Read = TotalSeenTextBox.Value;
+                Item.UserStatus = UserStatusComboBox.Value;
+                if(TotalSeenTextBox.Value >= Item.TotalEpisodes || Item.UserStatus == 1)
+                {
+                    Item.UserStatus = 1;
+                    Item.Total_Watched_Read = Item.TotalEpisodes;
+                }
+                await Database.EditItem(ItemBase,userItemChanged:true);
+            }
+
             await base.OnNavigatedFrom(e);
         }
 
         private void LoadItem(ItemLibraryModel item)
         {
             ItemBase = item;
-            Item = ItemBase.Service["default"];
+            Item = ItemBase.Item;
             RaisePropertyChanged(nameof(Item));
-            DeleteItemButton_Enabled.Value = ItemBase.Id != default(int);
+
+            TotalSeenTextBox.Value = Item.Total_Watched_Read;
+            UserStatusComboBox.Value = Item.UserStatus;
+
+            SetDeleteButtonLoad.Value = (ItemBase.Id != default(int));
             Task.Factory.StartNew(async () => await LoadAsync(),
                 CancellationToken.None,
                 TaskCreationOptions.None,
@@ -246,7 +294,7 @@ namespace Cafeine.ViewModels
                 await Task.WhenAll(task);
 
                 // Check if item source is from library or search query
-                if(ItemBase.Id != default(int)) Database.EditItem(ItemBase);
+                if(ItemBase.Id != default(int)) await Database.EditItem(ItemBase);
             }
             catch (Exception ex)
             {

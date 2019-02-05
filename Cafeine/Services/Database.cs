@@ -271,9 +271,16 @@ namespace Cafeine.Services
             }
         }
 
-        public static void EditItem(ItemLibraryModel Item)
+        public static async Task EditItem(ItemLibraryModel Item,bool userItemChanged = false)
         {
             //assuming the item is from "default" UserItem 
+            if (userItemChanged)
+            {
+                UserAccountModel user = GetCurrentUserAccount();
+                IService service = services[user.Id];
+                await service.UpdateItem(Item);
+            }
+
             using (var tr = db.GetTransaction())
             {
                 DBreezeObject<ItemLibraryModel> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)Item.Id)).ObjectGet<ItemLibraryModel>();
@@ -287,6 +294,8 @@ namespace Cafeine.Services
                 tr.ObjectInsert("library", localitem, false);
                 tr.Commit();
             }
+
+
         }
 
         public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)

@@ -34,13 +34,24 @@ namespace Cafeine.Models.Enums
             ["MAL_6"] = 4,
         };
 
-        public static readonly string[] UserStatus_int2String = new string[5]
+        public static readonly string[] UserStatus_Int2Str = new string[5]
         {
             "Watching",
             "Completed",
             "On Hold",
             "Dropped",
             "Planned"
+        };
+
+        public static readonly string[] Anilist_UserStatus_Int2Str = new string[7]
+        {
+            "CURRENT",
+            "COMPLETED",
+            "ONHOLD",
+            "DROPPED",
+            "PLANNING",
+            "PAUSED",
+            "REPEATING"
         };
 
         //probably unneeded.

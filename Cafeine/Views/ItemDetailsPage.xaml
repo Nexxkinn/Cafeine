@@ -82,6 +82,7 @@
                                 Height="56"
                                 MinHeight="28"
                                 Command="{x:Bind Vm.UserItemDetailsClicked}"
+                                IsEnabled="{x:Bind Vm.SetDeleteButtonLoad.Value, Mode=OneWay}"
                                 LabelPosition="Collapsed"
                                 Style="{StaticResource ReducedAppBarButtonRevealStyle}">
                                 <AppBarButton.Content>
@@ -113,21 +114,36 @@
                                 Width="48"
                                 Height="48"
                                 Command="{x:Bind Vm.UserItemDetailsClicked}"
+                                IsEnabled="{x:Bind Vm.SetDeleteButtonLoad.Value, Mode=OneWay}"
                                 Style="{StaticResource ReducedAppBarButtonRevealStyle}">
                                 <AppBarButton.Content>
                                     <TextBlock Text="N" />
                                 </AppBarButton.Content>
                             </AppBarButton>
                             <AppBarButton
+                                x:Name="Delete"
                                 Grid.Row="2"
                                 Width="48"
                                 Height="48"
                                 VerticalAlignment="Bottom"
+                                x:Load="{x:Bind Vm.SetDeleteButtonLoad.Value, Mode=OneWay}"
                                 Command="{x:Bind Vm.DeleteButtonClicked}"
-                                IsEnabled="{x:Bind Vm.DeleteItemButton_Enabled.Value}"
                                 Style="{StaticResource ReducedAppBarButtonRevealStyle}">
                                 <AppBarButton.Icon>
                                     <FontIcon Margin="3" Glyph="&#xE107;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarButton
+                                x:Name="Add"
+                                Grid.Row="2"
+                                Width="48"
+                                Height="48"
+                                VerticalAlignment="Bottom"
+                                x:Load="{x:Bind Vm.SetAddButtonLoad.Value, Mode=OneWay}"
+                                Command="{x:Bind Vm.AddButtonClicked}"
+                                Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                                <AppBarButton.Icon>
+                                    <FontIcon Margin="3" Glyph="&#xE109;" />
                                 </AppBarButton.Icon>
                             </AppBarButton>
                             <RelativePanel Grid.Column="2" VerticalAlignment="Center">
@@ -136,12 +152,18 @@
                                     FontSize="16"
                                     RelativePanel.AlignVerticalCenterWithPanel="True"
                                     Text="Episodes seen" />
+                                <Button
+                                    x:Name="UpButton"
+                                    Command="{x:Bind Vm.PlusOneTotalSeenTextBlock}"
+                                    Content="+"
+                                    RelativePanel.LeftOf="userepisodestext" />
                                 <TextBox
+                                    x:Name="userepisodestext"
                                     BorderThickness="0"
                                     RelativePanel.AlignVerticalCenterWithPanel="True"
                                     RelativePanel.LeftOf="line"
                                     Style="{StaticResource FluentTextBoxStyle}"
-                                    Text="{x:Bind Vm.Item.Total_Watched_Read, Mode=OneWay}" />
+                                    Text="{x:Bind Vm.TotalSeenTextBox.Value, Mode=TwoWay}" />
                                 <Line
                                     x:Name="line"
                                     Margin="8,0,2,0"
@@ -158,14 +180,10 @@
                                 <TextBlock
                                     x:Name="TotalEpisodes"
                                     Margin="2,0"
+                                    RelativePanel.AlignRightWithPanel="True"
                                     RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    RelativePanel.LeftOf="UpButton"
                                     Text="{x:Bind Vm.Item.TotalEpisodes, Mode=OneWay}" />
-                                <Button
-                                    x:Name="UpButton"
-                                    Margin="2,0,0,0"
-                                    Content="+"
-                                    RelativePanel.AlignRightWithPanel="True" />
+
                             </RelativePanel>
                             <RelativePanel
                                 Grid.Row="1"
@@ -181,7 +199,7 @@
                                     PlaceholderText="Not Yet Added"
                                     RelativePanel.AlignRightWith="Header2"
                                     RelativePanel.AlignRightWithPanel="True"
-                                    SelectedIndex="{x:Bind Vm.Item.UserStatus, Mode=OneWay}">
+                                    SelectedIndex="{x:Bind Vm.UserStatusComboBox.Value, Mode=TwoWay}">
                                     <ComboBoxItem Content="Currently Watching" />
                                     <ComboBoxItem Content="Completed" />
                                     <ComboBoxItem Content="On Hold" />
@@ -189,15 +207,6 @@
                                     <ComboBoxItem Content="Plan to Watch" />
                                 </ComboBox>
                             </RelativePanel>
-                            <AppBarButton
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Grid.ColumnSpan="3"
-                                Width="302"
-                                Height="48"
-                                VerticalAlignment="Bottom"
-                                Background="Transparent"
-                                Content="Save" />
                         </Grid>
                     </SplitView.Pane>
                     <Grid Margin="8,20,28,20">

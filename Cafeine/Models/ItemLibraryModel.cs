@@ -29,8 +29,17 @@ namespace Cafeine.Models
 
         //Ironically accepted ID for all services.
         public int MalID { get; set; }
-
-        public UserItem Item => Service?["default"];
+        
+        public UserItem Item {
+            get { return Service?["default"]; }
+            set {
+                if(Service != null)
+                {
+                    Service["default"] = value;
+                }
+            }
+        }
+        
 
         //Fetch from Anilist only
         //[MAL ONLY] since MyAnimeList doesn't have any feature to list episodes title
@@ -78,7 +87,7 @@ namespace Cafeine.Models
         //This instance is filled when user clicked the item.
         public ItemDetailsModel Details { get; set; }
 
-        public string GetUserStatus() => StatusEnum.UserStatus_int2String[UserStatus];
+        public string GetUserStatus() => StatusEnum.UserStatus_Int2Str[UserStatus];
 
         public string GetItemSeasonYear() => $"{Seasons.Seasons_int2string[Season]} {SeriesStart}";
 

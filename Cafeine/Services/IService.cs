@@ -16,7 +16,7 @@ namespace Cafeine.Services
 
         Task<IList<Episode>> GetItemEpisodes(UserItem item, MediaTypeEnum media);
 
-        void UpdateItem(ItemLibraryModel item);
+        Task UpdateItem(ItemLibraryModel item);
 
         Task DeleteItem(ItemLibraryModel item);
 

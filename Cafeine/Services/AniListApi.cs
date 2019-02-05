@@ -3,6 +3,7 @@ using Cafeine.Models.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -145,7 +146,7 @@ namespace Cafeine.Services
                 variables = new Dictionary<string, object>()
                 {
                     ["mediaid"] = itemModel.Item.ItemId,
-                    ["userstatus"] = StatusEnum.UserStatus_int2String[itemModel.Item.UserStatus],
+                    ["userstatus"] = StatusEnum.UserStatus_Int2Str[itemModel.Item.UserStatus],
                 }
             };
             var result = await AnilistPostAsync(query);
@@ -161,6 +162,8 @@ namespace Cafeine.Services
         {
             /// why would they need to use medialist's id to delete the entry
             /// instead of using media's id? really, for no reason at all.
+            
+            var additionalinfo = itemlibrary.Item.AdditionalInfo as Tuple<int,string>;
             QueryQL query = new QueryQL()
             {
                 query = @"mutation($id:Int){
@@ -170,7 +173,7 @@ namespace Cafeine.Services
                             }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["id"] = itemlibrary.Item.AdditionalInfo.ToString()
+                    ["id"] = additionalinfo.Item1
                 }
             };
 
@@ -183,27 +186,28 @@ namespace Cafeine.Services
             throw new NotImplementedException();
         }
 
-        public async void UpdateItem(ItemLibraryModel item)
+        public async Task UpdateItem(ItemLibraryModel itemModel)
         {
-            Console.WriteLine("Starting POST test");
+            Debug.WriteLine("Starting POST test");
+            var additionalinfo = JsonConvert.DeserializeObject<Tuple<int,string>>(itemModel.Item.AdditionalInfo.ToString());
             var Query = new QueryQL
             {
-                query = @"mutation {
-                    SaveMediaListEntry(mediaId: 21860, status: REPEATING) {
-                        id
-                        status
-                    }
-                }
+                query = @"
+                        mutation ($mediaid: Int,$userstatus:MediaListStatus,$progress:Int) {
+                          SaveMediaListEntry(mediaId:$mediaid,status:$userstatus,progress:$progress){
+                            id
+                            status
+                            }
+                        }
             ",
                 variables = new Dictionary<string, dynamic>
                 {
-                    ["mediaId"] = 21860,
-                    ["status"] = "REPEATING"
+                    ["mediaid"] = itemModel.Item.ItemId,
+                    ["userstatus"] = StatusEnum.Anilist_UserStatus_Int2Str[itemModel.Item.UserStatus],
+                    ["progress"] = itemModel.Item.Total_Watched_Read
                 }
             };
-            HttpStringContent RequestContent = new HttpStringContent(JsonConvert.SerializeObject(Query), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
-            HttpResponseMessage Response = await AnilistAuthClient.PostAsync(new Uri("https://graphql.anilist.co"), RequestContent);
-            string ResponseContent = await Response.Content.ReadAsStringAsync();
+            var result = await AnilistPostAsync(Query);
         }
 
         public async Task<ItemDetailsModel> GetItemDetails(UserItem item, MediaTypeEnum media)
@@ -356,7 +360,7 @@ namespace Cafeine.Services
                                 Total_Watched_Read = item["progress"],
                                 TotalEpisodes = item["media"]["episodes"],
                                 // ID required to identify user's item
-                                AdditionalInfo = (int)item["id"]
+                                AdditionalInfo = new Tuple<int, string>((int)item["id"], status)
                             }
                         }
                     };
