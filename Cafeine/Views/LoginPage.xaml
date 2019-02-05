@@ -44,9 +44,9 @@
                 </StackPanel.Transitions>
                 <TextBlock
                     HorizontalAlignment="Center"
-                    CharacterSpacing="150"
-                    FontFamily="Cuprum"
+                    CharacterSpacing="-10"
                     FontSize="70"
+                    FontWeight="Bold"
                     Text="CAFEINE"
                     TextWrapping="Wrap" />
                 <StackPanel
