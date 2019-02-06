@@ -162,9 +162,9 @@ namespace Cafeine.ViewModels
             AddButtonClicked = new AsyncReactiveCommand();
             AddButtonClicked.Subscribe(async _ =>
             {
-                //await Database.AddItem(ItemBase);
-                //Item = ItemBase.Item;
-                //RaisePropertyChanged(nameof(Item));
+                await Database.AddItem(ItemBase);
+                Item = ItemBase.Item;
+                RaisePropertyChanged(nameof(Item));
                 SetDeleteButtonLoad.Value = true;
             });
 

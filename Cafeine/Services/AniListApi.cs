@@ -134,25 +134,22 @@ namespace Cafeine.Services
             QueryQL query = new QueryQL()
             {
                 query = @"
-                        mutation ($mediaid: Int) {
-                          SaveMediaListEntry(mediaId:$mediaid){
+                        mutation ($mediaid: Int,$score:Float) {
+                          SaveMediaListEntry(mediaId:$mediaid,score:$score){
                             id
-                            media {
-
                             }
-                          }
                         }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["mediaid"] = itemModel.Item.ItemId
+                    ["mediaid"] = itemModel.Item.ItemId,
+                    ["score"] = 0
                 }
             };
             dynamic result = await AnilistPostAsync(query);
 
             // Generate / populate userItem
-            UserItem Item = itemModel.Service.ContainsKey("default") ? itemModel.Item : new UserItem();
-            //Item.ItemId = result["data"][]
-            
+            UserItem Item = itemModel.Service.ContainsKey("default") ? itemModel.Item : throw new Exception("Generated UserItem doesn't exists.");
+            Item.AdditionalInfo = new Tuple<int, string>((int)result["data"]["SaveMediaListEntry"]["id"], StatusEnum.Anilist_UserStatus_Int2Str[0]);            
         }
 
         public void GetItem(ItemLibraryModel item)
@@ -165,7 +162,7 @@ namespace Cafeine.Services
             /// why would they need to use medialist's id to delete the entry
             /// instead of using media's id? really, for no reason at all.
             
-            var additionalinfo = itemlibrary.Item.AdditionalInfo as Tuple<int,string>;
+            var additionalinfo = JsonConvert.DeserializeObject<Tuple<int,string>>(itemlibrary.Item.AdditionalInfo.ToString());
             QueryQL query = new QueryQL()
             {
                 query = @"mutation($id:Int){

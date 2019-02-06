@@ -51,7 +51,7 @@ namespace Cafeine.ViewModels
             {
                 switch (item)
                 {
-                    case "Anilist":
+                    case "AniList":
                         {
                             _navigationService.Navigate(typeof(BrowserAuthenticationPage));
 

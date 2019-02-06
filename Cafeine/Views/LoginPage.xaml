@@ -36,23 +36,39 @@
                 CharacterSpacing="12"
                 FontSize="12"
                 Text="Cafeine Alpha" />
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <StackPanel.Transitions>
+            <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <RelativePanel.Transitions>
                     <TransitionCollection>
                         <EntranceThemeTransition IsStaggeringEnabled="True" />
                     </TransitionCollection>
-                </StackPanel.Transitions>
+                </RelativePanel.Transitions>
                 <TextBlock
+                    x:Name="ShadowTitle"
+                    Margin="5,0"
+                    Padding="0,5"
                     HorizontalAlignment="Center"
-                    CharacterSpacing="-10"
+                    CharacterSpacing="200"
+                    FontFamily="ms-appx:/Assets/Font/Cuprum-Bold.ttf#Cuprum"
                     FontSize="70"
-                    FontWeight="Bold"
+                    Foreground="Black"
                     Text="CAFEINE"
+                    TextLineBounds="TrimToCapHeight"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="FrontTitle"
+                    HorizontalAlignment="Center"
+                    CharacterSpacing="200"
+                    FontFamily="ms-appx:/Assets/Font/Cuprum-Bold.ttf#Cuprum"
+                    FontSize="70"
+                    Text="CAFEINE"
+                    TextLineBounds="TrimToCapHeight"
                     TextWrapping="Wrap" />
                 <StackPanel
                     x:Name="UserPanel"
                     x:Load="{x:Bind Vm.UserPanelVisibility, Mode=OneWay}"
-                    Orientation="Vertical">
+                    Orientation="Vertical"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.Below="FrontTitle">
                     <Ellipse
                         Width="108"
                         Height="108"
@@ -66,9 +82,13 @@
                 </StackPanel>
                 <StackPanel
                     x:Name="SetupPanel"
+                    Width="310"
                     Margin="0,24,0,0"
+                    HorizontalAlignment="Stretch"
                     x:Load="{x:Bind Vm.SetupPanelVisibility, Mode=OneWay}"
-                    Orientation="Vertical">
+                    Orientation="Vertical"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.Below="FrontTitle">
                     <TextBlock
                         HorizontalAlignment="Center"
                         FontSize="20"
@@ -91,7 +111,7 @@
                         </interactivity:Interaction.Behaviors>
                     </ListView>
                 </StackPanel>
-            </StackPanel>
+            </RelativePanel>
         </Grid>
     </Grid>
 </mvvm:BasePage>

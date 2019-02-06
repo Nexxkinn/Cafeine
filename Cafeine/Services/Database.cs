@@ -260,6 +260,7 @@ namespace Cafeine.Services
                     }
                 };
                 tr.ObjectInsert("library", localitem, false);
+                tr.TextInsert("TS_Library", Item.Id.ToBytes(), containsWords: Item.Item.Title, fullMatchWords: "");
                 tr.Commit();
             }
         }
@@ -273,6 +274,7 @@ namespace Cafeine.Services
             using (var tr = db.GetTransaction())
             {
                 tr.ObjectRemove("library", 1.ToIndex(Item.Id));
+                tr.TextRemoveAll("TS_Library", Item.Id.ToBytes());
                 tr.Commit();
             }
         }
