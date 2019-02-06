@@ -187,7 +187,8 @@ namespace Cafeine.Services
 
         public async Task UpdateItem(ItemLibraryModel itemModel)
         {
-            var additionalinfo = JsonConvert.DeserializeObject<Tuple<int,string>>(itemModel.Item.AdditionalInfo.ToString());
+            if (!(itemModel.Item.AdditionalInfo is Tuple<int, string> additionalinfo))
+                additionalinfo = JsonConvert.DeserializeObject<Tuple<int, string>>(itemModel.Item.AdditionalInfo.ToString());
             var Query = new QueryQL
             {
                 query = @"
@@ -396,6 +397,10 @@ namespace Cafeine.Services
                                   title {
                                     romaji
                                   }
+                                  status
+                                  episodes
+                                  averageScore
+                                  format
                                   description(asHtml: false)
                                 }
                               }
@@ -411,9 +416,12 @@ namespace Cafeine.Services
             foreach(var item in result["data"]["anime"]["media"])
             {
                 //using coalese expression (?? argument) can cause an exception.
+                var itemstatus = StatusEnum.Anilist_ItemStatus[item["status"].Value];
                 int? seasonint = (int?)item["seasonInt"];
                 int season = seasonint.HasValue ? seasonint.Value % 10 : 0;
                 int? startdate = (int?)item["startDate"]["year"];
+                int? EpisodeCheck = (int?)item["episodes"];
+                int episodes = EpisodeCheck.HasValue ? EpisodeCheck.Value : default(int);
                 items.Add(new ItemLibraryModel()
                 {
                     //using coalese expression (?? argument) can cause an exception.
@@ -429,7 +437,10 @@ namespace Cafeine.Services
                             {
                                 Description = item["description"]
                             },
+                            AverageScore = (double?)item["averageScore"],
+                            Status = itemstatus,
                             SeriesStart = startdate ?? 0,
+                            TotalEpisodes = episodes,
                             Season = season
                         }
                     }

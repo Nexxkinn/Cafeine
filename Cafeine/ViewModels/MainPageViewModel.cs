@@ -47,7 +47,9 @@ namespace Cafeine.ViewModels
         public ReactiveProperty<int> FilterBy { get;}
 
         public ReactiveProperty<int> TypeBy { get; set; }
-        
+
+        private int CurrentCategory;
+
         public MainPageViewModel()
         {
             //setup
@@ -77,6 +79,7 @@ namespace Cafeine.ViewModels
 
             VMLink.Subscribe<int>(async (x) =>
                 {
+                    CurrentCategory = x;
                     await Task.Factory.StartNew(() => DisplayItem(x),
                         CancellationToken.None,
                         TaskCreationOptions.None,
@@ -114,7 +117,7 @@ namespace Cafeine.ViewModels
             _navigationService.ClearHistory();
             if(e.NavigationMode == NavigationMode.Back)
             {
-                Library = new ObservableCollection<ItemLibraryModel>(Library);
+                await DisplayItem(CurrentCategory);
             }
             await base.OnNavigatedTo(e);
         }
