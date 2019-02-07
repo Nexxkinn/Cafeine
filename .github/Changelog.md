@@ -1,3 +1,10 @@
+### v0.12.0a:
+[New] Add, Delete, and Edit Item
+
+[Fix] [Anilist] Multiple auth token requested
+
+[Fix] General bugfixes and load improvement
+
 ### v0.11.1a:
 [Fix] App crashed when launched twice 
 
@@ -15,7 +22,7 @@
 
 [Fix] General load improvements
 
-[Add] Online and offline results when searching a title.
+[New] Online and offline results when searching a title.
 
 [Change] Search button to show the searchbox.
 
@@ -27,7 +34,7 @@
 
 [Fix] Login page still shows user's profile picture after logging out
 
-[Add] Sorting and filtering feature for better experience
+[New] Sorting and filtering feature for better experience
 
 ### v0.9.0a:
 
@@ -37,19 +44,20 @@
 
 ### v0.8.0a:
 
-- Rewrite the app for better maintenance
-- Switch to Anilist since its API is closed till now. 
+[Change] Rewrite the app for better maintenance
+[Change] Switch to Anilist since its API is closed till now. 
 
+## Cafeine pre-0.8
 ### v0.7.6a:
 
-- Reduce network usage by caching images instead.
+[Change] Reduce network usage by caching images instead.
 
 ### v0.7.5a:
-- Fix a navigation bug.
-- Add RSS Feed tab and Remote Torrent Configuration. It hasn't implemented well in this build. So, expect an error whenever you open it.
+[Fix] navigation bug.
+[New] Add RSS Feed tab and Remote Torrent Configuration. It hasn't implemented well in this build. So, expect an error whenever you open it.
  
 ### v0.7.0a:
-Improve visual interface for collections.
+[Change] Improve visual interface for collections.
 
 ### v0.6.3a:
 Fix a minor bug when login for the first time
