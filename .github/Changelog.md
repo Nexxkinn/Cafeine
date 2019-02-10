@@ -1,3 +1,6 @@
+### v0.12.5a:
+[Fix] App won't run on 1803 build and lower
+
 ### v0.12.0a:
 [New] Add, Delete, and Edit Item
 
