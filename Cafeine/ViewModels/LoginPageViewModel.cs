@@ -2,25 +2,16 @@
 using Cafeine.Services;
 using Cafeine.Services.Mvvm;
 using Cafeine.Views;
-using Reactive.Bindings;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
     public class LoginPageViewModel : ViewModelBase
     {
-
-        public ReactiveCommand LoginPageLoaded { get; }
-
-        public ReactiveCommand<string> LoginClicked { get; }
 
         private NavigationService _navigationService;
 
@@ -45,20 +36,6 @@ namespace Cafeine.ViewModels
             UserPanelVisibility = false;
 
             SetupPanelVisibility = true;
-            
-            LoginClicked = new ReactiveCommand<string>();
-            LoginClicked.Subscribe(item =>
-            {
-                switch (item)
-                {
-                    case "AniList":
-                        {
-                            _navigationService.Navigate(typeof(BrowserAuthenticationPage));
-
-                            break;
-                        }
-                }
-            });
         }
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
@@ -69,10 +46,25 @@ namespace Cafeine.ViewModels
             await base.OnNavigatedTo(e);
         }
 
+        public void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            switch (e.ClickedItem as string)
+            {
+                case "AniList":
+                    {
+                        _navigationService.Navigate(typeof(BrowserAuthenticationPage));
+                        break;
+                    }
+
+                default:
+                    break;
+            }
+        }
         public override async Task OnLoaded(object sender, RoutedEventArgs e)
         {
             await Task.Factory.StartNew(async () =>
             {
+                await ImageCache.CreateImageCacheFolder();
                 if (Database.DoesAccountExists())
                 {
                     _eventAggregator.Publish(typeof(HomePageAvatarLoad));

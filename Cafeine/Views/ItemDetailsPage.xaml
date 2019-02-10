@@ -23,13 +23,6 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <vr:Template />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Page.Resources>
     <Grid>
         <ScrollViewer x:Name="ItemDetailScroller">
             <Grid>

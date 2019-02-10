@@ -16,15 +16,8 @@
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
-        <vm:HomePageViewModel/>
+        <vm:HomePageViewModel />
     </Page.DataContext>
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <vr:Template />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Page.Resources>
     <Grid x:Name="thegrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="{x:Bind Path=Vm.InvisibleTab.Value, Mode=TwoWay}" />

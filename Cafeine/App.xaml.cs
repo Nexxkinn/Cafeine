@@ -21,7 +21,7 @@ namespace Cafeine
             this.Suspending += OnSuspending;
         }
 
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Page rootpage = Window.Current.Content as Page;
 
@@ -39,7 +39,6 @@ namespace Cafeine
                 }
                 if (e.PreviousExecutionState != ApplicationExecutionState.Running)
                 {
-                    await Services.ImageCache.CreateImageCacheFolder();
                     CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
 
                     ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;

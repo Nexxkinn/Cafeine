@@ -19,13 +19,6 @@
     <mvvm:BasePage.DataContext>
         <vm:MainPageViewModel />
     </mvvm:BasePage.DataContext>
-    <mvvm:BasePage.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <vr:Template />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </mvvm:BasePage.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -37,7 +30,6 @@
             x:Name="collection"
             Grid.RowSpan="2"
             Margin="28,0,0,0"
-            Canvas.ZIndex="-1"
             ContainerContentChanging="Collection_ContainerContentChanging"
             IsItemClickEnabled="True"
             ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"

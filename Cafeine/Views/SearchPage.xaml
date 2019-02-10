@@ -8,24 +8,17 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:Cafeine.Views"
     xmlns:m="using:Cafeine.Models"
-    xmlns:vm="using:Cafeine.ViewModels"
-    xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
+    xmlns:vm="using:Cafeine.ViewModels"
     xmlns:vr="using:Cafeine.Views.Resources"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
-        <vm:SearchPageViewModel/>
+        <vm:SearchPageViewModel />
     </Page.DataContext>
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <vr:Template />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Page.Resources>
     <Grid>
         <StackPanel
             HorizontalAlignment="Center"
@@ -107,10 +100,10 @@
                 <GridView
                     x:Name="onlineresultgridview"
                     Margin="0,8"
+                    ContainerContentChanging="Onlineresultgridview_ContainerContentChanging"
                     IsItemClickEnabled="True"
                     ItemTemplate="{StaticResource OnlineSearchResult}"
-                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}"
-                    ContainerContentChanging="Onlineresultgridview_ContainerContentChanging">
+                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="ItemClick">
                             <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemClicked}">

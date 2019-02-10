@@ -3,7 +3,6 @@ using Cafeine.Services.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Interactivity;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
@@ -17,7 +16,7 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<Uri> Source;
 
-        public ReactiveCommand<string> urlcheck;
+        public AsyncReactiveCommand<string> urlcheck;
 
         public ReactiveCommand GoBack { get; }
 
@@ -37,7 +36,7 @@ namespace Cafeine.ViewModels
                 _navigationService.GoBack();
                 _navigationService.ClearHistory();
             });
-            urlcheck = new ReactiveCommand<string>();
+            urlcheck = new AsyncReactiveCommand<string>();
             urlcheck.Subscribe(async x =>
             {
                 if (x.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))

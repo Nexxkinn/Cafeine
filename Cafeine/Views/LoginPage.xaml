@@ -16,6 +16,9 @@
     <mvvm:BasePage.DataContext>
         <vm:LoginPageViewModel />
     </mvvm:BasePage.DataContext>
+    <mvvm:BasePage.Resources>
+        <conv:ItemClickToString x:Name="itemstringconv" />
+    </mvvm:BasePage.Resources>
     <Grid Background="#FF2F343B">
         <Image
             MinWidth="1920"
@@ -98,17 +101,13 @@
                         HorizontalAlignment="Center"
                         FontWeight="SemiBold"
                         Text="Which service do you want to use?" />
-                    <ListView Margin="0,12,0,0" IsItemClickEnabled="True">
+                    <ListView
+                        Margin="0,12,0,0"
+                        IsItemClickEnabled="True"
+                        ItemClick="{x:Bind Vm.ListView_ItemClick}">
                         <ListViewItem x:Name="Anilist">AniList</ListViewItem>
                         <ListViewItem x:Name="MAL" IsEnabled="False">MyAnimeList ( coming soon )</ListViewItem>
                         <ListViewItem x:Name="Kitsu" IsEnabled="False">Kitsu.io ( coming soon )</ListViewItem>
-                        <interactivity:Interaction.Behaviors>
-                            <core:EventTriggerBehavior EventName="ItemClick">
-                                <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.LoginClicked}">
-                                    <conv:ItemClickToString />
-                                </reactiveProperty:EventToReactiveCommand>
-                            </core:EventTriggerBehavior>
-                        </interactivity:Interaction.Behaviors>
                     </ListView>
                 </StackPanel>
             </RelativePanel>
