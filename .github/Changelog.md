@@ -1,3 +1,6 @@
+### v0.12.6a:
+[Fix] Anilist library failed to parse null value.
+
 ### v0.12.5a:
 [Fix] App won't run on 1803 build and lower
 
