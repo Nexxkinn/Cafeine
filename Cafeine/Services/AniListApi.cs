@@ -322,7 +322,7 @@ namespace Cafeine.Services
                 variables = new Dictionary<string, object>()
                 {
                     ["id"] = account.Id,
-                    ["user"] = account.Name,
+                    ["user"] = "Subi",
                     ["type"] = "ANIME"
                 }
             };
@@ -337,27 +337,28 @@ namespace Cafeine.Services
                 string status = list["status"];
                 foreach (var item in list["entries"])
                 {
-                    var itemstatus = StatusEnum.Anilist_ItemStatus[item["media"]["status"].Value];
-                    var userstatus = StatusEnum.UserStatus[status];
-                    int season = ((int?)item["media"]["seasonInt"]).HasValue ? item["media"]["seasonInt"] : 0;
+                    Debug.WriteLine($"Item ID: {(int)item["mediaId"]}, Title:{item["media"]["title"]["romaji"]}");
+                    int itemstatus = StatusEnum.Anilist_ItemStatus[item["media"]["status"].Value];
+                    int userstatus = StatusEnum.UserStatus[status];
+                    int season = ((int?)item["media"]["seasonInt"]).GetValueOrDefault();
                     var GeneratedItem = new ItemLibraryModel()
                     {
-                        MalID = item["media"]["idMal"],
+                        MalID = ((int?)item["media"]["idMal"]).GetValueOrDefault(),
                         Service = new Dictionary<string, UserItem>()
                         {
                             [ServiceName] = new UserItem
                             {
                                 Title = item["media"]["title"]["romaji"],
                                 CoverImageUri = item["media"]["coverImage"]["large"],
-                                SeriesStart = (int)item["media"]["startDate"]["year"],
+                                SeriesStart = ((int?)item["media"]["startDate"]["year"]).GetValueOrDefault(),
                                 ItemId = (int)item["mediaId"],
-                                UserScore = (double)item["score"],
-                                AverageScore = (double?)item["media"]["averageScore"],
+                                UserScore = ((double?)item["score"]).GetValueOrDefault(),
+                                AverageScore = ((double?)item["media"]["averageScore"]).GetValueOrDefault(),
                                 UserStatus = userstatus,
                                 Status = itemstatus,
                                 Season = season % 10,
-                                Total_Watched_Read = item["progress"],
-                                TotalEpisodes = item["media"]["episodes"],
+                                Total_Watched_Read = ((int?)item["progress"]).GetValueOrDefault(),
+                                TotalEpisodes = ((int?)item["media"]["episodes"]).GetValueOrDefault(),
                                 // ID required to identify user's item
                                 AdditionalInfo = new Tuple<int, string>((int)item["id"], status)
                             }
