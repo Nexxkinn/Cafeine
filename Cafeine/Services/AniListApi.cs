@@ -322,7 +322,7 @@ namespace Cafeine.Services
                 variables = new Dictionary<string, object>()
                 {
                     ["id"] = account.Id,
-                    ["user"] = "Subi",
+                    ["user"] = account.Name,
                     ["type"] = "ANIME"
                 }
             };

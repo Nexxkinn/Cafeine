@@ -7,14 +7,13 @@
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:Cafeine.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vm="using:Cafeine.ViewModels"
-    xmlns:mvvm="using:Cafeine.Services.Mvvm"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
-        <vm:BrowserAuthenticationPageViewModel/>
+        <vm:BrowserAuthenticationPageViewModel />
     </mvvm:BasePage.DataContext>
     <Grid>
         <Grid.RowDefinitions>

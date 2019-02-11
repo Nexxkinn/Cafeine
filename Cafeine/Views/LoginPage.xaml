@@ -16,9 +16,6 @@
     <mvvm:BasePage.DataContext>
         <vm:LoginPageViewModel />
     </mvvm:BasePage.DataContext>
-    <mvvm:BasePage.Resources>
-        <conv:ItemClickToString x:Name="itemstringconv" />
-    </mvvm:BasePage.Resources>
     <Grid Background="#FF2F343B">
         <Image
             MinWidth="1920"
