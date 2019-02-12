@@ -8,9 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
@@ -25,9 +23,7 @@ namespace Cafeine.ViewModels
         private int? MainPageCurrentState;
 
         public ReactiveProperty<string> Keyword { get; }
-
-        public ReactiveCommand<ItemLibraryModel> ItemClicked { get; }
-        
+                
         public ObservableCollection<ItemLibraryModel> OfflineResults;
 
         public ObservableCollection<ItemLibraryModel> OnlineResults;
@@ -69,15 +65,18 @@ namespace Cafeine.ViewModels
                 }
             });
             OnlineResults = new ObservableCollection<ItemLibraryModel>();
-            
-            ItemClicked = new ReactiveCommand<ItemLibraryModel>();
-            ItemClicked.Subscribe(NavigateToItemDetails);
         }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             MainPageCurrentState = e.Parameter as int?;
             await base.OnNavigatedTo(e);
+        }
+
+        public void ItemClicked(object sender, ItemClickEventArgs e)
+        {
+            var clicked = e.ClickedItem as ItemLibraryModel;
+            NavigateToItemDetails(clicked);
         }
 
         private void NavigateToItemDetails(ItemLibraryModel item)

@@ -52,7 +52,10 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MaxWidth="850" />
                     </Grid.ColumnDefinitions>
-                    <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}">
+                    <ListView
+                        IsItemClickEnabled="True"
+                        ItemClick="{x:Bind Vm.ItemClicked}"
+                        ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="m:ItemLibraryModel">
                                 <Grid>
@@ -78,13 +81,6 @@
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             </Style>
                         </ListView.ItemContainerStyle>
-                        <interactivity:Interaction.Behaviors>
-                            <core:EventTriggerBehavior EventName="ItemClick">
-                                <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemClicked}">
-                                    <conv:ItemClickToItemLibraryModel />
-                                </reactiveProperty:EventToReactiveCommand>
-                            </core:EventTriggerBehavior>
-                        </interactivity:Interaction.Behaviors>
                     </ListView>
 
                 </Grid>
@@ -102,16 +98,9 @@
                     Margin="0,8"
                     ContainerContentChanging="Onlineresultgridview_ContainerContentChanging"
                     IsItemClickEnabled="True"
+                    ItemClick="{x:Bind Vm.ItemClicked}"
                     ItemTemplate="{StaticResource OnlineSearchResult}"
-                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="ItemClick">
-                            <reactiveProperty:EventToReactiveCommand Command="{x:Bind Path=Vm.ItemClicked}">
-                                <conv:ItemClickToItemLibraryModel />
-                            </reactiveProperty:EventToReactiveCommand>
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </GridView>
+                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}" />
                 <ProgressRing HorizontalAlignment="Left" IsActive="{x:Bind Vm.OnlineResultsProgressRing.Value, Mode=OneWay}" />
             </StackPanel>
 

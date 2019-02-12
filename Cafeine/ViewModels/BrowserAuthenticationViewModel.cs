@@ -15,9 +15,7 @@ namespace Cafeine.ViewModels
         private NavigationService _navigationService;
 
         public ReactiveProperty<Uri> Source;
-
-        public AsyncReactiveCommand<string> urlcheck;
-
+        
         public ReactiveCommand GoBack { get; }
 
         public ReactiveProperty<string> HeaderTitle { get; }
@@ -36,33 +34,25 @@ namespace Cafeine.ViewModels
                 _navigationService.GoBack();
                 _navigationService.ClearHistory();
             });
-            urlcheck = new AsyncReactiveCommand<string>();
-            urlcheck.Subscribe(async x =>
-            {
-                if (x.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))
-                {
-                    IService service = new AniListApi();
-
-                    //get the token
-                    Regex r = new Regex(@"(?<==).+?(?=&|$)");
-                    Match m = r.Match(x);
-                    await service.VerifyAccount(m.Value);
-
-                    var CurrentUserAccount = await service.CreateAccount(true);
-                    Database.AddAccount(CurrentUserAccount);
-
-                    _navigationService.GoBack();
-                }
-                else HeaderTitle.Value = "Anilist Web Authentication";
-            });
         }
-    }
-
-    public class NavigationCompletedReactiveConverter : ReactiveConverter<WebViewNavigationCompletedEventArgs, string>
-    {
-        protected override IObservable<string> OnConvert(IObservable<WebViewNavigationCompletedEventArgs> source)
+        public async void UrlCheck(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
-            return source.Select(x => x.Uri.AbsoluteUri.ToString());
+            string url = args.Uri.AbsoluteUri.ToString();
+            if (url.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))
+            {
+                IService service = new AniListApi();
+
+                //get the token
+                Regex r = new Regex(@"(?<==).+?(?=&|$)");
+                Match m = r.Match(url);
+                await service.VerifyAccount(m.Value);
+
+                var CurrentUserAccount = await service.CreateAccount(true);
+                Database.AddAccount(CurrentUserAccount);
+
+                _navigationService.GoBack();
+            }
+            else HeaderTitle.Value = "Anilist Web Authentication";
         }
     }
 }

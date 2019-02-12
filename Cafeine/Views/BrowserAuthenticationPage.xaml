@@ -2,13 +2,10 @@
     x:Class="Cafeine.Views.BrowserAuthenticationPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:c="using:Microsoft.Xaml.Interactions.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:Cafeine.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
-    xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vm="using:Cafeine.ViewModels"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -45,14 +42,7 @@
         <WebView
             x:Name="webview"
             Grid.Row="1"
-            Source="{x:Bind Path=Vm.Source.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <i:Interaction.Behaviors>
-                <c:EventTriggerBehavior EventName="NavigationCompleted">
-                    <reactiveProperty:EventToReactiveCommand Command="{x:Bind Vm.urlcheck}">
-                        <vm:NavigationCompletedReactiveConverter />
-                    </reactiveProperty:EventToReactiveCommand>
-                </c:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
-        </WebView>
+            NavigationCompleted="{x:Bind Vm.UrlCheck}"
+            Source="{x:Bind Path=Vm.Source.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </mvvm:BasePage>

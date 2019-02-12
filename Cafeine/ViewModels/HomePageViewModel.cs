@@ -35,8 +35,6 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<bool> SearchButtonLoad { get; }
 
-        public ReactiveCommand SearchBoxTextChanged { get; }
-
         public ReactiveCommand SearchButtonClicked { get; }
 
         public ReactiveCommand SearchBoxLostFocused { get; }
@@ -71,11 +69,6 @@ namespace Cafeine.ViewModels
             SearchBoxLoad = new ReactiveProperty<Visibility>(Visibility.Collapsed);
             SearchBoxLoad.Subscribe(x => SearchButtonLoad.Value = (SearchBoxLoad.Value == Visibility.Collapsed));
             SearchBoxFocus = new ReactiveProperty<bool>();
-            SearchBoxTextChanged = new ReactiveCommand();
-            SearchBoxTextChanged.Subscribe(_ =>
-            {
-                _eventAggregator.Publish(SuggestText.Value,typeof(Keyword));
-            });
 
             SearchButtonClicked = new ReactiveCommand();
             SearchButtonClicked.Subscribe(_ =>
@@ -172,6 +165,10 @@ namespace Cafeine.ViewModels
             ChildFrame.Content = frame;
         }
 
+        public void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            _eventAggregator.Publish(SuggestText.Value, typeof(Keyword));
+        }
         //Prevent any kind of input to forward the frame.
         private void Frame_PreventGoFordWard(object sender, NavigatingCancelEventArgs e)
         {

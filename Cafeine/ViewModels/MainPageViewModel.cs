@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
@@ -37,10 +38,6 @@ namespace Cafeine.ViewModels
                 }
             }
         }
-
-        public ReactiveCommand<ItemLibraryModel> ItemClicked { get; }
-
-        public ReactiveCommand MainPageLoaded { get; }
         
         public ReactiveProperty<int> SortBy { get;}
 
@@ -73,9 +70,6 @@ namespace Cafeine.ViewModels
             {
                 Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
             };
-
-            ItemClicked = new ReactiveCommand<ItemLibraryModel>();
-            ItemClicked.Subscribe(NavigateToItemDetails);
 
             VMLink.Subscribe<int>(async (x) =>
                 {
@@ -186,6 +180,12 @@ namespace Cafeine.ViewModels
             }
             _navigationService.Navigate(typeof(ItemDetailsPage));
             VMLink.Publish(item, typeof(ItemDetailsID));
+        }
+
+        public void ItemClicked(object sender, ItemClickEventArgs e)
+        {
+            ItemLibraryModel clicked = e.ClickedItem as ItemLibraryModel;
+            NavigateToItemDetails(clicked);
         }
     }
 }
