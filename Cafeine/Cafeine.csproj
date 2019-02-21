@@ -120,6 +120,7 @@
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\KitsuApi.cs" />
     <Compile Include="Services\Mvvm\BasePage.cs" />
+    <Compile Include="Services\Mvvm\CafeineCommand.cs" />
     <Compile Include="Services\Mvvm\IViewModel.cs" />
     <Compile Include="Services\Mvvm\NavigationService.cs" />
     <Compile Include="Services\Mvvm\ViewModelBase.cs" />

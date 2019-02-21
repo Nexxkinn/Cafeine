@@ -16,10 +16,6 @@ namespace Cafeine.ViewModels
 {
     public class SearchPageViewModel : ViewModelBase
     {
-        private NavigationService _navigationService;
-
-        public ViewModelLink _eventAggregator;
-
         private int? MainPageCurrentState;
 
         public ReactiveProperty<string> Keyword { get; }
@@ -37,13 +33,10 @@ namespace Cafeine.ViewModels
         public CafeineProperty<bool> OnlineResultsNoMatches = new CafeineProperty<bool>();
         
         public SearchPageViewModel()
-        {
-            _navigationService = new NavigationService();
-            _eventAggregator = new ViewModelLink();
-            
+        {            
             OfflineResults = new ObservableCollection<ItemLibraryModel>();
 
-            _eventAggregator.Subscribe<string>(x=> Keyword.Value = x, typeof(Keyword));
+            eventAggregator.Subscribe<string>(x=> Keyword.Value = x, typeof(Keyword));
 
             // RX.NET RANT:
             // Not implementing .ObserveOnDispatcher() causes
@@ -90,10 +83,10 @@ namespace Cafeine.ViewModels
             // Backup    : http://runtime117.rssing.com/chan-13993968/all_p3.html
             if(MainPageCurrentState.Value == 1)
             {
-                _navigationService.RemoveLastPage();
+                navigationService.RemoveLastPage();
             }
-            _navigationService.Navigate(typeof(ItemDetailsPage));
-            _eventAggregator.Publish(item, typeof(ItemDetailsID));
+            navigationService.Navigate(typeof(ItemDetailsPage));
+            eventAggregator.Publish(item, typeof(ItemDetailsID));
         }
 
         private async Task GetResults(string keyword)

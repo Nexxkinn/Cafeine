@@ -12,27 +12,22 @@ namespace Cafeine.ViewModels
 {
     public class BrowserAuthenticationPageViewModel : ViewModelBase, IViewModel
     {
-        private NavigationService _navigationService;
 
         public ReactiveProperty<Uri> Source;
-        
-        public ReactiveCommand GoBack { get; }
 
         public ReactiveProperty<string> HeaderTitle { get; }
 
         public BrowserAuthenticationPageViewModel()
         {
-            _navigationService = new NavigationService();
+            navigationService = new NavigationService();
 
             HeaderTitle = new ReactiveProperty<string>("Loading...");
 
             Source = new ReactiveProperty<Uri>(new Uri("https://anilist.co/api/v2/oauth/authorize?client_id=873&response_type=token"));
 
-            GoBack = new ReactiveCommand();
-            GoBack.Subscribe(_ =>
-            {
-                _navigationService.GoBack();
-                _navigationService.ClearHistory();
+            GoBack = new CafeineCommand(() => {
+                navigationService.GoBack();
+                navigationService.ClearHistory();
             });
         }
         public async void UrlCheck(WebView sender, WebViewNavigationCompletedEventArgs args)
@@ -50,7 +45,7 @@ namespace Cafeine.ViewModels
                 var CurrentUserAccount = await service.CreateAccount(true);
                 Database.AddAccount(CurrentUserAccount);
 
-                _navigationService.GoBack();
+                navigationService.GoBack();
             }
             else HeaderTitle.Value = "Anilist Web Authentication";
         }

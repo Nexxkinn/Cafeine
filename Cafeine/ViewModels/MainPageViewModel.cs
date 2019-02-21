@@ -18,10 +18,6 @@ namespace Cafeine.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     { 
-        private NavigationService _navigationService;
-
-        private ViewModelLink VMLink;
-
         private IEnumerable<ItemLibraryModel> ListedItems;
 
         private ObservableCollection<ItemLibraryModel> _Library;
@@ -50,8 +46,7 @@ namespace Cafeine.ViewModels
         public MainPageViewModel()
         {
             //setup
-            _navigationService = new NavigationService();
-            VMLink = new ViewModelLink();
+            eventAggregator = new ViewModelLink();
 
             SortBy = new ReactiveProperty<int>(0);
             SortBy.PropertyChanged += (_, e) =>
@@ -71,7 +66,7 @@ namespace Cafeine.ViewModels
                 Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
             };
 
-            VMLink.Subscribe<int>(async (x) =>
+            eventAggregator.Subscribe<int>(async (x) =>
                 {
                     CurrentCategory = x;
                     await Task.Factory.StartNew(() => DisplayItem(x),
@@ -80,18 +75,19 @@ namespace Cafeine.ViewModels
                         TaskScheduler.FromCurrentSynchronizationContext());
                 }
                 , typeof(LoadItemStatus));
-            VMLink.Subscribe(x =>
+
+            eventAggregator.Subscribe(x =>
                 {
                     switch (x)
                     {
                         case 1:
                             // can't go back -> assume it's the main page
                             // can go back -> assume it's details page
-                            int state = _navigationService.CanGoBack() ? 1 : 0;
-                            _navigationService.Navigate(typeof(SearchPage), state);
+                            int state = navigationService.CanGoBack() ? 1 : 0;
+                            navigationService.Navigate(typeof(SearchPage), state);
                             return;
                         case 2:
-                            _navigationService.GoBack();
+                            navigationService.GoBack();
                             return;
                     }
                 }
@@ -108,7 +104,7 @@ namespace Cafeine.ViewModels
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             await Task.Yield();
-            _navigationService.ClearHistory();
+            navigationService.ClearHistory();
             if(e.NavigationMode == NavigationMode.Back)
             {
                 await DisplayItem(CurrentCategory);
@@ -173,13 +169,13 @@ namespace Cafeine.ViewModels
             // Reference : http://archive.is/L1v1H
             // Backup    : http://runtime117.rssing.com/chan-13993968/all_p3.html
 
-            if (_navigationService.CanGoBack())
+            if (navigationService.CanGoBack())
             {
-                _navigationService.GoBack();
-                _navigationService.RemoveLastPage();
+                navigationService.GoBack();
+                navigationService.RemoveLastPage();
             }
-            _navigationService.Navigate(typeof(ItemDetailsPage));
-            VMLink.Publish(item, typeof(ItemDetailsID));
+            navigationService.Navigate(typeof(ItemDetailsPage));
+            eventAggregator.Publish(item, typeof(ItemDetailsID));
         }
 
         public void ItemClicked(object sender, ItemClickEventArgs e)

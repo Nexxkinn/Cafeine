@@ -12,11 +12,6 @@ namespace Cafeine.ViewModels
 {
     public class LoginPageViewModel : ViewModelBase
     {
-
-        private NavigationService _navigationService;
-
-        private ViewModelLink _eventAggregator;
-
         public bool UserPanelVisibility;
 
         public bool SetupPanelVisibility;
@@ -29,10 +24,6 @@ namespace Cafeine.ViewModels
 
         public LoginPageViewModel()
         {
-            _navigationService = new NavigationService();
-
-            _eventAggregator = new ViewModelLink();
-
             UserPanelVisibility = false;
 
             SetupPanelVisibility = true;
@@ -42,7 +33,7 @@ namespace Cafeine.ViewModels
             if (e.NavigationMode == NavigationMode.Back) {
                 FromWebsiteRegistration = true;
             }
-            _navigationService.ClearHistory();
+            navigationService.ClearHistory();
             await base.OnNavigatedTo(e);
         }
 
@@ -52,7 +43,7 @@ namespace Cafeine.ViewModels
             {
                 case "AniList":
                     {
-                        _navigationService.Navigate(typeof(BrowserAuthenticationPage));
+                        navigationService.Navigate(typeof(BrowserAuthenticationPage));
                         break;
                     }
 
@@ -67,14 +58,14 @@ namespace Cafeine.ViewModels
                 await ImageCache.CreateImageCacheFolder();
                 if (Database.DoesAccountExists())
                 {
-                    _eventAggregator.Publish(typeof(HomePageAvatarLoad));
+                    eventAggregator.Publish(typeof(HomePageAvatarLoad));
                     showUserPanel();
                     await Database.CreateServicesFromUserAccounts();
                     if (FromWebsiteRegistration)
                     {
                         await Database.CreateDBFromServices();
                     }
-                    _navigationService.Navigate(typeof(MainPage));
+                    navigationService.Navigate(typeof(MainPage));
                 }
             },
             CancellationToken.None,

@@ -18,10 +18,6 @@ namespace Cafeine.ViewModels
 {
     public class ItemDetailsPageViewModel : ViewModelBase
     {
-        private NavigationService _navigationService;
-
-        private readonly ViewModelLink VMLink;
-
         public UserItem Item { get; set; }
 
         private ItemLibraryModel ItemBase;
@@ -29,13 +25,13 @@ namespace Cafeine.ViewModels
         public ObservableCollection<Episode> Episodelist { get; private set; }
         
         #region mvvm setup properties
-        public ReactiveCommand PlusOneTotalSeenTextBlock { get; }
+        public CafeineCommand PlusOneTotalSeenTextBlock { get; }
 
-        public ReactiveCommand EpisodeListsClicked { get; }
+        public CafeineCommand EpisodeListsClicked { get; }
 
-        public ReactiveCommand EpisodeSettingsClicked { get; }
+        public CafeineCommand EpisodeSettingsClicked { get; }
 
-        public ReactiveCommand UserItemDetailsClicked { get; }
+        public CafeineCommand UserItemDetailsClicked { get; }
 
         public AsyncReactiveCommand AddButtonClicked { get; }
 
@@ -80,8 +76,7 @@ namespace Cafeine.ViewModels
 
         public ItemDetailsPageViewModel()
         {
-            _navigationService = new NavigationService();
-            VMLink = new ViewModelLink();
+            navigationService = new NavigationService();
 
             Item = new UserItem();
             PaneBackground = new CafeineProperty<Brush>(new SolidColorBrush(Windows.UI.Colors.Transparent));
@@ -94,9 +89,6 @@ namespace Cafeine.ViewModels
             });
 
             #region Set initial value
-
-            UserItemDetailsClicked = new ReactiveCommand();
-            UserItemDetailsClicked.Subscribe(()=> IsPaneOpened.Value = !IsPaneOpened.Value);
 
             ImageSource = new CafeineProperty<StorageFile>();
             ItemDetailsProgressRing = new CafeineProperty<bool>();
@@ -127,14 +119,9 @@ namespace Cafeine.ViewModels
             UserStatusComboBox = new CafeineProperty<int>();
             #endregion
 
-            PlusOneTotalSeenTextBlock = new ReactiveCommand();
-            PlusOneTotalSeenTextBlock.Subscribe(_ =>
-            {
-                TotalSeenTextBox.Value += 1;
-            });
+            PlusOneTotalSeenTextBlock = new CafeineCommand(()=> TotalSeenTextBox.Value += 1);
 
-            EpisodeListsClicked = new ReactiveCommand();
-            EpisodeListsClicked.Subscribe(_ =>
+            EpisodeListsClicked = new CafeineCommand(() => 
             {
                 if (ItemBase.Episodes.Count == 0)
                 {
@@ -150,14 +137,15 @@ namespace Cafeine.ViewModels
                 LoadEpisodesListConfiguration.Value = true;
             });
 
-            EpisodeSettingsClicked = new ReactiveCommand();
-            EpisodeSettingsClicked.Subscribe(_ =>
+            EpisodeSettingsClicked = new CafeineCommand(()=> 
             {
                 LoadEpisodeLists.Value = Visibility.Collapsed;
                 LoadEpisodeNotFound.Value = false;
                 LoadEpisodeSettings.Value = true;
                 LoadEpisodesListConfiguration.Value = false;
             });
+
+            UserItemDetailsClicked = new CafeineCommand(() => IsPaneOpened.Value = !IsPaneOpened.Value);
 
             AddButtonClicked = new AsyncReactiveCommand();
             AddButtonClicked.Subscribe(async _ =>
@@ -182,18 +170,18 @@ namespace Cafeine.ViewModels
                 if ((int)result.Id == 0)
                 {
                     await Database.DeleteItem(ItemBase);
-                    _navigationService.GoBack();
+                    navigationService.GoBack();
                 }
             });
 
-            VMLink.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetailsID));
+            eventAggregator.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetailsID));
 
         }
         
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back)
-                VMLink.Unsubscribe(typeof(ItemDetailsID));
+                eventAggregator.Unsubscribe(typeof(ItemDetailsID));
 
             if ( ItemBase != null && 
                 ( Item.UserStatus != UserStatusComboBox.Value || Item.Total_Watched_Read != TotalSeenTextBox.Value))

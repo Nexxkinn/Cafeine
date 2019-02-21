@@ -12,6 +12,7 @@ namespace Cafeine.Services.Mvvm
 {
     public class ViewModelBase : IViewModel, INotifyPropertyChanged
     {
+
         public event PropertyChangedEventHandler PropertyChanged ;
         public void RaisePropertyChanged([CallerMemberName]string property = null)
         {
@@ -20,5 +21,15 @@ namespace Cafeine.Services.Mvvm
         public virtual Task OnNavigatedTo(NavigationEventArgs e) { return Task.CompletedTask; }
         public virtual Task OnNavigatedFrom(NavigationEventArgs e) { return Task.CompletedTask; }
         public virtual Task OnLoaded(object sender, RoutedEventArgs e) { return Task.CompletedTask; }
+        
+        public NavigationService navigationService;
+        public ViewModelLink eventAggregator;
+        public CafeineCommand GoBack;
+        public ViewModelBase()
+        {
+            navigationService = new NavigationService();
+            eventAggregator = new ViewModelLink();
+            GoBack = new CafeineCommand(navigationService.GoBack);
+        }
     }
 }
