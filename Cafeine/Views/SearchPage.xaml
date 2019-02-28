@@ -13,7 +13,7 @@
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vm="using:Cafeine.ViewModels"
     xmlns:vr="using:Cafeine.Views.Resources"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource LegacyDarkBlue}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
@@ -36,7 +36,7 @@
                 x:Name="results"
                 Margin="28,14,0,0"
                 x:Load="{x:Bind Vm.LoadResults.Value, Mode=OneWay}"
-                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                Background="{ThemeResource LegacyDarkBlue}"
                 Orientation="Vertical">
                 <TextBlock
                     FontSize="20"

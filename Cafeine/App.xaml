@@ -10,6 +10,18 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <vr:Template />
             </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="LegacyDarkBlue" Color="#202225" />
+                    <SolidColorBrush x:Key="CafeineDarkBlue" Color="#FF262A2F" />
+                    <SolidColorBrush x:Key="CafeineBlue" Color="#FF2F343B" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="CafeineDarkBlue" Color="#202225" />
+                    <SolidColorBrush x:Key="LegacyDarkBlue" Color="#FF262A2F" />
+                    <SolidColorBrush x:Key="CafeineBlue" Color="#FF2F343B" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

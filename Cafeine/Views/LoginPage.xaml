@@ -7,12 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:vm="using:Cafeine.ViewModels"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource CafeineBlue}"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
         <vm:LoginPageViewModel />
     </mvvm:BasePage.DataContext>
-    <Grid Background="#FF2F343B">
+    <Grid>
         <Image
             MinWidth="1920"
             MinHeight="1080"
@@ -24,7 +24,7 @@
             Width="500"
             HorizontalAlignment="Left"
             VerticalAlignment="Stretch"
-            Background="#FF262A2F">
+            Background="{ThemeResource CafeineDarkBlue}">
             <TextBlock
                 Margin="12,8,0,0"
                 HorizontalAlignment="Left"

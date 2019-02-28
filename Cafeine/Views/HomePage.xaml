@@ -12,15 +12,22 @@
     xmlns:reactiveProperty="using:Reactive.Bindings.Interactivity"
     xmlns:vm="using:Cafeine.ViewModels"
     xmlns:vr="using:Cafeine.Views.Resources"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource CafeineDarkBlue}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
         <vm:HomePageViewModel />
     </Page.DataContext>
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <DrillInNavigationTransitionInfo/>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
     <Grid x:Name="thegrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="{x:Bind Path=Vm.InvisibleTab.Value, Mode=TwoWay}" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Background="{ThemeResource SystemControlAcrylicWindowBrush}">

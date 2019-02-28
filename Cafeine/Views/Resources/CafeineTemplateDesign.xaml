@@ -23,7 +23,8 @@
         <Grid
             x:Name="item"
             Width="140"
-            Height="252">
+            Height="252"
+            Background="{ThemeResource CafeineBlue}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="198" />
                 <RowDefinition Height="*" />
@@ -65,7 +66,6 @@
                 CharacterSpacing="14"
                 FontSize="14"
                 FontWeight="SemiBold"
-                Foreground="#D1D1D1"
                 Text="{x:Bind Path=Item.Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap" />

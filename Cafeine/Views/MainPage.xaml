@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:vm="using:Cafeine.ViewModels"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource CafeineDarkBlue}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
@@ -32,7 +32,7 @@
             ItemsSource="{x:Bind Vm.Library, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Template="{StaticResource CustomizedCollectionGridView}">
             <GridView.Header>
-                <Grid Height="40" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <Grid Height="40" Background="{ThemeResource CafeineDarkBlue}">
                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                         <ComboBox
                             Margin="8,0"

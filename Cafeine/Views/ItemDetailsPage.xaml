@@ -9,7 +9,7 @@
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:vm="using:Cafeine.ViewModels"
     xmlns:vr="using:Cafeine.Views.Resources"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="{ThemeResource LegacyDarkBlue}"
     Loaded="Page_Loaded"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -314,11 +314,12 @@
                             x:Load="{x:Bind Vm.LoadEpisodesListConfiguration.Value, Mode=OneWay}"
                             Orientation="Horizontal">
                             <StackPanel
-                                VerticalAlignment="Center"
-                                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                                VerticalAlignment="Stretch"
+                                Background="{ThemeResource LegacyDarkBlue}"
                                 Orientation="Horizontal">
                                 <ComboBox
                                     Margin="0"
+                                    VerticalAlignment="Center"
                                     Header="Sort:"
                                     LightDismissOverlayMode="On"
                                     SelectedIndex="0"
