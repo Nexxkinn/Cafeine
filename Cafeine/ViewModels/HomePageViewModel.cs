@@ -90,7 +90,9 @@ namespace Cafeine.ViewModels
                     foreach (var i in cookies) handler.CookieManager.DeleteCookie(i);
 
                     //navigate to login
-                    navigationService.Navigate(typeof(LoginPage));
+                    Frame rootframe = Window.Current.Content as Frame;
+                    rootframe.Navigate(typeof(LoginPage));
+                    rootframe.BackStack.Clear();
                 }
             });
 
@@ -115,24 +117,18 @@ namespace Cafeine.ViewModels
         {
             switch (page)
             {
-                case nameof(LoginPage):
-                    InvisibleTab.Value = new GridLength(0, GridUnitType.Star);
-                    break;
                 case nameof(MainPage):
-                    InvisibleTab.Value = new GridLength();
                     WatchHoldPivot_Visibility.Value = true;
                     DetailsTab_Visibility.Value = false;
                     SearchBoxLoad.Value = Visibility.Collapsed;
                     break;
                 case nameof(ItemDetailsPage):
-                    InvisibleTab.Value = new GridLength();
                     WatchHoldPivot_Visibility.Value = false;
                     DetailsTab_Visibility.Value = true;
                     SearchBoxLoad.Value = Visibility.Collapsed;
                     NavigationTitle.Value = "Details";
                     break;
                 case nameof(SearchPage):
-                    InvisibleTab.Value = new GridLength();
                     WatchHoldPivot_Visibility.Value = false;
                     DetailsTab_Visibility.Value = true;
                     SearchBoxLoad.Value = Visibility.Visible;

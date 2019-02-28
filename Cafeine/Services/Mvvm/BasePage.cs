@@ -14,7 +14,6 @@ namespace Cafeine.Services.Mvvm
     {
         // Frame.IsLoaded is totally unrealiable 
         private bool PageisLoaded = false;
-
         protected async void OnLoaded(object sender, RoutedEventArgs e) {
             if (!PageisLoaded)
             {

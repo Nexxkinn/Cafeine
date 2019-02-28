@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.Services.Mvvm
 {
-    interface IViewModel
+    public interface IViewModel
     {
         Task OnNavigatedTo(NavigationEventArgs e);
         Task OnNavigatedFrom(NavigationEventArgs e);

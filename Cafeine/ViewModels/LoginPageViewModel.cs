@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
@@ -58,14 +59,13 @@ namespace Cafeine.ViewModels
                 await ImageCache.CreateImageCacheFolder();
                 if (Database.DoesAccountExists())
                 {
-                    eventAggregator.Publish(typeof(HomePageAvatarLoad));
                     showUserPanel();
                     await Database.CreateServicesFromUserAccounts();
                     if (FromWebsiteRegistration)
                     {
                         await Database.CreateDBFromServices();
                     }
-                    navigationService.Navigate(typeof(MainPage));
+                    NavigateToMainPage();
                 }
             },
             CancellationToken.None,
@@ -83,6 +83,14 @@ namespace Cafeine.ViewModels
             RaisePropertyChanged(nameof(CurrentUserAccount));
             RaisePropertyChanged(nameof(UserPanelVisibility));
             RaisePropertyChanged(nameof(SetupPanelVisibility));
+        }
+
+        public void NavigateToMainPage()
+        {
+            Frame frame = Window.Current.Content as Frame;
+            frame.Navigate(typeof(HomePage), null, new DrillInNavigationTransitionInfo());
+            eventAggregator.Publish(typeof(HomePageAvatarLoad));
+            navigationService.Navigate(typeof(MainPage));
         }
     }
 }

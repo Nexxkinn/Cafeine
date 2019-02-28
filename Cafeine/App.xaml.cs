@@ -23,13 +23,11 @@ namespace Cafeine
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Page rootpage = Window.Current.Content as Page;
+            Frame rootFrame = Window.Current.Content as Frame;
 
-            if (rootpage == null)
+            if (rootFrame == null)
             {
-                HomePage page= new HomePage();
-
-                Frame rootFrame = new Frame();
+                rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
@@ -45,22 +43,17 @@ namespace Cafeine
                     titleBar.ButtonBackgroundColor = Colors.Transparent;
                     titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 }
-
-                page.Vm.SetFrame(rootFrame);
-
-                Window.Current.Content = page;
-                
-                page.Vm.ChildFrame.Navigate(typeof(LoginPage), e.Arguments);
-
-                Window.Current.Activate();
+                Window.Current.Content = rootFrame;
             }
 
             if (e.PrelaunchActivated == false)
             {
-                if (rootpage == null)
+                if (rootFrame.Content == null)
                 {
                     // Place the frame in the current Window
+                    rootFrame.Navigate(typeof(LoginPage));
                 }
+                Window.Current.Activate();
             }
         }
         
