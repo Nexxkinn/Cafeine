@@ -203,7 +203,7 @@ namespace Cafeine.Services
                 {
                     ["mediaid"] = itemModel.Item.ItemId,
                     ["userstatus"] = StatusEnum.Anilist_UserStatus_Int2Str[itemModel.Item.UserStatus],
-                    ["progress"] = itemModel.Item.Total_Watched_Read
+                    ["progress"] = itemModel.Item.Watched_Read
                 }
             };
             await AnilistPostAsync(Query);
@@ -357,7 +357,7 @@ namespace Cafeine.Services
                                 UserStatus = userstatus,
                                 Status = itemstatus,
                                 Season = season % 10,
-                                Total_Watched_Read = ((int?)item["progress"]).GetValueOrDefault(),
+                                Watched_Read = ((int?)item["progress"]).GetValueOrDefault(),
                                 TotalEpisodes = ((int?)item["media"]["episodes"]).GetValueOrDefault(),
                                 // ID required to identify user's item
                                 AdditionalInfo = new Tuple<int, string>((int)item["id"], status)

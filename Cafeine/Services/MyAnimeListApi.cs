@@ -112,7 +112,7 @@ namespace Cafeine.Services
                                 SeriesStart = Convert.ToInt32(item.Element("series_start").Value.Take(4).ToString()),
                                 Category = "Anime",
                                 ItemId = (int)item.Element("series_animedb_id"),
-                                Total_Watched_Read = (int)item.Element("my_watched_episodes"),
+                                Watched_Read = (int)item.Element("my_watched_episodes"),
                                 UserScore = (int)item.Element("my_score"),
                                 //HACK : lol wtf with this abomination, I need a beer.
                                 UserStatus = StatusEnum.UserStatus[$"MAL_{item.Element("my_status").Value}"],
@@ -139,7 +139,7 @@ namespace Cafeine.Services
                                 Title = item.Element("series_title").Value,
                                 TotalEpisodes = (int)item.Element("series_chapters"),
                                 SeriesStart = Convert.ToInt32(item.Element("series_start").Value.Take(4).ToString()),
-                                Total_Watched_Read = (int)item.Element("my_read_chapters"),
+                                Watched_Read = (int)item.Element("my_read_chapters"),
                                 UserScore = (int)item.Element("my_score"),
                                 //HACK : You know what? I need a Vodka, instead.
                                 UserStatus = StatusEnum.UserStatus[$"MAL_{item.Element("my_status").Value}"],

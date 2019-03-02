@@ -82,7 +82,7 @@
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock
                                             FontWeight="Bold"
-                                            Text="{x:Bind Vm.Item.Total_Watched_Read, Mode=OneWay}"
+                                            Text="{x:Bind Vm.Item.Watched_Read, Mode=OneWay}"
                                             TextAlignment="Center"
                                             TextLineBounds="Tight" />
                                         <Line

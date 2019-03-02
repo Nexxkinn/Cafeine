@@ -82,7 +82,7 @@ namespace Cafeine.Models
 
         public int UserStatus { get; set; }
 
-        public int Total_Watched_Read { get; set; }
+        public int Watched_Read { get; set; }
 
         //This instance is filled when user clicked the item.
         public ItemDetailsModel Details { get; set; }
