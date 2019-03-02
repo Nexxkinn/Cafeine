@@ -24,7 +24,8 @@
             x:Name="item"
             Width="140"
             Height="252"
-            Background="{ThemeResource CafeineBlue}">
+            Background="{ThemeResource CafeineBlue}"
+            DataContext="{x:Bind}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="198" />
                 <RowDefinition Height="*" />
@@ -58,7 +59,6 @@
                 Opacity="0"
                 RelativePanel.AlignLeftWithPanel="True"
                 Stretch="Fill" />
-
             <TextBlock
                 x:Name="thetitle"
                 Grid.Row="1"
@@ -107,24 +107,6 @@
                 </StackPanel>
             </Grid>-->
     </DataTemplate>
-    <Style x:Key="CollectionItemContainerStyle" TargetType="GridViewItem">
-        <Setter Property="Margin" Value="0,20,4,0" />
-        <Setter Property="ContentTransitions">
-            <Setter.Value>
-                <!--
-                    Putting EntraceThemeTransition with IsStaggeringEnabled enabled
-                    on gridview.itemcontainertransition causes the transition to be
-                    fired only once, and doesn't run again for newer collection.
-                    
-                    A  quick  solution so far is by  placing  the transition inside
-                    ItemContainerStyle, and I don't think there'll be a fix for it.
-                -->
-                <TransitionCollection>
-                    <EntranceThemeTransition IsStaggeringEnabled="True" />
-                </TransitionCollection>
-            </Setter.Value>
-        </Setter>
-    </Style>
     <ControlTemplate x:Key="CustomizedCollectionGridView" TargetType="GridView">
         <Border
             Background="{TemplateBinding Background}"

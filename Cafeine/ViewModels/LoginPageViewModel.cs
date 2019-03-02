@@ -29,6 +29,7 @@ namespace Cafeine.ViewModels
 
             SetupPanelVisibility = true;
         }
+
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back) {

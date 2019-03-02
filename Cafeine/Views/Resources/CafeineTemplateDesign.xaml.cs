@@ -3,14 +3,10 @@ using Cafeine.Services;
 using Microsoft.Graphics.Canvas.Effects;
 using System;
 using System.Numerics;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
@@ -126,6 +122,6 @@ namespace Cafeine.Views.Resources
             loadImageOpacity.Begin();
         }
         #endregion
-       
+
     }
 }

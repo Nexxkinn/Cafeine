@@ -42,7 +42,6 @@ namespace Cafeine.Services
         {
             using (var tr = db.GetTransaction())
             {
-                tr.SynchronizeTables("user");
                 var item = tr.Select<byte[], byte[]>("user", 1.ToIndex(true)).ObjectGet<UserAccountModel>();
                 return item?.Entity;
             }
@@ -93,7 +92,6 @@ namespace Cafeine.Services
                 var accounts = new List<UserAccountModel>();
                 using (var t = db.GetTransaction())
                 {
-                    t.SynchronizeTables("user");
                     foreach (var item in t.SelectForwardFromTo<byte[], byte[]>("user",
                         2.ToIndex(0), true,
                         2.ToIndex(int.MaxValue), false))
@@ -279,20 +277,31 @@ namespace Cafeine.Services
             }
         }
 
-        public static async Task UpdateItem(ItemLibraryModel Item,bool userItemChanged = false)
+        public static async Task UpdateItem(ItemLibraryModel PooledItem,bool userItemChanged = false)
         {
             //assuming the item is from "default" UserItem 
             if (userItemChanged)
             {
                 UserAccountModel user = GetCurrentUserAccount();
+                UserItem item = PooledItem.Item;
                 IService service = services[user.Id];
-                await service.UpdateItem(Item);
+
+                // Item checking
+                // -> Set Status to Complete if either total watched is more than total episodes
+                //    or userstatus is completed
+                if ( item.Watched_Read >= item.TotalEpisodes || item.UserStatus == 1)
+                {
+                    item.UserStatus = 1;
+                    if( item.TotalEpisodes != 0) item.Watched_Read = item.TotalEpisodes; 
+                }
+                await service.UpdateItem(PooledItem);
             }
 
             using (var tr = db.GetTransaction())
             {
-                DBreezeObject<ItemLibraryModel> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)Item.Id)).ObjectGet<ItemLibraryModel>();
-                localitem.Entity = Item;
+                tr.SynchronizeTables("library");
+                DBreezeObject<ItemLibraryModel> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)PooledItem.Id)).ObjectGet<ItemLibraryModel>();
+                localitem.Entity = PooledItem;
                 localitem.Indexes = new List<DBreezeIndex>()
                     {
                         new DBreezeIndex(1,localitem.Entity.Id){PrimaryIndex = true},
@@ -302,8 +311,6 @@ namespace Cafeine.Services
                 tr.ObjectInsert("library", localitem, false);
                 tr.Commit();
             }
-
-
         }
 
         public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)
@@ -360,7 +367,7 @@ namespace Cafeine.Services
             using (var tr = db.GetTransaction())
             {
                 tr.SynchronizeTables("library");
-                List<ItemLibraryModel> items = new List<ItemLibraryModel>();
+                IList<ItemLibraryModel> items = new List<ItemLibraryModel>();
                 foreach (var localitem in tr.SelectForwardStartsWith<byte[], byte[]>("library", 3.ToIndex(category)))
                 {
                     var item = localitem.ObjectGet<ItemLibraryModel>();

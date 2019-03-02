@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
@@ -35,13 +36,15 @@ namespace Cafeine.ViewModels
             }
         }
         
-        public ReactiveProperty<int> SortBy { get;}
+        public ReactiveProperty<int> SortBy { get; }
 
-        public ReactiveProperty<int> FilterBy { get;}
+        public ReactiveProperty<int> FilterBy { get; }
 
-        public ReactiveProperty<int> TypeBy { get; set; }
+        public ReactiveProperty<int> TypeBy { get; }
 
         private int CurrentCategory;
+
+        private ItemLibraryModel RightClickedItem;
 
         public MainPageViewModel()
         {
@@ -66,10 +69,10 @@ namespace Cafeine.ViewModels
                 Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
             };
 
-            eventAggregator.Subscribe<int>(async (x) =>
+            eventAggregator.Subscribe<int?>(async (x) =>
                 {
-                    CurrentCategory = x;
-                    await Task.Factory.StartNew(() => DisplayItem(x),
+                    if(x.HasValue) CurrentCategory = x.Value;
+                    await Task.Factory.StartNew(() => DisplayItem(CurrentCategory),
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         TaskScheduler.FromCurrentSynchronizationContext());
@@ -105,11 +108,13 @@ namespace Cafeine.ViewModels
         {
             await Task.Yield();
             navigationService.ClearHistory();
-            if(e.NavigationMode == NavigationMode.Back)
-            {
-                await DisplayItem(CurrentCategory);
-            }
             await base.OnNavigatedTo(e);
+        }
+
+        public override Task OnNavigatedFrom(NavigationEventArgs e)
+        {
+            Library = new ObservableCollection<ItemLibraryModel>();
+            return base.OnNavigatedFrom(e);
         }
 
         private async Task DisplayItem(int value)
@@ -174,7 +179,7 @@ namespace Cafeine.ViewModels
                 navigationService.GoBack();
                 navigationService.RemoveLastPage();
             }
-            navigationService.Navigate(typeof(ItemDetailsPage));
+            navigationService.Navigate(typeof(ItemDetailsPage),CurrentCategory);
             eventAggregator.Publish(item, typeof(ItemDetailsID));
         }
 
@@ -182,6 +187,11 @@ namespace Cafeine.ViewModels
         {
             ItemLibraryModel clicked = e.ClickedItem as ItemLibraryModel;
             NavigateToItemDetails(clicked);
+        }
+
+        public void RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            RightClickedItem = ((FrameworkElement)e.OriginalSource).DataContext as ItemLibraryModel;
         }
     }
 }

@@ -26,10 +26,12 @@
             Margin="28,0,0,0"
             ContainerContentChanging="Collection_ContainerContentChanging"
             IsItemClickEnabled="True"
+            IsRightTapEnabled="True"
             ItemClick="{x:Bind Vm.ItemClicked}"
-            ItemContainerStyle="{StaticResource CollectionItemContainerStyle}"
             ItemTemplate="{StaticResource Collection}"
             ItemsSource="{x:Bind Vm.Library, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            RightTapped="{x:Bind Vm.RightTapped}"
+            SelectionMode="None"
             Template="{StaticResource CustomizedCollectionGridView}">
             <GridView.Header>
                 <Grid Height="40" Background="{ThemeResource CafeineDarkBlue}">
@@ -70,6 +72,38 @@
                     </StackPanel>
                 </Grid>
             </GridView.Header>
+            <GridView.ItemContainerStyle>
+                <Style TargetType="GridViewItem">
+                    <Setter Property="Margin" Value="0,20,4,0" />
+                    <Setter Property="ContentTransitions">
+                        <Setter.Value>
+                            <!--
+                                Putting  EntraceThemeTransition  with IsStaggeringEnabled enabled
+                                on  gridview.itemcontainertransition  causes the transition to be
+                                fired only once, and doesn't run again for newer collection.
+                                
+                                A  quick  solution so  far is by  placing  the transition  inside
+                                ItemContainerStyle, and I don't think there'll be a fix for this.
+                            -->
+                            <TransitionCollection>
+                                <EntranceThemeTransition IsStaggeringEnabled="True" />
+                            </TransitionCollection>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="ContextFlyout">
+                        <Setter.Value>
+                            <MenuFlyout>
+                                <MenuFlyoutSubItem Text="Set Item status">
+                                    <MenuFlyoutItem Text="Currently Watching" />
+                                    <MenuFlyoutItem Text="Finished Watvhing" />
+                                    <MenuFlyoutItem Text="On Hold" />
+                                    <MenuFlyoutItem Text="Dropped" />
+                                </MenuFlyoutSubItem>
+                            </MenuFlyout>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </GridView.ItemContainerStyle>
         </GridView>
     </Grid>
 </mvvm:BasePage>

@@ -25,6 +25,7 @@ namespace Cafeine.ViewModels
         public ObservableCollection<Episode> Episodelist { get; private set; }
         
         #region mvvm setup properties
+
         public CafeineCommand PlusOneTotalSeenTextBlock { get; }
 
         public CafeineCommand EpisodeListsClicked { get; }
@@ -177,25 +178,20 @@ namespace Cafeine.ViewModels
             eventAggregator.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetailsID));
 
         }
-        
+
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back)
                 eventAggregator.Unsubscribe(typeof(ItemDetailsID));
 
             if ( ItemBase != null && 
-                ( Item.UserStatus != UserStatusComboBox.Value || Item.Total_Watched_Read != TotalSeenTextBox.Value))
+                ( Item.UserStatus != UserStatusComboBox.Value || Item.Watched_Read != TotalSeenTextBox.Value))
             {
-                Item.Total_Watched_Read = TotalSeenTextBox.Value;
+                Item.Watched_Read = TotalSeenTextBox.Value;
                 Item.UserStatus = UserStatusComboBox.Value;
-                if(TotalSeenTextBox.Value >= Item.TotalEpisodes || Item.UserStatus == 1)
-                {
-                    Item.UserStatus = 1;
-                    Item.Total_Watched_Read = Item.TotalEpisodes;
-                }
                 await Database.UpdateItem(ItemBase,userItemChanged:true);
             }
-
+            eventAggregator.Publish(typeof(LoadItemStatus));
             await base.OnNavigatedFrom(e);
         }
 
@@ -205,7 +201,7 @@ namespace Cafeine.ViewModels
             Item = ItemBase.Item;
             RaisePropertyChanged(nameof(Item));
 
-            TotalSeenTextBox.Value = Item.Total_Watched_Read;
+            TotalSeenTextBox.Value = Item.Watched_Read;
             UserStatusComboBox.Value = Item.UserStatus;
 
             SetDeleteButtonLoad.Value = (ItemBase.Id != default(int));
