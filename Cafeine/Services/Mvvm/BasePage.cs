@@ -14,19 +14,19 @@ namespace Cafeine.Services.Mvvm
     {
         // Frame.IsLoaded is totally unrealiable 
         private bool PageisLoaded = false;
+        private ViewModelBase Vm => this.DataContext as ViewModelBase;
+
         protected async void OnLoaded(object sender, RoutedEventArgs e) {
             if (!PageisLoaded)
             {
-                ViewModelBase vm = this.DataContext as ViewModelBase;
-                await vm.OnLoaded(sender, e);
+                await Vm.OnLoaded(sender, e);
                 PageisLoaded = true;
             }
             else
             {
                 if(NavigationCacheMode == NavigationCacheMode.Disabled)
                 {
-                    ViewModelBase vm = this.DataContext as ViewModelBase;
-                    await vm.OnLoaded(sender, e);
+                    await Vm.OnLoaded(sender, e);
                 }
             }
         }
@@ -34,16 +34,14 @@ namespace Cafeine.Services.Mvvm
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             Frame.Loaded += OnLoaded;
-            ViewModelBase vm = this.DataContext as ViewModelBase;
-            await vm.OnNavigatedTo(e);
+            await Vm.OnNavigatedTo(e);
             base.OnNavigatedTo(e);
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             Frame.Loaded -= OnLoaded;
-            ViewModelBase vm = this.DataContext as ViewModelBase;
-            await vm.OnNavigatedFrom(e);
+            await Vm.OnNavigatedFrom(e);
             base.OnNavigatedFrom(e);
         }
 

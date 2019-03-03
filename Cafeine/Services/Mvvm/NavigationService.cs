@@ -36,8 +36,10 @@ namespace Cafeine.Services.Mvvm
         {
             return ChildPage.CanGoBack;
         }
-        public void GoBack()
+        public async Task GoBack()
         {
+            // run ongoingback first
+            await ((ChildPage.Content as BasePage).DataContext as ViewModelBase).OnGoingBack();
             if(Page != null)
             {
                 if (CanGoBack()) ChildPage.GoBack();

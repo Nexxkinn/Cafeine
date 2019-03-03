@@ -18,10 +18,12 @@ namespace Cafeine.Services.Mvvm
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
+
         public virtual Task OnNavigatedTo(NavigationEventArgs e) { return Task.CompletedTask; }
-        public virtual Task OnNavigatedFrom(NavigationEventArgs e) { return Task.CompletedTask; }
+        public virtual Task OnNavigatedFrom(NavigationEventArgs e = null) { return Task.CompletedTask; }
         public virtual Task OnLoaded(object sender, RoutedEventArgs e) { return Task.CompletedTask; }
-        
+        public virtual Task OnGoingBack() { return Task.CompletedTask; }
+
         public NavigationService navigationService;
         public ViewModelLink eventAggregator;
         public CafeineCommand GoBack;
@@ -29,7 +31,7 @@ namespace Cafeine.Services.Mvvm
         {
             navigationService = new NavigationService();
             eventAggregator = new ViewModelLink();
-            GoBack = new CafeineCommand(navigationService.GoBack);
+            GoBack = new CafeineCommand(async()=>await navigationService.GoBack());
         }
     }
 }

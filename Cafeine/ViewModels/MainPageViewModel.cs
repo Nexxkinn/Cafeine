@@ -79,7 +79,7 @@ namespace Cafeine.ViewModels
                 }
                 , typeof(LoadItemStatus));
 
-            eventAggregator.Subscribe(x =>
+            eventAggregator.Subscribe(async x =>
                 {
                     switch (x)
                     {
@@ -90,7 +90,7 @@ namespace Cafeine.ViewModels
                             navigationService.Navigate(typeof(SearchPage), state);
                             return;
                         case 2:
-                            navigationService.GoBack();
+                            await navigationService.GoBack();
                             return;
                     }
                 }
@@ -106,8 +106,8 @@ namespace Cafeine.ViewModels
         }
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
-            await Task.Yield();
             navigationService.ClearHistory();
+            await DisplayItem(CurrentCategory);
             await base.OnNavigatedTo(e);
         }
 
@@ -180,12 +180,14 @@ namespace Cafeine.ViewModels
                 navigationService.RemoveLastPage();
             }
             navigationService.Navigate(typeof(ItemDetailsPage),CurrentCategory);
-            eventAggregator.Publish(item, typeof(ItemDetailsID));
+            eventAggregator.Publish(item, typeof(ItemDetails));
         }
 
         public void ItemClicked(object sender, ItemClickEventArgs e)
         {
             ItemLibraryModel clicked = e.ClickedItem as ItemLibraryModel;
+
+
             NavigateToItemDetails(clicked);
         }
 

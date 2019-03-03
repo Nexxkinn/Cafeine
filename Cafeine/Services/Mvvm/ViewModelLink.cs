@@ -64,6 +64,6 @@ namespace Cafeine.Services.Mvvm
     public class NavigateSearchPage { }
     public class LoadItemStatus { }
     public class ChildFrameNavigating { }
-    public class ItemDetailsID { }
+    public class ItemDetails { }
     public class HomePageAvatarLoad { }
 }

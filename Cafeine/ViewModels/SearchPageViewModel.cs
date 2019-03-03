@@ -86,7 +86,7 @@ namespace Cafeine.ViewModels
                 navigationService.RemoveLastPage();
             }
             navigationService.Navigate(typeof(ItemDetailsPage));
-            eventAggregator.Publish(item, typeof(ItemDetailsID));
+            eventAggregator.Publish(item, typeof(ItemDetails));
         }
 
         private async Task GetResults(string keyword)

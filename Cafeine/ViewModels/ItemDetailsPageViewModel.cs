@@ -171,28 +171,31 @@ namespace Cafeine.ViewModels
                 if ((int)result.Id == 0)
                 {
                     await Database.DeleteItem(ItemBase);
-                    navigationService.GoBack();
+                    await navigationService.GoBack();
                 }
             });
 
-            eventAggregator.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetailsID));
+            eventAggregator.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetails));
 
         }
 
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back)
-                eventAggregator.Unsubscribe(typeof(ItemDetailsID));
+                eventAggregator.Unsubscribe(typeof(ItemDetails));
+            await base.OnNavigatedFrom(e);
+        }
 
-            if ( ItemBase != null && 
-                ( Item.UserStatus != UserStatusComboBox.Value || Item.Watched_Read != TotalSeenTextBox.Value))
+        public override async Task OnGoingBack()
+        {
+            if (ItemBase != null &&
+                (Item.UserStatus != UserStatusComboBox.Value || Item.Watched_Read != TotalSeenTextBox.Value))
             {
                 Item.Watched_Read = TotalSeenTextBox.Value;
                 Item.UserStatus = UserStatusComboBox.Value;
-                await Database.UpdateItem(ItemBase,userItemChanged:true);
+                await Database.UpdateItem(ItemBase, userItemChanged: true);
             }
-            eventAggregator.Publish(typeof(LoadItemStatus));
-            await base.OnNavigatedFrom(e);
+            await base.OnGoingBack();
         }
 
         private void LoadItem(ItemLibraryModel item)
