@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
     { 
         private IEnumerable<ItemLibraryModel> ListedItems;
 
@@ -38,6 +38,7 @@ namespace Cafeine.ViewModels
         
         public ReactiveProperty<int> SortBy { get; }
 
+        public ReactiveProperty<int> TabbedIndex { get; }
         public ReactiveProperty<int> FilterBy { get; }
 
         public ReactiveProperty<int> TypeBy { get; }
@@ -46,10 +47,9 @@ namespace Cafeine.ViewModels
 
         private ItemLibraryModel RightClickedItem;
 
-        public MainPageViewModel()
+        public MainViewModel()
         {
             //setup
-            eventAggregator = new ViewModelLink();
 
             SortBy = new ReactiveProperty<int>(0);
             SortBy.PropertyChanged += (_, e) =>
@@ -69,32 +69,15 @@ namespace Cafeine.ViewModels
                 Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
             };
 
-            eventAggregator.Subscribe<int?>(async (x) =>
+            TabbedIndex = new ReactiveProperty<int>();
+            TabbedIndex.Subscribe(async
+                x =>
                 {
-                    if(x.HasValue) CurrentCategory = x.Value;
                     await Task.Factory.StartNew(() => DisplayItem(CurrentCategory),
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         TaskScheduler.FromCurrentSynchronizationContext());
-                }
-                , typeof(LoadItemStatus));
-
-            eventAggregator.Subscribe(async x =>
-                {
-                    switch (x)
-                    {
-                        case 1:
-                            // can't go back -> assume it's the main page
-                            // can go back -> assume it's details page
-                            int state = navigationService.CanGoBack() ? 1 : 0;
-                            navigationService.Navigate(typeof(SearchPage), state);
-                            return;
-                        case 2:
-                            await navigationService.GoBack();
-                            return;
-                    }
-                }
-                , typeof(NavigateSearchPage));
+                });
         }
         public override async Task OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -164,8 +147,10 @@ namespace Cafeine.ViewModels
             };
         }
 
-        private void NavigateToItemDetails(ItemLibraryModel item)
+        public void ItemClicked(object sender, ItemClickEventArgs e)
         {
+            ItemLibraryModel item = e.ClickedItem as ItemLibraryModel;
+
             // Why would you need to use EventAggregator to pass the data?
             // Because the navigation parameter is so shitty that it only
             // accepts primitve types such as string, int, etc. Otherwise,
@@ -179,16 +164,7 @@ namespace Cafeine.ViewModels
                 navigationService.GoBack();
                 navigationService.RemoveLastPage();
             }
-            navigationService.Navigate(typeof(ItemDetailsPage),CurrentCategory);
-            eventAggregator.Publish(item, typeof(ItemDetails));
-        }
-
-        public void ItemClicked(object sender, ItemClickEventArgs e)
-        {
-            ItemLibraryModel clicked = e.ClickedItem as ItemLibraryModel;
-
-
-            NavigateToItemDetails(clicked);
+            navigationService.Navigate(typeof(ItemDetailsPage), item.Id);
         }
 
         public void RightTapped(object sender, RightTappedRoutedEventArgs e)

@@ -263,6 +263,24 @@ namespace Cafeine.Services
             }
         }
 
+        /// <summary>
+        /// One parameter MUST exist.
+        /// </summary>
+        /// <param name="DatabaseID"></param>
+        /// <param name="MAL_ID"></param>
+        public static ItemLibraryModel GetItemLibraryModel(int? DatabaseID = null, int? MAL_ID = null)
+        {
+            ItemLibraryModel item;
+            using(var tr = db.GetTransaction())
+            {
+                DBreezeObject<ItemLibraryModel> localitem;
+                byte[] key = 1.ToIndex((int)DatabaseID.Value) ?? 2.ToIndex((int)MAL_ID.Value);
+                localitem = tr.Select<byte[], byte[]>("library", key).ObjectGet<ItemLibraryModel>();
+                item = localitem.Entity;
+            }
+            return item;
+        }
+
         public static async Task DeleteItem(ItemLibraryModel Item)
         {
             UserAccountModel user = GetCurrentUserAccount();
@@ -289,10 +307,10 @@ namespace Cafeine.Services
                 // Item checking
                 // -> Set Status to Complete if either total watched is more than total episodes
                 //    or userstatus is completed
-                if ( item.Watched_Read >= item.TotalEpisodes || item.UserStatus == 1)
+                if ( item.Watched_Read >= item.EpisodesChapters || item.UserStatus == 1)
                 {
                     item.UserStatus = 1;
-                    if( item.TotalEpisodes != 0) item.Watched_Read = item.TotalEpisodes; 
+                    if( item.EpisodesChapters != 0) item.Watched_Read = item.EpisodesChapters; 
                 }
                 await service.UpdateItem(PooledItem);
             }

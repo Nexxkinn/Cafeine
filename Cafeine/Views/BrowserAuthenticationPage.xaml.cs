@@ -31,6 +31,6 @@ namespace Cafeine.Views
             this.InitializeComponent();
         }
 
-        public BrowserAuthenticationPageViewModel Vm => DataContext as BrowserAuthenticationPageViewModel;
+        public BrowserAuthViewModel Vm => DataContext as BrowserAuthViewModel;
     }
 }

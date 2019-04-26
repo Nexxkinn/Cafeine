@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class LoginPageViewModel : ViewModelBase
+    public class LoginViewModel : ViewModelBase
     {
         public bool UserPanelVisibility;
 
@@ -23,7 +23,7 @@ namespace Cafeine.ViewModels
 
         public bool FromWebsiteRegistration = false;
 
-        public LoginPageViewModel()
+        public LoginViewModel()
         {
             UserPanelVisibility = false;
 
@@ -90,7 +90,7 @@ namespace Cafeine.ViewModels
         {
             Frame frame = Window.Current.Content as Frame;
             frame.Navigate(typeof(HomePage), null, new DrillInNavigationTransitionInfo());
-            eventAggregator.Publish(typeof(HomePageAvatarLoad));
+            Link.Publish(typeof(HomePageAvatarLoad));
             navigationService.Navigate(typeof(MainPage));
         }
     }

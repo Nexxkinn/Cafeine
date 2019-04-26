@@ -13,9 +13,9 @@ namespace Cafeine.Services.Mvvm
 {
     public class NavigationService
     {
-        private HomePage Page => (Window.Current.Content as Frame).Content as HomePage;
-        private Frame ChildPage => Page.Vm.ChildFrame;
         private Frame RootFrame => Window.Current.Content as Frame;
+        private Frame ChildPage => Page.Vm.ChildFrame;
+        private HomePage Page => RootFrame.Content as HomePage;
 
         // Default cacheMode as enabled, as it was intended for controlling cache. 
         public void Navigate(Type type, object parameter = null) => Navigate(type, parameter, null);
@@ -23,7 +23,6 @@ namespace Cafeine.Services.Mvvm
         {
             if(Page != null)
             {
-                Page.Vm.SetWindowState(type.Name);
                 ChildPage.Navigate(type, parameter, navigationtransition);
             }
             else
@@ -39,11 +38,9 @@ namespace Cafeine.Services.Mvvm
         public async Task GoBack()
         {
             // run ongoingback first
-            await ((ChildPage.Content as BasePage).DataContext as ViewModelBase).OnGoingBack();
             if(Page != null)
             {
                 if (CanGoBack()) ChildPage.GoBack();
-                Page.Vm.SetWindowState(ChildPage.CurrentSourcePageType.Name);
             }
             else
             {

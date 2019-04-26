@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class ItemDetailsPageViewModel : ViewModelBase
+    public class ItemDetailsViewModel : ViewModelBase
     {
         public UserItem Item { get; set; }
 
@@ -75,14 +75,14 @@ namespace Cafeine.ViewModels
         public CafeineProperty<int> UserStatusComboBox { get; }
         #endregion
 
-        public ItemDetailsPageViewModel()
+        public ItemDetailsViewModel()
         {
             navigationService = new NavigationService();
 
             Item = new UserItem();
             PaneBackground = new CafeineProperty<Brush>(new SolidColorBrush(Windows.UI.Colors.Transparent));
             IsPaneOpened = new ReactiveProperty<bool>(false);
-            IsPaneOpened.Subscribe(async (ipo) =>
+            IsPaneOpened.Subscribe((ipo) =>
             {
                 PaneBackground.Value = ipo
                     ? Application.Current.Resources["SystemControlBackgroundChromeMediumLowBrush"] as SolidColorBrush
@@ -175,14 +175,14 @@ namespace Cafeine.ViewModels
                 }
             });
 
-            eventAggregator.Subscribe<ItemLibraryModel>(LoadItem, typeof(ItemDetails));
+            Link.Subscribe<ItemLibraryModel>( async x => await LoadItem(x), typeof(OnlineLoadItemDetails));
 
         }
 
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode == NavigationMode.Back)
-                eventAggregator.Unsubscribe(typeof(ItemDetails));
+                Link.Unsubscribe(typeof(OnlineLoadItemDetails));
             await base.OnNavigatedFrom(e);
         }
 
@@ -198,27 +198,28 @@ namespace Cafeine.ViewModels
             await base.OnGoingBack();
         }
 
-        private void LoadItem(ItemLibraryModel item)
+        public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
-            ItemBase = item;
-            Item = ItemBase.Item;
-            RaisePropertyChanged(nameof(Item));
-
-            TotalSeenTextBox.Value = Item.Watched_Read;
-            UserStatusComboBox.Value = Item.UserStatus;
-
-            SetDeleteButtonLoad.Value = (ItemBase.Id != default(int));
-            Task.Factory.StartNew(async () => await LoadAsync(),
-                CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
+            // Expect to get ID
+            if(e.Parameter != null)
+            {
+                await Task.Yield(); // force async mode
+                var item = Database.GetItemLibraryModel(DatabaseID: (int)e.Parameter);
+                await LoadItem(item);
+            }
+            await base.OnNavigatedTo(e);
         }
-
-        //TODO : Handle Manga/novel item type.
-        public async Task LoadAsync()
+        public async Task LoadItem(ItemLibraryModel item)
         {
             try
             {
+                ItemBase = item;
+                Item = ItemBase.Item;
+                RaisePropertyChanged(nameof(Item));
+                TotalSeenTextBox.Value = Item.Watched_Read;
+                UserStatusComboBox.Value = Item.UserStatus;
+                SetDeleteButtonLoad.Value = (ItemBase.Id != default(int));
+
                 StatusTextBlock.Value = $"{StatusEnum.Anilist_AnimeItemStatus[Item.Status]} • {Item.SeriesStart} • TV";
                 double score = Item.AverageScore ?? -1;
                 ScorePlaceHolderRating.Value = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(score);
@@ -251,7 +252,7 @@ namespace Cafeine.ViewModels
                     else ItemBase.Episodes = new List<Episode>();
                     await Task.Delay(100);
                     LoadEpisodeLists.Value = (ItemBase.Episodes.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
-                    
+
                     //load episode list from service.
                     List<Episode> EpisodeService = await Database.UpdateItemEpisodes(Item, ItemBase.Id, ServiceType.ANILIST, MediaTypeEnum.ANIME);
                     foreach (var episode in EpisodeService)
@@ -264,7 +265,7 @@ namespace Cafeine.ViewModels
                             Episodelist?.Add(episode);
                         }
                     }
-                    if(ItemBase.Episodes.Count == 0)
+                    if (ItemBase.Episodes.Count == 0)
                     {
                         LoadEpisodeNotFound.Value = true;
                         LoadEpisodeLists.Value = Visibility.Collapsed;
@@ -284,7 +285,7 @@ namespace Cafeine.ViewModels
                 await Task.WhenAll(task);
 
                 // Check if item source is from library or search query
-                if(ItemBase.Id != default(int)) await Database.UpdateItem(ItemBase);
+                if (ItemBase.Id != default(int)) await Database.UpdateItem(ItemBase);
             }
             catch (Exception ex)
             {

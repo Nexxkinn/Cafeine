@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class SearchPageViewModel : ViewModelBase
+    public class SearchViewModel : ViewModelBase
     {
         private int? MainPageCurrentState;
 
@@ -32,11 +32,11 @@ namespace Cafeine.ViewModels
 
         public CafeineProperty<bool> OnlineResultsNoMatches = new CafeineProperty<bool>();
         
-        public SearchPageViewModel()
+        public SearchViewModel()
         {            
             OfflineResults = new ObservableCollection<ItemLibraryModel>();
 
-            eventAggregator.Subscribe<string>(x=> Keyword.Value = x, typeof(Keyword));
+            Link.Subscribe<string>(x=> Keyword.Value = x, typeof(Keyword));
 
             // RX.NET RANT:
             // Not implementing .ObserveOnDispatcher() causes
@@ -66,6 +66,12 @@ namespace Cafeine.ViewModels
             await base.OnNavigatedTo(e);
         }
 
+        public override Task OnNavigatedFrom(NavigationEventArgs e = null)
+        {
+            Link.Publish(typeof(RevertSearchBox));
+            return base.OnNavigatedFrom(e);
+        }
+
         public void ItemClicked(object sender, ItemClickEventArgs e)
         {
             var clicked = e.ClickedItem as ItemLibraryModel;
@@ -81,12 +87,12 @@ namespace Cafeine.ViewModels
             //
             // Reference : http://archive.is/L1v1H
             // Backup    : http://runtime117.rssing.com/chan-13993968/all_p3.html
-            if(MainPageCurrentState.Value == 1)
-            {
-                navigationService.RemoveLastPage();
-            }
+            //if(MainPageCurrentState.Value == 1)
+            //{
+            //    navigationService.RemoveLastPage();
+            //}
             navigationService.Navigate(typeof(ItemDetailsPage));
-            eventAggregator.Publish(item, typeof(ItemDetails));
+            Link.Publish(item, typeof(OnlineLoadItemDetails));
         }
 
         private async Task GetResults(string keyword)

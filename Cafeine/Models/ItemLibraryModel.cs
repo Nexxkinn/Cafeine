@@ -2,16 +2,9 @@
 using Cafeine.Services;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reactive.Concurrency;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Cafeine.Models
@@ -19,17 +12,19 @@ namespace Cafeine.Models
     public sealed class ItemLibraryModel 
     {
         /// <summary>
-        /// 0 - MyanimeList
-        /// 1 - Anilist
-        /// 2 - Kitsu
-        /// 3 - ?
+        /// Database ID. Not for use.
         /// </summary>
-        //local database id, totally not related to any service's id.
         public int Id { get; set; }
-
-        //Ironically accepted ID for all services.
+        
+        /// <summary>
+        /// Accepted id for all known services. 
+        /// Use this one for identification or to get item.
+        /// </summary>
         public int MalID { get; set; }
         
+        /// <summary>
+        /// Returns currently default item.
+        /// </summary>
         public UserItem Item {
             get { return Service?["default"]; }
             set {
@@ -39,7 +34,7 @@ namespace Cafeine.Models
                 }
             }
         }
-        
+
 
         //Fetch from Anilist only
         //[MAL ONLY] since MyAnimeList doesn't have any feature to list episodes title
@@ -55,10 +50,11 @@ namespace Cafeine.Models
 
     public class UserItem 
     {
-        //Get Id number from the service
-        public int ItemId { get; set; }
-
-        //Title from the service
+        /// <summary>
+        /// Get Id number from the service
+        /// </summary>
+        public int ServiceId { get; set; }
+        
         public string Title { get; set; }
 
         public string CoverImageUri { get; set; }
@@ -69,7 +65,10 @@ namespace Cafeine.Models
 
         public int Status { get; set; }
 
-        public int TotalEpisodes { get; set; }
+        /// <summary>
+        /// Item's total episodes.
+        /// </summary>
+        public int EpisodesChapters { get; set; }
 
         public int SeriesStart { get; set; }
 
@@ -82,6 +81,9 @@ namespace Cafeine.Models
 
         public int UserStatus { get; set; }
 
+        /// <summary>
+        /// User's total episodes/chapters watched/read.
+        /// </summary>
         public int Watched_Read { get; set; }
 
         //This instance is filled when user clicked the item.
@@ -97,22 +99,37 @@ namespace Cafeine.Models
         public object AdditionalInfo;
     }
 
-    public class Episode
+    public class EpisodeItem
     {
         /// <summary>
-        /// Key are used for getting details about localfile.
+        /// Database ID. Not for use.
         /// </summary>
-        public string HashKey { get; set; }
+        public int ID { get; set; }
+        /// <summary>
+        /// MAL ID to connect with library item.
+        /// </summary>
+        public int MAL_ID { get; set; }
+        /// <summary>
+        /// Saved folder path.
+        /// </summary>
+        public string FolderPath { get; set; }
+        /// <summary>
+        /// listed items with saved configuration
+        /// </summary>
+        public IList<Episode> Episodes { get; set; }
+    }
 
-        public StorageFile LocalFile;
+    public class Episode
+    {
+        public int Number { get; set; }
 
         public string Title { get; set; }
 
-        public string OnlineThumbnail;
+        public string OnlineThumbnail { get; set; }
 
-        public string LocalFileName => LocalFile?.Name;
-
-        public string UrlLink { get; set; }
+        public string StreamingUrl { get; set; }
+        
+        public string FileName { get; set; }
 
         public async void Thumbnail_Loaded(object sender, RoutedEventArgs e)
         {

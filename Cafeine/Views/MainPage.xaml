@@ -11,19 +11,36 @@
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
-        <vm:MainPageViewModel />
+        <vm:MainViewModel />
     </mvvm:BasePage.DataContext>
-    <Grid>
+    <Grid Margin="28,0,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <Pivot VerticalAlignment="Bottom">
+        <!--SelectedIndex="{x:Bind Path=Vm.TabbedIndex.Value, Mode=TwoWay}"
+                Visibility="{x:Bind Path=Vm.WatchHoldPivot_Visibility.Value, Mode=OneWay}">-->
+            <Pivot.Resources>
+                <Style TargetType="PivotHeaderItem">
+                    <Setter Property="FontWeight" Value="SemiBold" />
+                    <Setter Property="FontSize" Value="17" />
+                    <Setter Property="Padding" Value="8,0,8,0" />
+                </Style>
+            </Pivot.Resources>
+            <PivotItem Header="Watching" />
+            <PivotItem Header="Completed" />
+            <PivotItem Header="Hold" />
+            <PivotItem Header="Dropped" />
+            <PivotItem Header="Planned" />
+
+        </Pivot>
         <GridView
             x:Name="collection"
-            Grid.RowSpan="2"
-            Margin="28,0,0,0"
+            Grid.Row="1"
             ContainerContentChanging="Collection_ContainerContentChanging"
             IsItemClickEnabled="True"
             IsRightTapEnabled="True"

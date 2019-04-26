@@ -14,7 +14,7 @@
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
-        <vm:ItemDetailsPageViewModel />
+        <vm:ItemDetailsViewModel />
     </Page.DataContext>
     <Page.Transitions>
         <TransitionCollection>
@@ -96,7 +96,7 @@
                                             StrokeThickness="1.5"
                                             X2="20" />
                                         <TextBlock
-                                            Text="{x:Bind Vm.Item.TotalEpisodes, Mode=OneWay}"
+                                            Text="{x:Bind Vm.Item.EpisodesChapters, Mode=OneWay}"
                                             TextAlignment="Center"
                                             TextLineBounds="Tight" />
                                     </StackPanel>
@@ -162,7 +162,7 @@
                                     Margin="8,0,2,0"
                                     HorizontalAlignment="Center"
                                     RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    RelativePanel.LeftOf="TotalEpisodes"
+                                    RelativePanel.LeftOf="EpisodesChapters"
                                     Stroke="White"
                                     StrokeDashCap="Square"
                                     StrokeEndLineCap="Round"
@@ -171,11 +171,11 @@
                                     X2="5"
                                     Y1="14" />
                                 <TextBlock
-                                    x:Name="TotalEpisodes"
+                                    x:Name="EpisodesChapters"
                                     Margin="2,0"
                                     RelativePanel.AlignRightWithPanel="True"
                                     RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    Text="{x:Bind Vm.Item.TotalEpisodes, Mode=OneWay}" />
+                                    Text="{x:Bind Vm.Item.EpisodesChapters, Mode=OneWay}" />
 
                             </RelativePanel>
                             <RelativePanel

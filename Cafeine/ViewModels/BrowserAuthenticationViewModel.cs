@@ -10,14 +10,14 @@ using Windows.UI.Xaml.Controls;
 
 namespace Cafeine.ViewModels
 {
-    public class BrowserAuthenticationPageViewModel : ViewModelBase, IViewModel
+    public class BrowserAuthViewModel : ViewModelBase, IViewModel
     {
 
         public ReactiveProperty<Uri> Source;
 
         public ReactiveProperty<string> HeaderTitle { get; }
 
-        public BrowserAuthenticationPageViewModel()
+        public BrowserAuthViewModel()
         {
             navigationService = new NavigationService();
 
@@ -25,10 +25,12 @@ namespace Cafeine.ViewModels
 
             Source = new ReactiveProperty<Uri>(new Uri("https://anilist.co/api/v2/oauth/authorize?client_id=873&response_type=token"));
 
-            GoBack = new CafeineCommand(() => {
-                navigationService.GoBack();
-                navigationService.ClearHistory();
-            });
+            GoBack = new CafeineCommand(
+                async() => 
+                {
+                    await navigationService.GoBack();
+                    navigationService.ClearHistory();
+                });
         }
         public async void UrlCheck(WebView sender, WebViewNavigationCompletedEventArgs args)
         {

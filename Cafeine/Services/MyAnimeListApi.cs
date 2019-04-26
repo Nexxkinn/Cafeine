@@ -108,10 +108,10 @@ namespace Cafeine.Services
                             [ServiceName] = new UserItem
                             {
                                 Title = item.Element("series_title").Value,
-                                TotalEpisodes = (int)item.Element("series_episodes"),
+                                EpisodesChapters = (int)item.Element("series_episodes"),
                                 SeriesStart = Convert.ToInt32(item.Element("series_start").Value.Take(4).ToString()),
                                 Category = "Anime",
-                                ItemId = (int)item.Element("series_animedb_id"),
+                                ServiceId = (int)item.Element("series_animedb_id"),
                                 Watched_Read = (int)item.Element("my_watched_episodes"),
                                 UserScore = (int)item.Element("my_score"),
                                 //HACK : lol wtf with this abomination, I need a beer.
@@ -137,7 +137,7 @@ namespace Cafeine.Services
                             {
                                 Category = "Manga",
                                 Title = item.Element("series_title").Value,
-                                TotalEpisodes = (int)item.Element("series_chapters"),
+                                EpisodesChapters = (int)item.Element("series_chapters"),
                                 SeriesStart = Convert.ToInt32(item.Element("series_start").Value.Take(4).ToString()),
                                 Watched_Read = (int)item.Element("my_read_chapters"),
                                 UserScore = (int)item.Element("my_score"),

@@ -61,9 +61,8 @@ namespace Cafeine.Services.Mvvm
 
     // Write all Type here
     public class Keyword { }
-    public class NavigateSearchPage { }
-    public class LoadItemStatus { }
+    public class RevertSearchBox { }
     public class ChildFrameNavigating { }
-    public class ItemDetails { }
+    public class OnlineLoadItemDetails { }
     public class HomePageAvatarLoad { }
 }

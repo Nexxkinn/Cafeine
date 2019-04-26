@@ -22,7 +22,7 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class ItemDetailsPage : BasePage
     {
-        public ItemDetailsPageViewModel Vm  => DataContext as ItemDetailsPageViewModel;
+        public ItemDetailsViewModel Vm  => DataContext as ItemDetailsViewModel;
 
         public ItemDetailsPage()
         {

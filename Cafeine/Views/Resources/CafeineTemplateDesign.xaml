@@ -95,7 +95,7 @@
                     <TextBlock x:Name="Myepisode" Text="{x:Bind Path=My_watch, Mode=OneWay}" Margin="0,2" FontSize="28" Foreground="White" FontFamily="ms-appx:/Assets/Fonts/Montserrat/Montserrat-Bold.ttf#Montserrat" TextLineBounds="Tight" />
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Of" FontWeight="Light" Foreground="White" />
-                        <TextBlock Text="{x:Bind Path=TotalEpisodesChapters}" Padding="4,0" FontWeight="Medium" Foreground="White" />
+                        <TextBlock Text="{x:Bind Path=EpisodesChaptersChapters}" Padding="4,0" FontWeight="Medium" Foreground="White" />
                         <TextBlock Text="Episodes" FontWeight="Light" Foreground="White" Visibility="{x:Bind Path=AnimeItemVisibility}" />
                         <TextBlock Text="Chapters" FontWeight="Light" Foreground="White" Visibility="{x:Bind Path=MangaItemVisibility}" />
                     </StackPanel>

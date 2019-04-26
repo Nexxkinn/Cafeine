@@ -19,7 +19,7 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class MainPage : BasePage
     {
-        public MainPageViewModel Vm => DataContext as MainPageViewModel;
+        public MainViewModel Vm => DataContext as MainViewModel;
 
         public MainPage()
         {

@@ -141,7 +141,7 @@ namespace Cafeine.Services
                         }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["mediaid"] = itemModel.Item.ItemId,
+                    ["mediaid"] = itemModel.Item.ServiceId,
                     ["score"] = 0
                 }
             };
@@ -201,7 +201,7 @@ namespace Cafeine.Services
             ",
                 variables = new Dictionary<string, dynamic>
                 {
-                    ["mediaid"] = itemModel.Item.ItemId,
+                    ["mediaid"] = itemModel.Item.ServiceId,
                     ["userstatus"] = StatusEnum.Anilist_UserStatus_Int2Str[itemModel.Item.UserStatus],
                     ["progress"] = itemModel.Item.Watched_Read
                 }
@@ -226,7 +226,7 @@ namespace Cafeine.Services
                             }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["id"] = item.ItemId,
+                    ["id"] = item.ServiceId,
                     ["type"] = media.ToString()
                 }
             };
@@ -262,7 +262,7 @@ namespace Cafeine.Services
                             }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["id"] = item.ItemId,
+                    ["id"] = item.ServiceId,
                     ["type"] = media.ToString()
                 }
             };
@@ -351,14 +351,14 @@ namespace Cafeine.Services
                                 Title = item["media"]["title"]["romaji"],
                                 CoverImageUri = item["media"]["coverImage"]["large"],
                                 SeriesStart = ((int?)item["media"]["startDate"]["year"]).GetValueOrDefault(),
-                                ItemId = (int)item["mediaId"],
+                                ServiceId = (int)item["mediaId"],
                                 UserScore = ((double?)item["score"]).GetValueOrDefault(),
                                 AverageScore = ((double?)item["media"]["averageScore"]).GetValueOrDefault(),
                                 UserStatus = userstatus,
                                 Status = itemstatus,
                                 Season = season % 10,
                                 Watched_Read = ((int?)item["progress"]).GetValueOrDefault(),
-                                TotalEpisodes = ((int?)item["media"]["episodes"]).GetValueOrDefault(),
+                                EpisodesChapters = ((int?)item["media"]["episodes"]).GetValueOrDefault(),
                                 // ID required to identify user's item
                                 AdditionalInfo = new Tuple<int, string>((int)item["id"], status)
                             }
@@ -431,7 +431,7 @@ namespace Cafeine.Services
                     {
                         ["default"] = new UserItem()
                         {
-                            ItemId = (int)item["id"],
+                            ServiceId = (int)item["id"],
                             Title = item["title"]["romaji"],
                             CoverImageUri = item["coverImage"]["large"],
                             Details = new ItemDetailsModel()
@@ -441,7 +441,7 @@ namespace Cafeine.Services
                             AverageScore = (double?)item["averageScore"],
                             Status = itemstatus,
                             SeriesStart = startdate ?? 0,
-                            TotalEpisodes = episodes,
+                            EpisodesChapters = episodes,
                             Season = season
                         }
                     }

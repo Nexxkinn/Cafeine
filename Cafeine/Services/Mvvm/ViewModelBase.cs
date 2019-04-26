@@ -25,12 +25,12 @@ namespace Cafeine.Services.Mvvm
         public virtual Task OnGoingBack() { return Task.CompletedTask; }
 
         public NavigationService navigationService;
-        public ViewModelLink eventAggregator;
+        public ViewModelLink Link;
         public CafeineCommand GoBack;
         public ViewModelBase()
         {
             navigationService = new NavigationService();
-            eventAggregator = new ViewModelLink();
+            Link = new ViewModelLink();
             GoBack = new CafeineCommand(async()=>await navigationService.GoBack());
         }
     }
