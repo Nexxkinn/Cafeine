@@ -38,7 +38,7 @@
                 Text="Cafeine Alpha" />
             <StackPanel
                 Background="{StaticResource CafeineDarkBlue}"
-                Margin="0,14,28,0"
+                Margin="0,14,42,0"
                 Grid.Column="1"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"

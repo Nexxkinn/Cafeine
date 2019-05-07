@@ -56,15 +56,27 @@ namespace Cafeine.Views
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ItemDetailScroller);
             Compositor compositor = scrollerPropertySet.Compositor;
 
-            string progress = "Clamp(Abs(america.Translation.Y) / 244.0, 0.0, 1.0)";
+            string progress = "Clamp(Abs(america.Translation.Y) / 240.0, 0.0, 1.0)";
 
             // Shift the header by 50 pixels when scrolling down
-            var offsetExpression = compositor.CreateExpressionAnimation($"-america.Translation.Y - {progress} * 244");
+            var offsetExpression = compositor.CreateExpressionAnimation($"-america.Translation.Y - {progress} * 240");
             offsetExpression.SetReferenceParameter("america", scrollerPropertySet);
 
             // Shift the option button by 244 pixel (?) when scrolling down
             var itemoptionsvisual = ElementCompositionPreview.GetElementVisual(ItemOptions);
             itemoptionsvisual.StartAnimation("offset.Y", offsetExpression);
+
+            var episodelistconfvisual = ElementCompositionPreview.GetElementVisual(EpisodesListConfiguration);
+            episodelistconfvisual.StartAnimation("offset.Y", offsetExpression);
+
+            // add a patch background.
+            var backgroundadder = ElementCompositionPreview.GetElementVisual(backgroundadded);
+            string _backExpression = "Clamp(Abs(america.Translation.Y) / 288.0, 0.0, 1.0)";
+            var _backoffset = compositor.CreateExpressionAnimation($"({progress} * 240) - ({_backExpression} * 288)");
+            _backoffset.SetReferenceParameter("america", scrollerPropertySet);
+
+            backgroundadder.StopAnimation("offset.Y");
+            backgroundadder.StartAnimation("offset.Y", _backoffset);
         }
 
         private void BackgroundImage_ImageOpened(object sender, RoutedEventArgs e)

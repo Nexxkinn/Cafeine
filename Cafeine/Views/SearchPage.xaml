@@ -15,17 +15,17 @@
     </Page.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="80" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="48"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="48" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <AppBarButton
-            VerticalAlignment="Bottom"
             Width="48"
             Height="48"
+            VerticalAlignment="Bottom"
             Command="{x:Bind Path=Vm.GoBack}"
             LabelPosition="Collapsed"
             Style="{StaticResource ReducedAppBarButtonRevealStyle}">

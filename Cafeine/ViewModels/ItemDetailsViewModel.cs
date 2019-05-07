@@ -48,7 +48,7 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<bool> LoadItemDetails { get; }
 
-        public CafeineProperty<bool> LoadEpisodesListConfiguration { get; }
+        public CafeineProperty<Visibility> LoadEpisodesListConfiguration { get; }
 
         public CafeineProperty<Visibility> LoadEpisodeLists { get; }
 
@@ -105,7 +105,7 @@ namespace Cafeine.ViewModels
             LoadEpisodeLists = new CafeineProperty<Visibility>(Visibility.Collapsed);
             LoadEpisodeSettings = new CafeineProperty<bool>(false);
             LoadEpisodeNotFound = new CafeineProperty<bool>(false);
-            LoadEpisodesListConfiguration = new CafeineProperty<bool>(true);
+            LoadEpisodesListConfiguration = new CafeineProperty<Visibility>(Visibility.Visible);
 
             SetAddButtonLoad = new CafeineProperty<bool>(false);
             SetDeleteButtonLoad = new ReactiveProperty<bool>(true);
@@ -135,7 +135,7 @@ namespace Cafeine.ViewModels
                     LoadEpisodeLists.Value = Visibility.Visible;
                 }
                 LoadEpisodeSettings.Value = false;
-                LoadEpisodesListConfiguration.Value = true;
+                LoadEpisodesListConfiguration.Value = Visibility.Visible;
             });
 
             EpisodeSettingsClicked = new CafeineCommand(()=> 
@@ -143,7 +143,7 @@ namespace Cafeine.ViewModels
                 LoadEpisodeLists.Value = Visibility.Collapsed;
                 LoadEpisodeNotFound.Value = false;
                 LoadEpisodeSettings.Value = true;
-                LoadEpisodesListConfiguration.Value = false;
+                LoadEpisodesListConfiguration.Value = Visibility.Collapsed;
             });
 
             UserItemDetailsClicked = new CafeineCommand(() => IsPaneOpened.Value = !IsPaneOpened.Value);

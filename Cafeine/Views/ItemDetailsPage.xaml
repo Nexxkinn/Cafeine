@@ -66,11 +66,24 @@
                                 <ColumnDefinition Width="12" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="32" />
+                                <RowDefinition Height="48" />
                                 <RowDefinition Height="56" />
                                 <RowDefinition Height="48" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <AppBarButton
+                                Grid.Row="1"
+                                Width="48"
+                                Height="48"
+                                Command="{x:Bind Vm.GoBack}"
+                                Style="{StaticResource ReducedAppBarButtonRevealStyle}">
+                                <AppBarButton.Icon>
+                                    <FontIcon Margin="3" Glyph="&#xE0A6;" />
+                                </AppBarButton.Icon>
+                            </AppBarButton>
+                            <AppBarButton
+                                Grid.Row="2"
                                 Width="48"
                                 Height="56"
                                 MinHeight="28"
@@ -103,7 +116,7 @@
                                 </AppBarButton.Content>
                             </AppBarButton>
                             <AppBarButton
-                                Grid.Row="1"
+                                Grid.Row="3"
                                 Width="48"
                                 Height="48"
                                 Command="{x:Bind Vm.UserItemDetailsClicked}"
@@ -115,7 +128,7 @@
                             </AppBarButton>
                             <AppBarButton
                                 x:Name="Delete"
-                                Grid.Row="2"
+                                Grid.Row="4"
                                 Width="48"
                                 Height="48"
                                 VerticalAlignment="Bottom"
@@ -128,7 +141,7 @@
                             </AppBarButton>
                             <AppBarButton
                                 x:Name="Add"
-                                Grid.Row="2"
+                                Grid.Row="4"
                                 Width="48"
                                 Height="48"
                                 VerticalAlignment="Bottom"
@@ -139,7 +152,10 @@
                                     <FontIcon Margin="3" Glyph="&#xE109;" />
                                 </AppBarButton.Icon>
                             </AppBarButton>
-                            <RelativePanel Grid.Column="2" VerticalAlignment="Center">
+                            <RelativePanel
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                VerticalAlignment="Center">
                                 <TextBlock
                                     x:Name="Header1"
                                     FontSize="16"
@@ -179,7 +195,7 @@
 
                             </RelativePanel>
                             <RelativePanel
-                                Grid.Row="1"
+                                Grid.Row="3"
                                 Grid.Column="2"
                                 VerticalAlignment="Center">
                                 <TextBlock
@@ -202,7 +218,7 @@
                             </RelativePanel>
                         </Grid>
                     </SplitView.Pane>
-                    <Grid Margin="8,20,28,20">
+                    <Grid Margin="8,48,28,20">
                         <RelativePanel>
                             <Image
                                 x:Name="cover"
@@ -307,16 +323,22 @@
                             Try to use another source</TextBlock>
                     </StackPanel>
                     <StackPanel>
-                        <StackPanel
+                        <Grid
                             x:Name="EpisodesListConfiguration"
                             Height="48"
                             VerticalAlignment="Top"
-                            x:Load="{x:Bind Vm.LoadEpisodesListConfiguration.Value, Mode=OneWay}"
-                            Orientation="Horizontal">
+                            Background="{ThemeResource LegacyDarkBlue}"
+                            Visibility="{x:Bind Vm.LoadEpisodesListConfiguration.Value, Mode=OneWay}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <StackPanel
+                                x:Name="backgroundadded"
+                                Grid.ColumnSpan="2"
                                 VerticalAlignment="Stretch"
-                                Background="{ThemeResource LegacyDarkBlue}"
-                                Orientation="Horizontal">
+                                Background="{ThemeResource LegacyDarkBlue}" />
+                            <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal">
                                 <ComboBox
                                     Margin="0"
                                     VerticalAlignment="Center"
@@ -328,9 +350,10 @@
                                     <ComboBoxItem Content="Descending" />
                                 </ComboBox>
                             </StackPanel>
-                        </StackPanel>
+                        </Grid>
                         <GridView
                             x:Name="episodesitem"
+                            Canvas.ZIndex="-1"
                             ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
                             SizeChanged="OnGridViewSizeChanged"
                             Visibility="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}">
