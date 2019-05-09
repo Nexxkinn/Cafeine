@@ -24,7 +24,7 @@ namespace Cafeine.ViewModels
 
         public CafeineProperty<bool> SearchBoxFocus { get; }
 
-        public CafeineProperty<bool> SearchButtonLoad { get; }
+        public CafeineProperty<Visibility> SearchButtonLoad { get; }
 
         public CafeineCommand SearchButtonClicked { get; }
 
@@ -39,9 +39,9 @@ namespace Cafeine.ViewModels
 
             NavigationTitle = new CafeineProperty<string>("Details");
 
-            SearchButtonLoad = new CafeineProperty<bool>();
+            SearchButtonLoad = new CafeineProperty<Visibility>();
             SearchBoxLoad = new CafeineProperty<Visibility>(Visibility.Collapsed);
-            SearchBoxLoad.PropertyChanged += (x,y) => SearchButtonLoad.Value = (SearchBoxLoad.Value == Visibility.Collapsed);
+            SearchBoxLoad.PropertyChanged += (x,y) => SearchButtonLoad.Value = (SearchBoxLoad.Value == Visibility.Collapsed) ? Visibility.Visible : Visibility.Collapsed;
             SearchBoxFocus = new CafeineProperty<bool>();
 
             SearchButtonClicked = new CafeineCommand(

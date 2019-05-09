@@ -24,56 +24,32 @@
             <RowDefinition Height="80" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid x:Name="thebar" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition x:Name="DragableBar" />
+                <ColumnDefinition x:Name="MenuBar" />
             </Grid.ColumnDefinitions>
             <TextBlock
+                x:Name="WindowTitle"
                 Margin="12,8,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
+                Canvas.ZIndex="-2"
                 CharacterSpacing="12"
                 FontSize="12"
                 Text="Cafeine Alpha" />
             <StackPanel
-                Background="{StaticResource CafeineDarkBlue}"
-                Margin="0,14,42,0"
-                Grid.Column="1"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Orientation="Horizontal">
-                <TextBox
-                    x:Name="SearchBox"
-                    Width="250"
-                    Height="36"
-                    Margin="6"
-                    VerticalAlignment="Bottom"
-                    local:FocusExtension.IsFocused="{x:Bind Vm.SearchBoxFocus.Value, Mode=TwoWay}"
-                    PlaceholderText="I'm looking for..."
-                    ScrollViewer.BringIntoViewOnFocusChange="False"
-                    Style="{StaticResource FluentTextBoxStyle}"
-                    Text="{x:Bind Vm.SuggestText.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    TextChanged="{x:Bind Vm.SearchBoxTextChanged}"
-                    Visibility="{x:Bind Vm.SearchBoxLoad.Value, Mode=OneWay}" />
+                x:Name="CustomWindowBar"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Canvas.ZIndex="-1" />
+            <RelativePanel x:Name="CompiledMenu">
+
                 <AppBarButton
-                    x:Name="SearchButton"
+                    x:Name="ProfileButton"
                     Width="48"
-                    Height="48"
                     VerticalAlignment="Bottom"
-                    x:Load="{x:Bind Vm.SearchButtonLoad.Value, Mode=OneWay}"
-                    Command="{x:Bind Vm.SearchButtonClicked}"
-                    Style="{StaticResource ReducedAppBarButtonRevealStyle}"
-                    ToolTipService.ToolTip="Search">
-                    <AppBarButton.Icon>
-                        <FontIcon Margin="4" Glyph="&#xE11A;" />
-                    </AppBarButton.Icon>
-                </AppBarButton>
-                <AppBarButton
-                    Width="48"
-                    Height="48"
-                    VerticalAlignment="Bottom"
-                    IsCompact="True"
                     LabelPosition="Collapsed"
                     Style="{StaticResource ReducedAppBarButtonRevealStyle}"
                     TabIndex="0">
@@ -118,12 +94,96 @@
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-            </StackPanel>
+                <TextBox
+                    x:Name="SearchBox"
+                    Width="250"
+                    Margin="6"
+                    VerticalAlignment="Bottom"
+                    local:FocusExtension.IsFocused="{x:Bind Vm.SearchBoxFocus.Value, Mode=TwoWay}"
+                    PlaceholderText="I'm looking for..."
+                    ScrollViewer.BringIntoViewOnFocusChange="False"
+                    Style="{StaticResource FluentTextBoxStyle}"
+                    Text="{x:Bind Vm.SuggestText.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    TextChanged="{x:Bind Vm.SearchBoxTextChanged}"
+                    Visibility="{x:Bind Vm.SearchBoxLoad.Value, Mode=OneWay}" />
+                <AppBarButton
+                    x:Name="SearchButton"
+                    Width="48"
+                    VerticalAlignment="Bottom"
+                    Command="{x:Bind Vm.SearchButtonClicked}"
+                    Style="{StaticResource ReducedAppBarButtonRevealStyle}"
+                    ToolTipService.ToolTip="Search"
+                    Visibility="{x:Bind Vm.SearchButtonLoad.Value, Mode=OneWay}">
+                    <AppBarButton.Icon>
+                        <FontIcon Margin="4" Glyph="&#xE11A;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </RelativePanel>
         </Grid>
         <Frame
-            Canvas.ZIndex="-1"
             x:Name="contentFrame"
             Grid.RowSpan="2"
+            Canvas.ZIndex="-1"
             Content="{x:Bind Path=Vm.ChildFrame, Mode=OneWay}" />
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WindowTitle.Visibility" Value="Collapsed" />
+                        <Setter Target="CompiledMenu.VerticalAlignment" Value="Top" />
+                        <Setter Target="CompiledMenu.Margin" Value="0" />
+                        <Setter Target="ProfileButton.Height" Value="40" />
+                        <Setter Target="SearchButton.Height" Value="40" />
+                        <Setter Target="SearchBox.Height" Value="32" />
+                        <Setter Target="SearchBox.Width" Value="200" />
+                        <Setter Target="SearchBox.Margin" Value="6" />
+
+                        <Setter Target="CustomWindowBar.(Grid.Column)" Value="1" />
+                        <Setter Target="CompiledMenu.(Grid.Column)" Value="0" />
+
+                        <Setter Target="DragableBar.Width" Value="Auto" />
+                        <Setter Target="MenuBar.Width" Value="*" />
+
+                        <Setter Target="SearchButton.(RelativePanel.RightOf)" Value="ProfileButton" />
+                        <Setter Target="SearchBox.(RelativePanel.RightOf)" Value="ProfileButton" />
+                        <Setter Target="ProfileButton.(RelativePanel.AlignLeftWithPanel)" Value="True" />
+                        <Setter Target="ProfileButton.(RelativePanel.AlignRightWithPanel)" Value="False" />
+                        <Setter Target="SearchButton.(RelativePanel.LeftOf)" Value="{x:Null}" />
+                        <Setter Target="SearchBox.(RelativePanel.LeftOf)" Value="{x:Null}" />
+
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="850" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="CompiledMenu.(StackPanel.VerticalAlignment)" Value="Bottom" />
+                        <Setter Target="CompiledMenu.Margin" Value="0,0,42,0" />
+                        <Setter Target="ProfileButton.Height" Value="48" />
+                        <Setter Target="SearchButton.Height" Value="48" />
+                        <Setter Target="SearchBox.Height" Value="36" />
+                        <Setter Target="SearchBox.Margin" Value="6" />
+
+                        <Setter Target="CustomWindowBar.(Grid.Column)" Value="0" />
+                        <Setter Target="CompiledMenu.(Grid.Column)" Value="1" />
+
+                        <Setter Target="DragableBar.Width" Value="*" />
+                        <Setter Target="MenuBar.Width" Value="Auto" />
+
+                        <Setter Target="ProfileButton.(RelativePanel.AlignLeftWithPanel)" Value="False" />
+                        <Setter Target="ProfileButton.(RelativePanel.AlignRightWithPanel)" Value="True" />
+                        <Setter Target="SearchButton.(RelativePanel.RightOf)" Value="{x:Null}" />
+                        <Setter Target="SearchBox.(RelativePanel.RightOf)" Value="{x:Null}" />
+                        <Setter Target="SearchButton.(RelativePanel.LeftOf)" Value="ProfileButton" />
+                        <Setter Target="SearchBox.(RelativePanel.LeftOf)" Value="ProfileButton" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

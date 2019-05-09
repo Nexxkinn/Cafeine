@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 namespace Cafeine.Views
@@ -34,6 +35,9 @@ namespace Cafeine.Views
         public HomePage()
         {
             this.InitializeComponent();
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            CustomWindowBar.Height = coreTitleBar.Height;
+            Window.Current.SetTitleBar(CustomWindowBar);
         }
     }
     public static class FocusExtension
