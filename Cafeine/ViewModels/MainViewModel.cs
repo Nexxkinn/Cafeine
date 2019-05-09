@@ -73,31 +73,17 @@ namespace Cafeine.ViewModels
             TabbedIndex.Subscribe(async
                 x =>
                 {
-                    await Task.Factory.StartNew(() => DisplayItem(CurrentCategory),
+                    await Task.Factory.StartNew(() => DisplayItem(x),
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         TaskScheduler.FromCurrentSynchronizationContext());
                 });
         }
-        public override async Task OnLoaded(object sender, RoutedEventArgs e)
-        {
-            await Task.Factory.StartNew(async () => await DisplayItem(0),
-                CancellationToken.None,
-                TaskCreationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext());
-            await base.OnLoaded(sender, e);
-        }
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             navigationService.ClearHistory();
-            await DisplayItem(CurrentCategory);
+            await DisplayItem(TabbedIndex.Value);
             await base.OnNavigatedTo(e);
-        }
-
-        public override Task OnNavigatedFrom(NavigationEventArgs e)
-        {
-            Library = new ObservableCollection<ItemLibraryModel>();
-            return base.OnNavigatedFrom(e);
         }
 
         private async Task DisplayItem(int value)

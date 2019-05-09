@@ -18,12 +18,10 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="80" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Pivot VerticalAlignment="Bottom">
-        <!--SelectedIndex="{x:Bind Path=Vm.TabbedIndex.Value, Mode=TwoWay}"
-                Visibility="{x:Bind Path=Vm.WatchHoldPivot_Visibility.Value, Mode=OneWay}">-->
+        <Pivot VerticalAlignment="Bottom" SelectedIndex="{x:Bind Path=Vm.TabbedIndex.Value, Mode=TwoWay}">
             <Pivot.Resources>
                 <Style TargetType="PivotHeaderItem">
                     <Setter Property="FontWeight" Value="SemiBold" />
