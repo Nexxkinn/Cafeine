@@ -183,11 +183,6 @@ namespace Cafeine.ViewModels
         {
             if (e.NavigationMode == NavigationMode.Back)
                 Link.Unsubscribe(typeof(OnlineLoadItemDetails));
-            await base.OnNavigatedFrom(e);
-        }
-
-        public override async Task OnGoingBack()
-        {
             if (ItemBase != null &&
                 (Item.UserStatus != UserStatusComboBox.Value || Item.Watched_Read != TotalSeenTextBox.Value))
             {
@@ -195,7 +190,7 @@ namespace Cafeine.ViewModels
                 Item.UserStatus = UserStatusComboBox.Value;
                 await Database.UpdateItem(ItemBase, userItemChanged: true);
             }
-            await base.OnGoingBack();
+            await base.OnNavigatedFrom(e);
         }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)

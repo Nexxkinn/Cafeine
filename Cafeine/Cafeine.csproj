@@ -118,6 +118,7 @@
     <Compile Include="Services\Database.cs" />
     <Compile Include="Services\ImageCache.cs" />
     <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\ItemLibraryListComparer.cs" />
     <Compile Include="Services\KitsuApi.cs" />
     <Compile Include="Services\Mvvm\BasePage.cs" />
     <Compile Include="Services\Mvvm\CafeineCommand.cs" />

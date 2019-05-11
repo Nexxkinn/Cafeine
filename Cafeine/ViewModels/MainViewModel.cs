@@ -78,11 +78,29 @@ namespace Cafeine.ViewModels
                         TaskCreationOptions.None,
                         TaskScheduler.FromCurrentSynchronizationContext());
                 });
+
+            Library = new ObservableCollection<ItemLibraryModel>();
+
+            Database.DatabaseUpdated += Database_DatabaseUpdated;
         }
+
+        private void Database_DatabaseUpdated(object sender, EventArgs e)
+        {
+            ListedItems = Database.SearchBasedonCategory(TabbedIndex.Value);
+            var RemovedList = Library.Except(ListedItems, new ItemLibraryListComparer()).ToList();
+            foreach (var item in RemovedList) Library.Remove(item);
+        }
+
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             navigationService.ClearHistory();
-            await DisplayItem(TabbedIndex.Value);
+            if(e.NavigationMode == NavigationMode.Back)
+            {
+            }
+            else
+            {
+                await DisplayItem(TabbedIndex.Value);
+            }
             await base.OnNavigatedTo(e);
         }
 

@@ -23,6 +23,8 @@ namespace Cafeine.Services
 
         private static Dictionary<int, IService> services;
 
+        public static event EventHandler DatabaseUpdated;
+
         static Database()
         {
             CustomSerializator.ByteArraySerializator = (object o) => { return JsonConvert.SerializeObject(o).To_UTF8Bytes(); };
@@ -329,6 +331,9 @@ namespace Cafeine.Services
                 tr.ObjectInsert("library", localitem, false);
                 tr.Commit();
             }
+
+            if(userItemChanged) DatabaseUpdated.Invoke(null, null);
+
         }
 
         public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)
