@@ -9,18 +9,42 @@ namespace Cafeine.Services
 {
     public class ItemLibraryService
     {
-        private static List<ItemLibraryModel> library { get; set; }
+        private static List<ItemLibraryToken> library { get; set; }
         
         public static ItemLibraryModel Pull()
         {
-            var item = library.Last();
+            var token = library.Last();
             library.Remove(library.Last());
+
+            if (token.FromOnlineItem) return token.OnlineItem;
+            var item = Database.GetItemLibraryModel(DatabaseID: token.DatabaseID);
             return item;
         }
-        public static void Push(ItemLibraryModel item)
+
+        public static void Push(ItemLibraryModel Item)
         {
-            if (library == null) library = new List<ItemLibraryModel>();
-            library.Add(item);
+            var token = (Item.Id == 0 )
+                ? new ItemLibraryToken(OnlineItem: Item)
+                : new ItemLibraryToken(Item.Id);
+            if (library == null) library = new List<ItemLibraryToken>();
+            library.Add(token);
+        }
+    }
+    internal class ItemLibraryToken
+    {
+        public bool FromOnlineItem { get; private set; }
+        public int DatabaseID { get; private set; }
+        public ItemLibraryModel OnlineItem { get; private set; }
+
+        public ItemLibraryToken(ItemLibraryModel OnlineItem)
+        {
+            this.FromOnlineItem = true;
+            this.OnlineItem = FromOnlineItem ? OnlineItem : null;
+        }
+        public ItemLibraryToken(int DatabaseID)
+        {
+            this.FromOnlineItem = false;
+            this.DatabaseID = DatabaseID;
         }
     }
 }

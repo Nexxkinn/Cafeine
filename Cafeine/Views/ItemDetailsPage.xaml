@@ -236,6 +236,7 @@
                                 VerticalAlignment="Stretch"
                                 RelativePanel.RightOf="cover">
                                 <TextBlock
+                                    MaxWidth="500"
                                     FontSize="22"
                                     FontWeight="SemiLight"
                                     MaxLines="2"
