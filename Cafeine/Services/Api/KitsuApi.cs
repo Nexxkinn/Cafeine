@@ -6,7 +6,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cafeine.Services
+namespace Cafeine.Services.Api
 {
     internal class AuthenticationModel
     {
@@ -29,7 +29,7 @@ namespace Cafeine.Services
         public string TokenType { get; private set; }
     }
 
-    public static class KitsuApi
+    public static class Kitsu
     {
         //Grant access(?) but unused(??), but required(???) :
         private static readonly Uri OauthURI = new Uri("https://kitsu.io/api/oauth");

@@ -91,8 +91,8 @@ namespace Cafeine.ViewModels
             //{
             //    navigationService.RemoveLastPage();
             //}
+            ItemLibraryService.Push(item);
             navigationService.Navigate(typeof(ItemDetailsPage));
-            Link.Publish(item, typeof(OnlineLoadItemDetails));
         }
 
         private async Task GetResults(string keyword)

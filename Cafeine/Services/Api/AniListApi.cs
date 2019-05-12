@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Web.Http;
 
-namespace Cafeine.Services
+namespace Cafeine.Services.Api
 {
     struct QueryQL
     {
@@ -18,7 +18,7 @@ namespace Cafeine.Services
         public dynamic variables;
     }
 
-    public class AniListApi : IService
+    public class AniList : IService
     {
         private static HttpClient AnilistAuthClient = new HttpClient();
 

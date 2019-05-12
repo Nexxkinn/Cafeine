@@ -1,5 +1,6 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
+using Cafeine.Services.Api;
 using DBreeze;
 using DBreeze.DataTypes;
 using DBreeze.Objects;
@@ -62,7 +63,7 @@ namespace Cafeine.Services
                     {
                         case ServiceType.ANILIST:
                             {
-                                IService service = new AniListApi();
+                                IService service = new AniList();
                                 var additionalinfo = JsonConvert.DeserializeObject<Tuple<string, string>>(account.AdditionalOption.ToString());
                                 await service.VerifyAccount(additionalinfo.Item2);
                                     lock (services)

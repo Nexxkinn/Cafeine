@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.Security.Credentials;
 
-namespace Cafeine.Services
+namespace Cafeine.Services.Api
 {
-    public static class MyAnimeListApi
+    public static class MyAnimeList
     {
         //QueryData
         //UpdateData

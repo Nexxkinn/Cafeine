@@ -21,7 +21,9 @@ namespace Cafeine.ViewModels
         public UserItem Item { get; set; }
 
         private ItemLibraryModel ItemBase;
-        
+
+        private ItemLibraryService service;
+
         public ObservableCollection<Episode> Episodelist { get; private set; }
         
         #region mvvm setup properties
@@ -78,8 +80,6 @@ namespace Cafeine.ViewModels
         public ItemDetailsViewModel()
         {
             navigationService = new NavigationService();
-
-            Item = new UserItem();
             PaneBackground = new CafeineProperty<Brush>(new SolidColorBrush(Windows.UI.Colors.Transparent));
             IsPaneOpened = new ReactiveProperty<bool>(false);
             IsPaneOpened.Subscribe((ipo) =>
@@ -88,7 +88,6 @@ namespace Cafeine.ViewModels
                     ? Application.Current.Resources["SystemControlBackgroundChromeMediumLowBrush"] as SolidColorBrush
                     : new SolidColorBrush(Windows.UI.Colors.Transparent);
             });
-
             #region Set initial value
 
             ImageSource = new CafeineProperty<StorageFile>();
@@ -174,15 +173,12 @@ namespace Cafeine.ViewModels
                     await navigationService.GoBack();
                 }
             });
-
-            Link.Subscribe<ItemLibraryModel>( async x => await LoadItem(x), typeof(OnlineLoadItemDetails));
-
         }
 
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (e.NavigationMode == NavigationMode.Back)
-                Link.Unsubscribe(typeof(OnlineLoadItemDetails));
+            if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(ItemBase); 
+
             if (ItemBase != null &&
                 (Item.UserStatus != UserStatusComboBox.Value || Item.Watched_Read != TotalSeenTextBox.Value))
             {
@@ -195,21 +191,15 @@ namespace Cafeine.ViewModels
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
-            // Expect to get ID
-            if(e.Parameter != null)
-            {
-                await Task.Yield(); // force async mode
-                var item = Database.GetItemLibraryModel(DatabaseID: (int)e.Parameter);
-                await LoadItem(item);
-            }
+            ItemBase = ItemLibraryService.Pull();
+            Item = ItemBase.Item;
+            await LoadItem();
             await base.OnNavigatedTo(e);
         }
-        public async Task LoadItem(ItemLibraryModel item)
+        public async Task LoadItem()
         {
             try
             {
-                ItemBase = item;
-                Item = ItemBase.Item;
                 RaisePropertyChanged(nameof(Item));
                 TotalSeenTextBox.Value = Item.Watched_Read;
                 UserStatusComboBox.Value = Item.UserStatus;
@@ -293,5 +283,6 @@ namespace Cafeine.ViewModels
                     $"Screenshot this image and contact to the developer.";
             }
         }
+
     }
 }

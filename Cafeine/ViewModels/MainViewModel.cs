@@ -168,7 +168,8 @@ namespace Cafeine.ViewModels
                 navigationService.GoBack();
                 navigationService.RemoveLastPage();
             }
-            navigationService.Navigate(typeof(ItemDetailsPage), item.Id);
+            ItemLibraryService.Push(item);
+            navigationService.Navigate(typeof(ItemDetailsPage));
         }
 
         public void RightTapped(object sender, RightTappedRoutedEventArgs e)

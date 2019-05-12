@@ -31,7 +31,6 @@ namespace Cafeine.Views
 
         // TODO : use composition to enable gridview virtualization
 
-
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);

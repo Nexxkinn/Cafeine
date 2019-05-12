@@ -1,4 +1,5 @@
 ﻿using Cafeine.Services;
+using Cafeine.Services.Api;
 using Cafeine.Services.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Interactivity;
@@ -37,7 +38,7 @@ namespace Cafeine.ViewModels
             string url = args.Uri.AbsoluteUri.ToString();
             if (url.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))
             {
-                IService service = new AniListApi();
+                IService service = new AniList();
 
                 //get the token
                 Regex r = new Regex(@"(?<==).+?(?=&|$)");
