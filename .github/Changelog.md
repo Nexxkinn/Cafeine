@@ -1,3 +1,15 @@
+### v0.13.0a:
+##### Changes made in this build:
+- [Change] Simplify User Interface 
+- [Change] Add responsive layout for profile & search bar (https://github.com/Nexxkinn/Cafeine/commit/1987155326f9743d9f567e951733b516a6fa1042)
+- [Change] Drop Microsoft.Xaml.Behaviors (https://github.com/Nexxkinn/Cafeine/commit/e3b8056b7aa8f1a1baa53a1a9ab238dfce84805e)
+- [Change] Use custom color for all background (https://github.com/Nexxkinn/Cafeine/commit/71993db50cc65ddedef6dee839bbc2858af2a6ef)
+- Fix Clunky entrance transition to main page (https://github.com/Nexxkinn/Cafeine/commit/28ac20f172000c11cff29d62599b2ed7038346a5)
+- [Break Change] Rename a property for better read (https://github.com/Nexxkinn/Cafeine/commit/817c6c5abb8745caabbfad50520fa5b1fdae1baa)
+- [Fix] App doesn't update item lists accordingly (https://github.com/Nexxkinn/Cafeine/commit/e1defd1fef1b236e8fa35644ee4fac7d98278129)
+- [Fix] some special case can cause item stack mismatch (https://github.com/Nexxkinn/Cafeine/commit/bf6bb85e9ab5d7b74ee7707d5ebf8a25dba41509)
+
+
 ### v0.12.6a:
 [Fix] Anilist library failed to parse null value.
 

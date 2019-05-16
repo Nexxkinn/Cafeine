@@ -1,6 +1,6 @@
 <p float="left" align="center">
-<img src="images/01_dark.png" width="425">
-<img src="images/02_dark.png" width="425">
+<img src="images/01_dark_v13.png" width="425">
+<img src="images/02_dark_v13.png" width="425">
 </p>
 
 # Cafeine

@@ -93,14 +93,8 @@ namespace Cafeine.ViewModels
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
+            Library = new ObservableCollection<ItemLibraryModel>(Library);
             navigationService.ClearHistory();
-            if(e.NavigationMode == NavigationMode.Back)
-            {
-            }
-            else
-            {
-                await DisplayItem(TabbedIndex.Value);
-            }
             await base.OnNavigatedTo(e);
         }
 
