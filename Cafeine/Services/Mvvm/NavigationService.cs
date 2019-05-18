@@ -13,6 +13,7 @@ namespace Cafeine.Services.Mvvm
 {
     public class NavigationService
     {
+        public static event EventHandler<Visibility> EnableBackButton;
         private Frame RootFrame => Window.Current.Content as Frame;
         private Frame ChildPage => Page.Vm.ChildFrame;
         private HomePage Page => RootFrame.Content as HomePage;
@@ -30,14 +31,14 @@ namespace Cafeine.Services.Mvvm
                 // assume current page is not HomePage
                 RootFrame.Navigate(type, parameter, navigationtransition);
             }
+            if(CanGoBack()) EnableBackButton?.Invoke(null,Visibility.Visible);
         }
         public bool CanGoBack()
         {
             return ChildPage.CanGoBack;
         }
-        public async Task GoBack()
+        public void GoBack()
         {
-            // run ongoingback first
             if(Page != null)
             {
                 if (CanGoBack()) ChildPage.GoBack();
@@ -46,6 +47,8 @@ namespace Cafeine.Services.Mvvm
             {
                 if (RootFrame.CanGoBack) RootFrame.GoBack();
             }
+
+            if (!CanGoBack()) EnableBackButton?.Invoke(null, Visibility.Collapsed);
         }
         public void RemoveLastPage()
         {
@@ -53,6 +56,7 @@ namespace Cafeine.Services.Mvvm
             {
                 ChildPage.BackStack.RemoveAt(ChildPage.BackStackDepth-1);
             }
+            if (!CanGoBack()) EnableBackButton?.Invoke(null, Visibility.Collapsed);
         }
         public void ClearHistory()
         {
@@ -66,6 +70,8 @@ namespace Cafeine.Services.Mvvm
                 // assume current page is not HomePage
                 RootFrame.BackStack.Clear();
             }
+
+            EnableBackButton?.Invoke(null, Visibility.Collapsed);
         }
     }
 }

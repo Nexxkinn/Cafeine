@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
@@ -62,13 +63,14 @@ namespace Cafeine.ViewModels
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
+            Link.Publish(Visibility.Visible, typeof(SearchBoxVisibility));
             MainPageCurrentState = e.Parameter as int?;
             await base.OnNavigatedTo(e);
         }
 
         public override Task OnNavigatedFrom(NavigationEventArgs e = null)
         {
-            Link.Publish(typeof(RevertSearchBox));
+            Link.Publish(Visibility.Collapsed,typeof(SearchBoxVisibility));
             return base.OnNavigatedFrom(e);
         }
 

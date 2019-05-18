@@ -22,17 +22,6 @@
             <ColumnDefinition Width="48" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <AppBarButton
-            Width="48"
-            Height="48"
-            VerticalAlignment="Bottom"
-            Command="{x:Bind Path=Vm.GoBack}"
-            LabelPosition="Collapsed"
-            Style="{StaticResource ReducedAppBarButtonRevealStyle}">
-            <AppBarButton.Icon>
-                <FontIcon Margin="3" Glyph="&#xE0A6;" />
-            </AppBarButton.Icon>
-        </AppBarButton>
         <StackPanel
             Grid.RowSpan="2"
             Grid.ColumnSpan="2"

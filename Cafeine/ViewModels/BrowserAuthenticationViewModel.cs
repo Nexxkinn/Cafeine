@@ -29,7 +29,7 @@ namespace Cafeine.ViewModels
             GoBack = new CafeineCommand(
                 async() => 
                 {
-                    await navigationService.GoBack();
+                    navigationService.GoBack();
                     navigationService.ClearHistory();
                 });
         }

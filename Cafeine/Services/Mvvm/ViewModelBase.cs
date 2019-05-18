@@ -31,7 +31,7 @@ namespace Cafeine.Services.Mvvm
         {
             navigationService = new NavigationService();
             Link = new ViewModelLink();
-            GoBack = new CafeineCommand(async()=>await navigationService.GoBack());
+            GoBack = new CafeineCommand(navigationService.GoBack);
         }
     }
 }

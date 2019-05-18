@@ -170,7 +170,7 @@ namespace Cafeine.ViewModels
                 if ((int)result.Id == 0)
                 {
                     await Database.DeleteItem(ItemBase);
-                    await navigationService.GoBack();
+                    navigationService.GoBack();
                 }
             });
         }

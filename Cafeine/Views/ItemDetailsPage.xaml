@@ -67,23 +67,12 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="40" />
-                                <RowDefinition Height="48" />
                                 <RowDefinition Height="56" />
                                 <RowDefinition Height="48" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <AppBarButton
                                 Grid.Row="1"
-                                Width="48"
-                                Height="48"
-                                Command="{x:Bind Vm.GoBack}"
-                                Style="{StaticResource ReducedAppBarButtonRevealStyle}">
-                                <AppBarButton.Icon>
-                                    <FontIcon Margin="3" Glyph="&#xE0A6;" />
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                            <AppBarButton
-                                Grid.Row="2"
                                 Width="48"
                                 Height="56"
                                 MinHeight="28"
@@ -116,7 +105,7 @@
                                 </AppBarButton.Content>
                             </AppBarButton>
                             <AppBarButton
-                                Grid.Row="3"
+                                Grid.Row="2"
                                 Width="48"
                                 Height="48"
                                 Command="{x:Bind Vm.UserItemDetailsClicked}"
@@ -128,7 +117,7 @@
                             </AppBarButton>
                             <AppBarButton
                                 x:Name="Delete"
-                                Grid.Row="4"
+                                Grid.Row="3"
                                 Width="48"
                                 Height="48"
                                 VerticalAlignment="Bottom"
@@ -141,7 +130,7 @@
                             </AppBarButton>
                             <AppBarButton
                                 x:Name="Add"
-                                Grid.Row="4"
+                                Grid.Row="3"
                                 Width="48"
                                 Height="48"
                                 VerticalAlignment="Bottom"
@@ -153,7 +142,7 @@
                                 </AppBarButton.Icon>
                             </AppBarButton>
                             <RelativePanel
-                                Grid.Row="2"
+                                Grid.Row="1"
                                 Grid.Column="2"
                                 VerticalAlignment="Center">
                                 <TextBlock
@@ -195,7 +184,7 @@
 
                             </RelativePanel>
                             <RelativePanel
-                                Grid.Row="3"
+                                Grid.Row="2"
                                 Grid.Column="2"
                                 VerticalAlignment="Center">
                                 <TextBlock

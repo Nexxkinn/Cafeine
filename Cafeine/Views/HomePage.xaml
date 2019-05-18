@@ -26,12 +26,27 @@
         </Grid.RowDefinitions>
         <Grid x:Name="thebar" Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition x:Name="DragableBar" />
                 <ColumnDefinition x:Name="MenuBar" />
             </Grid.ColumnDefinitions>
+            <AppBarButton
+                x:Name="BackButton"
+                Width="48"
+                Height="40"
+                VerticalAlignment="Top"
+                Command="{x:Bind Vm.GoBack}"
+                Style="{StaticResource ReducedAppBarButtonRevealStyle}"
+                Visibility="{x:Bind Vm.BackButtonVisibility.Value, Mode=OneWay}">
+                <AppBarButton.Icon>
+                    <FontIcon Margin="3" Glyph="&#xE0A6;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
             <TextBlock
                 x:Name="WindowTitle"
-                Margin="12,8,0,0"
+                Grid.Column="1"
+                Height="40"
+                Margin="8,12"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Canvas.ZIndex="-2"
@@ -40,11 +55,12 @@
                 Text="Cafeine Alpha" />
             <StackPanel
                 x:Name="CustomWindowBar"
+                Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Background="Transparent"
                 Canvas.ZIndex="-1" />
-            <RelativePanel x:Name="CompiledMenu">
+            <RelativePanel x:Name="CompiledMenu" Grid.Column="1">
 
                 <AppBarButton
                     x:Name="ProfileButton"
@@ -142,8 +158,8 @@
                         <Setter Target="SearchBox.Width" Value="200" />
                         <Setter Target="SearchBox.Margin" Value="6" />
 
-                        <Setter Target="CustomWindowBar.(Grid.Column)" Value="1" />
-                        <Setter Target="CompiledMenu.(Grid.Column)" Value="0" />
+                        <Setter Target="CustomWindowBar.(Grid.Column)" Value="2" />
+                        <Setter Target="CompiledMenu.(Grid.Column)" Value="1" />
 
                         <Setter Target="DragableBar.Width" Value="Auto" />
                         <Setter Target="MenuBar.Width" Value="*" />
@@ -169,8 +185,8 @@
                         <Setter Target="SearchBox.Height" Value="36" />
                         <Setter Target="SearchBox.Margin" Value="6" />
 
-                        <Setter Target="CustomWindowBar.(Grid.Column)" Value="0" />
-                        <Setter Target="CompiledMenu.(Grid.Column)" Value="1" />
+                        <Setter Target="CustomWindowBar.(Grid.Column)" Value="1" />
+                        <Setter Target="CompiledMenu.(Grid.Column)" Value="2" />
 
                         <Setter Target="DragableBar.Width" Value="*" />
                         <Setter Target="MenuBar.Width" Value="Auto" />

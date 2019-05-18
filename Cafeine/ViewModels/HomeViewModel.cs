@@ -20,6 +20,8 @@ namespace Cafeine.ViewModels
 
         public CafeineCommand LogOutButton { get; }
 
+        public CafeineProperty<Visibility> BackButtonVisibility { get; }
+
         public CafeineProperty<Visibility> SearchBoxLoad { get; }
 
         public CafeineProperty<bool> SearchBoxFocus { get; }
@@ -38,6 +40,8 @@ namespace Cafeine.ViewModels
             SuggestText = new CafeineProperty<string>();
 
             NavigationTitle = new CafeineProperty<string>("Details");
+
+            BackButtonVisibility = new CafeineProperty<Visibility>(Visibility.Collapsed);
 
             SearchButtonLoad = new CafeineProperty<Visibility>();
             SearchBoxLoad = new CafeineProperty<Visibility>(Visibility.Collapsed);
@@ -80,13 +84,14 @@ namespace Cafeine.ViewModels
                     }
                 });
 
+
             Link.Subscribe(
-                () =>
-                    {
-                        SearchBoxLoad.Value = Visibility.Collapsed;
-                        SearchBoxFocus.Value = false;
-                    }
-                    , typeof(RevertSearchBox));
+                (Visibility e) =>
+                {
+                    SearchBoxLoad.Value = e;
+                    SearchBoxFocus.Value = false;
+                }
+                    , typeof(SearchBoxVisibility));
 
             Link.Subscribe(
                 () =>
@@ -95,6 +100,8 @@ namespace Cafeine.ViewModels
                         RaisePropertyChanged(nameof(AvatarURL));
                     }
                     , typeof(HomePageAvatarLoad));
+
+            NavigationService.EnableBackButton += (s, e) => BackButtonVisibility.Value = e;
         }
 
         public Frame ChildFrame { get; set; } = new Frame();
