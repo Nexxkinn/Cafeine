@@ -32,7 +32,7 @@ namespace Cafeine.ViewModels
         public CafeineProperty<bool> OfflineResultsNoMatches = new CafeineProperty<bool>();
 
         public CafeineProperty<bool> OnlineResultsNoMatches = new CafeineProperty<bool>();
-        
+
         public SearchViewModel()
         {            
             OfflineResults = new ObservableCollection<ItemLibraryModel>();

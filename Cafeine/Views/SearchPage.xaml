@@ -15,7 +15,7 @@
     </Page.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="88" />
+            <RowDefinition Height="44" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -35,17 +35,26 @@
                 Glyph="&#xE11A;" />
             <TextBlock FontSize="18" Text="Ravioli ravioli..." />
         </StackPanel>
-        <ScrollViewer Grid.RowSpan="2" Grid.Column="1">
+        <ScrollViewer
+            x:Name="pagescroll"
+            Grid.Row="1"
+            Grid.Column="1">
             <StackPanel
                 x:Name="results"
-                Margin="14,32,0,0"
+                Margin="8,0,0,0"
                 x:Load="{x:Bind Vm.LoadResults.Value, Mode=OneWay}"
                 Background="{ThemeResource LegacyDarkBlue}"
                 Orientation="Vertical">
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="From library" />
+                <StackPanel
+                    x:Name="fromLibraryTextBox"
+                    Height="36"
+                    Background="{ThemeResource LegacyDarkBlue}"
+                    Canvas.ZIndex="1">
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="From library" />
+                </StackPanel>
                 <TextBlock
                     x:Name="offlinenomatches"
                     Margin="0,0,0,28"
@@ -59,7 +68,8 @@
                     <ListView
                         IsItemClickEnabled="True"
                         ItemClick="{x:Bind Vm.ItemClicked}"
-                        ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}">
+                        ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}"
+                        SizeChanged="ListView_SizeChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="m:ItemLibraryModel">
                                 <Grid>
@@ -88,10 +98,16 @@
                     </ListView>
 
                 </Grid>
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="Online results" />
+                <StackPanel
+                    x:Name="onlineresultsTextBox"
+                    Height="36"
+                    Background="{ThemeResource LegacyDarkBlue}"
+                    Canvas.ZIndex="1">
+                    <TextBlock
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="Online results" />
+                </StackPanel>
                 <TextBlock
                     x:Name="onlinenomatches"
                     x:Load="{x:Bind Vm.OnlineResultsNoMatches.Value, Mode=OneWay}"
@@ -104,7 +120,8 @@
                     IsItemClickEnabled="True"
                     ItemClick="{x:Bind Vm.ItemClicked}"
                     ItemTemplate="{StaticResource OnlineSearchResult}"
-                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}" />
+                    ItemsSource="{x:Bind Vm.OnlineResults, Mode=OneWay}"
+                    SizeChanged="Onlineresultgridview_SizeChanged" />
                 <ProgressRing HorizontalAlignment="Left" IsActive="{x:Bind Vm.OnlineResultsProgressRing.Value, Mode=OneWay}" />
             </StackPanel>
 

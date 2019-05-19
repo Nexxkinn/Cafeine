@@ -9,10 +9,12 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -29,10 +31,16 @@ namespace Cafeine.Views
     public sealed partial class SearchPage : BasePage
     {
         public SearchViewModel Vm => DataContext as SearchViewModel;
-
+        private double _listviewheight;
+        private double _gridviewheight;
         public SearchPage()
         {
             this.InitializeComponent();
+        }
+
+        private void Vm_ItemIsSearched(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void Onlineresultgridview_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
@@ -67,6 +75,46 @@ namespace Cafeine.Views
             Storyboard.SetTargetProperty(ImageOpenedOpacity, "Opacity");
             ImageOpenedOpacity.Begin();
 
+        }
+
+        private void ListView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var ListViewheight = (sender as FrameworkElement).ActualHeight;
+            if (ListViewheight == _listviewheight) return;
+
+            _listviewheight = ListViewheight;
+            CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(pagescroll);
+            Compositor compositor = scrollerPropertySet.Compositor;
+
+            string progress = $"Clamp(Floor(Abs(doe.Translation.Y) / {_listviewheight}), 0.0, 1.0)";
+
+            // Shift the header by 50 pixels when scrolling down
+            var offsetExpression = compositor.CreateExpressionAnimation($"-doe.Translation.Y + ({progress}*(doe.Translation.Y + {_listviewheight})) ");
+            offsetExpression.SetReferenceParameter("doe", scrollerPropertySet);
+
+            // Shift the option button by 244 pixel (?) when scrolling down
+            var flTextBoxVisual = ElementCompositionPreview.GetElementVisual(fromLibraryTextBox);
+            flTextBoxVisual.StopAnimation("offset.Y");
+            flTextBoxVisual.StartAnimation("offset.Y", offsetExpression);
+        }
+
+        private void Onlineresultgridview_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var GridViewheight = (sender as FrameworkElement).ActualHeight;
+            if (GridViewheight == _gridviewheight) return;
+
+            _gridviewheight = GridViewheight;
+            CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(pagescroll);
+            Compositor compositor = scrollerPropertySet.Compositor;
+
+            string progress = $"Clamp(Floor(Abs(doe.Translation.Y) / ({_listviewheight} + 52)), 0.0, 1.0)";
+
+            // Shift the header by 50 pixels when scrolling down
+            var offsetExpression = compositor.CreateExpressionAnimation($"{_listviewheight} + 52  - ({progress}*(doe.Translation.Y + {_listviewheight} + 52)) ");
+            offsetExpression.SetReferenceParameter("doe", scrollerPropertySet);
+
+            var orVisual = ElementCompositionPreview.GetElementVisual(onlineresultsTextBox);
+            orVisual.StartAnimation("offset.Y", offsetExpression);
         }
     }
 }
