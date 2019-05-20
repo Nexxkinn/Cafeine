@@ -93,6 +93,12 @@ namespace Cafeine.ViewModels
             //{
             //    navigationService.RemoveLastPage();
             //}
+            if(item.Id == 0)
+            {
+                // check if it's available in the database.
+                var ItemDatabase = Database.GetItemLibraryModel(MAL_ID: item.MalID);
+                if (ItemDatabase != null) item = ItemDatabase;
+            }
             ItemLibraryService.Push(item);
             navigationService.Navigate(typeof(ItemDetailsPage));
         }

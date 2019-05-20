@@ -277,9 +277,21 @@ namespace Cafeine.Services
             using(var tr = db.GetTransaction())
             {
                 DBreezeObject<ItemLibraryModel> localitem;
-                byte[] key = 1.ToIndex((int)DatabaseID.Value) ?? 2.ToIndex((int)MAL_ID.Value);
-                localitem = tr.Select<byte[], byte[]>("library", key).ObjectGet<ItemLibraryModel>();
-                item = localitem.Entity;
+                if (DatabaseID.HasValue)
+                {
+                    byte[] key = 1.ToIndex(DatabaseID.Value);
+                    localitem = tr.Select<byte[], byte[]>("library", key).ObjectGet<ItemLibraryModel>();
+                    item = localitem?.Entity;
+                }
+                else
+                {
+                    var itemaavilable = tr.SelectForwardFromTo<byte[], byte[]>("library", 2.ToIndex(MAL_ID.Value, int.MinValue), true, 2.ToIndex(MAL_ID.Value, int.MaxValue),true);
+                    var offlineitem = itemaavilable.First();
+                    localitem = offlineitem.ObjectGet<ItemLibraryModel>();
+                    item = localitem?.Entity;
+                }
+                
+
             }
             return item;
         }
