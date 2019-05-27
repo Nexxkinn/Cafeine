@@ -11,40 +11,35 @@ namespace Cafeine.Services
     {
         private static List<ItemLibraryToken> library { get; set; }
         
-        public static ItemLibraryModel Pull()
+        public static async Task<(OfflineItem offline,ServiceItem service)> Pull()
         {
             var token = library.Last();
             library.Remove(library.Last());
-
-            if (token.IsOnlineItem) return token.OnlineItem;
-            var item = Database.GetItemLibraryModel(DatabaseID: token.DatabaseID);
-            return item;
+            ServiceItem service = token.ServiceItem;
+            if(service.UserItem == null)
+            {
+                // check if local database contains the same serviceitem
+                var LocalServiceItem = Database.GetUserServiceItem(service.ServiceID);
+                if (LocalServiceItem != null) service = LocalServiceItem;
+            }
+            OfflineItem offline = await Database.GetOfflineItem(service_id: service.ServiceID,mal_id:service.MalID);
+            return (offline,service);
         }
 
-        public static void Push(ItemLibraryModel Item)
+        public static void Push(ServiceItem Item)
         {
-            var token = (Item.Id == 0)
-                ? new ItemLibraryToken(OnlineItem: Item)
-                : new ItemLibraryToken(Item.Id);
+            var token = new ItemLibraryToken(item: Item);
             if (library == null) library = new List<ItemLibraryToken>();
             library.Add(token);
         }
 
         private class ItemLibraryToken
         {
-            public bool IsOnlineItem { get; private set; }
-            public int DatabaseID { get; private set; }
-            public ItemLibraryModel OnlineItem { get; private set; }
+            public ServiceItem ServiceItem { get; private set; }
 
-            public ItemLibraryToken(ItemLibraryModel OnlineItem)
+            public ItemLibraryToken(ServiceItem item)
             {
-                this.IsOnlineItem = true;
-                this.OnlineItem = IsOnlineItem ? OnlineItem : null;
-            }
-            public ItemLibraryToken(int DatabaseID)
-            {
-                this.IsOnlineItem = false;
-                this.DatabaseID = DatabaseID;
+                this.ServiceItem = item;
             }
         }
     }

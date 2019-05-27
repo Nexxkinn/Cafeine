@@ -11,6 +11,7 @@ namespace Cafeine.Models.Enums
         DEFAULT = 0,
         MYANIMELIST = 1,
         ANILIST,
-        KITSU
+        KITSU,
+        OTHER=99
     }
 }

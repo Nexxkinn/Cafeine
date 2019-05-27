@@ -19,11 +19,11 @@ namespace Cafeine.ViewModels
 {
     public class MainViewModel : ViewModelBase
     { 
-        private IEnumerable<ItemLibraryModel> ListedItems;
+        private IEnumerable<ServiceItem> ListedItems;
 
-        private ObservableCollection<ItemLibraryModel> _Library;
+        private ObservableCollection<ServiceItem> _Library;
 
-        public ObservableCollection<ItemLibraryModel> Library {
+        public ObservableCollection<ServiceItem> Library {
             get {
                 return _Library;
             }
@@ -45,7 +45,7 @@ namespace Cafeine.ViewModels
 
         private int CurrentCategory;
 
-        private ItemLibraryModel RightClickedItem;
+        private OfflineItem RightClickedItem;
 
         public MainViewModel()
         {
@@ -54,19 +54,19 @@ namespace Cafeine.ViewModels
             SortBy = new ReactiveProperty<int>(0);
             SortBy.PropertyChanged += (_, e) =>
             {
-                Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
+                Library = new ObservableCollection<ServiceItem>(SortAndFilter(ListedItems));
             };
 
             FilterBy = new ReactiveProperty<int>(0);
             FilterBy.PropertyChanged += (_, e) =>
             {
-                Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
+                Library = new ObservableCollection<ServiceItem>(SortAndFilter(ListedItems));
             };
 
             TypeBy = new ReactiveProperty<int>(0);
             FilterBy.PropertyChanged += (_, e) =>
             {
-                Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
+                Library = new ObservableCollection<ServiceItem>(SortAndFilter(ListedItems));
             };
 
             TabbedIndex = new ReactiveProperty<int>();
@@ -79,21 +79,28 @@ namespace Cafeine.ViewModels
                         TaskScheduler.FromCurrentSynchronizationContext());
                 });
 
-            Library = new ObservableCollection<ItemLibraryModel>();
+            Library = new ObservableCollection<ServiceItem>();
 
             Database.DatabaseUpdated += Database_DatabaseUpdated;
         }
 
         private void Database_DatabaseUpdated(object sender, EventArgs e)
         {
-            ListedItems = Database.SearchBasedonCategory(TabbedIndex.Value);
+            ListedItems = Database.SearchBasedonUserStatus(TabbedIndex.Value);
             var RemovedList = Library.Except(ListedItems, new ItemLibraryListComparer()).ToList();
             foreach (var item in RemovedList) Library.Remove(item);
         }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
-            Library = new ObservableCollection<ItemLibraryModel>(Library);
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                Library = new ObservableCollection<ServiceItem>(Library);
+            }
+            else
+            {
+                await DisplayItem(TabbedIndex.Value);
+            }
             navigationService.ClearHistory();
             await base.OnNavigatedTo(e);
         }
@@ -102,15 +109,15 @@ namespace Cafeine.ViewModels
         {
             await Task.Factory.StartNew(() =>
             {
-                ListedItems = Database.SearchBasedonCategory(value);
-                Library = new ObservableCollection<ItemLibraryModel>(SortAndFilter(ListedItems));
+                ListedItems = Database.SearchBasedonUserStatus(value);
+                Library = new ObservableCollection<ServiceItem>(SortAndFilter(ListedItems));
             },
             CancellationToken.None,
             TaskCreationOptions.DenyChildAttach,
             TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(false);
         }
 
-        private IEnumerable<ItemLibraryModel> SortAndFilter(IEnumerable<ItemLibraryModel> items)
+        private IEnumerable<ServiceItem> SortAndFilter(IEnumerable<ServiceItem> items)
         {
             // "filtering" type first.
             var filtered = items.Where(x =>
@@ -122,21 +129,21 @@ namespace Cafeine.ViewModels
             {
                 //Just skip if FilterBy is "All"
                 if (FilterBy.Value == 0) return true;
-                return (int)xx.Service["default"].Status == FilterBy.Value;
+                return xx.ItemStatus == FilterBy.Value;
             });
             switch (SortBy.Value)
             {
                 case 0:
                     return filtered.OrderBy(y =>
                     {
-                        string title = y.Service["default"].Title;
+                        string title = y.Title;
                         if (title.Length < 5) return title;
                         else return title.Substring(0, 5);
                     }).ToList();
                 case 1:
                     return filtered.OrderByDescending(y =>
                    {
-                       string title = y.Service["default"].Title;
+                       string title = y.Title;
                        if (title.Length < 5) return title;
                        else return title.Substring(0, 5);
                    }).ToList();
@@ -147,7 +154,7 @@ namespace Cafeine.ViewModels
 
         public void ItemClicked(object sender, ItemClickEventArgs e)
         {
-            ItemLibraryModel item = e.ClickedItem as ItemLibraryModel;
+            ServiceItem item = e.ClickedItem as ServiceItem;
 
             // Why would you need to use EventAggregator to pass the data?
             // Because the navigation parameter is so shitty that it only
@@ -168,7 +175,7 @@ namespace Cafeine.ViewModels
 
         public void RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            RightClickedItem = ((FrameworkElement)e.OriginalSource).DataContext as ItemLibraryModel;
+            RightClickedItem = ((FrameworkElement)e.OriginalSource).DataContext as OfflineItem;
         }
     }
 }

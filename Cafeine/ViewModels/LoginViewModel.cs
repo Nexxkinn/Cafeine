@@ -61,11 +61,8 @@ namespace Cafeine.ViewModels
                 if (Database.DoesAccountExists())
                 {
                     showUserPanel();
-                    await Database.CreateServicesFromUserAccounts();
-                    if (FromWebsiteRegistration)
-                    {
-                        await Database.CreateDBFromServices();
-                    }
+                    await Database.BuildServices();
+                    await Database.Build();
                     NavigateToMainPage();
                 }
             },

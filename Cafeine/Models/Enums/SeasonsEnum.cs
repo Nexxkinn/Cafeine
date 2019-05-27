@@ -8,13 +8,6 @@ namespace Cafeine.Models.Enums
 {
     public static class Seasons
     {
-        public enum SeasonsEnum
-        {
-            WINTER=1,
-            SPRING,
-            SUMMER,
-            FALL
-        }
         public static readonly string[] Seasons_int2string = new string[5]
         {
             "Unknown",
@@ -23,5 +16,12 @@ namespace Cafeine.Models.Enums
             "Summer",
             "Fall"
         };
+    }
+    public enum SeasonsEnum
+    {
+        WINTER = 1,
+        SPRING,
+        SUMMER,
+        FALL
     }
 }

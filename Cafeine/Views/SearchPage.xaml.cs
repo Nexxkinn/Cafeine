@@ -40,10 +40,10 @@ namespace Cafeine.Views
         private async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
-            var imageurl = (args.Item as ItemLibraryModel).Item.CoverImageUri;
+            var imageurl = (args.Item as ServiceItem).CoverImageUri;
             var image = templateRoot.Children[0] as Image;
 
-            var file = await ImageCache.GetFromCacheAsync(imageurl);
+            var file = await ImageCache.GetFromCacheAsync(imageurl.AbsoluteUri);
             image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
 
             DoubleAnimation animation = new DoubleAnimation

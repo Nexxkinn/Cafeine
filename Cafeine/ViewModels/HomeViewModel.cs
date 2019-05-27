@@ -71,7 +71,7 @@ namespace Cafeine.ViewModels
                         //remove user credentials
 
                         //drop database
-                        Database.ResetAll();
+                        Database.ResetDataBase();
                         //delete cookies
                         HttpBaseProtocolFilter handler = new HttpBaseProtocolFilter();
                         var cookies = handler.CookieManager.GetCookies(new Uri("https://anilist.co"));

@@ -84,7 +84,7 @@
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock
                                             FontWeight="Bold"
-                                            Text="{x:Bind Vm.Item.Watched_Read, Mode=OneWay}"
+                                            Text="{x:Bind Vm.User.Watched_Read, Mode=OneWay}"
                                             TextAlignment="Center"
                                             TextLineBounds="Tight" />
                                         <Line
@@ -98,7 +98,7 @@
                                             StrokeThickness="1.5"
                                             X2="20" />
                                         <TextBlock
-                                            Text="{x:Bind Vm.Item.EpisodesChapters, Mode=OneWay}"
+                                            Text="{x:Bind Vm.Service.Episodes_Chapters, Mode=OneWay}"
                                             TextAlignment="Center"
                                             TextLineBounds="Tight" />
                                     </StackPanel>
@@ -180,7 +180,7 @@
                                     Margin="2,0"
                                     RelativePanel.AlignRightWithPanel="True"
                                     RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    Text="{x:Bind Vm.Item.EpisodesChapters, Mode=OneWay}" />
+                                    Text="{x:Bind Vm.Service.Episodes_Chapters, Mode=OneWay}" />
 
                             </RelativePanel>
                             <RelativePanel
@@ -229,7 +229,7 @@
                                     FontSize="22"
                                     FontWeight="SemiLight"
                                     MaxLines="2"
-                                    Text="{x:Bind Path=Vm.Item.Title, Mode=OneWay}"
+                                    Text="{x:Bind Path=Vm.Service.Title, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="Wrap" />
                                 <TextBlock

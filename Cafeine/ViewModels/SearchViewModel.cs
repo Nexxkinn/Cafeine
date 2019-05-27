@@ -21,9 +21,9 @@ namespace Cafeine.ViewModels
 
         public ReactiveProperty<string> Keyword { get; }
                 
-        public ObservableCollection<ItemLibraryModel> OfflineResults;
+        public ObservableCollection<ServiceItem> OfflineResults;
 
-        public ObservableCollection<ItemLibraryModel> OnlineResults;
+        public ObservableCollection<ServiceItem> OnlineResults;
 
         public CafeineProperty<bool> LoadResults = new CafeineProperty<bool>();
 
@@ -35,7 +35,7 @@ namespace Cafeine.ViewModels
 
         public SearchViewModel()
         {            
-            OfflineResults = new ObservableCollection<ItemLibraryModel>();
+            OfflineResults = new ObservableCollection<ServiceItem>();
 
             Link.Subscribe<string>(x=> Keyword.Value = x, typeof(Keyword));
 
@@ -58,7 +58,7 @@ namespace Cafeine.ViewModels
                     LoadResults.Value = false;
                 }
             });
-            OnlineResults = new ObservableCollection<ItemLibraryModel>();
+            OnlineResults = new ObservableCollection<ServiceItem>();
         }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
@@ -76,11 +76,11 @@ namespace Cafeine.ViewModels
 
         public void ItemClicked(object sender, ItemClickEventArgs e)
         {
-            var clicked = e.ClickedItem as ItemLibraryModel;
+            var clicked = e.ClickedItem as ServiceItem;
             NavigateToItemDetails(clicked);
         }
 
-        private void NavigateToItemDetails(ItemLibraryModel item)
+        private void NavigateToItemDetails(ServiceItem item)
         {
             // Why would you need to use EventAggregator to pass the data?
             // Because the navigation parameter is so shitty that it only
@@ -93,12 +93,6 @@ namespace Cafeine.ViewModels
             //{
             //    navigationService.RemoveLastPage();
             //}
-            if(item.Id == 0)
-            {
-                // check if it's available in the database.
-                var ItemDatabase = Database.GetItemLibraryModel(MAL_ID: item.MalID);
-                if (ItemDatabase != null) item = ItemDatabase;
-            }
             ItemLibraryService.Push(item);
             navigationService.Navigate(typeof(ItemDetailsPage));
         }
@@ -109,21 +103,21 @@ namespace Cafeine.ViewModels
             {
                 //cleaning first & startup
                 OfflineResultsNoMatches.Value = false;
-                OnlineResults = new ObservableCollection<ItemLibraryModel>();
+                OnlineResults = new ObservableCollection<ServiceItem>();
                 OnlineResultsNoMatches.Value = false;
                 OnlineResultsProgressRing.Value = true;
                 RaisePropertyChanged(nameof(OnlineResults));
 
                 LoadResults.Value = true;
 
-                IList<ItemLibraryModel> offlineresultslist = Database.SearchItemCollection(keyword);
-                OfflineResults = new ObservableCollection<ItemLibraryModel>(offlineresultslist);
+                IList<ServiceItem> offlineresultslist = Database.SearchOffline(keyword);
+                OfflineResults = new ObservableCollection<ServiceItem>(offlineresultslist);
                 OfflineResultsNoMatches.Value = (offlineresultslist.Count == 0);
                 RaisePropertyChanged(nameof(OfflineResults));
 
-                IList<ItemLibraryModel> onlineresultlist = await Database.SearchOnline(keyword);
+                IList<ServiceItem> onlineresultlist = await Database.SearchOnline(keyword);
                 var filteredOnlineResult = onlineresultlist.Except(offlineresultslist,new Itemcomparer()).ToList();
-                OnlineResults = new ObservableCollection<ItemLibraryModel>(filteredOnlineResult);
+                OnlineResults = new ObservableCollection<ServiceItem>(filteredOnlineResult);
                 OnlineResultsNoMatches.Value = (onlineresultlist.Count == 0);
                 OnlineResultsProgressRing.Value = false;
 
@@ -132,16 +126,16 @@ namespace Cafeine.ViewModels
         }
 
     }
-    public class Itemcomparer : IEqualityComparer<ItemLibraryModel>
+    public class Itemcomparer : IEqualityComparer<ServiceItem>
     {
-        public bool Equals(ItemLibraryModel x, ItemLibraryModel y)
+        public bool Equals(ServiceItem x, ServiceItem y)
         {
-            return x.MalID == y.MalID;
+            return x.ServiceID == y.ServiceID;
         }
 
-        public int GetHashCode(ItemLibraryModel obj)
+        public int GetHashCode(ServiceItem obj)
         {
-            return obj.MalID.GetHashCode();
+            return obj.ServiceID.GetHashCode();
         }
     }
 }

@@ -71,22 +71,22 @@
                         ItemsSource="{x:Bind Vm.OfflineResults, Mode=OneWay}"
                         SizeChanged="ListView_SizeChanged">
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="m:ItemLibraryModel">
+                            <DataTemplate x:DataType="m:ServiceItem">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" MaxWidth="636" />
                                         <ColumnDefinition Width="100" />
                                         <ColumnDefinition Width="100" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{x:Bind Path=Item.Title, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
-                                    <TextBlock
+                                    <TextBlock Text="{x:Bind Path=Title, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                    <!--<TextBlock
                                         Grid.Column="1"
                                         HorizontalAlignment="Center"
-                                        Text="{x:Bind Path=Item.GetUserStatus()}" />
+                                        Text="{x:Bind Path=GetUserStatus()}" />-->
                                     <TextBlock
                                         Grid.Column="2"
                                         HorizontalAlignment="Right"
-                                        Text="{x:Bind Path=Item.GetItemSeasonYear()}" />
+                                        Text="{x:Bind Path=GetItemSeasonYear()}" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>

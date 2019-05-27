@@ -8,19 +8,19 @@ namespace Cafeine.Services
     public interface IService
     {
         
-        Task AddItem(ItemLibraryModel item);
+        Task<UserItem> AddItem(ServiceItem item);
 
-        void GetItem(ItemLibraryModel item);
+        Task GetItem(OfflineItem item);
 
-        Task<ItemDetailsModel> GetItemDetails(UserItem item, MediaTypeEnum media);
+        Task GetItemDetails(ServiceItem item, MediaTypeEnum media);
 
-        Task<IList<Episode>> GetItemEpisodes(UserItem item, MediaTypeEnum media);
+        Task<IList<Episode>> GetItemEpisodes(ServiceItem item);
 
-        Task UpdateItem(ItemLibraryModel item);
+        Task UpdateItem(ServiceItem item);
 
-        Task DeleteItem(ItemLibraryModel item);
+        Task DeleteItem(ServiceItem item);
 
-        void DeleteRange(IList<ItemLibraryModel> items);
+        void DeleteRange(IList<OfflineItem> items);
 
         Task<UserAccountModel> CreateAccount(bool isDefaultUser);
 
@@ -32,12 +32,16 @@ namespace Cafeine.Services
 
         Task VerifyAccount(UserAccountModel account);
 
-        Task<IList<ItemLibraryModel>> CreateCollection(UserAccountModel account);
+        Task<IList<ServiceItem>> CreateCollection(UserAccountModel account);
+
+        Task<IList<(ServiceItem service, UserItem user)>> CreateServiceCollection(UserAccountModel account);
+
+        Task<IList<UserItem>> CreateUserCollection(UserAccountModel account);
 
         void ClearCollection(UserAccountModel account);
 
-        Task<IList<ItemLibraryModel>> OnlineSearch(string keyword, MediaTypeEnum media);
+        Task<IList<ServiceItem>> OnlineSearch(string keyword, MediaTypeEnum media);
 
-        Task<IList<ItemLibraryModel>> OnlineSearch(string keyword);
+        Task<IList<OfflineItem>> OnlineSearch(string keyword);
     }
 }

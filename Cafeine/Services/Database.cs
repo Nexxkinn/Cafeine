@@ -5,6 +5,7 @@ using DBreeze;
 using DBreeze.DataTypes;
 using DBreeze.Objects;
 using DBreeze.Utils;
+using Fastenshtein;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -22,9 +23,17 @@ namespace Cafeine.Services
 
         private static DBreezeEngine db = new DBreezeEngine(DB_FILE);
 
+        private static UserAccountModel CurrentAccount;
+
+        private static List<ServiceItem> CurrentItems;
+
+        private static IService CurrentService;
+
         private static Dictionary<int, IService> services;
 
         public static event EventHandler DatabaseUpdated;
+
+        public static event EventHandler<bool> NetworkisOnline;
 
         static Database()
         {
@@ -41,17 +50,9 @@ namespace Cafeine.Services
             }
         }
 
-        public static UserAccountModel GetCurrentUserAccount()
+        public static async Task BuildServices()
         {
-            using (var tr = db.GetTransaction())
-            {
-                var item = tr.Select<byte[], byte[]>("user", 1.ToIndex(true)).ObjectGet<UserAccountModel>();
-                return item?.Entity;
-            }
-        }
-
-        public static async Task CreateServicesFromUserAccounts()
-        {
+            // TODO : Rewrite useraccountfactory
             List<UserAccountModel> userAccounts = GetAllUserAccounts();
             List<Task> tasks = new List<Task>();
             services = new Dictionary<int, IService>();
@@ -69,6 +70,7 @@ namespace Cafeine.Services
                                     lock (services)
                                     {
                                         services.Add(account.Id, service);
+                                        if (account.IsDefaultService) CurrentService = service;
                                     }
                                     break;
                             }
@@ -85,10 +87,9 @@ namespace Cafeine.Services
                 }));
             }
             await Task.WhenAll(tasks);
-
         }
-
-        public static List<UserAccountModel> GetAllUserAccounts()
+        #region accounts
+        private static List<UserAccountModel> GetAllUserAccounts()
         {
             using (var tr = db.GetTransaction())
             {
@@ -105,6 +106,17 @@ namespace Cafeine.Services
                 }
                 return accounts;
             }
+        }
+
+        public static void SetCurrentUserAccount(UserAccountModel account) => CurrentAccount = account;
+
+        public static UserAccountModel GetCurrentUserAccount()
+        {
+            if(CurrentAccount == null)
+            {
+                CurrentAccount = GetAllUserAccounts().First(x => x.IsDefaultService);
+            }
+            return CurrentAccount;
         }
 
         public static void AddAccount(UserAccountModel account)
@@ -134,88 +146,41 @@ namespace Cafeine.Services
                 tr.Commit();
             }
         }
+        #endregion
 
         /// <summary>
         /// Build/rebuild database.
         /// ASSUME there's at least one user account listed in the local database.
         /// </summary>
         /// <returns></returns>
-        public static async Task CreateDBFromServices()
+        public static async Task Build()
         {
-            List<UserAccountModel> useraccounts = GetAllUserAccounts();
-            List<List<ItemLibraryModel>> Listedlibrary = new List<List<ItemLibraryModel>>();
             try
             {
-                List<Task> tasks = new List<Task>();
+                db.Scheme.DeleteTable("TS_Library");
                 //Get all available collection from useraccounts to the library.
-                foreach (var user in useraccounts)
+                var collection = await CurrentService.CreateCollection(CurrentAccount);
+                using(var tr = db.GetTransaction())
                 {
-                    tasks.Add(Task.Run(async () =>
+                    foreach (var item in collection)
                     {
-                        IService service = services[user.Id];
-                        var collection = await service.CreateCollection(user);
-                        lock (Listedlibrary)
-                        {
-                            Listedlibrary.Add(new List<ItemLibraryModel>(collection));
-                        }
-                        collection.Clear();
-                    }));
+                        tr.TextInsert("TS_Library", item.ServiceID.ToBytes(), containsWords: item.Title, fullMatchWords: "");
+                    }
+                    tr.Commit();
                 }
-                await Task.WhenAll(tasks);
-
-                //drop old collection
-                db.Scheme.DeleteTable("library");
-
-                using (var tr = db.GetTransaction())
-                {
-                    //reorganize library into the localitem.
-                    foreach (var library in Listedlibrary)
-                    {
-                        foreach (var item in library)
-                        {
-                            //Find if an item exists first in the local database
-                            var localitem = tr.Select<byte[], byte[]>("library", 2.ToIndex(item.MalID, item.Id)).ObjectGet<ItemLibraryModel>();
-
-                            if (localitem == null)
-                            {
-                                item.Id = tr.ObjectGetNewIdentity<int>("library");
-                                var usertatus = item.Service.First().Value.UserStatus;
-                                var title = item.Service.First().Value.Title;
-                                var res = tr.ObjectInsert("library", new DBreezeObject<ItemLibraryModel>()
-                                {
-                                    NewEntity = true,
-                                    Entity = item,
-                                    Indexes = new List<DBreezeIndex>()
-                                    {
-                                        new DBreezeIndex(1,item.Id){PrimaryIndex = true},
-                                        new DBreezeIndex(2,item.MalID),
-                                        new DBreezeIndex(3,usertatus),
-                                    }
-                                });
-                                tr.TextInsert("TS_Library", item.Id.ToBytes(), containsWords: title, fullMatchWords: "");
-                            }
-                            else
-                            {
-                                //Suppose other service already filled the MalID
-                                var service_item = item.Service.First();
-                                localitem.Entity.Service.Add(service_item.Key, service_item.Value);
-                                tr.ObjectInsert("library", localitem);
-                            }
-                        }
-                        // Blame this one line of code that causes this mess lol
-                        tr.Commit();
-                    };
-                }
+                CurrentItems = new List<ServiceItem>(collection);
+                collection.Clear();
             }
             catch (Exception e)
             {
+                // assume offline version
                 throw new Exception(e.Message, e);
             }
-            finally
-            {
-                Listedlibrary.Clear();
-                useraccounts.Clear();
-            }
+        }
+
+        public static async Task SyncAllService()
+        {
+            // TODO: write an instruction here
         }
 
         //public static void SyncDatabase(List<ItemLibraryModel> library)
@@ -239,134 +204,113 @@ namespace Cafeine.Services
         //    }
         //}
 
-        public static async Task AddItem(ItemLibraryModel Item)
+        #region item management
+        public static async Task<UserItem> CreateUserItem(ServiceItem Item)
         {
-            // Item must be at least from one currently used service.
-            // Assume the current service is "default".
-            UserAccountModel user = GetCurrentUserAccount();
-            IService service = services[user.Id];
-            await service.AddItem(Item);
+            var useritem = await CurrentService.AddItem(Item);
+            CurrentItems.Remove(Item);
+            Item.UserItem = useritem;
+            CurrentItems.Add(Item);
+            return useritem;
+        }
 
+        public static OfflineItem CreateOflineItem(ServiceItem item)
+        {
             using (var tr = db.GetTransaction())
             {
-                Item.Id = tr.ObjectGetNewIdentity<int>("library");
-                DBreezeObject<ItemLibraryModel> localitem = new DBreezeObject<ItemLibraryModel>()
+                OfflineItem offlineitem = new OfflineItem
                 {
-                    Entity = Item,
+                    Id = tr.ObjectGetNewIdentity<int>("library"),
+                    ServiceID = item.ServiceID,
+                    MalID = item.MalID,
+                };
+                tr.ObjectInsert("library", new DBreezeObject<OfflineItem>
+                {
+                    NewEntity = true,
+                    Entity = offlineitem,
                     Indexes = new List<DBreezeIndex>()
                     {
-                        new DBreezeIndex(1,Item.Id){PrimaryIndex = true},
-                        new DBreezeIndex(2,Item.MalID),
-                        new DBreezeIndex(3,Item.Item.UserStatus),
+                        new DBreezeIndex(1,offlineitem.Id){PrimaryIndex = true},
+                        new DBreezeIndex(2,offlineitem.ServiceID),
+                        new DBreezeIndex(3,offlineitem.MalID)
                     }
-                };
-                tr.ObjectInsert("library", localitem, false);
-                tr.TextInsert("TS_Library", Item.Id.ToBytes(), containsWords: Item.Item.Title, fullMatchWords: "");
+                });
                 tr.Commit();
+                return offlineitem;
             }
         }
 
-        /// <summary>
-        /// One parameter MUST exist.
-        /// </summary>
-        /// <param name="DatabaseID"></param>
-        /// <param name="MAL_ID"></param>
-        public static ItemLibraryModel GetItemLibraryModel(int? DatabaseID = null, int? MAL_ID = null)
+        public static async Task<OfflineItem> GetOfflineItem(int? service_id,int? mal_id)
         {
-            ItemLibraryModel item;
-            using(var tr = db.GetTransaction())
+            OfflineItem item = await Task.Run(() =>
             {
-                DBreezeObject<ItemLibraryModel> localitem;
-                if (DatabaseID.HasValue)
+                using (var tr = db.GetTransaction())
                 {
-                    byte[] key = 1.ToIndex(DatabaseID.Value);
-                    localitem = tr.Select<byte[], byte[]>("library", key).ObjectGet<ItemLibraryModel>();
-                    item = localitem?.Entity;
-                }
-                else
-                {
-                    var itemaavilable = tr.SelectForwardFromTo<byte[], byte[]>("library", 2.ToIndex(MAL_ID.Value, int.MinValue), true, 2.ToIndex(MAL_ID.Value, int.MaxValue),true);
-                    var offlineitem = itemaavilable.First();
-                    localitem = offlineitem.ObjectGet<ItemLibraryModel>();
-                    item = localitem?.Entity;
-                }
-                
+                    IEnumerable<Row<byte[], byte[]>> result = null;
+                    if (service_id !=0)
+                    {
 
-            }
+                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 2.ToIndex(service_id, 0), true, 2.ToIndex(service_id, int.MaxValue), true);
+                        
+                    }
+                    else
+                    {
+                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 3.ToIndex(mal_id, 0, 0), true, 3.ToIndex(mal_id, int.MaxValue, int.MaxValue),true);
+                    }
+
+                    if ( result?.Count() != 0)
+                    {
+                        var firstresult = result.First();
+                        DBreezeObject<OfflineItem> localitem = firstresult.ObjectGet<OfflineItem>();
+                        return localitem.Entity;
+                    }
+                    else return null;
+                }
+            });
             return item;
         }
 
-        public static async Task DeleteItem(ItemLibraryModel Item)
+        public static Task UpdateOfflineItem(OfflineItem item)
         {
-            UserAccountModel user = GetCurrentUserAccount();
-            IService service = services[user.Id];
-            await service.DeleteItem(Item);
-
-            using (var tr = db.GetTransaction())
-            {
-                tr.ObjectRemove("library", 1.ToIndex(Item.Id));
-                tr.TextRemoveAll("TS_Library", Item.Id.ToBytes());
-                tr.Commit();
-            }
-        }
-
-        public static async Task UpdateItem(ItemLibraryModel PooledItem,bool userItemChanged = false)
-        {
-            //assuming the item is from "default" UserItem 
-            if (userItemChanged)
-            {
-                UserAccountModel user = GetCurrentUserAccount();
-                UserItem item = PooledItem.Item;
-                IService service = services[user.Id];
-
-                // Item checking
-                // -> Set Status to Complete if either total watched is more than total episodes
-                //    or userstatus is completed
-                if ( item.Watched_Read >= item.EpisodesChapters || item.UserStatus == 1)
-                {
-                    item.UserStatus = 1;
-                    if( item.EpisodesChapters != 0) item.Watched_Read = item.EpisodesChapters; 
-                }
-                await service.UpdateItem(PooledItem);
-            }
-
             using (var tr = db.GetTransaction())
             {
                 tr.SynchronizeTables("library");
-                DBreezeObject<ItemLibraryModel> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)PooledItem.Id)).ObjectGet<ItemLibraryModel>();
-                localitem.Entity = PooledItem;
+                DBreezeObject<OfflineItem> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)item.Id)).ObjectGet<OfflineItem>();
+                localitem.Entity = item;
                 localitem.Indexes = new List<DBreezeIndex>()
                     {
-                        new DBreezeIndex(1,localitem.Entity.Id){PrimaryIndex = true},
-                        new DBreezeIndex(2,localitem.Entity.MalID),
-                        new DBreezeIndex(3,localitem.Entity.Service["default"].UserStatus),
+                        new DBreezeIndex(1,item.Id){PrimaryIndex = true},
+                        new DBreezeIndex(2,item.ServiceID),
+                        new DBreezeIndex(3,item.MalID)
                     };
-                tr.ObjectInsert("library", localitem, false);
+                tr.ObjectInsert("library", localitem);
                 tr.Commit();
             }
-
-            if(userItemChanged) DatabaseUpdated.Invoke(null, null);
-
+            return Task.CompletedTask;
         }
 
-        public static async Task<ItemDetailsModel> ViewItemDetails(UserItem item, ServiceType serviceType, MediaTypeEnum media)
+        public static async Task UpdateItem(ServiceItem serviceitem)
         {
-            var output = new ItemDetailsModel();
-            UserAccountModel userAccount = GetCurrentUserAccount();
-            IService service = services[userAccount.Id];
-            output = await service.GetItemDetails(item, media);
-            return output;
+            await CurrentService.UpdateItem(serviceitem);
+            var oldItem = CurrentItems.FindIndex(x => x.ServiceID == serviceitem.ServiceID);
+            CurrentItems.RemoveAt(oldItem);
+            CurrentItems.Add(serviceitem);
+            DatabaseUpdated.Invoke(serviceitem, null);
         }
 
-        public static async Task<List<Episode>> UpdateItemEpisodes(UserItem item, int ItemLibraryID, ServiceType serviceType, MediaTypeEnum media)
+        public static async Task DeleteItem(ServiceItem serviceitem)
         {
-            var output = new List<Episode>();
+            await CurrentService.DeleteItem(serviceitem);
+            var oldItem = CurrentItems.FindIndex(x => x.ServiceID == serviceitem.ServiceID);
+            CurrentItems.RemoveAt(oldItem);
+            CurrentItems.Remove(serviceitem);
+        }
+
+        public static async Task<List<Episode>> UpdateItemEpisodes(ServiceItem item)
+        {
             try
             {
-                UserAccountModel user = GetCurrentUserAccount();
-                IService service = services[user.Id];
-                output = await service.GetItemEpisodes(item, media) as List<Episode>;
-                return output;
+                return await CurrentService.GetItemEpisodes(item) as List<Episode>;
             }
             catch (Exception ex)
             {
@@ -375,45 +319,53 @@ namespace Cafeine.Services
             }
         }
 
-        public static async Task<IList<ItemLibraryModel>> SearchOnline(string keyword,MediaTypeEnum mediatype = MediaTypeEnum.ANIME)
+        public static ServiceItem GetUserServiceItem(int service_id)
+        {
+            try
+            {
+                return CurrentItems.First(x => x.ServiceID == service_id);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        #endregion
+
+        #region search
+        public static async Task<IList<ServiceItem>> SearchOnline(string keyword,MediaTypeEnum mediatype = MediaTypeEnum.ANIME)
         {
             if (keyword == string.Empty) return null;
-            UserAccountModel account = GetCurrentUserAccount();
-            IService service = services[account.Id];
-            IList<ItemLibraryModel> results = await service.OnlineSearch(keyword,mediatype);
+            var results = await CurrentService.OnlineSearch(keyword,mediatype);
             return results;
         }
 
-        public static IList<ItemLibraryModel> SearchItemCollection(string query)
+        public static IList<ServiceItem> SearchOffline(string query)
         {
             using (var tr = db.GetTransaction())
             {
-                List<ItemLibraryModel> items = new List<ItemLibraryModel>();
+                List<ServiceItem> items = new List<ServiceItem>();
                 foreach (var id in tr.TextSearch("TS_Library").BlockAnd(query).GetDocumentIDs())
                 {
-                    var localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex(id)).ObjectGet<ItemLibraryModel>();
-                    items.Add(localitem.Entity);
+                    int val = id.To_Int32_BigEndian();
+                    var localitem = CurrentItems.First(x => x.ServiceID == val);
+                    items.Add(localitem);
                 }
                 return items;
             }
         }
 
-        public static IList<ItemLibraryModel> SearchBasedonCategory(int category)
+        public static IList<ServiceItem> SearchBasedonUserStatus(int user_status)
         {
             using (var tr = db.GetTransaction())
             {
                 tr.SynchronizeTables("library");
-                IList<ItemLibraryModel> items = new List<ItemLibraryModel>();
-                foreach (var localitem in tr.SelectForwardStartsWith<byte[], byte[]>("library", 3.ToIndex(category)))
-                {
-                    var item = localitem.ObjectGet<ItemLibraryModel>();
-                    items.Add(item.Entity);
-                }
-                return items;
+                IList<ServiceItem> result = CurrentItems.Where(x => x.UserItem.UserStatus == user_status).ToList();
+                return result;
             }
         }
-
-        public static void ResetAll()
+        #endregion
+        public static void ResetDataBase()
         {
             db.Scheme.DeleteTable("user");
             db.Scheme.DeleteTable("library");

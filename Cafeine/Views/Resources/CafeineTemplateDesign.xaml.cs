@@ -55,8 +55,8 @@ namespace Cafeine.Views.Resources
         private async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
-            var imageurl = (args.Item as ItemLibraryModel).Service["default"].CoverImageUri;
-            var cache = await ImageCache.GetFromCacheAsync(imageurl);
+            var imageurl = (args.Item as ServiceItem).CoverImageUri;
+            var cache = await ImageCache.GetFromCacheAsync(imageurl.AbsoluteUri);
             var imagegrid = templateRoot.Children[0] as Grid;
 
             var imagebrush = new ImageBrush()

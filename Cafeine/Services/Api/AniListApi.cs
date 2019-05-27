@@ -28,13 +28,22 @@ namespace Cafeine.Services.Api
 
         private async Task<Dictionary<string, dynamic>> AnilistPostAsync(QueryQL query)
         {
-            HttpStringContent JSONRequest = new HttpStringContent(JsonConvert.SerializeObject(query),
-                Windows.Storage.Streams.UnicodeEncoding.Utf8,
-                "application/json");
-            var Response = await AnilistAuthClient.PostAsync(HostUri, JSONRequest);
-            string JSONResponse = await Response.Content.ReadAsStringAsync();
-            var ContentResponse = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(JSONResponse);
-            return ContentResponse;
+            try
+            {
+                HttpStringContent JSONRequest = new HttpStringContent(JsonConvert.SerializeObject(query),
+                    Windows.Storage.Streams.UnicodeEncoding.Utf8,
+                    "application/json");
+                var Response = await AnilistAuthClient.PostAsync(HostUri, JSONRequest);
+                
+                string JSONResponse = await Response.Content.ReadAsStringAsync();
+                var ContentResponse = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(JSONResponse);
+                return ContentResponse;
+            }
+            catch (System.Exception)
+            {
+                throw new OperationCanceledException();
+            }
+
         }
 
         #region account methods
@@ -129,7 +138,7 @@ namespace Cafeine.Services.Api
         #endregion
 
         #region items
-        public async Task AddItem(ItemLibraryModel itemModel)
+        public async Task<UserItem> AddItem(ServiceItem item)
         {
             QueryQL query = new QueryQL()
             {
@@ -141,28 +150,34 @@ namespace Cafeine.Services.Api
                         }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["mediaid"] = itemModel.Item.ServiceId,
+                    ["mediaid"] = item.ServiceID,
                     ["score"] = 0
                 }
             };
             dynamic result = await AnilistPostAsync(query);
 
             // Generate / populate userItem
-            UserItem Item = itemModel.Service.ContainsKey("default") ? itemModel.Item : throw new Exception("Generated UserItem doesn't exists.");
-            Item.AdditionalInfo = new Tuple<int, string>((int)result["data"]["SaveMediaListEntry"]["id"], StatusEnum.Anilist_UserStatus_Int2Str[0]);            
+            var info = new Tuple<int, string>((int)result["data"]["SaveMediaListEntry"]["id"], StatusEnum.Anilist_UserStatus_Int2Str[0]);
+            UserItem useritem = new UserItem
+            {
+                Service = ServiceType.ANILIST,
+                ServiceID = item.ServiceID,
+                AdditionalInfo = info
+            };
+            return useritem;
         }
 
-        public void GetItem(ItemLibraryModel item)
+        public Task GetItem(OfflineItem item)
         {
             throw new NotImplementedException();
         }
 
-        public async Task DeleteItem(ItemLibraryModel itemlibrary)
+        public async Task DeleteItem(ServiceItem service_item)
         {
             /// why would they need to use medialist's id to delete the entry
             /// instead of using media's id? really, for no reason at all.
-            
-            var additionalinfo = JsonConvert.DeserializeObject<Tuple<int,string>>(itemlibrary.Item.AdditionalInfo.ToString());
+            var user = service_item.UserItem;
+            var (mediaTokenID, status) = JsonConvert.DeserializeObject<(int mediaTokenID,string status)>(user.AdditionalInfo.ToString());
             QueryQL query = new QueryQL()
             {
                 query = @"mutation($id:Int){
@@ -172,23 +187,22 @@ namespace Cafeine.Services.Api
                             }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["id"] = additionalinfo.Item1
+                    ["id"] = mediaTokenID
                 }
             };
-
-            var result = await AnilistPostAsync(query);
-
+            await AnilistPostAsync(query);
         }
 
-        public void DeleteRange(IList<ItemLibraryModel> items)
+        public void DeleteRange(IList<OfflineItem> items)
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateItem(ItemLibraryModel itemModel)
+        public async Task UpdateItem(ServiceItem service_item)
         {
-            if (!(itemModel.Item.AdditionalInfo is Tuple<int, string> additionalinfo))
-                additionalinfo = JsonConvert.DeserializeObject<Tuple<int, string>>(itemModel.Item.AdditionalInfo.ToString());
+            var user = service_item.UserItem;
+            if (!(user.AdditionalInfo is Tuple<int, string> additionalinfo))
+                additionalinfo = JsonConvert.DeserializeObject<Tuple<int, string>>(user.AdditionalInfo.ToString());
             var Query = new QueryQL
             {
                 query = @"
@@ -201,18 +215,16 @@ namespace Cafeine.Services.Api
             ",
                 variables = new Dictionary<string, dynamic>
                 {
-                    ["mediaid"] = itemModel.Item.ServiceId,
-                    ["userstatus"] = StatusEnum.Anilist_UserStatus_Int2Str[itemModel.Item.UserStatus],
-                    ["progress"] = itemModel.Item.Watched_Read
+                    ["mediaid"] = service_item.ServiceID,
+                    ["userstatus"] = StatusEnum.Anilist_UserStatus_Int2Str[user.UserStatus.Value],
+                    ["progress"] = user.Watched_Read
                 }
             };
             await AnilistPostAsync(Query);
         }
 
-        public async Task<ItemDetailsModel> GetItemDetails(UserItem item, MediaTypeEnum media)
+        public async Task GetItemDetails(ServiceItem item, MediaTypeEnum media)
         {
-            var output = new Dictionary<string, object>();
-
             QueryQL query = new QueryQL
             {
                 query = @"query($id:Int,$type:MediaType){ 
@@ -226,7 +238,7 @@ namespace Cafeine.Services.Api
                             }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["id"] = item.ServiceId,
+                    ["id"] = item.Service,
                     ["type"] = media.ToString()
                 }
             };
@@ -239,16 +251,10 @@ namespace Cafeine.Services.Api
             dynamic brfilter = Regex.Replace(Content["data"]["Media"]["description"].Value, @"<[^>]+>|&nbsp;", "").Trim();
             var desc = Regex.Replace(brfilter, @"\\n", "\r\n");
 
-            //TODO : add more itemdetails
-            var itemdetailsmodel = new ItemDetailsModel()
-            {
-                Description = desc
-
-            };
-            return itemdetailsmodel;
+            item.Description = desc;
         }
 
-        public async Task<IList<Episode>> GetItemEpisodes(UserItem item, MediaTypeEnum media)
+        public async Task<IList<Episode>> GetItemEpisodes(ServiceItem item)
         {
             QueryQL query = new QueryQL
             {
@@ -262,8 +268,8 @@ namespace Cafeine.Services.Api
                             }",
                 variables = new Dictionary<string, object>()
                 {
-                    ["id"] = item.ServiceId,
-                    ["type"] = media.ToString()
+                    ["id"] = item.ServiceID,
+                    ["type"] = item.MediaType.ToString()
                 }
             };
             dynamic Content = await AnilistPostAsync(query);
@@ -281,7 +287,7 @@ namespace Cafeine.Services.Api
         #endregion
 
         #region collections
-        public async Task<IList<ItemLibraryModel>> CreateCollection(UserAccountModel account)
+        public async Task<IList<ServiceItem>> CreateCollection(UserAccountModel account)
         {
 
             var Query = new QueryQL
@@ -328,8 +334,7 @@ namespace Cafeine.Services.Api
             };
             dynamic Collection = await AnilistPostAsync(Query);
 
-            var localitem = new List<ItemLibraryModel>();
-            string ServiceName = (account.IsDefaultService) ? "default" : "AniList";
+            var localitem = new List<ServiceItem>();
 
             //For Anime
             foreach (var list in Collection["data"]["MediaListCollection"]["lists"])
@@ -341,33 +346,36 @@ namespace Cafeine.Services.Api
                     int itemstatus = StatusEnum.Anilist_ItemStatus[item["media"]["status"].Value];
                     int userstatus = StatusEnum.UserStatus[status];
                     int season = ((int?)item["media"]["seasonInt"]).GetValueOrDefault();
-                    var GeneratedItem = new ItemLibraryModel()
+                    var GeneratedItem = new OfflineItem()
                     {
                         MalID = ((int?)item["media"]["idMal"]).GetValueOrDefault(),
-                        Service = new Dictionary<string, UserItem>()
-                        {
-                            [ServiceName] = new UserItem
-                            {
-                                Title = item["media"]["title"]["romaji"],
-                                CoverImageUri = item["media"]["coverImage"]["large"],
-                                SeriesStart = ((int?)item["media"]["startDate"]["year"]).GetValueOrDefault(),
-                                ServiceId = (int)item["mediaId"],
-                                UserScore = ((double?)item["score"]).GetValueOrDefault(),
-                                AverageScore = ((double?)item["media"]["averageScore"]).GetValueOrDefault(),
-                                UserStatus = userstatus,
-                                Status = itemstatus,
-                                Season = season % 10,
-                                Watched_Read = ((int?)item["progress"]).GetValueOrDefault(),
-                                EpisodesChapters = ((int?)item["media"]["episodes"]).GetValueOrDefault(),
-                                // ID required to identify user's item
-                                AdditionalInfo = new Tuple<int, string>((int)item["id"], status)
-                            }
-                        }
                     };
-                    localitem.Add(GeneratedItem);
+                    
+                    var user = new UserItem
+                    {
+                        ServiceID = (int)item["mediaId"],
+                        UserScore = ((double?)item["score"]).GetValueOrDefault(),
+                        UserStatus = userstatus,
+                        Watched_Read = ((int?)item["progress"]).GetValueOrDefault(),
+                        AdditionalInfo = new Tuple<int, string>((int)item["id"], status)
+                    };
+
+                    var service = new ServiceItem
+                    {
+                        Title = item["media"]["title"]["romaji"],
+                        CoverImageUri = item["media"]["coverImage"]["large"],
+                        SeriesStart = ((int?)item["media"]["startDate"]["year"]).GetValueOrDefault(),
+                        ServiceID = (int)item["mediaId"],
+                        AverageScore = ((double?)item["media"]["averageScore"]).GetValueOrDefault(),
+                        ItemStatus = itemstatus,
+                        Season = (SeasonsEnum?)(season % 10),
+                        Episodes_Chapters = ((int?)item["media"]["episodes"]).GetValueOrDefault(),
+                        UserItem = user
+                    };
+                    localitem.Add(service);
                 };
             }
-            return localitem.ToList();
+            return localitem;
         }
 
         public void ClearCollection(UserAccountModel account)
@@ -377,7 +385,7 @@ namespace Cafeine.Services.Api
         #endregion
 
         #region onlinesearch
-        public async Task<IList<ItemLibraryModel>> OnlineSearch(string keyword, MediaTypeEnum media)
+        public async Task<IList<ServiceItem>> OnlineSearch(string keyword, MediaTypeEnum media)
         {
             QueryQL query = new QueryQL()
             {
@@ -413,7 +421,7 @@ namespace Cafeine.Services.Api
                 }
             };
             Dictionary<string, dynamic> result = await AnilistPostAsync(query);
-            IList < ItemLibraryModel > items = new List<ItemLibraryModel>();
+            var items = new List<ServiceItem>();
             foreach(var item in result["data"]["anime"]["media"])
             {
                 //using coalese expression (?? argument) can cause an exception.
@@ -423,39 +431,41 @@ namespace Cafeine.Services.Api
                 int? startdate = (int?)item["startDate"]["year"];
                 int? EpisodeCheck = (int?)item["episodes"];
                 int episodes = EpisodeCheck.HasValue ? EpisodeCheck.Value : default(int);
-                items.Add(new ItemLibraryModel()
+                var mal_id = (item["idMal"] != null) ? item["idMal"] : -1;
+                var serviceitem = new ServiceItem()
                 {
-                    //using coalese expression (?? argument) can cause an exception.
-                    MalID = (item["idMal"] != null) ? item["idMal"] : item["id"],
-                    Service = new Dictionary<string, UserItem>()
-                    {
-                        ["default"] = new UserItem()
-                        {
-                            ServiceId = (int)item["id"],
-                            Title = item["title"]["romaji"],
-                            CoverImageUri = item["coverImage"]["large"],
-                            Details = new ItemDetailsModel()
-                            {
-                                Description = item["description"]
-                            },
-                            AverageScore = (double?)item["averageScore"],
-                            Status = itemstatus,
-                            SeriesStart = startdate ?? 0,
-                            EpisodesChapters = episodes,
-                            Season = season
-                        }
-                    }
-                });
+                    MalID = mal_id,
+                    ServiceID = (int)item["id"],
+                    Title = item["title"]["romaji"],
+                    CoverImageUri = item["coverImage"]["large"],
+                    Description = item["description"],
+                    AverageScore = (double?)item["averageScore"],
+                    ItemStatus = itemstatus,
+                    SeriesStart = startdate ?? 0,
+                    Episodes_Chapters = episodes,
+                    Season = (SeasonsEnum?)season
+                };
+                items.Add(serviceitem);
             }
             return items;
         }
 
-        public Task<IList<ItemLibraryModel>> OnlineSearch(string keyword)
+        public Task<IList<OfflineItem>> OnlineSearch(string keyword)
         {
             throw new NotImplementedException();
         }
 
         public Task VerifyAccount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<(ServiceItem service, UserItem user)>> CreateServiceCollection(UserAccountModel account)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<UserItem>> CreateUserCollection(UserAccountModel account)
         {
             throw new NotImplementedException();
         }

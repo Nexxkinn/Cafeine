@@ -18,11 +18,22 @@ namespace Cafeine.ViewModels
 {
     public class ItemDetailsViewModel : ViewModelBase
     {
-        public UserItem Item { get; set; }
+        private OfflineItem _offline { get; set; }
 
-        private ItemLibraryModel ItemBase;
+        private ServiceItem _service { get; set; }
 
-        private ItemLibraryService service;
+        public UserItem User {
+            get => _service.UserItem;
+            set {
+                if(value != _service.UserItem)
+                {
+                    _service.UserItem = value;
+                    RaisePropertyChanged(nameof(User));
+                }
+            }
+        }
+
+        public ServiceItem Service => _service;
 
         public ObservableCollection<Episode> Episodelist { get; private set; }
         
@@ -79,6 +90,9 @@ namespace Cafeine.ViewModels
 
         public ItemDetailsViewModel()
         {
+            _offline = new OfflineItem();
+            _service = new ServiceItem();
+
             navigationService = new NavigationService();
             PaneBackground = new CafeineProperty<Brush>(new SolidColorBrush(Windows.UI.Colors.Transparent));
             IsPaneOpened = new ReactiveProperty<bool>(false);
@@ -123,7 +137,7 @@ namespace Cafeine.ViewModels
 
             EpisodeListsClicked = new CafeineCommand(() => 
             {
-                if (ItemBase.Episodes.Count == 0)
+                if (_offline.Episodes.Count == 0)
                 {
                     LoadEpisodeNotFound.Value = true;
                     LoadEpisodeLists.Value = Visibility.Collapsed;
@@ -150,16 +164,14 @@ namespace Cafeine.ViewModels
             AddButtonClicked = new AsyncReactiveCommand();
             AddButtonClicked.Subscribe(async _ =>
             {
-                await Database.AddItem(ItemBase);
-                Item = ItemBase.Item;
-                RaisePropertyChanged(nameof(Item));
+                User = await Database.CreateUserItem(_service);
                 SetDeleteButtonLoad.Value = true;
             });
 
             DeleteButtonClicked = new AsyncReactiveCommand();
             DeleteButtonClicked.Subscribe( async _ =>
             {
-                MessageDialog popup = new MessageDialog($"You are going to delete {Item.Title} from your list.\n" +
+                MessageDialog popup = new MessageDialog($"You are going to delete {_service.Title} from your list.\n" +
                     $"Removing this item will also unlink your local directory in this item.\n" +
                     $"Do you really want to Remove it?", $"Remove this item?");
                 popup.Commands.Add(new UICommand("Remove") { Id = 0 });
@@ -169,7 +181,7 @@ namespace Cafeine.ViewModels
                 var result = await popup.ShowAsync();
                 if ((int)result.Id == 0)
                 {
-                    await Database.DeleteItem(ItemBase);
+                    await Database.DeleteItem(_service);
                     navigationService.GoBack();
                 }
             });
@@ -177,49 +189,51 @@ namespace Cafeine.ViewModels
 
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(ItemBase); 
+            if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(_service); 
 
-            if (ItemBase != null &&
-                (Item.UserStatus != UserStatusComboBox.Value || Item.Watched_Read != TotalSeenTextBox.Value))
+            if (User != null &&
+                (User?.UserStatus != UserStatusComboBox.Value || User?.Watched_Read != TotalSeenTextBox.Value))
             {
-                Item.Watched_Read = TotalSeenTextBox.Value;
-                Item.UserStatus = UserStatusComboBox.Value;
-                await Database.UpdateItem(ItemBase, userItemChanged: true);
+                User.Watched_Read = TotalSeenTextBox.Value;
+                User.UserStatus = UserStatusComboBox.Value;
+                await Database.UpdateItem(_service);
             }
             await base.OnNavigatedFrom(e);
         }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
-            ItemBase = ItemLibraryService.Pull();
-            Item = ItemBase.Item;
-            await LoadItem();
             await base.OnNavigatedTo(e);
+            // Let UI Thread free
+            await Task.Yield();
+            (_offline, _service) = await ItemLibraryService.Pull();
+            await LoadItem();
         }
         public async Task LoadItem()
         {
             try
             {
-                RaisePropertyChanged(nameof(Item));
-                TotalSeenTextBox.Value = Item.Watched_Read;
-                UserStatusComboBox.Value = Item.UserStatus;
-                SetDeleteButtonLoad.Value = (ItemBase.Id != default(int));
+                RaisePropertyChanged(nameof(User));
+                RaisePropertyChanged(nameof(Service));
+                TotalSeenTextBox.Value = User?.Watched_Read ?? 0;
+                UserStatusComboBox.Value = User?.UserStatus ?? 0;
+                SetDeleteButtonLoad.Value = (User != null);
 
-                StatusTextBlock.Value = $"{StatusEnum.Anilist_AnimeItemStatus[Item.Status]} • {Item.SeriesStart} • TV";
-                double score = Item.AverageScore ?? -1;
+                StatusTextBlock.Value = $"{StatusEnum.Anilist_AnimeItemStatus[_service.ItemStatus.Value]} • {_service.SeriesStart} • TV";
+                double score = _service.AverageScore ?? -1;
                 ScorePlaceHolderRating.Value = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(score);
-                ScoreTextBlock.Value = (Item.AverageScore.HasValue) ? $"( {Item.AverageScore.ToString()} )" : "( No score )";
+                ScoreTextBlock.Value = (_service.AverageScore.HasValue) ? $"( {_service.AverageScore.ToString()} )" : "( No score )";
 
                 //Parallel task.
                 List<Task> task = new List<Task>();
                 task.Add(Task.Run(async () =>
                 {
-                    if (Item.Details == null)
-                    {
-                        Item.Details = await Database.ViewItemDetails(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
-                    }
-                    LoadItemDetails.Value = true;
-                    DescriptionTextBlock.Value = Item.Details.Description;
+                    //if (Item.Details == null)
+                    //{
+                    //    Item.Details = await Database.ViewItemDetails(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
+                    //}
+                    //LoadItemDetails.Value = true;
+                    //DescriptionTextBlock.Value = Item.Details.Description;
 
                 }));
 
@@ -229,28 +243,29 @@ namespace Cafeine.ViewModels
                 task.Add(Task.Factory.StartNew(async () =>
                 {
                     //load episode list from database.
-                    if (ItemBase.Episodes != null)
+                    if (_offline == null) _offline =  Database.CreateOflineItem(_service);
+
+                    if (_offline.Episodes != null)
                     {
-                        Episodelist = new ObservableCollection<Episode>(ItemBase.Episodes);
+                        Episodelist = new ObservableCollection<Episode>(_offline.Episodes);
                         RaisePropertyChanged(nameof(Episodelist));
                     }
-                    else ItemBase.Episodes = new List<Episode>();
-                    await Task.Delay(100);
-                    LoadEpisodeLists.Value = (ItemBase.Episodes.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
-
+                    else _offline.Episodes = new List<Episode>();
+                    LoadEpisodeLists.Value = (_offline.Episodes.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
+                    await Task.Yield();
                     //load episode list from service.
-                    List<Episode> EpisodeService = await Database.UpdateItemEpisodes(Item, ItemBase.Id, ServiceType.ANILIST, MediaTypeEnum.ANIME);
+                    List<Episode> EpisodeService = await Database.UpdateItemEpisodes(_service);
                     foreach (var episode in EpisodeService)
                     {
-                        bool EpisodeAlreadyListed = ItemBase.Episodes.Exists(x => x.Title == episode.Title || x.OnlineThumbnail == episode.OnlineThumbnail);
+                        bool EpisodeAlreadyListed = _offline.Episodes.Exists(x => x.Title == episode.Title || x.OnlineThumbnail == episode.OnlineThumbnail);
                         if (!EpisodeAlreadyListed)
                         {
                             //Only add new items to avoid overwriting old items that contains file path.
-                            ItemBase.Episodes.Add(episode);
+                            _offline.Episodes.Add(episode);
                             Episodelist?.Add(episode);
                         }
                     }
-                    if (ItemBase.Episodes.Count == 0)
+                    if (_offline.Episodes.Count == 0)
                     {
                         LoadEpisodeNotFound.Value = true;
                         LoadEpisodeLists.Value = Visibility.Collapsed;
@@ -266,11 +281,12 @@ namespace Cafeine.ViewModels
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.FromCurrentSynchronizationContext()).Unwrap());
 
-                task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(Item.CoverImageUri)));
+                task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(_service.CoverImageUri.AbsoluteUri)));
                 await Task.WhenAll(task);
 
                 // Check if item source is from library or search query
-                if (ItemBase.Id != default(int)) await Database.UpdateItem(ItemBase);
+                
+                await Database.UpdateOfflineItem(_offline);
             }
             catch (Exception ex)
             {
@@ -279,8 +295,9 @@ namespace Cafeine.ViewModels
                 //ItemScore.Value           = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(-1, 0);
 
                 //ItemStatusTextBlock.Value = $"An error occured. {ex.Message}";
-                Item.Details.Description = $"{ex.StackTrace}\n" +
-                    $"Screenshot this image and contact to the developer.";
+
+                //Item.Details.Description = $"{ex.StackTrace}\n" +
+                //    $"Screenshot this image and contact to the developer.";
             }
         }
 

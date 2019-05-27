@@ -9,110 +9,137 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Cafeine.Models
 {
-    public sealed class ItemLibraryModel 
+    /// <summary>
+    /// For offline paths
+    /// </summary>
+    public sealed class OfflineItem 
     {
         /// <summary>
         /// Database ID. Not for use.
         /// </summary>
         public int Id { get; set; }
-        
         /// <summary>
-        /// Accepted id for all known services. 
+        /// Accepted id for its service. <para /> 
+        /// Use this one for identification or to get item.
+        /// </summary>
+        public int ServiceID { get; set; }
+        /// <summary>
+        /// Accepted id for all known services. <para />
         /// Use this one for identification or to get item.
         /// </summary>
         public int MalID { get; set; }
-        
         /// <summary>
-        /// Returns currently default item.
+        /// Saved folder path.
         /// </summary>
-        public UserItem Item {
-            get { return Service?["default"]; }
-            set {
-                if(Service != null)
-                {
-                    Service["default"] = value;
-                }
+        public string FolderPath { get; set; }
+        /// <summary>
+        /// Saved episodes
+        /// </summary>
+        public List<Episode> Episodes { get; set; }
+    }
+
+    /// <summary>
+    /// ServiceItem consists entirely for online items <para/>
+    /// It always get updated based on useritem.
+    /// </summary>
+    public class ServiceItem
+    {
+        public override bool Equals(object obj)
+        {
+            if(obj is UserItem)
+            {
+                return this.ServiceID == (obj as UserItem).ServiceID;
+            }
+            else
+            {
+                return base.Equals(obj);
             }
         }
 
+        public ServiceType Service { get; set; }
 
-        //Fetch from Anilist only
-        //[MAL ONLY] since MyAnimeList doesn't have any feature to list episodes title
-        public List<Episode> Episodes { get; set; }
+        /// <summary>
+        /// Service ID. Intended for database.
+        /// </summary>
+        public int ServiceID { get; set; }
+
+        public int MalID { get; set; }
+
+        public MediaTypeEnum MediaType { get; set; }
 
         //[MAL ONLY] due to MAL being weird, data fetched from Anilist
         public MediaFormatEnum ShowType { get; set; }
 
-        public MediaTypeEnum MediaType { get; set; }
-
-        public Dictionary<string, UserItem> Service { get; set; }
-    }
-
-    public class UserItem 
-    {
-        /// <summary>
-        /// Get Id number from the service
-        /// </summary>
-        public int ServiceId { get; set; }
-        
         public string Title { get; set; }
 
-        public string CoverImageUri { get; set; }
-
-        public double? AverageScore { get; set; }
-
-        public int Season { get; set; }
-
-        public int Status { get; set; }
-
+        public Uri CoverImageUri { get; set; }
+        /// <summary>
+        /// Cover Image converted to bytes.
+        /// </summary>
+        public byte[] CoverImage { get; set; }
+        /// <summary>
+        /// Item's description
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// Item's score
+        /// </summary>
+        public Nullable<double> AverageScore { get; set; }
+        /// <summary>
+        /// Item's season
+        /// </summary>
+        public Nullable<SeasonsEnum> Season { get; set; }
+        /// <summary>
+        /// Item's status
+        /// </summary>
+        public Nullable<int> ItemStatus { get; set; }
         /// <summary>
         /// Item's total episodes.
         /// </summary>
-        public int EpisodesChapters { get; set; }
+        public Nullable<int> Episodes_Chapters { get; set; }
+        /// <summary>
+        /// Item's year aired
+        /// </summary>
+        public Nullable<int> SeriesStart { get; set; }
 
-        public int SeriesStart { get; set; }
+        public UserItem UserItem { get; set; }
 
-        //public MediaTypeEnum Category { get; set; }
-        public StorageFile CoverImage { get; set; }
+        public string GetItemSeasonYear() => Season.HasValue ? $"{Seasons.Seasons_int2string[(int)Season.Value]} {SeriesStart}" : "";
+    }
+    public class UserItem
+    {
+        /// <summary>
+        /// Service ID. Intended for database.
+        /// </summary>
+        public int ServiceID { get; set; }
 
-        public string Category { get; set; }
-
-        public double UserScore { get; set; }
-
-        public int UserStatus { get; set; }
-
+        public ServiceType Service { get; set; }
+        /// <summary>
+        /// User's score.
+        /// </summary>
+        public Nullable<double> UserScore { get; set; }
+        /// <summary>
+        /// User's status.
+        /// </summary>
+        public Nullable<int> UserStatus { get; set; }
         /// <summary>
         /// User's total episodes/chapters watched/read.
         /// </summary>
-        public int Watched_Read { get; set; }
-
-        //This instance is filled when user clicked the item.
-        public ItemDetailsModel Details { get; set; }
-
-        public string GetUserStatus() => StatusEnum.UserStatus_Int2Str[UserStatus];
-
-        public string GetItemSeasonYear() => $"{Seasons.Seasons_int2string[Season]} {SeriesStart}";
-
+        public Nullable<int> Watched_Read { get; set; }
         /// <summary>
         /// Intended only if the service use an overengineered method to identify user's item.
         /// </summary>
         public object AdditionalInfo;
+
+        public string GetUserStatus() => UserStatus.HasValue ? StatusEnum.UserStatus_Int2Str[UserStatus.Value] : "";
     }
 
     public class EpisodeItem
     {
         /// <summary>
-        /// Database ID. Not for use.
+        /// Service ID. Intended for database.
         /// </summary>
-        public int ID { get; set; }
-        /// <summary>
-        /// MAL ID to connect with library item.
-        /// </summary>
-        public int MAL_ID { get; set; }
-        /// <summary>
-        /// Saved folder path.
-        /// </summary>
-        public string FolderPath { get; set; }
+        public ServiceType ServiceType { get; set; }
         /// <summary>
         /// listed items with saved configuration
         /// </summary>
@@ -143,10 +170,5 @@ namespace Cafeine.Models
             var image = sender as Image;
             image.Opacity = 1;
         }
-    }
-
-    public class ItemDetailsModel
-    {
-        public string Description { get; set; }
     }
 }

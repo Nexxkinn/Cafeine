@@ -19,7 +19,7 @@
     </ResourceDictionary.ThemeDictionaries>
 
     <!--  Template for MainPage.xaml  -->
-    <DataTemplate x:Name="Collection" x:DataType="m:ItemLibraryModel">
+    <DataTemplate x:Name="Collection" x:DataType="m:ServiceItem">
         <Grid
             x:Name="item"
             Width="140"
@@ -66,7 +66,7 @@
                 CharacterSpacing="14"
                 FontSize="14"
                 FontWeight="SemiBold"
-                Text="{x:Bind Path=Item.Title, Mode=OneWay}"
+                Text="{x:Bind Path=Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap" />
         </Grid>
@@ -153,7 +153,7 @@
     </ControlTemplate>
 
     <!--  Template for SearchPage.xaml  -->
-    <DataTemplate x:Name="OnlineSearchResult" x:DataType="m:ItemLibraryModel">
+    <DataTemplate x:Name="OnlineSearchResult" x:DataType="m:ServiceItem">
         <Grid Width="280" Height="198">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -179,7 +179,7 @@
                 FontSize="14"
                 FontWeight="SemiBold"
                 MaxLines="2"
-                Text="{x:Bind Path=Item.Title, Mode=OneWay}"
+                Text="{x:Bind Path=Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap" />
             <TextBlock
@@ -190,7 +190,7 @@
                 FontSize="12"
                 MaxLines="7"
                 Opacity="0.8"
-                Text="{x:Bind Path=Item.Details.Description, Mode=OneWay}"
+                Text="{x:Bind Path=Description, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap" />
         </Grid>
@@ -948,7 +948,7 @@
         <Setter Property="Template" Value="{StaticResource AutoSuggestBoxTemplate}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource AutoSuggestBoxItemContainerStyle}" />
     </Style>
-    <DataTemplate x:Name="SuggestItemTemplate" x:DataType="m:ItemLibraryModel">
+    <DataTemplate x:Name="SuggestItemTemplate" x:DataType="m:ServiceItem">
         <Grid Height="50">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -972,7 +972,7 @@
                 Margin="8,0"
                 VerticalAlignment="Center"
                 FontWeight="SemiBold"
-                Text="{x:Bind Path=Item.Title}" />
+                Text="{x:Bind Path=Title}" />
         </Grid>
     </DataTemplate>
     <ControlTemplate x:Key="AutoSuggestBoxTemplate" TargetType="AutoSuggestBox">

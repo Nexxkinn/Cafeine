@@ -35,7 +35,8 @@ namespace Cafeine.Services.Mvvm
         }
         public bool CanGoBack()
         {
-            return ChildPage.CanGoBack;
+            if (Page == null) return RootFrame.CanGoBack;
+            else return ChildPage.CanGoBack;
         }
         public void GoBack()
         {
