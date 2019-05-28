@@ -2,6 +2,7 @@
 using Cafeine.Services;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -105,6 +106,11 @@ namespace Cafeine.Models
         public UserItem UserItem { get; set; }
 
         public string GetItemSeasonYear() => Season.HasValue ? $"{Seasons.Seasons_int2string[(int)Season.Value]} {SeriesStart}" : "";
+
+        public async Task PopulateMoreDetails(IService service)
+        {
+            await service.GetItemDetails(this);
+        }
     }
     public class UserItem
     {
@@ -112,8 +118,6 @@ namespace Cafeine.Models
         /// Service ID. Intended for database.
         /// </summary>
         public int ServiceID { get; set; }
-
-        public ServiceType Service { get; set; }
         /// <summary>
         /// User's score.
         /// </summary>

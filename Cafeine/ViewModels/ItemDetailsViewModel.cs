@@ -228,13 +228,12 @@ namespace Cafeine.ViewModels
                 List<Task> task = new List<Task>();
                 task.Add(Task.Run(async () =>
                 {
-                    //if (Item.Details == null)
-                    //{
-                    //    Item.Details = await Database.ViewItemDetails(Item, ServiceType.ANILIST, MediaTypeEnum.ANIME);
-                    //}
-                    //LoadItemDetails.Value = true;
-                    //DescriptionTextBlock.Value = Item.Details.Description;
-
+                    if(Service.Description == null)
+                    {
+                        await Database.PopulateAdditionalItem(Service);
+                    }
+                    LoadItemDetails.Value = true;
+                    DescriptionTextBlock.Value = Service.Description;
                 }));
 
                 // Task.Factory.StartNew is the only logical option

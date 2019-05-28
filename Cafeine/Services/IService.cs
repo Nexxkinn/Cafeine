@@ -12,11 +12,11 @@ namespace Cafeine.Services
 
         Task GetItem(OfflineItem item);
 
-        Task GetItemDetails(ServiceItem item, MediaTypeEnum media);
+        Task GetItemDetails(ServiceItem item);
 
         Task<IList<Episode>> GetItemEpisodes(ServiceItem item);
 
-        Task UpdateItem(ServiceItem item);
+        Task UpdateUserItem(UserItem item);
 
         Task DeleteItem(ServiceItem item);
 

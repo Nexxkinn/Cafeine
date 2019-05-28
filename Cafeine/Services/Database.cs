@@ -214,6 +214,20 @@ namespace Cafeine.Services
             return useritem;
         }
 
+        public static async Task PopulateAdditionalItem(ServiceItem Item)
+        {
+            await Item.PopulateMoreDetails(CurrentService);
+        }
+
+        public static async Task UpdateItem(ServiceItem serviceitem)
+        {
+            await CurrentService.UpdateUserItem(serviceitem.UserItem);
+            var oldItem = CurrentItems.FindIndex(x => x.ServiceID == serviceitem.ServiceID);
+            CurrentItems.RemoveAt(oldItem);
+            CurrentItems.Insert(oldItem, serviceitem);
+            DatabaseUpdated.Invoke(serviceitem, null);
+        }
+
         public static OfflineItem CreateOflineItem(ServiceItem item)
         {
             using (var tr = db.GetTransaction())
@@ -289,21 +303,11 @@ namespace Cafeine.Services
             return Task.CompletedTask;
         }
 
-        public static async Task UpdateItem(ServiceItem serviceitem)
-        {
-            await CurrentService.UpdateItem(serviceitem);
-            var oldItem = CurrentItems.FindIndex(x => x.ServiceID == serviceitem.ServiceID);
-            CurrentItems.RemoveAt(oldItem);
-            CurrentItems.Add(serviceitem);
-            DatabaseUpdated.Invoke(serviceitem, null);
-        }
-
         public static async Task DeleteItem(ServiceItem serviceitem)
         {
             await CurrentService.DeleteItem(serviceitem);
             var oldItem = CurrentItems.FindIndex(x => x.ServiceID == serviceitem.ServiceID);
             CurrentItems.RemoveAt(oldItem);
-            CurrentItems.Remove(serviceitem);
         }
 
         public static async Task<List<Episode>> UpdateItemEpisodes(ServiceItem item)
