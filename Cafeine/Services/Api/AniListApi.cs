@@ -272,11 +272,21 @@ namespace Cafeine.Services.Api
             };
             dynamic Content = await AnilistPostAsync(query);
             var episodes = new List<Episode>();
+            Regex R_number = new Regex(@"(?<=episode\s)(?:\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (var episode in Content["data"]["Media"]["streamingEpisodes"])
             {
+                int num = -1;
+                string title = episode["title"];
+                if (R_number.IsMatch(input:title))
+                {
+                    num = Convert.ToInt32(Regex.Match(title, @"(?<=episode\s)(?:\d+)", RegexOptions.IgnoreCase).Value);
+                    title = Regex.Match(title, @"(?<=episode\s\d+\s-\s).+", RegexOptions.IgnoreCase).Value;
+                }
+
                 episodes.Add(new Episode
                 {
-                    Title = episode["title"],
+                    Title = title,
+                    Number = num,
                     OnlineThumbnail = episode["thumbnail"]
                 });
             };

@@ -1890,4 +1890,24 @@
     <Style x:Key="CustomFlyoutPresenterStyle" TargetType="FlyoutPresenter">
         <Setter Property="Padding" Value="0" />
     </Style>
+
+    <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
+        <!--  -8, -8 are to compensate for the default scale down, plus factoring in margins  -->
+        <TextBlock
+            Margin="-8,-8,0,0"
+            AutomationProperties.AccessibilityView="Raw"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="28"
+            Foreground="{ThemeResource RatingControlUnselectedForeground}"
+            Text="&#xE734;" />
+    </DataTemplate>
+    <DataTemplate x:Key="ForegroundGlyphDefaultTemplate">
+        <!--  -8, -8 are to compensate for the default scale down, plus factoring in margins  -->
+        <TextBlock
+            Margin="-8,-8,0,0"
+            AutomationProperties.AccessibilityView="Raw"
+            FontFamily="Segoe MDL2 Assets"
+            FontSize="28"
+            Text="&#xE735;" />
+    </DataTemplate>
 </ResourceDictionary>

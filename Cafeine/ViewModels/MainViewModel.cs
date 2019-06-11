@@ -87,7 +87,7 @@ namespace Cafeine.ViewModels
         private void Database_DatabaseUpdated(object sender, EventArgs e)
         {
             ListedItems = Database.SearchBasedonUserStatus(TabbedIndex.Value);
-            var RemovedList = Library.Except(ListedItems, new ItemLibraryListComparer()).ToList();
+            var RemovedList = Library.Except(ListedItems, new ServiceItemComparer()).ToList();
             foreach (var item in RemovedList) Library.Remove(item);
         }
 

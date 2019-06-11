@@ -174,5 +174,10 @@ namespace Cafeine.Models
             var image = sender as Image;
             image.Opacity = 1;
         }
+
+        public string GenerateEpisodeNumber()
+        {
+            return (Number != -1) ? $"Episode {Number}" : "Extras";
+        }
     }
 }

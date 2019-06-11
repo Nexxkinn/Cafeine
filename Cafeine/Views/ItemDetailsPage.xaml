@@ -227,7 +227,7 @@
                                 <TextBlock
                                     MaxWidth="500"
                                     FontSize="22"
-                                    FontWeight="SemiLight"
+                                    FontWeight="SemiBold"
                                     MaxLines="2"
                                     Text="{x:Bind Path=Vm.Service.Title, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
@@ -236,8 +236,9 @@
                                     x:Name="ItemStatusTextBlock"
                                     FontSize="14"
                                     Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
-                                <muxc:RatingControl
+                                <RatingControl
                                     x:Name="rating"
+                                    Margin="0,0,0,-8"
                                     HorizontalAlignment="Left"
                                     Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
                                     InitialSetValue="0"
@@ -345,7 +346,6 @@
                             x:Name="episodesitem"
                             Canvas.ZIndex="-1"
                             ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
-                            SizeChanged="OnGridViewSizeChanged"
                             Visibility="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}">
                             <GridView.ItemTemplate>
                                 <DataTemplate x:DataType="model:Episode">
@@ -353,7 +353,7 @@
                                         <Image
                                             x:Name="Thumbnail"
                                             Grid.Column="0"
-                                            MaxWidth="144"
+                                            Width="144"
                                             MaxHeight="81"
                                             HorizontalAlignment="Left"
                                             x:Phase="2"
@@ -361,19 +361,25 @@
                                             Loaded="{x:Bind Path=Thumbnail_Loaded, Mode=OneWay}"
                                             Opacity="0"
                                             Stretch="UniformToFill" />
-                                        <StackPanel Margin="8,0,0,0" RelativePanel.RightOf="Thumbnail">
+                                        <StackPanel
+                                            Width="144"
+                                            Margin="8,0,0,0"
+                                            RelativePanel.RightOf="Thumbnail">
+                                            <TextBlock Text="{x:Bind GenerateEpisodeNumber()}" />
                                             <TextBlock
                                                 x:Phase="1"
-                                                FontSize="15"
                                                 FontWeight="SemiBold"
-                                                Text="{x:Bind Path=Title, Mode=OneWay}" />
+                                                MaxLines="2"
+                                                Text="{x:Bind Path=Title, Mode=OneWay}"
+                                                TextTrimming="WordEllipsis"
+                                                TextWrapping="Wrap" />
                                         </StackPanel>
                                     </RelativePanel>
                                 </DataTemplate>
                             </GridView.ItemTemplate>
                             <GridView.ItemContainerStyle>
                                 <Style TargetType="GridViewItem">
-                                    <Setter Property="Margin" Value="0,0,20,20" />
+                                    <Setter Property="Margin" Value="0,0,8,18" />
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                     <Setter Property="ContentTransitions">
                                         <Setter.Value>
@@ -393,6 +399,10 @@
                         x:Load="{x:Bind Path=Vm.LoadEpisodeSettings.Value, Mode=OneWay}"
                         Orientation="Vertical">
                         <TextBlock FontSize="16" Text="Directory Source" />
+                        <TextBlock
+                            FontSize="12"
+                            Opacity="0.8"
+                            Text="Assosiate your local files with episodes list" />
                         <Grid Margin="0,12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -413,7 +423,7 @@
                             Text="Episodes list" />
                         <CheckBox Content="Get episode list from service" />
                         <CheckBox Margin="0,4" Content="Do not use thumbnail from service" />
-                        <CheckBox Content="Use custom regex to detect local files" />
+                        <CheckBox Content="Use custom regex to identify local files with episodes" />
                         <TextBox
                             Width="400"
                             Margin="0,8,0,0"

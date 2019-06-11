@@ -55,20 +55,15 @@ namespace Cafeine.ViewModels
         }
         public override async Task OnLoaded(object sender, RoutedEventArgs e)
         {
-            await Task.Factory.StartNew(async () =>
+            await Task.Yield();
+            await ImageCache.CreateImageCacheFolder();
+            if (Database.DoesAccountExists())
             {
-                await ImageCache.CreateImageCacheFolder();
-                if (Database.DoesAccountExists())
-                {
-                    showUserPanel();
-                    await Database.BuildServices();
-                    await Database.Build();
-                    NavigateToMainPage();
-                }
-            },
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskScheduler.FromCurrentSynchronizationContext());
+                showUserPanel();
+                await Database.BuildServices();
+                await Database.Build();
+                NavigateToMainPage();
+            }
         }
 
         public void showUserPanel()

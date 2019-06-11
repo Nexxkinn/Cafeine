@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cafeine.Services
 {
-    public class ItemLibraryListComparer : IEqualityComparer<ServiceItem>
+    public class ServiceItemComparer : IEqualityComparer<ServiceItem>
     {
         public bool Equals(ServiceItem x, ServiceItem y)
         {

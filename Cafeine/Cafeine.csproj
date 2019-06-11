@@ -119,7 +119,7 @@
     <Compile Include="Services\Exception\NetworkOfflineException.cs" />
     <Compile Include="Services\ImageCache.cs" />
     <Compile Include="Services\IService.cs" />
-    <Compile Include="Services\ItemLibraryListComparer.cs" />
+    <Compile Include="Services\ServiceItemComparer.cs" />
     <Compile Include="Services\Api\KitsuApi.cs" />
     <Compile Include="Services\ItemLibraryService.cs" />
     <Compile Include="Services\Mvvm\BasePage.cs" />
@@ -259,9 +259,6 @@
   <ItemGroup>
     <PackageReference Include="DBreeze">
       <Version>1.93.0</Version>
-    </PackageReference>
-    <PackageReference Include="Fastenshtein">
-      <Version>1.0.0.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Net.Native.Compiler">
       <Version>2.2.3</Version>
