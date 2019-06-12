@@ -182,27 +182,6 @@ namespace Cafeine.Services
             // TODO: write an instruction here
         }
 
-        //public static void SyncDatabase(List<ItemLibraryModel> library)
-        //{
-        //    foreach (var item in library)
-        //    {
-        //        // Find if an item exists first in the local database
-        //        // 
-        //        var localitem = LocalItemCollections.FindOne(Query.EQ("MalID", item.MalID));
-        //        if (localitem == null)
-        //        {
-        //            LocalItemCollections.Insert(item);
-        //        }
-        //        else
-        //        {
-        //            //Suppose other service already filled the MalID
-        //            var x = item.Service.First();
-        //            localitem.Service.Add(x.Key, x.Value);
-        //            LocalItemCollections.Update(localitem);
-        //        }
-        //    }
-        //}
-
         #region item management
         public static async Task<UserItem> CreateUserItem(ServiceItem Item)
         {
@@ -213,9 +192,9 @@ namespace Cafeine.Services
             return useritem;
         }
 
-        public static async Task PopulateAdditionalItem(ServiceItem Item)
+        public static async Task PopulateServiceItemDetails(ServiceItem Item)
         {
-            await Item.PopulateMoreDetails(CurrentService);
+            await Item.PopulateServiceItemDetails(CurrentService);
         }
 
         public static async Task UpdateItem(ServiceItem serviceitem)
@@ -234,7 +213,6 @@ namespace Cafeine.Services
                 OfflineItem offlineitem = new OfflineItem
                 {
                     Id = tr.ObjectGetNewIdentity<int>("library"),
-                    ServiceID = item.ServiceID,
                     MalID = item.MalID,
                 };
                 tr.ObjectInsert("library", new DBreezeObject<OfflineItem>
@@ -244,8 +222,7 @@ namespace Cafeine.Services
                     Indexes = new List<DBreezeIndex>()
                     {
                         new DBreezeIndex(1,offlineitem.Id){PrimaryIndex = true},
-                        new DBreezeIndex(2,offlineitem.ServiceID),
-                        new DBreezeIndex(3,offlineitem.MalID)
+                        new DBreezeIndex(2,offlineitem.MalID)
                     }
                 });
                 tr.Commit();
@@ -293,8 +270,7 @@ namespace Cafeine.Services
                 localitem.Indexes = new List<DBreezeIndex>()
                     {
                         new DBreezeIndex(1,item.Id){PrimaryIndex = true},
-                        new DBreezeIndex(2,item.ServiceID),
-                        new DBreezeIndex(3,item.MalID)
+                        new DBreezeIndex(2,item.MalID)
                     };
                 tr.ObjectInsert("library", localitem);
                 tr.Commit();
@@ -309,16 +285,16 @@ namespace Cafeine.Services
             CurrentItems.RemoveAt(oldItem);
         }
 
-        public static async Task<List<Episode>> UpdateItemEpisodes(ServiceItem item)
+        public static async Task<List<ContentList>> UpdateItemEpisodes(ServiceItem item)
         {
             try
             {
-                return await CurrentService.GetItemEpisodes(item) as List<Episode>;
+                return await CurrentService.GetItemEpisodes(item) as List<ContentList>;
             }
             catch (Exception ex)
             {
                 //offline mode, then.
-                return new List<Episode>();
+                return new List<ContentList>();
             }
         }
 
@@ -329,6 +305,45 @@ namespace Cafeine.Services
                 return CurrentItems.First(x => x.ServiceID == service_id);
             }
             catch (Exception)
+            {
+                return null;
+            }
+        }
+        #endregion
+
+        #region cache management
+        public static async Task CacheHttpResultAsync(string cachekey,string result)
+        {
+            await Task.Yield();
+            using (var tr = db.GetTransaction())
+            {
+                DBreezeObject<string> localitem = tr.Select<byte[], byte[]>("cache", 1.ToIndex((string)cachekey)).ObjectGet<string>();
+                tr.ObjectInsert("cache", new DBreezeObject<string>
+                {
+                    NewEntity = localitem == null,
+                    Entity = result,
+                    Indexes = new List<DBreezeIndex>()
+                    {
+                        new DBreezeIndex(1,cachekey){PrimaryIndex = true}
+                    }
+                });
+
+                tr.Commit();
+            }
+        }
+
+        public static async Task<string> GetCacheHttpResultAsync(string cachekey)
+        {
+            try
+            {
+                await Task.Yield();
+                using (var tr = db.GetTransaction())
+                {
+                    DBreezeObject<string> localitem = tr.Select<byte[], byte[]>("cache", 1.ToIndex((string)cachekey)).ObjectGet<string>();
+                    return localitem?.Entity;
+                }
+            }
+            catch
             {
                 return null;
             }
@@ -368,6 +383,8 @@ namespace Cafeine.Services
             }
         }
         #endregion
+
+
         public static void ResetDataBase()
         {
             db.Scheme.DeleteTable("user");

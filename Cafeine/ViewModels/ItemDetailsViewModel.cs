@@ -22,6 +22,8 @@ namespace Cafeine.ViewModels
 
         private ServiceItem _service { get; set; }
 
+        private DetailsItem _details { get; set; }
+
         public UserItem User {
             get => _service.UserItem;
             set {
@@ -33,9 +35,20 @@ namespace Cafeine.ViewModels
             }
         }
 
+        public DetailsItem Details {
+            get => _details;
+            set {
+                if (value != _details)
+                {
+                    _details = value;
+                    RaisePropertyChanged(nameof(Details));
+                }
+            }
+        }
+
         public ServiceItem Service => _service;
 
-        public ObservableCollection<Episode> Episodelist { get; private set; }
+        public ObservableCollection<ContentList> Episodelist { get; private set; }
         
         #region mvvm setup properties
 
@@ -114,7 +127,7 @@ namespace Cafeine.ViewModels
             DescriptionTextBlock = new CafeineProperty<string>();
             ScoreTextBlock = new CafeineProperty<string>();
 
-            Episodelist = new ObservableCollection<Episode>();
+            Episodelist = new ObservableCollection<ContentList>();
             LoadEpisodeLists = new CafeineProperty<Visibility>(Visibility.Collapsed);
             LoadEpisodeSettings = new CafeineProperty<bool>(false);
             LoadEpisodeNotFound = new CafeineProperty<bool>(false);
@@ -226,15 +239,16 @@ namespace Cafeine.ViewModels
 
                 //Parallel task.
                 List<Task> task = new List<Task>();
-                task.Add(Task.Run(async () =>
+                task.Add(Task.Factory.StartNew(async () =>
                 {
-                    if(Service.Description == null)
-                    {
-                        await Database.PopulateAdditionalItem(Service);
-                    }
+                    await Task.Yield();
+                    await Database.PopulateServiceItemDetails(Service);
                     LoadItemDetails.Value = true;
                     DescriptionTextBlock.Value = Service.Description;
-                }));
+                },
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.FromCurrentSynchronizationContext()).Unwrap());
 
                 // Task.Factory.StartNew is the only logical option
                 // As it needs to set ThreadScheduler synchronous
@@ -246,17 +260,17 @@ namespace Cafeine.ViewModels
 
                     if (_offline.Episodes != null)
                     {
-                        Episodelist = new ObservableCollection<Episode>(_offline.Episodes);
+                        Episodelist = new ObservableCollection<ContentList>(_offline.Episodes);
                         RaisePropertyChanged(nameof(Episodelist));
                     }
-                    else _offline.Episodes = new List<Episode>();
+                    else _offline.Episodes = new List<ContentList>();
                     LoadEpisodeLists.Value = (_offline.Episodes.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
                     await Task.Yield();
                     //load episode list from service.
-                    List<Episode> EpisodeService = await Database.UpdateItemEpisodes(_service);
+                    List<ContentList> EpisodeService = await Database.UpdateItemEpisodes(_service);
                     foreach (var episode in EpisodeService)
                     {
-                        bool EpisodeAlreadyListed = _offline.Episodes.Exists(x => x.Title == episode.Title || x.OnlineThumbnail == episode.OnlineThumbnail);
+                        bool EpisodeAlreadyListed = _offline.Episodes.Exists(x => x.Title == episode.Title || x.Thumbnail == episode.Thumbnail);
                         if (!EpisodeAlreadyListed)
                         {
                             //Only add new items to avoid overwriting old items that contains file path.

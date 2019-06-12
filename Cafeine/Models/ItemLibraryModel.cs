@@ -2,6 +2,7 @@
 using Cafeine.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml;
@@ -20,11 +21,6 @@ namespace Cafeine.Models
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Accepted id for its service. <para /> 
-        /// Use this one for identification or to get item.
-        /// </summary>
-        public int ServiceID { get; set; }
-        /// <summary>
         /// Accepted id for all known services. <para />
         /// Use this one for identification or to get item.
         /// </summary>
@@ -36,7 +32,7 @@ namespace Cafeine.Models
         /// <summary>
         /// Saved episodes
         /// </summary>
-        public List<Episode> Episodes { get; set; }
+        public List<ContentList> Episodes { get; set; }
     }
 
     /// <summary>
@@ -45,18 +41,6 @@ namespace Cafeine.Models
     /// </summary>
     public class ServiceItem
     {
-        public override bool Equals(object obj)
-        {
-            if(obj is UserItem)
-            {
-                return this.ServiceID == (obj as UserItem).ServiceID;
-            }
-            else
-            {
-                return base.Equals(obj);
-            }
-        }
-
         public ServiceType Service { get; set; }
 
         /// <summary>
@@ -107,11 +91,12 @@ namespace Cafeine.Models
 
         public string GetItemSeasonYear() => Season.HasValue ? $"{Seasons.Seasons_int2string[(int)Season.Value]} {SeriesStart}" : "";
 
-        public async Task PopulateMoreDetails(IService service)
+        public async Task PopulateServiceItemDetails(IService service)
         {
-            await service.GetItemDetails(this);
+            await service.PopulateServiceItemDetails(this);
         }
     }
+
     public class UserItem
     {
         /// <summary>
@@ -138,7 +123,26 @@ namespace Cafeine.Models
         public string GetUserStatus() => UserStatus.HasValue ? StatusEnum.UserStatus_Int2Str[UserStatus.Value] : "";
     }
 
-    public class EpisodeItem
+    public class DetailsItem
+    {
+        public ServiceType servicetype { get; }
+        public int ServiceID { get; }
+        public int MalID { get; }
+
+        public DetailsItem(ServiceItem item)
+        {
+            servicetype = item.Service;
+            ServiceID = item.ServiceID;
+            MalID = item.MalID;
+            Description = item.Description;
+        }
+
+        public string Description { get; set; }
+        public string Studio { get; set; }
+        public string Author { get; set; }
+    }
+
+    public class SeriesContentList
     {
         /// <summary>
         /// Service ID. Intended for database.
@@ -147,37 +151,32 @@ namespace Cafeine.Models
         /// <summary>
         /// listed items with saved configuration
         /// </summary>
-        public IList<Episode> Episodes { get; set; }
+        public IList<ContentList> Episodes { get; set; }
     }
 
-    public class Episode
+    public class ContentList
     {
         public int Number { get; set; }
 
         public string Title { get; set; }
 
-        public string OnlineThumbnail { get; set; }
+        public Uri Thumbnail { get; set; }
 
-        public string StreamingUrl { get; set; }
+        public ObservableCollection<Stream> StreamingServices { get; set; }
         
         public string FileName { get; set; }
 
-        public async void Thumbnail_Loaded(object sender, RoutedEventArgs e)
-        {
-            var image = sender as Image;
-            var file = await ImageCache.GetFromCacheAsync(OnlineThumbnail);
-            image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
-        }
-
-        public void ImageOpened(object sender, RoutedEventArgs e)
-        {
-            var image = sender as Image;
-            image.Opacity = 1;
-        }
-
         public string GenerateEpisodeNumber()
         {
+            // for possible language expansion ?
             return (Number != -1) ? $"Episode {Number}" : "Extras";
         }
+    }
+
+    public class Stream
+    {
+        // using custom font
+        public string Icon;
+        public Uri Url;
     }
 }

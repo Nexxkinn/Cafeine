@@ -12,9 +12,11 @@ namespace Cafeine.Services
 
         Task GetItem(OfflineItem item);
 
-        Task GetItemDetails(ServiceItem item);
+        Task PopulateServiceItemDetails(ServiceItem item);
 
-        Task<IList<Episode>> GetItemEpisodes(ServiceItem item);
+        Task<DetailsItem> GetDetailsItem(ServiceItem item);
+
+        Task<IList<ContentList>> GetItemEpisodes(ServiceItem item);
 
         Task UpdateUserItem(UserItem item);
 

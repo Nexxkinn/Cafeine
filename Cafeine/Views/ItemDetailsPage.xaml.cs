@@ -5,6 +5,7 @@ using Cafeine.ViewModels;
 using Microsoft.Graphics.Canvas.Effects;
 using System;
 using System.Numerics;
+using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -142,6 +143,41 @@ namespace Cafeine.Views
                 blur.Size = new Vector2((float)BackgroundGrid.ActualWidth, (float)BackgroundGrid.ActualHeight);
                 ElementCompositionPreview.SetElementChildVisual(BackgroundGrid, blur);
             }
+        }
+
+        private void Episodesitem_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            args.RegisterUpdateCallback(LoadImage);
+            args.Handled = true;
+        }
+
+        private async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            var templateRoot = args.ItemContainer.ContentTemplateRoot as RelativePanel;
+            var imageurl = (args.Item as ContentList).Thumbnail;
+            var image = templateRoot.Children[0] as Image;
+            await Task.Yield();
+            var file = await ImageCache.GetFromCacheAsync(imageurl.AbsoluteUri);
+            image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
+
+            DoubleAnimation animation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromMilliseconds(700)),
+                EasingFunction = new ExponentialEase
+                {
+                    Exponent = 7,
+                    EasingMode = EasingMode.EaseOut
+                }
+            };
+            Storyboard ImageOpenedOpacity = new Storyboard();
+            ImageOpenedOpacity.Children.Add(animation);
+
+            Storyboard.SetTarget(ImageOpenedOpacity, image);
+            Storyboard.SetTargetProperty(ImageOpenedOpacity, "Opacity");
+            ImageOpenedOpacity.Begin();
+
         }
     }
 }

@@ -345,10 +345,11 @@
                         <GridView
                             x:Name="episodesitem"
                             Canvas.ZIndex="-1"
+                            ContainerContentChanging="Episodesitem_ContainerContentChanging"
                             ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
                             Visibility="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}">
                             <GridView.ItemTemplate>
-                                <DataTemplate x:DataType="model:Episode">
+                                <DataTemplate x:DataType="model:ContentList">
                                     <RelativePanel Height="81">
                                         <Image
                                             x:Name="Thumbnail"
@@ -356,9 +357,6 @@
                                             Width="144"
                                             MaxHeight="81"
                                             HorizontalAlignment="Left"
-                                            x:Phase="2"
-                                            ImageOpened="{x:Bind ImageOpened}"
-                                            Loaded="{x:Bind Path=Thumbnail_Loaded, Mode=OneWay}"
                                             Opacity="0"
                                             Stretch="UniformToFill" />
                                         <StackPanel

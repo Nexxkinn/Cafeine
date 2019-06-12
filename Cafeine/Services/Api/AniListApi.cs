@@ -26,7 +26,7 @@ namespace Cafeine.Services.Api
 
         private readonly Uri HostUri = new Uri("https://graphql.anilist.co");
 
-        private async Task<Dictionary<string, dynamic>> AnilistPostAsync(QueryQL query)
+        private async Task<Dictionary<string, dynamic>> AnilistPostAsync(QueryQL query,string cachekey=null)
         {
             try
             {
@@ -36,12 +36,20 @@ namespace Cafeine.Services.Api
                 var Response = await AnilistAuthClient.PostAsync(HostUri, JSONRequest);
                 
                 string JSONResponse = await Response.Content.ReadAsStringAsync();
-                var ContentResponse = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(JSONResponse);
-                return ContentResponse;
+                var Result = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(JSONResponse);
+
+                if(cachekey != null) await Database.CacheHttpResultAsync(cachekey, JSONResponse);
+
+                return Result;
             }
-            catch (System.Exception)
+            catch
             {
-                throw new OperationCanceledException();
+                // load results from cache
+                string cacheresult = await Database.GetCacheHttpResultAsync(cachekey);
+                // throw offline network exception
+                if(cachekey == null) throw new OperationCanceledException();
+                var Result = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(cacheresult);
+                return Result;
             }
 
         }
@@ -221,17 +229,13 @@ namespace Cafeine.Services.Api
             await AnilistPostAsync(Query);
         }
 
-        public async Task GetItemDetails(ServiceItem item)
+        public async Task PopulateServiceItemDetails(ServiceItem item)
         {
             QueryQL query = new QueryQL
             {
                 query = @"query($id:Int,$type:MediaType){ 
                               Media (id:$id, type:$type) {
                                 description(asHtml:false)
-                                streamingEpisodes {
-                                  title
-                                  thumbnail
-                                }
                               }
                             }",
                 variables = new Dictionary<string, object>()
@@ -240,7 +244,8 @@ namespace Cafeine.Services.Api
                     ["type"] = item.MediaType.ToString()
                 }
             };
-            dynamic Content = await AnilistPostAsync(query);
+            string cachekey = $"PopulateServiceItemDetails-{item.ServiceID}";
+            dynamic Content = await AnilistPostAsync(query,cachekey);
 
             // because Anilist is a fuckin moron, where the option asHTML:false
             // doesn't remove the <br> tag because "well, everyone is using browser
@@ -252,7 +257,7 @@ namespace Cafeine.Services.Api
             item.Description = desc;
         }
 
-        public async Task<IList<Episode>> GetItemEpisodes(ServiceItem item)
+        public async Task<IList<ContentList>> GetItemEpisodes(ServiceItem item)
         {
             QueryQL query = new QueryQL
             {
@@ -271,7 +276,7 @@ namespace Cafeine.Services.Api
                 }
             };
             dynamic Content = await AnilistPostAsync(query);
-            var episodes = new List<Episode>();
+            var episodes = new List<ContentList>();
             Regex R_number = new Regex(@"(?<=episode\s)(?:\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (var episode in Content["data"]["Media"]["streamingEpisodes"])
             {
@@ -283,11 +288,11 @@ namespace Cafeine.Services.Api
                     title = Regex.Match(title, @"(?<=episode\s\d+\s-\s).+", RegexOptions.IgnoreCase).Value;
                 }
 
-                episodes.Add(new Episode
+                episodes.Add(new ContentList
                 {
                     Title = title,
                     Number = num,
-                    OnlineThumbnail = episode["thumbnail"]
+                    Thumbnail = episode["thumbnail"]
                 });
             };
             return episodes;
@@ -476,6 +481,11 @@ namespace Cafeine.Services.Api
         }
 
         public Task<IList<UserItem>> CreateUserCollection(UserAccountModel account)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DetailsItem> GetDetailsItem(ServiceItem item)
         {
             throw new NotImplementedException();
         }
