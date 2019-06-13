@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class SearchViewModel : ViewModelBase
+    public class SearchViewModel : ViewModelBase,IDisposable
     {
         private int? MainPageCurrentState;
 
@@ -68,10 +68,12 @@ namespace Cafeine.ViewModels
             await base.OnNavigatedTo(e);
         }
 
-        public override Task OnNavigatedFrom(NavigationEventArgs e = null)
+        public override async Task OnNavigatedFrom(NavigationEventArgs e = null)
         {
             Link.Publish(Visibility.Collapsed,typeof(SearchBoxVisibility));
-            return base.OnNavigatedFrom(e);
+            Link.Unsubscribe(typeof(Keyword));
+            await base.OnNavigatedFrom(e);
+            Dispose();
         }
 
         public void ItemClicked(object sender, ItemClickEventArgs e)
@@ -125,6 +127,12 @@ namespace Cafeine.ViewModels
             }
         }
 
+        public void Dispose()
+        {
+            OfflineResults = null;
+            OnlineResults = null;
+            GC.Collect();
+        }
     }
     public class Itemcomparer : IEqualityComparer<ServiceItem>
     {

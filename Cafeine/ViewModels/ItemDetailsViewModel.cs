@@ -6,6 +6,7 @@ using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -16,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
 {
-    public class ItemDetailsViewModel : ViewModelBase
+    public class ItemDetailsViewModel : ViewModelBase, IDisposable
     {
         private OfflineItem _offline { get; set; }
 
@@ -150,7 +151,7 @@ namespace Cafeine.ViewModels
 
             EpisodeListsClicked = new CafeineCommand(() => 
             {
-                if (_offline.Episodes.Count == 0)
+                if (Episodelist.Count == 0)
                 {
                     LoadEpisodeNotFound.Value = true;
                     LoadEpisodeLists.Value = Visibility.Collapsed;
@@ -202,8 +203,7 @@ namespace Cafeine.ViewModels
 
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(_service); 
-
+            if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(_service);
             if (User != null &&
                 (User?.UserStatus != UserStatusComboBox.Value || User?.Watched_Read != TotalSeenTextBox.Value))
             {
@@ -212,6 +212,7 @@ namespace Cafeine.ViewModels
                 await Database.UpdateItem(_service);
             }
             await base.OnNavigatedFrom(e);
+            Dispose();
         }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
@@ -256,50 +257,40 @@ namespace Cafeine.ViewModels
                 task.Add(Task.Factory.StartNew(async () =>
                 {
                     //load episode list from database.
-                    if (_offline == null) _offline =  Database.CreateOflineItem(_service);
-
-                    if (_offline.Episodes != null)
+                    if(_offline == null)
                     {
-                        Episodelist = new ObservableCollection<ContentList>(_offline.Episodes);
-                        RaisePropertyChanged(nameof(Episodelist));
-                    }
-                    else _offline.Episodes = new List<ContentList>();
-                    LoadEpisodeLists.Value = (_offline.Episodes.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
-                    await Task.Yield();
-                    //load episode list from service.
-                    List<ContentList> EpisodeService = await Database.UpdateItemEpisodes(_service);
-                    foreach (var episode in EpisodeService)
-                    {
-                        bool EpisodeAlreadyListed = _offline.Episodes.Exists(x => x.Title == episode.Title || x.Thumbnail == episode.Thumbnail);
-                        if (!EpisodeAlreadyListed)
-                        {
-                            //Only add new items to avoid overwriting old items that contains file path.
-                            _offline.Episodes.Add(episode);
-                            Episodelist?.Add(episode);
-                        }
-                    }
-                    if (_offline.Episodes.Count == 0)
-                    {
-                        LoadEpisodeNotFound.Value = true;
-                        LoadEpisodeLists.Value = Visibility.Collapsed;
+                        // online mode
+                        var onlinecontentlist = await Database.GetSeriesContentList(Service);
+                        Episodelist = new ObservableCollection<ContentList>(onlinecontentlist);
+                        RaisePropertyChanged("Episodelist");
                     }
                     else
                     {
-                        LoadEpisodeNotFound.Value = false;
-                        LoadEpisodeLists.Value = Visibility.Visible;
+                        // handle offline content then
+                        await Task.Yield();
+                        Episodelist = new ObservableCollection<ContentList>(_offline.ContentList);
+                        RaisePropertyChanged("Episodelist");
+                        var onlinecontentlist = await Database.GetSeriesContentList(Service);
+                        if(onlinecontentlist.Count != _offline.ContentList.Count)
+                        {
+                            var newcontentlist = onlinecontentlist.Except(Episodelist, new ContentListComparer());
+                            foreach(var item in newcontentlist)
+                            {
+                                Episodelist.Add(item);
+                            }
+                            RaisePropertyChanged("Episodelist");
+                            _offline?.AddNewContentList(newcontentlist.ToList());
+                            await Database.UpdateOfflineItem(_offline);
+                        }
                     }
-                    RaisePropertyChanged("Episodelist");
+                    LoadEpisodeLists.Value = (Episodelist.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
+                    LoadEpisodeNotFound.Value = (Episodelist.Count == 0);
                 },
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.FromCurrentSynchronizationContext()).Unwrap());
 
                 task.Add(Task.Run(async () => ImageSource.Value = await ImageCache.GetFromCacheAsync(_service.CoverImageUri.AbsoluteUri)));
-                await Task.WhenAll(task);
-
-                // Check if item source is from library or search query
-                
-                await Database.UpdateOfflineItem(_offline);
             }
             catch (Exception ex)
             {
@@ -314,5 +305,13 @@ namespace Cafeine.ViewModels
             }
         }
 
+        public void Dispose()
+        {
+            _service = null;
+            _offline = null;
+            _details = null;
+            Episodelist = null;
+            GC.Collect();
+        }
     }
 }

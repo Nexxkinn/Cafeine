@@ -3,6 +3,7 @@ using Cafeine.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml;
@@ -32,8 +33,33 @@ namespace Cafeine.Models
         /// <summary>
         /// Saved episodes
         /// </summary>
-        public List<ContentList> Episodes { get; set; }
+        public List<ContentList> ContentList { get; set; }
+
+        public void AddNewContentList(IList<ContentList> newlist)
+        {
+            foreach(var item in newlist)
+            {
+                ContentList.Add(item);
+            }
+            ContentList.OrderBy(x => x.Number);
+        }
+
     }
+
+    public class ContentListComparer : IEqualityComparer<ContentList>
+        {
+            public bool Equals(ContentList x, ContentList y)
+            {
+                if (x.Number == -1 || y.Number == -1) return x.Title == y.Title;
+                return x.Number == y.Number;
+            }
+
+            public int GetHashCode(ContentList obj)
+            {
+                if (obj.Number == -1) return obj.Title.GetHashCode();
+                return obj.Number.GetHashCode();
+            }
+        }
 
     /// <summary>
     /// ServiceItem consists entirely for online items <para/>
@@ -41,6 +67,25 @@ namespace Cafeine.Models
     /// </summary>
     public class ServiceItem
     {
+        public ServiceItem() { }
+        public ServiceItem(ServiceItem item)
+        {
+            this.Service = item.Service;
+            this.ServiceID = item.ServiceID;
+            this.MalID = item.MalID;
+            this.MediaType = item.MediaType;
+            this.ShowType = item.ShowType;
+            this.Title = item.Title;
+            this.CoverImageUri = item.CoverImageUri;
+            this.CoverImage = item.CoverImage;
+            this.Description = item.Description;
+            this.AverageScore = item.AverageScore;
+            this.Season = item.Season;
+            this.ItemStatus = item.ItemStatus;
+            this.Episodes_Chapters = item.Episodes_Chapters;
+            this.SeriesStart = item.SeriesStart;
+            this.UserItem = item.UserItem;
+        }
         public ServiceType Service { get; set; }
 
         /// <summary>

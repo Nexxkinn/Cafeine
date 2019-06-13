@@ -1,5 +1,6 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
+using Cafeine.Services.ExceptionExtension;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,11 @@ namespace Cafeine.Services.Api
                 // load results from cache
                 string cacheresult = await Database.GetCacheHttpResultAsync(cachekey);
                 // throw offline network exception
-                if(cachekey == null) throw new OperationCanceledException();
+                if(cachekey == null)
+                {
+                    if (Database.DoesNetworkOffline()) throw new NetworkOfflineException("Unable to connect to the internet");
+                    else throw;
+                }
                 var Result = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(cacheresult);
                 return Result;
             }
@@ -231,30 +236,37 @@ namespace Cafeine.Services.Api
 
         public async Task PopulateServiceItemDetails(ServiceItem item)
         {
-            QueryQL query = new QueryQL
+            try
             {
-                query = @"query($id:Int,$type:MediaType){ 
-                              Media (id:$id, type:$type) {
-                                description(asHtml:false)
-                              }
-                            }",
-                variables = new Dictionary<string, object>()
+                QueryQL query = new QueryQL
                 {
-                    ["id"] = item.ServiceID,
-                    ["type"] = item.MediaType.ToString()
-                }
-            };
-            string cachekey = $"PopulateServiceItemDetails-{item.ServiceID}";
-            dynamic Content = await AnilistPostAsync(query,cachekey);
+                    query = @"query($id:Int,$type:MediaType){ 
+                                  Media (id:$id, type:$type) {
+                                    description(asHtml:false)
+                                  }
+                                }",
+                    variables = new Dictionary<string, object>()
+                    {
+                        ["id"] = item.ServiceID,
+                        ["type"] = item.MediaType.ToString()
+                    }
+                };
+                string cachekey = $"PopulateServiceItemDetails-{item.ServiceID}";
+                dynamic Content = await AnilistPostAsync(query,cachekey);
 
-            // because Anilist is a fuckin moron, where the option asHTML:false
-            // doesn't remove the <br> tag because "well, everyone is using browser
-            // so let's just keep it WHILE AT THE SAME TIME ALSO INCLUDE \n
-            // FOR NO PURPOSE. smh wtf is wrong with them??
-            dynamic brfilter = Regex.Replace(Content["data"]["Media"]["description"].Value, @"<[^>]+>|&nbsp;", "").Trim();
-            var desc = Regex.Replace(brfilter, @"\\n", "\r\n");
-
-            item.Description = desc;
+                // because Anilist is a fuckin moron, where the option asHTML:false
+                // doesn't remove the <br> tag because "well, everyone is using browser
+                // so let's just keep it WHILE AT THE SAME TIME ALSO INCLUDE \n
+                // FOR NO PURPOSE. smh wtf is wrong with them??
+                dynamic brfilter = Regex.Replace(Content["data"]["Media"]["description"].Value, @"<[^>]+>|&nbsp;", "").Trim();
+                var desc = Regex.Replace(brfilter, @"\\n", "\r\n");
+                item.Description = desc;
+            }
+            catch (OperationCanceledException)
+            {
+                // fallback mode.
+                item.Description = "";
+            }
         }
 
         public async Task<IList<ContentList>> GetItemEpisodes(ServiceItem item)
@@ -275,7 +287,9 @@ namespace Cafeine.Services.Api
                     ["type"] = item.MediaType.ToString()
                 }
             };
-            dynamic Content = await AnilistPostAsync(query);
+            string cachekey = $"GetItemEpisodes_{item.Service}_{item.ServiceID}";
+            dynamic Content = await AnilistPostAsync(query,cachekey);
+
             var episodes = new List<ContentList>();
             Regex R_number = new Regex(@"(?<=episode\s)(?:\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (var episode in Content["data"]["Media"]["streamingEpisodes"])

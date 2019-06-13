@@ -22,7 +22,7 @@ namespace Cafeine.Services
                 var LocalServiceItem = Database.GetUserServiceItem(service.ServiceID);
                 if (LocalServiceItem != null) service = LocalServiceItem;
             }
-            OfflineItem offline = await Database.GetOfflineItem(service_id: service.ServiceID,mal_id:service.MalID);
+            OfflineItem offline = await Database.GetOfflineItem(service);
             return (offline,service);
         }
 
@@ -39,7 +39,7 @@ namespace Cafeine.Services
 
             public ItemLibraryToken(ServiceItem item)
             {
-                this.ServiceItem = item;
+                this.ServiceItem = new ServiceItem(item);
             }
         }
     }

@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -32,12 +33,19 @@ namespace Cafeine.Services
 
         public static event EventHandler DatabaseUpdated;
 
-        public static event EventHandler<bool> NetworkisOnline;
+        public static event EventHandler<bool> NetworkIsOffline;
 
         static Database()
         {
             CustomSerializator.ByteArraySerializator = (object o) => { return JsonConvert.SerializeObject(o).To_UTF8Bytes(); };
             CustomSerializator.ByteArrayDeSerializator = (byte[] bt, Type x) => { return JsonConvert.DeserializeObject(bt.UTF8_GetString(), x); };
+        }
+
+        public static bool DoesNetworkOffline()
+        {
+            bool status = NetworkInterface.GetIsNetworkAvailable();
+            NetworkIsOffline?.Invoke(null, status);
+            return status;
         }
 
         public static bool DoesAccountExists()
@@ -215,6 +223,9 @@ namespace Cafeine.Services
                     Id = tr.ObjectGetNewIdentity<int>("library"),
                     MalID = item.MalID,
                 };
+
+                //  Index 3 and 4 are fallback case if the universal ID ( MalID )
+                //  doesn't exist when searching the service.
                 tr.ObjectInsert("library", new DBreezeObject<OfflineItem>
                 {
                     NewEntity = true,
@@ -222,7 +233,9 @@ namespace Cafeine.Services
                     Indexes = new List<DBreezeIndex>()
                     {
                         new DBreezeIndex(1,offlineitem.Id){PrimaryIndex = true},
-                        new DBreezeIndex(2,offlineitem.MalID)
+                        new DBreezeIndex(2,item.MalID),
+                        new DBreezeIndex(3,item.ServiceID),
+                        new DBreezeIndex(4,item.Service)
                     }
                 });
                 tr.Commit();
@@ -230,22 +243,22 @@ namespace Cafeine.Services
             }
         }
 
-        public static async Task<OfflineItem> GetOfflineItem(int? service_id,int? mal_id)
+        public static async Task<OfflineItem> GetOfflineItem(ServiceItem serviceitem)
         {
             OfflineItem item = await Task.Run(() =>
             {
                 using (var tr = db.GetTransaction())
                 {
                     IEnumerable<Row<byte[], byte[]>> result = null;
-                    if (service_id !=0)
+                    if (serviceitem.MalID != default)
                     {
-
-                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 2.ToIndex(service_id, 0), true, 2.ToIndex(service_id, int.MaxValue), true);
-                        
+                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 2.ToIndex(serviceitem.MalID, 0), true, 2.ToIndex(serviceitem.MalID, int.MaxValue),true);
                     }
                     else
                     {
-                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 3.ToIndex(mal_id, 0, 0), true, 3.ToIndex(mal_id, int.MaxValue, int.MaxValue),true);
+                        // Use with caution!
+                        // collition with different service might happened in this case!
+                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 4.ToIndex(serviceitem.Service,serviceitem.ServiceID,0, 0), true, 2.ToIndex(serviceitem.Service,serviceitem.ServiceID,0, int.MaxValue), true);
                     }
 
                     if ( result?.Count() != 0)
@@ -285,13 +298,13 @@ namespace Cafeine.Services
             CurrentItems.RemoveAt(oldItem);
         }
 
-        public static async Task<List<ContentList>> UpdateItemEpisodes(ServiceItem item)
+        public static async Task<List<ContentList>> GetSeriesContentList(ServiceItem item)
         {
             try
             {
                 return await CurrentService.GetItemEpisodes(item) as List<ContentList>;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //offline mode, then.
                 return new List<ContentList>();
