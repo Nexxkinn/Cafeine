@@ -37,8 +37,6 @@ namespace Cafeine.ViewModels
         {            
             OfflineResults = new ObservableCollection<ServiceItem>();
 
-            Link.Subscribe<string>(x=> Keyword.Value = x, typeof(Keyword));
-
             // RX.NET RANT:
             // Not implementing .ObserveOnDispatcher() causes
             //
@@ -64,11 +62,12 @@ namespace Cafeine.ViewModels
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {
             Link.Publish(Visibility.Visible, typeof(SearchBoxVisibility));
+            Link.Subscribe<string>(x => Keyword.Value = x, typeof(Keyword));
             MainPageCurrentState = e.Parameter as int?;
             await base.OnNavigatedTo(e);
         }
 
-        public override async Task OnNavigatedFrom(NavigationEventArgs e = null)
+        public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             Link.Publish(Visibility.Collapsed,typeof(SearchBoxVisibility));
             Link.Unsubscribe(typeof(Keyword));
