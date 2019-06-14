@@ -27,7 +27,7 @@ namespace Cafeine.ViewModels
         {
             UserPanelVisibility = false;
 
-            SetupPanelVisibility = true;
+            SetupPanelVisibility = false;
         }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
@@ -37,6 +37,25 @@ namespace Cafeine.ViewModels
             }
             navigationService.ClearHistory();
             await base.OnNavigatedTo(e);
+            await Load();
+        }
+
+        public async Task Load()
+        {
+            await Task.Yield();
+            await ImageCache.CreateImageCacheFolder();
+            if (Database.DoesAccountExists())
+            {
+                showUserPanel();
+                await Database.BuildServices();
+                await Database.Build();
+                NavigateToMainPage();
+            }
+            else
+            {
+                SetupPanelVisibility = true;
+                RaisePropertyChanged(nameof(SetupPanelVisibility));
+            }
         }
 
         public void ListView_ItemClick(object sender, ItemClickEventArgs e)
@@ -53,18 +72,7 @@ namespace Cafeine.ViewModels
                     break;
             }
         }
-        public override async Task OnLoaded(object sender, RoutedEventArgs e)
-        {
-            await Task.Yield();
-            await ImageCache.CreateImageCacheFolder();
-            if (Database.DoesAccountExists())
-            {
-                showUserPanel();
-                await Database.BuildServices();
-                await Database.Build();
-                NavigateToMainPage();
-            }
-        }
+        
 
         public void showUserPanel()
         {
