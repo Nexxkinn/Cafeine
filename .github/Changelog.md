@@ -1,3 +1,14 @@
+### v0.14.1a:
+##### Changes made in this build:
+- [Break Change] Database engine rewrite
+- UI Redesign for series' content list
+- Set back button position on the upleft corner
+- Fix memory leak for general scenario
+- Fix login page won't open
+- Fix login page glitch when opening the app
+- Fix Keyword got unlinked in specific scenarios.
+
+
 ### v0.13.0a:
 ##### Changes made in this build:
 - [Change] Simplify User Interface 
