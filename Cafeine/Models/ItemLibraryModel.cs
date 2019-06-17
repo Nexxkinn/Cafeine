@@ -22,10 +22,14 @@ namespace Cafeine.Models
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Accepted id for all known services. <para />
+        /// Accepted ID for all known services. <para />
         /// Use this one for identification or to get item.
         /// </summary>
         public int MalID { get; set; }
+        /// <summary>
+        /// Accepted IDs for selected service.
+        /// </summary>
+        public Dictionary<ServiceType,int> ServiceID { get; set; }
         /// <summary>
         /// Saved folder path.
         /// </summary>

@@ -401,7 +401,7 @@
                             FontSize="12"
                             Opacity="0.8"
                             Text="Assosiate your local files with episodes list" />
-                        <Grid Margin="0,12">
+                        <Grid Margin="0,12" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -413,33 +413,42 @@
                                 Opacity="0.8"
                                 Text="/Videos/AlicetoZouroku/" />
                         </Grid>
-                        <Button Content="Browse" />
+                        <Button
+                            Margin="0,12"
+                            Click="{x:Bind Vm.CreateOfflineItem}"
+                            Content="Run setup" />
 
-                        <TextBlock
-                            Margin="0,24,0,8"
-                            FontSize="16"
-                            Text="Episodes list" />
-                        <CheckBox Content="Get episode list from service" />
-                        <CheckBox Margin="0,4" Content="Do not use thumbnail from service" />
-                        <CheckBox Content="Use custom regex to identify local files with episodes" />
-                        <TextBox
-                            Width="400"
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Left"
-                            IsEnabled="False"
-                            Text="Default" />
-                        <StackPanel Margin="0,8" Orientation="Horizontal">
-                            <Button Content="Save" IsEnabled="False" />
+
+                        <StackPanel
+                            x:Name="OfflineItemSettings"
+                            x:Load="{x:Bind Vm.IsOfflineItemAvailable.Value, Mode=OneWay}"
+                            Visibility="Collapsed">
+                            <TextBlock
+                                Margin="0,24,0,8"
+                                FontSize="16"
+                                Text="Episodes list" />
+                            <CheckBox Content="Get episode list from service" />
+                            <CheckBox Margin="0,4" Content="Do not use thumbnail from service" />
+                            <CheckBox Content="Use custom regex to identify local files with episodes" />
+                            <TextBox
+                                Width="400"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Left"
+                                IsEnabled="False"
+                                Text="Default" />
+                            <StackPanel Margin="0,8" Orientation="Horizontal">
+                                <Button Content="Save" IsEnabled="False" />
+                            </StackPanel>
+                            <TextBlock
+                                Margin="0,24,0,4"
+                                FontSize="16"
+                                Text="Reset" />
+                            <TextBlock Opacity="0.8">
+                                <Run>Use this function if you want to rescan the folder and reconnect</Run>
+                                <LineBreak /><Run>all files with corresponded episodes listed.</Run>
+                            </TextBlock>
+                            <Button Margin="0,4" Content="Reset and Reconnect" />
                         </StackPanel>
-                        <TextBlock
-                            Margin="0,24,0,4"
-                            FontSize="16"
-                            Text="Reset" />
-                        <TextBlock Opacity="0.8">
-                            <Run>Use this function if you want to rescan the folder and reconnect</Run>
-                            <LineBreak /><Run>all files with corresponded episodes listed.</Run>
-                        </TextBlock>
-                        <Button Margin="0,4" Content="Reset and Reconnect" />
                     </StackPanel>
                 </Grid>
             </Grid>

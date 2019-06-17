@@ -1,0 +1,74 @@
+﻿<ContentDialog
+    x:Class="Cafeine.Views.Wizard.OfflineItemWizard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Cafeine.Views.Wizard"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Get Started"
+    mc:Ignorable="d">
+
+    <Grid Width="500">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel
+            x:Name="Stage0"
+            Grid.Row="0"
+            Height="200"
+            x:Load="{x:Bind Stage.Equals(0), Mode=OneWay}"
+            Loaded="{x:Bind Stage0_load}">
+            <TextBlock Text="Please make sure your files are following this name structure:" />
+            <TextBlock
+                Margin="0,20"
+                HorizontalAlignment="Center"
+                FontSize="15"
+                FontWeight="SemiBold"
+                Text="[&lt;fansub&gt;] &lt;series_title&gt; - &lt;series_episode&gt; [&lt;hash&gt;]" />
+            <TextBlock Text="Hash and fansub paramater are optional, as the app only needs the series title and episode number to identify the file. Otherwise, you are required to implement your own custom regex parser." TextWrapping="WrapWholeWords" />
+            <TextBlock Margin="0,8" Text="Most fansubs nowadays follow this name structure and can be ignored." />
+        </StackPanel>
+        <StackPanel
+            x:Name="Stage1"
+            Grid.Row="0"
+            x:Load="{x:Bind Stage.Equals(1), Mode=OneWay, FallbackValue=x:False}"
+            Loaded="{x:Bind Stage1_load}">
+            <TextBlock Text="Select directory" />
+            <Button Content="Browse" />
+            <TextBlock Text="Result" />
+            <GridView />
+        </StackPanel>
+
+        <StackPanel
+            x:Name="ButtonStackPanel"
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            x:Load="{x:Bind IsButtonLoaded, Mode=OneWay}"
+            Orientation="Horizontal">
+            <Button
+                Width="100"
+                Margin="0,0,20,0"
+                Click="{x:Bind PreviousButtonClicked}"
+                Content="Previous"
+                IsEnabled="{x:Bind NotEqual(0), Mode=OneWay}" />
+            <Button
+                Width="100"
+                Margin="0,0,20,0"
+                Click="{x:Bind NextButtonClicked}"
+                Content="Next"
+                IsEnabled="{x:Bind IsNextButtonEnabled, Mode=OneWay}" />
+            <Button
+                Width="100"
+                Margin="0,0,4,0"
+                Click="{x:Bind CancelButtonClicked}"
+                Content="Cancel" />
+        </StackPanel>
+        <StackPanel
+            x:Name="FinishedButtonStackPanel"
+            Grid.Row="1"
+            x:Load="{x:Bind IsButtonLoaded.Equals(x:False), Mode=OneWay}">
+            <Button Click="{x:Bind FinishedButtonClicked}" Content="Done" />
+        </StackPanel>
+    </Grid>
+</ContentDialog>

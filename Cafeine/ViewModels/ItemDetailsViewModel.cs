@@ -87,6 +87,8 @@ namespace Cafeine.ViewModels
 
         public CafeineProperty<bool> SetAddButtonLoad { get; }
 
+        public CafeineProperty<bool> IsOfflineItemAvailable { get; }
+
         public ReactiveProperty<bool> SetDeleteButtonLoad { get; }
 
         public ReactiveProperty<bool> IsPaneOpened { get; }
@@ -140,6 +142,8 @@ namespace Cafeine.ViewModels
             {
                 SetAddButtonLoad.Value = !sdb;
             });
+
+            IsOfflineItemAvailable = new CafeineProperty<bool>();
             #endregion
 
             #region TwoWay Initial Value
@@ -268,6 +272,7 @@ namespace Cafeine.ViewModels
                     {
                         // handle offline content then
                         await Task.Yield();
+                        IsOfflineItemAvailable.Value = true;
                         Episodelist = new ObservableCollection<ContentList>(_offline.ContentList);
                         RaisePropertyChanged("Episodelist");
                         var onlinecontentlist = await Database.GetSeriesContentList(Service);
@@ -303,6 +308,11 @@ namespace Cafeine.ViewModels
                 //Item.Details.Description = $"{ex.StackTrace}\n" +
                 //    $"Screenshot this image and contact to the developer.";
             }
+        }
+
+        public async void CreateOfflineItem()
+        {
+            OfflineItem item = await Database.CreateOflineItem(Service, Episodelist);
         }
 
         public void Dispose()
