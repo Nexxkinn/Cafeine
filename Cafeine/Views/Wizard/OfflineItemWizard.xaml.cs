@@ -1,4 +1,6 @@
 ﻿using Cafeine.Models;
+using Cafeine.Services.Mvvm;
+using Cafeine.ViewModels.Wizard;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,120 +23,41 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.Views.Wizard
 {
-    public sealed partial class OfflineItemWizard : ContentDialog,INotifyPropertyChanged
+    public sealed partial class OfflineItemWizard : ContentDialog
     {
         public bool IsCanceled { get; private set; }
 
-        public OfflineItem Result { get; private set; }
+        public OfflineItem Result => Viewmodel.GetResult();
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private int _stage { get; set; }
-        private int Stage {
-            get => _stage;
-            set {
-                if(_stage != value)
-                {
-                    _stage = value;
-                    RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(NotEqual));
-                }
-            }
-        }
-
-        private bool _isButtonLoaded { get; set; }
-        private bool IsButtonLoaded {
-            get => _isButtonLoaded;
-            set {
-                if(_isButtonLoaded != value)
-                {
-                    _isButtonLoaded = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private bool _isNextButtonEnabled { get; set; }
-        private bool IsNextButtonEnabled {
-            get => _isNextButtonEnabled;
-            set {
-                if (_isNextButtonEnabled != value)
-                {
-                    _isNextButtonEnabled = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private bool NotEqual(int num) => Stage != num;
-
-        private ServiceItem Item { get; set; }
-        private string Pattern { get; set; }
-        private StorageFolder Folder { get; set; }
-
+        private OfflineItemWizardViewModel Viewmodel => this.DataContext as OfflineItemWizardViewModel;
 
         public OfflineItemWizard(ServiceItem item,string pattern,ICollection<ContentList> lists)
         {
-            this.IsButtonLoaded = true;
-            this.Item = item;
-            this.Pattern = pattern;
+            this.DataContext = new OfflineItemWizardViewModel(item,pattern,lists);
             this.InitializeComponent();
-        }
-
-        public void RaisePropertyChanged([CallerMemberName]string property = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         private void CancelButtonClicked()
         {
             IsCanceled = true;
             this.Hide();
+            Viewmodel.Dispose();
         }
 
         private void FinishedButtonClicked()
         {
+            Viewmodel.Dispose();
             this.Hide();
         }
-        private void PreviousButtonClicked()
-        {
-            Stage--;
-        }
-        private void NextButtonClicked()
-        {
-            Stage++;
-        }
-        private void Stage0_load()
-        {
-            this.Title = "Get Started";
-            IsNextButtonEnabled = true;
-        }
-        private void Stage1_load()
-        {
-            this.Title = "Browse Folder";
-            Folder = null;
-            IsNextButtonEnabled = false;
-        }
-        private void Stage1_BrowseFolder()
-        {
 
+        private void EpisodeListControl_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            Viewmodel.MatchedList.Remove((sender as Button).DataContext as ContentList);
         }
 
-        private void dump()
+        private void OnList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
-            // (?<=\-\s)(?:\d+)
-            //string NamePattern;
-            //foreach (var file in localfiles)
-            //{
-            //    int number = Convert.ToInt32(Regex.Match(file.DisplayName, @"(?<=\-\s)(?:\d+)", RegexOptions.IgnoreCase).Value);
-            //    if (files.TryGetValue(number, out StorageFile storageFile))
-            //    {
-            //        // display warning
-            //        // display "Use <title> for next file?
 
-            //    }
-
-            //}
         }
     }
 }

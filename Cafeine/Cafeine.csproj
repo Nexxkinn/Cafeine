@@ -136,6 +136,7 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\OfflineItemWizardViewModel.cs" />
     <Compile Include="Views\BrowserAuthenticationPage.xaml.cs">
       <DependentUpon>BrowserAuthenticationPage.xaml</DependentUpon>
     </Compile>
@@ -156,6 +157,9 @@
     </Compile>
     <Compile Include="Views\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Wizard\EpisodeListControl.xaml.cs">
+      <DependentUpon>EpisodeListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Wizard\OfflineItemWizard.xaml.cs">
       <DependentUpon>OfflineItemWizard.xaml</DependentUpon>
@@ -230,6 +234,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\BrowserAuthenticationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -255,6 +263,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Wizard\EpisodeListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

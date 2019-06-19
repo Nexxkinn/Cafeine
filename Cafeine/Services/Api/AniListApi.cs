@@ -373,10 +373,6 @@ namespace Cafeine.Services.Api
                     int itemstatus = StatusEnum.Anilist_ItemStatus[item["media"]["status"].Value];
                     int userstatus = StatusEnum.UserStatus[status];
                     int season = ((int?)item["media"]["seasonInt"]).GetValueOrDefault();
-                    var GeneratedItem = new OfflineItem()
-                    {
-                        MalID = ((int?)item["media"]["idMal"]).GetValueOrDefault(),
-                    };
                     
                     var user = new UserItem
                     {
@@ -389,6 +385,7 @@ namespace Cafeine.Services.Api
 
                     var service = new ServiceItem
                     {
+                        MalID = ((int?)item["media"]["idMal"]).GetValueOrDefault(),
                         Service = ServiceType.ANILIST,
                         Title = item["media"]["title"]["romaji"],
                         CoverImageUri = item["media"]["coverImage"]["large"],

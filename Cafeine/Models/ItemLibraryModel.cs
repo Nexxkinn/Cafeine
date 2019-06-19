@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -20,24 +21,45 @@ namespace Cafeine.Models
         /// <summary>
         /// Database ID. Not for use.
         /// </summary>
-        public int Id { get; set; }
+        public int Id { get; }
         /// <summary>
         /// Accepted ID for all known services. <para />
         /// Use this one for identification or to get item.
         /// </summary>
-        public int MalID { get; set; }
+        public int MalID { get; }
         /// <summary>
         /// Accepted IDs for selected service.
         /// </summary>
-        public Dictionary<ServiceType,int> ServiceID { get; set; }
+        public Dictionary<ServiceType,int> ServiceID { get; }
         /// <summary>
-        /// Saved folder path.
+        /// Saved folder token.
         /// </summary>
-        public string FolderPath { get; set; }
+        public string FolderToken { get; private set; }
         /// <summary>
         /// Saved episodes
         /// </summary>
         public List<ContentList> ContentList { get; set; }
+        /// <summary>
+        /// Custom regex
+        /// </summary>
+        public string Regex { get; }
+
+        public OfflineItem() { }
+        public OfflineItem(int id,int mal_id,Dictionary<ServiceType, int> service_id,string folder_token,string regex = null)
+        {
+            this.Id = id;
+            this.MalID = mal_id;
+            this.ServiceID = service_id;
+            this.FolderToken = folder_token;
+            this.Regex = regex;
+        }
+
+        public void AddServiceID(ServiceType service_type,int service_id)
+        {
+            if (ServiceID.ContainsKey(service_type)) return;
+
+            ServiceID.Add(service_type, service_id);
+        }
 
         public void AddNewContentList(IList<ContentList> newlist)
         {
@@ -46,6 +68,11 @@ namespace Cafeine.Models
                 ContentList.Add(item);
             }
             ContentList.OrderBy(x => x.Number);
+        }
+
+        public async Task<StorageFolder> GetStorageFolder()
+        {
+            return await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(FolderToken);
         }
 
     }
@@ -211,9 +238,9 @@ namespace Cafeine.Models
 
         public Uri Thumbnail { get; set; }
 
-        public ObservableCollection<Stream> StreamingServices { get; set; }
+        public List<Stream> StreamingServices { get; set; }
         
-        public string FileName { get; set; }
+        public List<string> FileName { get; set; }
 
         public string GenerateEpisodeNumber()
         {

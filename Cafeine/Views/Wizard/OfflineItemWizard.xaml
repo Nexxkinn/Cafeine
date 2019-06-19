@@ -4,8 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Cafeine.Views.Wizard"
+    xmlns:m="using:Cafeine.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Get Started"
+    xmlns:vm="Cafeine.ViewModels.Wizard"
+    Title="{x:Bind Viewmodel.Title, Mode=OneWay}"
     mc:Ignorable="d">
 
     <Grid Width="500">
@@ -17,8 +19,9 @@
             x:Name="Stage0"
             Grid.Row="0"
             Height="200"
-            x:Load="{x:Bind Stage.Equals(0), Mode=OneWay}"
-            Loaded="{x:Bind Stage0_load}">
+            x:Load="{x:Bind Viewmodel.Stage.Equals(0), Mode=OneWay}"
+            Loaded="{x:Bind Viewmodel.Stage0_load}"
+            Visibility="Collapsed">
             <TextBlock Text="Please make sure your files are following this name structure:" />
             <TextBlock
                 Margin="0,20"
@@ -32,32 +35,68 @@
         <StackPanel
             x:Name="Stage1"
             Grid.Row="0"
-            x:Load="{x:Bind Stage.Equals(1), Mode=OneWay, FallbackValue=x:False}"
-            Loaded="{x:Bind Stage1_load}">
+            x:Load="{x:Bind Viewmodel.Stage.Equals(1), Mode=OneWay, FallbackValue=x:False}"
+            Loaded="{x:Bind Viewmodel.Stage1_load}">
             <TextBlock Text="Select directory" />
-            <Button Content="Browse" />
-            <TextBlock Text="Result" />
-            <GridView />
+            <Button Click="{x:Bind Viewmodel.Stage1_BrowseFolder}" Content="Browse" />
+            <TextBlock Text="{x:Bind Viewmodel.Message, Mode=OneWay}" Visibility="{x:Bind Viewmodel.DisplayWarningVisibility, Mode=OneWay}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ListView
+                    x:Name="OnList"
+                    Grid.Column="0"
+                    Height="200"
+                    ContainerContentChanging="OnList_ContainerContentChanging"
+                    Header="Indentified files"
+                    ItemsSource="{x:Bind Viewmodel.MatchedList, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="m:ContentList">
+                            <local:EpisodeListControl
+                                DataContext="{x:Bind}"
+                                DeleteClicked="EpisodeListControl_DeleteClick"
+                                LoadEpisodeNumber="True" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <ListView
+                    x:Name="NotOnList"
+                    Grid.Column="1"
+                    Header="Unidentified files"
+                    IsHitTestVisible="True"
+                    IsItemClickEnabled="True"
+                    ItemsSource="{x:Bind Viewmodel.UnmatchedList, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="m:ContentList">
+                            <DataTemplate x:DataType="m:ContentList">
+                                <local:EpisodeListControl DataContext="{x:Bind Mode=OneWay}" />
+                            </DataTemplate>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </StackPanel>
 
         <StackPanel
             x:Name="ButtonStackPanel"
             Grid.Row="1"
             HorizontalAlignment="Right"
-            x:Load="{x:Bind IsButtonLoaded, Mode=OneWay}"
+            x:Load="{x:Bind Viewmodel.IsButtonLoaded, Mode=OneWay}"
             Orientation="Horizontal">
             <Button
                 Width="100"
                 Margin="0,0,20,0"
-                Click="{x:Bind PreviousButtonClicked}"
+                Click="{x:Bind Viewmodel.PreviousButtonClicked}"
                 Content="Previous"
-                IsEnabled="{x:Bind NotEqual(0), Mode=OneWay}" />
+                IsEnabled="{x:Bind Viewmodel.NotEqual(0), Mode=OneWay}" />
             <Button
                 Width="100"
                 Margin="0,0,20,0"
-                Click="{x:Bind NextButtonClicked}"
+                Click="{x:Bind Viewmodel.NextButtonClicked}"
                 Content="Next"
-                IsEnabled="{x:Bind IsNextButtonEnabled, Mode=OneWay}" />
+                IsEnabled="{x:Bind Viewmodel.IsNextButtonEnabled, Mode=OneWay}" />
             <Button
                 Width="100"
                 Margin="0,0,4,0"
@@ -67,7 +106,7 @@
         <StackPanel
             x:Name="FinishedButtonStackPanel"
             Grid.Row="1"
-            x:Load="{x:Bind IsButtonLoaded.Equals(x:False), Mode=OneWay}">
+            x:Load="{x:Bind Viewmodel.IsButtonLoaded.Equals(x:False), Mode=OneWay}">
             <Button Click="{x:Bind FinishedButtonClicked}" Content="Done" />
         </StackPanel>
     </Grid>
