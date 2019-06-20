@@ -70,14 +70,7 @@ namespace Cafeine.ViewModels
             };
 
             TabbedIndex = new ReactiveProperty<int>();
-            TabbedIndex.Subscribe(async
-                x =>
-                {
-                    await Task.Factory.StartNew(() => DisplayItem(x),
-                        CancellationToken.None,
-                        TaskCreationOptions.None,
-                        TaskScheduler.FromCurrentSynchronizationContext());
-                });
+            TabbedIndex.Subscribe(x => _ = DisplayItem(x) );
 
             Library = new ObservableCollection<ServiceItem>();
 
@@ -99,7 +92,7 @@ namespace Cafeine.ViewModels
             }
             else
             {
-                await DisplayItem(TabbedIndex.Value);
+                _ = DisplayItem(TabbedIndex.Value);
             }
             navigationService.ClearHistory();
             await base.OnNavigatedTo(e);
@@ -107,14 +100,9 @@ namespace Cafeine.ViewModels
 
         private async Task DisplayItem(int value)
         {
-            await Task.Factory.StartNew(() =>
-            {
-                ListedItems = Database.SearchBasedonUserStatus(value);
-                Library = new ObservableCollection<ServiceItem>(SortAndFilter(ListedItems));
-            },
-            CancellationToken.None,
-            TaskCreationOptions.DenyChildAttach,
-            TaskScheduler.FromCurrentSynchronizationContext()).ConfigureAwait(false);
+            await Task.Yield();
+            ListedItems = Database.SearchBasedonUserStatus(value);
+            Library = new ObservableCollection<ServiceItem>(SortAndFilter(ListedItems));
         }
 
         private IEnumerable<ServiceItem> SortAndFilter(IEnumerable<ServiceItem> items)

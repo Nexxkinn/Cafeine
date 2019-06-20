@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 
 namespace Cafeine.ViewModels.Wizard
@@ -72,8 +73,6 @@ namespace Cafeine.ViewModels.Wizard
             this.Pattern = pattern;
             this.IsButtonLoaded = true;
             this.IsDisplayWarning = false;
-            this.MatchedList = new ObservableCollection<ContentList>();
-            this.UnmatchedList = new ObservableCollection<ContentList>();
         }
 
         public OfflineItem GetResult() => Result;
@@ -93,6 +92,8 @@ namespace Cafeine.ViewModels.Wizard
             Title = "Browse Folder";
             Folder = null;
             IsNextButtonEnabled = false;
+            MatchedList = new ObservableCollection<ContentList>();
+            UnmatchedList = new ObservableCollection<ContentList>();
         }
 
         public void Stage2_load()
@@ -110,11 +111,7 @@ namespace Cafeine.ViewModels.Wizard
             Folder = await folderpicker.PickSingleFolderAsync();
             if (Folder == null) return;
 
-            await Task.Factory.StartNew(
-                Stage1_TryProcessFolder,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.FromCurrentSynchronizationContext()).Unwrap();
+            _ = Stage1_TryProcessFolder();
         }
 
         public async Task Stage1_TryProcessFolder()

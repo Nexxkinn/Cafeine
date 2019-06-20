@@ -44,7 +44,7 @@
                             x:Name="BackgroundImage"
                             AlignmentY="Top"
                             ImageOpened="BackgroundImage_ImageOpened"
-                            ImageSource="{x:Bind Mode=OneWay, Path=Vm.ImageSource.Value.Path}"
+                            ImageSource="{x:Bind Mode=OneWay, Path=Vm.ImageSource.Path}"
                             Opacity="0"
                             Stretch="UniformToFill" />
                     </Grid.Background>
@@ -55,7 +55,7 @@
                     IsPaneOpen="{x:Bind Vm.IsPaneOpened.Value, Mode=TwoWay}"
                     LightDismissOverlayMode="On"
                     OpenPaneLength="350"
-                    PaneBackground="{x:Bind Vm.PaneBackground.Value, Mode=OneWay}"
+                    PaneBackground="{x:Bind Vm.PaneBackground, Mode=OneWay}"
                     Template="{StaticResource CafeineSplitView}">
                     <SplitView.Pane>
                         <Grid>
@@ -134,7 +134,7 @@
                                 Width="48"
                                 Height="48"
                                 VerticalAlignment="Bottom"
-                                x:Load="{x:Bind Vm.SetAddButtonLoad.Value, Mode=OneWay}"
+                                x:Load="{x:Bind Vm.SetAddButtonLoad, Mode=OneWay}"
                                 Command="{x:Bind Vm.AddButtonClicked}"
                                 Style="{StaticResource ReducedAppBarButtonRevealStyle}">
                                 <AppBarButton.Icon>
@@ -217,7 +217,7 @@
                                 MaxHeight="204"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                Source="{x:Bind Vm.ImageSource.Value.Path, Mode=OneWay}" />
+                                Source="{x:Bind Vm.ImageSource.Path, Mode=OneWay}" />
                             <StackPanel
                                 MaxHeight="204"
                                 Margin="14,0,0,0"
@@ -235,20 +235,20 @@
                                 <TextBlock
                                     x:Name="ItemStatusTextBlock"
                                     FontSize="14"
-                                    Text="{x:Bind Path=Vm.StatusTextBlock.Value, Mode=OneWay}" />
+                                    Text="{x:Bind Path=Vm.StatusTextBlock, Mode=OneWay}" />
                                 <RatingControl
                                     x:Name="rating"
                                     Margin="0,0,0,-8"
                                     HorizontalAlignment="Left"
-                                    Caption="{x:Bind Path=Vm.ScoreTextBlock.Value, Mode=OneWay}"
+                                    Caption="{x:Bind Path=Vm.ScoreTextBlock, Mode=OneWay}"
                                     InitialSetValue="0"
                                     IsReadOnly="True"
-                                    PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating.Value, Mode=OneWay}" />
+                                    PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating, Mode=OneWay}" />
                                 <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
                                 <ProgressRing
                                     x:Name="progressring"
                                     HorizontalAlignment="Left"
-                                    x:Load="{x:Bind Vm.ItemDetailsProgressRing.Value, Mode=OneWay}"
+                                    x:Load="{x:Bind Vm.ItemDetailsProgressRing, Mode=OneWay}"
                                     IsActive="True" />
                                 <TextBlock
                                     x:Name="description"
@@ -258,7 +258,7 @@
                                     FontSize="13"
                                     Foreground="#D7FFFFFF"
                                     MaxLines="5"
-                                    Text="{x:Bind Path=Vm.DescriptionTextBlock.Value, Mode=OneWay}"
+                                    Text="{x:Bind Path=Vm.DescriptionTextBlock, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="Wrap" />
                             </StackPanel>
@@ -299,7 +299,7 @@
                         x:Name="episodenotfound"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        x:Load="{x:Bind Vm.LoadEpisodeNotFound.Value, Mode=OneWay}"
+                        x:Load="{x:Bind Vm.LoadEpisodeNotFound, Mode=OneWay}"
                         Opacity="0.5"
                         Orientation="Vertical">
                         <FontIcon
@@ -319,7 +319,7 @@
                             Height="48"
                             VerticalAlignment="Top"
                             Background="{ThemeResource LegacyDarkBlue}"
-                            Visibility="{x:Bind Vm.LoadEpisodesListConfiguration.Value, Mode=OneWay}">
+                            Visibility="{x:Bind Vm.LoadEpisodesListConfiguration, Mode=OneWay}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -347,7 +347,7 @@
                             Canvas.ZIndex="-1"
                             ContainerContentChanging="Episodesitem_ContainerContentChanging"
                             ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
-                            Visibility="{x:Bind Path=Vm.LoadEpisodeLists.Value, Mode=OneWay}">
+                            Visibility="{x:Bind Path=Vm.LoadEpisodeLists, Mode=OneWay}">
                             <GridView.ItemTemplate>
                                 <DataTemplate x:DataType="model:ContentList">
                                     <RelativePanel Height="81">
@@ -394,7 +394,7 @@
                         x:Name="EpisodeSettings"
                         Grid.RowSpan="2"
                         Margin="0,14"
-                        x:Load="{x:Bind Path=Vm.LoadEpisodeSettings.Value, Mode=OneWay}"
+                        x:Load="{x:Bind Path=Vm.LoadEpisodeSettings, Mode=OneWay}"
                         Orientation="Vertical">
                         <TextBlock FontSize="16" Text="Directory Source" />
                         <TextBlock
@@ -421,7 +421,7 @@
 
                         <StackPanel
                             x:Name="OfflineItemSettings"
-                            x:Load="{x:Bind Vm.IsOfflineItemAvailable.Value, Mode=OneWay}"
+                            x:Load="{x:Bind Vm.IsOfflineItemAvailable, Mode=OneWay}"
                             Visibility="Collapsed">
                             <TextBlock
                                 Margin="0,24,0,8"
