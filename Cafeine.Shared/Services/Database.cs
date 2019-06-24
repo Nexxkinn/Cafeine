@@ -1,7 +1,6 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
 using Cafeine.Services.Api;
-using Cafeine.Views.Wizard;
 using DBreeze;
 using DBreeze.DataTypes;
 using DBreeze.Objects;
@@ -217,10 +216,10 @@ namespace Cafeine.Services
 
         public static async Task<OfflineItem> CreateOflineItem(ServiceItem item,ICollection<ContentList> list)
         {
-            OfflineItemWizard wizard = new OfflineItemWizard(item, null, list);
-            await wizard.ShowAsync();
+            //OfflineItemWizard wizard = new OfflineItemWizard(item, null, list);
+            //await wizard.ShowAsync();
 
-            if (wizard.IsCanceled) return null;
+            //if (wizard.IsCanceled) return null;
 
             return null;
             //using (var tr = db.GetTransaction())
