@@ -40,7 +40,7 @@ namespace Cafeine.Tests
             foreach(var testcase in testcases)
             {
                 var parser = new CafeineFilenameParser(testcase.FileName);
-                parser.TryCreateUniqueArrays(out string[] keys,true);
+                parser.TryCreateFingerprint(out string[] keys,true);
 
                 if(keys.Any(string.IsNullOrWhiteSpace) || keys.Length == 0 )
                 {
@@ -62,7 +62,7 @@ namespace Cafeine.Tests
             foreach (var test_nonSIMD in testcases)
             {
                 var parser = new CafeineFilenameParser(test_nonSIMD.FileName);
-                parser.TryCreateUniqueArrays(out string[] keys, false);
+                parser.TryCreateFingerprint(out string[] keys, false);
             }
             non_simd.Stop();
 
@@ -72,7 +72,7 @@ namespace Cafeine.Tests
             foreach (var test_SIMD in testcases)
             {
                 var parser = new CafeineFilenameParser(test_SIMD.FileName);
-                parser.TryCreateUniqueArrays(out string[] keys, true);
+                parser.TryCreateFingerprint(out string[] keys, true);
             }
             simd.Stop();
 
@@ -90,8 +90,8 @@ namespace Cafeine.Tests
             foreach (var testcase in testcases)
             {
                 var parser = new CafeineFilenameParser(testcase.FileName);
-                parser.TryCreateUniqueArrays(out string[] keys_simd,true);
-                parser.TryCreateUniqueArrays(out string[] keys_nonsimd,false);
+                parser.TryCreateFingerprint(out string[] keys_simd,true);
+                parser.TryCreateFingerprint(out string[] keys_nonsimd,false);
 
                 if (!keys_simd.SequenceEqual(keys_nonsimd)) {
                     TestContext.WriteLine("\n-------------------------------");
@@ -104,6 +104,38 @@ namespace Cafeine.Tests
             }
 
             Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        public void EpisodeNumberTest()
+        {
+            var parser = new CafeineFilenameParser("[TaigaSubs]_Toradora!_(2008)_-_01v2_-_Tiger_and_Dragon_[1280x720_H.264_FLAC][1234ABCD]");
+
+            var parser2 = new CafeineFilenameParser("[TaigaSubs]_Toradora!_(2008)_-_02_-_Tiger_and_Dragon_[1280x720_H.264_FLAC][1234ABCD]");
+            parser2.TryCreateFingerprint(out string[] key1);
+            var parser3 = new CafeineFilenameParser("[TaigaSubs]_Toradora!_(2008)_-_03v2_-_Tiger_and_Dragon_[1280x720_H.264_FLAC][1234ABCD]");
+            parser3.TryCreateFingerprint(out string[] key2);
+            List<string[]> samples = new List<string[]>() { key1, key2 };
+
+            parser.TryGetEpisodeNumber(out int[] numbers);
+        }
+
+        [TestMethod]
+        public void UniqueNumberTest()
+        {
+            foreach(var test in testcases)
+            {
+                var parser = new CafeineFilenameParser(test.FileName);
+                parser.TryCreateUniqNumbers(out string[] uniq);
+                bool IsUniqNumber = uniq.All(s => s.All(c => char.IsDigit(c) || char.IsWhiteSpace(c)));
+                //if (!IsUniqNumber)
+                //{
+                    TestContext.WriteLine("\n-------------------------------");
+                    TestContext.WriteLine($"Filename\t:{test.FileName}");
+                    TestContext.WriteLine($"Generated Uniq\t:{string.Join('|', uniq)}");
+                    TestContext.WriteLine("-------------------------------");
+                //}
+            }
         }
     }
     public class TestCase

@@ -18,6 +18,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\StatusEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemLibraryModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserCredentialsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Anitomy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Element.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Keyword.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Options.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Parser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\ParserHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\ParserNumber.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\StringHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Token.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Tokenizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\TokenRange.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Api\AniListApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Api\KitsuApi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Api\MyAnimeListApi.cs" />

@@ -216,37 +216,31 @@ namespace Cafeine.Services
 
         public static async Task<OfflineItem> CreateOflineItem(ServiceItem item,ICollection<ContentList> list)
         {
-            //OfflineItemWizard wizard = new OfflineItemWizard(item, null, list);
-            //await wizard.ShowAsync();
+            using (var tr = db.GetTransaction())
+            {
+                OfflineItem offlineitem = new OfflineItem
+                {
+                    Id = tr.ObjectGetNewIdentity<int>("library"),
+                    MalID = item.MalID,
+                };
 
-            //if (wizard.IsCanceled) return null;
-
-            return null;
-            //using (var tr = db.GetTransaction())
-            //{
-            //    OfflineItem offlineitem = new OfflineItem
-            //    {
-            //        Id = tr.ObjectGetNewIdentity<int>("library"),
-            //        MalID = item.MalID,
-            //    };
-
-            //    //  Index 3 and 4 are fallback case if the universal ID ( MalID )
-            //    //  doesn't exist when searching the service.
-            //    tr.ObjectInsert("library", new DBreezeObject<OfflineItem>
-            //    {
-            //        NewEntity = true,
-            //        Entity = offlineitem,
-            //        Indexes = new List<DBreezeIndex>()
-            //        {
-            //            new DBreezeIndex(1,offlineitem.Id){PrimaryIndex = true},
-            //            new DBreezeIndex(2,item.MalID),
-            //            new DBreezeIndex(3,item.ServiceID),
-            //            new DBreezeIndex(4,item.Service)
-            //        }
-            //    });
-            //    tr.Commit();
-            //    return offlineitem;
-            //}
+                //  Index 3 and 4 are fallback case if the universal ID ( MalID )
+                //  doesn't exist when searching the service.
+                tr.ObjectInsert("library", new DBreezeObject<OfflineItem>
+                {
+                    NewEntity = true,
+                    Entity = offlineitem,
+                    Indexes = new List<DBreezeIndex>()
+                    {
+                        new DBreezeIndex(1,offlineitem.Id){PrimaryIndex = true},
+                        new DBreezeIndex(2,item.MalID),
+                        new DBreezeIndex(3,item.ServiceID),
+                        new DBreezeIndex(4,item.Service)
+                    }
+                });
+                tr.Commit();
+                return offlineitem;
+            }
         }
 
         public static async Task<OfflineItem> GetOfflineItem(ServiceItem serviceitem)

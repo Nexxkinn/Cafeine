@@ -8,9 +8,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="Cafeine.ViewModels.Wizard"
     Title="{x:Bind Viewmodel.Title, Mode=OneWay}"
+    Background="{StaticResource LegacyDarkBlue}"
     mc:Ignorable="d">
-
-    <Grid Width="500">
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">700</x:Double>
+    </ContentDialog.Resources>
+    <Grid Width="600">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -20,8 +23,7 @@
             Grid.Row="0"
             Height="200"
             x:Load="{x:Bind Viewmodel.Stage.Equals(0), Mode=OneWay}"
-            Loaded="{x:Bind Viewmodel.Stage0_load}"
-            Visibility="Collapsed">
+            Loaded="{x:Bind Viewmodel.Stage0_load}">
             <TextBlock Text="Please make sure your files are following this name structure:" />
             <TextBlock
                 Margin="0,20"
@@ -37,16 +39,24 @@
             Grid.Row="0"
             x:Load="{x:Bind Viewmodel.Stage.Equals(1), Mode=OneWay, FallbackValue=x:False}"
             Loaded="{x:Bind Viewmodel.Stage1_load}">
-            <TextBlock Text="Select directory" />
-            <Button Click="{x:Bind Viewmodel.Stage1_BrowseFolder}" Content="Browse" />
-            <TextBlock Text="{x:Bind Viewmodel.Message, Mode=OneWay}" Visibility="{x:Bind Viewmodel.DisplayWarningVisibility, Mode=OneWay}" />
-            <Grid>
+            <local:BrowseButton Margin="0,0,0,20" StorageFolderSelected="{x:Bind Viewmodel.Stage1_TryProcessFolder}" />
+            <Grid x:Name="ViewResults" x:Load="{x:Bind Viewmodel.Stage1_ViewResults, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{x:Bind Viewmodel.Message, Mode=OneWay}" Visibility="{x:Bind Viewmodel.DisplayWarningVisibility, Mode=OneWay}" />
+                    <CheckBox Content="Group episode list" />
+                    <CheckBox Content="Use custom regex" />
+                </StackPanel>
                 <ListView
                     x:Name="OnList"
+                    Grid.Row="1"
                     Grid.Column="0"
                     Height="200"
                     ContainerContentChanging="OnList_ContainerContentChanging"
@@ -63,16 +73,14 @@
                 </ListView>
                 <ListView
                     x:Name="NotOnList"
+                    Grid.Row="1"
                     Grid.Column="1"
+                    Height="200"
                     Header="Unidentified files"
-                    IsHitTestVisible="True"
-                    IsItemClickEnabled="True"
                     ItemsSource="{x:Bind Viewmodel.UnmatchedList, Mode=OneWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="m:ContentList">
-                            <DataTemplate x:DataType="m:ContentList">
-                                <local:EpisodeListControl DataContext="{x:Bind Mode=OneWay}" />
-                            </DataTemplate>
+                            <local:EpisodeListControl DataContext="{x:Bind}" DeleteClicked="EpisodeNotOnListControl_DeleteClick" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -99,7 +107,7 @@
                 IsEnabled="{x:Bind Viewmodel.IsNextButtonEnabled, Mode=OneWay}" />
             <Button
                 Width="100"
-                Margin="0,0,4,0"
+                Margin="0,0,2,0"
                 Click="{x:Bind CancelButtonClicked}"
                 Content="Cancel" />
         </StackPanel>

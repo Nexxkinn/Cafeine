@@ -25,12 +25,14 @@
             Height="41" />
         <Button x:Name="DeleteButton" Content="Del" />
         <TextBlock
+            x:Name="episodenumber"
             Grid.Row="0"
             Grid.Column="1"
+            x:Load="{x:Bind LoadEpisodeNumber, Mode=OneWay}"
             Text="{x:Bind Item.GenerateEpisodeNumber(), Mode=OneWay}" />
         <TextBlock
             Grid.Row="1"
             Grid.Column="1"
-            Text="{x:Bind Item.FileName[0], Mode=OneWay}" />
+            Text="{x:Bind Item.Files[0].FileName, Mode=OneWay}" />
     </Grid>
 </UserControl>

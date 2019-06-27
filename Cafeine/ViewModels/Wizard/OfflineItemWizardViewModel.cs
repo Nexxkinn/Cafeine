@@ -1,4 +1,5 @@
 ﻿using Cafeine.Models;
+using Cafeine.Services.FilenameParser;
 using Cafeine.Services.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,12 @@ namespace Cafeine.ViewModels.Wizard
             set => Set(ref _message, value);
         }
 
+        private bool _stage1_viewresult;
+        public bool Stage1_ViewResults {
+            get => _stage1_viewresult;
+            set => Set(ref _stage1_viewresult,value);
+        }
+
         public Visibility DisplayWarningVisibility;
         private bool IsDisplayWarning {
             get => this.DisplayWarningVisibility == Visibility.Visible;
@@ -73,6 +80,9 @@ namespace Cafeine.ViewModels.Wizard
             this.Pattern = pattern;
             this.IsButtonLoaded = true;
             this.IsDisplayWarning = false;
+
+            this.MatchedList = new ObservableCollection<ContentList>();
+            this.UnmatchedList = new ObservableCollection<ContentList>();
         }
 
         public OfflineItem GetResult() => Result;
@@ -91,9 +101,8 @@ namespace Cafeine.ViewModels.Wizard
         {
             Title = "Browse Folder";
             Folder = null;
+            Stage1_ViewResults = false;
             IsNextButtonEnabled = false;
-            MatchedList = new ObservableCollection<ContentList>();
-            UnmatchedList = new ObservableCollection<ContentList>();
         }
 
         public void Stage2_load()
@@ -102,22 +111,17 @@ namespace Cafeine.ViewModels.Wizard
             IsButtonLoaded = false;
         }
 
-        public async void Stage1_BrowseFolder()
+
+        public async void Stage1_TryProcessFolder(object sender,StorageFolder folder)
         {
-            var folderpicker = new FolderPicker();
-            folderpicker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
-            folderpicker.FileTypeFilter.Add("*");
+            // initial setup
+            Folder = folder;
+            MatchedList.Clear();
+            UnmatchedList.Clear();
+            Stage1_ViewResults = true;
 
-            Folder = await folderpicker.PickSingleFolderAsync();
-            if (Folder == null) return;
-
-            _ = Stage1_TryProcessFolder();
-        }
-
-        public async Task Stage1_TryProcessFolder()
-        {
-
-            var files = await Folder.GetFilesAsync();
+            var files = await folder.GetFilesAsync();
+            
             // first pass : check if files exist
             if (files.Count == 0)
             {
@@ -126,39 +130,40 @@ namespace Cafeine.ViewModels.Wizard
             }
             
             string Message = string.Empty;
-            int MismatchCount = 0; 
-            Regex R_eps_num = new Regex(@"(?<=\-\s)(?:\d+)", RegexOptions.IgnoreCase);
             foreach(StorageFile file in files)
             {
-                if (R_eps_num.IsMatch(file.DisplayName))
+                var  parser  = new CafeineFilenameParser(file);
+                bool isNumParsed = parser.TryGetEpisodeUsingAnitomy(out int? episode_num, out string[] fingerprint, out string[] uniq);
+                
+                var File = new File()
                 {
-                    int num = Convert.ToInt32(R_eps_num.Match(file.DisplayName).Value);
+                    FileName = file.DisplayName,
+                    Fingerprint = fingerprint,
+                    Unique_Numbers = uniq
+                };
+
+                if (isNumParsed)
+                {
                     var item = new ContentList
                     {
-                        Number = num,
-                        FileName = new List<string>() { file.Name }
+                        Number = episode_num.Value,
+                        Files = new List<File>() { File }
                     };
                     MatchedList.Add(item);
                 }
                 else
                 {
-                    MismatchCount++;
                     var item = new ContentList
                     {
                         Number = -1,
-                        FileName = new List<string>() { file.Name }
+                        Files = new List<File>() { File }
                     };
                     UnmatchedList.Add(item);
                 }
             }
-            await Task.Yield();
             MatchedList = new ObservableCollection<ContentList>(MatchedList.OrderBy(x => x.Number));
             RaisePropertyChanged(nameof(MatchedList));
-            // second pass : check if parser finds at least one file
-            if ( MismatchCount != 0) Message += $"{MismatchCount} file(s) are unable to identify";
-
-            // third pass : check if there are multiple series title
-            // fourth pass : check if there are "duplicate" episode numbers
+            if ( UnmatchedList.Count != 0) Message += $"{UnmatchedList.Count} file(s) are unable to identify";
         }
         public void DisplayWarning(string message)
         {

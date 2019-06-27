@@ -55,6 +55,11 @@ namespace Cafeine.Views.Wizard
             Viewmodel.MatchedList.Remove((sender as Button).DataContext as ContentList);
         }
 
+        private void EpisodeNotOnListControl_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            Viewmodel.UnmatchedList.Remove((sender as Button).DataContext as ContentList);
+        }
+
         private void OnList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
 

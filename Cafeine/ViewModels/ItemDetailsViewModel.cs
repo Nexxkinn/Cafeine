@@ -2,6 +2,7 @@
 using Cafeine.Models.Enums;
 using Cafeine.Services;
 using Cafeine.Services.Mvvm;
+using Cafeine.Views.Wizard;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
@@ -343,7 +344,11 @@ namespace Cafeine.ViewModels
         }
         public async void CreateOfflineItem()
         {
-            OfflineItem item = await Database.CreateOflineItem(Service, Episodelist);
+            OfflineItemWizard wizard = new OfflineItemWizard(Service, null, Episodelist);
+            await wizard.ShowAsync();
+
+            if (wizard.IsCanceled) return;
+            //OfflineItem item = await Database.CreateOflineItem(Service, Episodelist);
         }
 
         public override void Dispose()

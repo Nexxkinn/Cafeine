@@ -21,12 +21,12 @@ namespace Cafeine.Models
         /// <summary>
         /// Database ID. Not for use.
         /// </summary>
-        public int Id { get; }
+        public int Id { get; set; }
         /// <summary>
         /// Accepted ID for all known services. <para />
         /// Use this one for identification or to get item.
         /// </summary>
-        public int MalID { get; }
+        public int MalID { get; set; }
         /// <summary>
         /// Accepted IDs for selected service.
         /// </summary>
@@ -240,7 +240,7 @@ namespace Cafeine.Models
 
         public List<Stream> StreamingServices { get; set; }
         
-        public List<string> FileName { get; set; }
+        public List<File> Files { get; set; }
 
         public string GenerateEpisodeNumber()
         {
@@ -254,5 +254,12 @@ namespace Cafeine.Models
         // using custom font
         public string Icon;
         public Uri Url;
+    }
+
+    public class File
+    {
+        public string[] Fingerprint;
+        public string[] Unique_Numbers;
+        public string FileName;
     }
 }
