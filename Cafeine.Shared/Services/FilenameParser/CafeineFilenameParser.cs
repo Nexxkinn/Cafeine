@@ -12,6 +12,8 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using Windows.Storage;
 using Cafeine.Services.Anitomy;
+using Windows.Storage.AccessCache;
+using Windows.UI.Xaml.Documents;
 
 namespace Cafeine.Services.FilenameParser
 {
@@ -25,47 +27,33 @@ namespace Cafeine.Services.FilenameParser
 
         private static readonly char[] separators = { ' ', '.', '_', ',' };
 
+        private static readonly char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
         private static readonly ushort[] filters_utf =
         {
-            0x5B, // [
-            0x5D, // ]
-            0x28, // (
-            0x29, // )
-            0x3C, // <
-            0x3E, // >
-            0x7B, // {
-            0x7D, // }
-            0x300C, // \u300C
-            0x300D, // \u300D
-            0x300E, // \u300E
-            0x300F, // \u300F
-            0x3010, // \u3010
-            0x3011, // \u3011
-            0xFF08, // \uFF08
-            0xFF09 // \uFF09
+            0x5B,   0x5D,   0x28,   0x29,   // [ ] ( )
+            0x3C,   0x3E,   0x7B,   0x7D,   // < > { }
+            0x300C, 0x300D, 0x300E, 0x300F, // \u300C \u300D \u300E \u300F
+            0x3010, 0x3011, 0xFF08, 0xFF09  // \u3010 \u3011 \uFF08 \uFF09
         };
 
         private static readonly ushort[] sep_utf =
         {
-            0x20, // space
-            0x2E, // .
-            0x5F, // _
-            0x2C, // ,
-            0x00, // For 16-byte Vector
-            0x00, // Left blank reserved
-            0x00, // for future possible
-            0x00, // char separator
-            0x00, // 
-            0x00, // 
-            0x00, //
-            0x00, //
-            0x00, // 
-            0x00, // 
-            0x00, //
-            0x00, //
+            0x20, 0x2E, 0x5F, 0x2C, // space // . // _ // ,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00
         };
 
-        private static readonly char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        private static readonly ushort[] hex_utf =
+        {
+            0x41, 0x42, 0x43, 0x44, // A B C D
+            0x45, 0x46, 0x30, 0x31, // E F 0 1
+            0x32, 0x33, 0x34, 0x35, // 2 3 4 5
+            0x36, 0x37, 0x38, 0x39, // 6 7 8 9
+            0X00, 0X00, 0X00, 0X00, // additional values for 
+            0X00, 0X00,             // vector number
+        };
 
         public CafeineFilenameParser(StorageFile filename) : this(filename, null) { }
 
@@ -77,8 +65,7 @@ namespace Cafeine.Services.FilenameParser
 
         public bool TryCreateFingerprint(out string[] fingerprint,bool useSIMD = true)
         {
-            var ar_splits = Filename.Split(brackets,StringSplitOptions.RemoveEmptyEntries);
-            var splits    = new Span<string>(ar_splits);
+            var splits = Filename.Split(brackets,StringSplitOptions.RemoveEmptyEntries);
 
             List<string> ElementsList = new List<string>();
 
@@ -100,13 +87,12 @@ namespace Cafeine.Services.FilenameParser
                         Vector<ushort> Vkey = new Vector<ushort>(key);
                         if (Vector.Equals(Vkey, Vsep).Equals(Vector<ushort>.Zero))
                         {
-                            newElement[index] = (char)key;
-                            index++;
+                            newElement[index++] = (char)key;
                         }
                     }
                     newElement = newElement.Slice(0, index);
 
-                    // Prevent CRC32 to be listed as fingerprint
+                    // Prevent CRC32 to be added as fingerprint
                     if (newElement.Length != 0 && !isCRC32(newElement)) ElementsList.Add(newElement.ToString());
                 }
             }
@@ -124,38 +110,40 @@ namespace Cafeine.Services.FilenameParser
                 }
             }
 
-            fingerprint = ElementsList.ToArray();
+            Elements = ElementsList.ToArray();
+            fingerprint = Elements;
             return fingerprint.Length != 0;
         }
 
         public bool TryCreateUniqNumbers(out string[] unique_number,bool useSIMD = true)
         {
-            unique_number = new string[0];
-            if (Elements == null && !TryCreateFingerprint(out Elements, useSIMD)) return false;
-            ReadOnlySpan<string> elements = Elements;
-
-            Span<string> uq_num = new string[elements.Length];
-            int uq_len = 0;
-            for(int i = 0; i<elements.Length; i++)
+            if (Elements == null && !TryCreateFingerprint(out Elements, useSIMD))
             {
-                ReadOnlySpan<char> element = elements[i].AsSpan();
-                Span<char> num = stackalloc char[element.Length];
-                int len = 0;
-                bool exists = false;
-                for(int j = 0; j < element.Length; j++)
+                unique_number = new string[0];
+                return false;
+            }
+
+            Span<string> uq_num = new string[Elements.Length];
+            int uq_len = 0;
+
+            string buffer = string.Empty;
+            for (int i = 0; i< Elements.Length; i++)
+            {
+                Span<char> num = Elements[i].ToArray();
+                int  start  = -1;
+                for(int j = 0; j < num.Length; j++)
                 {
-                    char v = element[j];
+                    char v = num[j];
                     if (v >= '0' && v <= '9')
                     {
-                        num[len++] =  v;
-                        exists = true;
+                       if (start == -1) start = j;
                     }
-                    else if(exists)
+                    else if (start != -1)
                     {
-                        num[len++] = ' ';
+                        num[j] = ' ';
                     }
                 }
-                if (exists) uq_num[uq_len++] = num.Slice(0,len).ToString();
+                if (start != -1) uq_num[uq_len++] = num.Slice(start).ToString();
             }
             unique_number = uq_num.Slice(0, uq_len).ToArray();
             return true;

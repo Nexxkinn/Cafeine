@@ -34,7 +34,7 @@ namespace Cafeine.Tests
 
 
         [TestMethod]
-        public void UniqueArrayContainsNullTest()
+        public void FingerprintContainsNullTest()
         {
             bool IsSuccess = true;
             foreach(var testcase in testcases)
@@ -55,7 +55,7 @@ namespace Cafeine.Tests
         }
 
         [TestMethod]
-        public void UniqueArraysPerformance()
+        public void FingerprintPerformance()
         {
             var non_simd = new Stopwatch();
             non_simd.Start();
@@ -85,7 +85,7 @@ namespace Cafeine.Tests
         }
 
         [TestMethod]
-        public void UniqueArraysEqualityTest()
+        public void FingerprintEqualityTest()
         {
             foreach (var testcase in testcases)
             {
@@ -121,7 +121,7 @@ namespace Cafeine.Tests
         }
 
         [TestMethod]
-        public void UniqueNumberTest()
+        public void UniqNumberTest()
         {
             foreach(var test in testcases)
             {
