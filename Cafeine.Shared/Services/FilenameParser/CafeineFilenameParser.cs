@@ -14,6 +14,7 @@ using Windows.Storage;
 using Cafeine.Services.Anitomy;
 using Windows.Storage.AccessCache;
 using Windows.UI.Xaml.Documents;
+using System.Globalization;
 
 namespace Cafeine.Services.FilenameParser
 {
@@ -191,11 +192,16 @@ namespace Cafeine.Services.FilenameParser
         {
             var item = AnitomySharp.Parse(Filename, new Options(episode: true));
             episode  = item.Where (x => x.Category == Element.ElementCategory.ElementEpisodeNumber)
-                           .Select(x => Int32.Parse(x.Value))
+                           .Select(x => {
+                               if (Int32.TryParse(x.Value, NumberStyles.Integer, null, out int value)){
+                                   return value;
+                               }
+                               else return -1;
+                           })
                            .FirstOrDefault();
             TryCreateFingerprint(out fingerprint);
             TryCreateUniqNumbers(out uniq);
-            return  episode.HasValue;
+            return  episode.HasValue && episode.Value != -1;
         }
 
         private void FilterUniqBasedOnSamples(ref ReadOnlySpan<string> elements)
