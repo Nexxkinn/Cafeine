@@ -1,8 +1,6 @@
 ﻿using Cafeine.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Cafeine.Services
@@ -13,8 +11,8 @@ namespace Cafeine.Services
         
         public static async Task<(OfflineItem offline,ServiceItem service)> Pull()
         {
-            var token = library.Last();
-            library.Remove(library.Last());
+            var token = library[library.Count];
+            library.Remove(token);
             ServiceItem service = token.ServiceItem;
             if(service.UserItem == null)
             {

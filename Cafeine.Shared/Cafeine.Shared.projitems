@@ -9,7 +9,7 @@
     <Import_RootNamespace>Cafeine.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Models\CafeineProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\CafeineProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\MediaFormatEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\MediaTypeEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\ScoreFormatEnum.cs" />

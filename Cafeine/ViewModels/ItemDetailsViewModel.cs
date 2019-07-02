@@ -147,9 +147,9 @@ namespace Cafeine.ViewModels
         #endregion
 
         #region mvvm TwoWay properties
-        public CafeineProperty<int> TotalSeenTextBox { get; }
+        public ReactiveProperty<int> TotalSeenTextBox { get; }
 
-        public CafeineProperty<int> UserStatusComboBox { get; }
+        public ReactiveProperty<int> UserStatusComboBox { get; }
         #endregion
 
         public ItemDetailsViewModel()
@@ -184,8 +184,8 @@ namespace Cafeine.ViewModels
             #endregion
 
             #region TwoWay Initial Value
-            TotalSeenTextBox = new CafeineProperty<int>();
-            UserStatusComboBox = new CafeineProperty<int>();
+            TotalSeenTextBox = new ReactiveProperty<int>();
+            UserStatusComboBox = new ReactiveProperty<int>();
             #endregion
 
             PlusOneTotalSeenTextBlock = new CafeineCommand(()=> TotalSeenTextBox.Value += 1);

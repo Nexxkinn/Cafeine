@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Navigation;
 
 namespace Cafeine.ViewModels
@@ -25,13 +26,35 @@ namespace Cafeine.ViewModels
 
         public ObservableCollection<ServiceItem> OnlineResults;
 
-        public CafeineProperty<bool> LoadResults = new CafeineProperty<bool>();
+        #region properties
+        public bool LoadResults 
+        {
+            get => _loadresults;
+            set => Set(ref _loadresults, value);
+        }
+        public bool OnlineResultsProgressRing 
+        {
+            get => _onlineresultsprogressring;
+            set => Set(ref _onlineresultsprogressring, value);
+        }
+        public bool OfflineResultsNoMatches 
+        {
+            get => _offlineresultsnomatches;
+            set => Set(ref _offlineresultsnomatches, value);
+        }
+        public bool OnlineResultsNoMatches 
+        {
+            get => _onlineresultsnomatches;
+            set => Set(ref _onlineresultsnomatches, value);
+        }
+        #endregion
 
-        public CafeineProperty<bool> OnlineResultsProgressRing = new CafeineProperty<bool>();
-
-        public CafeineProperty<bool> OfflineResultsNoMatches = new CafeineProperty<bool>();
-
-        public CafeineProperty<bool> OnlineResultsNoMatches = new CafeineProperty<bool>();
+        #region fields
+        private bool _loadresults;
+        private bool _onlineresultsprogressring;
+        private bool _offlineresultsnomatches;
+        private bool _onlineresultsnomatches;
+        #endregion
 
         public SearchViewModel()
         {            
@@ -53,7 +76,7 @@ namespace Cafeine.ViewModels
             {
                 if (x == string.Empty)
                 {
-                    LoadResults.Value = false;
+                    LoadResults = false;
                 }
             });
             OnlineResults = new ObservableCollection<ServiceItem>();
@@ -103,30 +126,30 @@ namespace Cafeine.ViewModels
             if (keyword != null && keyword != string.Empty)
             {
                 //cleaning first & startup
-                OfflineResultsNoMatches.Value = false;
+                OfflineResultsNoMatches = false;
                 OnlineResults = new ObservableCollection<ServiceItem>();
-                OnlineResultsNoMatches.Value = false;
-                OnlineResultsProgressRing.Value = true;
+                OnlineResultsNoMatches = false;
+                OnlineResultsProgressRing = true;
                 RaisePropertyChanged(nameof(OnlineResults));
 
-                LoadResults.Value = true;
+                LoadResults = true;
 
                 IList<ServiceItem> offlineresultslist = Database.SearchOffline(keyword);
                 OfflineResults = new ObservableCollection<ServiceItem>(offlineresultslist);
-                OfflineResultsNoMatches.Value = (offlineresultslist.Count == 0);
+                OfflineResultsNoMatches = (offlineresultslist.Count == 0);
                 RaisePropertyChanged(nameof(OfflineResults));
 
                 IList<ServiceItem> onlineresultlist = await Database.SearchOnline(keyword);
                 var filteredOnlineResult = onlineresultlist.Except(offlineresultslist,new Itemcomparer()).ToList();
                 OnlineResults = new ObservableCollection<ServiceItem>(filteredOnlineResult);
-                OnlineResultsNoMatches.Value = (onlineresultlist.Count == 0);
-                OnlineResultsProgressRing.Value = false;
+                OnlineResultsNoMatches = (onlineresultlist.Count == 0);
+                OnlineResultsProgressRing = false;
 
                 RaisePropertyChanged(nameof(OnlineResults));
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             OfflineResults = null;
             OnlineResults = null;

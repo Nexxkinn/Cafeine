@@ -2,8 +2,11 @@
 using System.Reactive.Concurrency;
 using Cafeine.Services;
 
-namespace Cafeine.Models
+namespace Cafeine.Services
 {
+    /// <summary>
+    /// DEPRECATED. Use ReactiveProperty instead.
+    /// </summary>
     public class CafeineProperty<T> : CafeineScheduler, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

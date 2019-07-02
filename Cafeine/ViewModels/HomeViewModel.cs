@@ -16,43 +16,64 @@ namespace Cafeine.ViewModels
     public sealed class HomeViewModel : ViewModelBase
     {
         #region setup
-        public CafeineProperty<string> NavigationTitle { get; }
-
-        public CafeineCommand LogOutButton { get; }
-
-        public CafeineProperty<Visibility> BackButtonVisibility { get; }
-
         public ReactiveProperty<Visibility> SearchBoxLoad { get; }
-
-        public CafeineProperty<bool> SearchBoxFocus { get; }
-
-        public CafeineProperty<Visibility> SearchButtonLoad { get; }
-
-        public CafeineCommand SearchButtonClicked { get; }
-
-        public CafeineProperty<string> SuggestText { get; }
-
+        public CafeineCommand LogOutButton { get; }
         public UserAccountModel AvatarURL { get; set; }
+        public CafeineCommand SearchButtonClicked { get; }
+        #endregion
+
+        #region properties;
+        public string NavigationTitle 
+        {
+            get => _navigationtile;
+            set => Set(ref _navigationtile, value);
+        }
+        public Visibility BackButtonVisibility 
+        {
+            get => _backbuttonvisibility;
+            set => Set(ref _backbuttonvisibility, value);
+        }
+        public bool SearchBoxFocus 
+        {
+            get => SearchBoxFocus;
+            set => Set(ref _searchboxfocus, value);
+        }
+        public Visibility SearchButtonLoad 
+        {
+            get => _searchbuttonload;
+            set => Set(ref _searchbuttonload, value);
+        }
+        public string SuggestText 
+        {
+            get => _suggesttext;
+            set => Set(ref _suggesttext, value);
+        }
+        #endregion
+
+        #region fields;
+        private string _navigationtile;
+        private Visibility _backbuttonvisibility;
+        private bool _searchboxfocus;
+        private Visibility _searchbuttonload;
+        private string _suggesttext;
         #endregion
 
         public HomeViewModel()
         {
-            SuggestText = new CafeineProperty<string>();
 
-            NavigationTitle = new CafeineProperty<string>("Details");
+            NavigationTitle = "Details";
+            BackButtonVisibility = Visibility.Collapsed;
+            SearchButtonLoad = Visibility.Visible;
 
-            BackButtonVisibility = new CafeineProperty<Visibility>(Visibility.Collapsed);
-
-            SearchButtonLoad = new CafeineProperty<Visibility>();
             SearchBoxLoad = new ReactiveProperty<Visibility>(Visibility.Collapsed);
-            SearchBoxLoad.Subscribe( _ => SearchButtonLoad.Value = (SearchBoxLoad.Value == Visibility.Collapsed) ? Visibility.Visible : Visibility.Collapsed);
-            SearchBoxFocus = new CafeineProperty<bool>();
+            SearchBoxLoad.Subscribe( _ => SearchButtonLoad = (SearchBoxLoad.Value == Visibility.Collapsed) ? Visibility.Visible : Visibility.Collapsed);
+            SearchBoxFocus = false;
 
             SearchButtonClicked = new CafeineCommand(
                 () =>
                     {
                         SearchBoxLoad.Value = Visibility.Visible;
-                        SearchBoxFocus.Value = true;
+                        SearchBoxFocus = true;
                         navigationService.Navigate(typeof(SearchPage));
                     });
 
@@ -89,7 +110,7 @@ namespace Cafeine.ViewModels
                 (Visibility e) =>
                 {
                     SearchBoxLoad.Value = e;
-                    SearchBoxFocus.Value = false;
+                    SearchBoxFocus = false;
                 }
                     , typeof(SearchBoxVisibility));
 
@@ -101,23 +122,14 @@ namespace Cafeine.ViewModels
                     }
                     , typeof(HomePageAvatarLoad));
 
-            NavigationService.EnableBackButton += (s, e) => BackButtonVisibility.Value = e;
+            NavigationService.EnableBackButton += (s, e) => BackButtonVisibility = e;
         }
 
         public Frame ChildFrame { get; set; } = new Frame();
 
         public void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            Link.Publish(SuggestText.Value, typeof(Keyword));
-        }
-        //Prevent any kind of input to forward the frame.
-        private void Frame_PreventGoFordWard(object sender, NavigatingCancelEventArgs e)
-        {
-            bool b = e.NavigationMode == NavigationMode.Forward;
-            if (b)
-            {
-                e.Cancel = true;
-            }
+            Link.Publish(SuggestText, typeof(Keyword));
         }
     }
 }

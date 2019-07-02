@@ -37,7 +37,7 @@
                 VerticalAlignment="Top"
                 Command="{x:Bind Vm.GoBack}"
                 Style="{StaticResource ReducedAppBarButtonRevealStyle}"
-                Visibility="{x:Bind Vm.BackButtonVisibility.Value, Mode=OneWay}">
+                Visibility="{x:Bind Vm.BackButtonVisibility, Mode=OneWay}">
                 <AppBarButton.Icon>
                     <FontIcon Margin="3" Glyph="&#xE0A6;" />
                 </AppBarButton.Icon>
@@ -115,11 +115,11 @@
                     Width="250"
                     Margin="6"
                     VerticalAlignment="Bottom"
-                    local:FocusExtension.IsFocused="{x:Bind Vm.SearchBoxFocus.Value, Mode=TwoWay}"
+                    local:FocusExtension.IsFocused="{x:Bind Vm.SearchBoxFocus, Mode=TwoWay}"
                     PlaceholderText="I'm looking for..."
                     ScrollViewer.BringIntoViewOnFocusChange="False"
                     Style="{StaticResource FluentTextBoxStyle}"
-                    Text="{x:Bind Vm.SuggestText.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{x:Bind Vm.SuggestText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     TextChanged="{x:Bind Vm.SearchBoxTextChanged}"
                     Visibility="{x:Bind Vm.SearchBoxLoad.Value, Mode=OneWay}" />
                 <AppBarButton
@@ -129,7 +129,7 @@
                     Command="{x:Bind Vm.SearchButtonClicked}"
                     Style="{StaticResource ReducedAppBarButtonRevealStyle}"
                     ToolTipService.ToolTip="Search"
-                    Visibility="{x:Bind Vm.SearchButtonLoad.Value, Mode=OneWay}">
+                    Visibility="{x:Bind Vm.SearchButtonLoad, Mode=OneWay}">
                     <AppBarButton.Icon>
                         <FontIcon Margin="4" Glyph="&#xE11A;" />
                     </AppBarButton.Icon>
