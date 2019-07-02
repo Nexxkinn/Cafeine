@@ -18,6 +18,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <!--  stage 0  -->
         <StackPanel
             x:Name="Stage0"
             Grid.Row="0"
@@ -34,6 +35,7 @@
             <TextBlock Text="Hash and fansub paramater are optional, as the app only needs the series title and episode number to identify the file. Otherwise, you are required to implement your own custom regex parser." TextWrapping="WrapWholeWords" />
             <TextBlock Margin="0,8" Text="Most fansubs nowadays follow this name structure and can be ignored." />
         </StackPanel>
+        <!--  stage 1  -->
         <StackPanel
             x:Name="Stage1"
             Grid.Row="0"
@@ -49,18 +51,20 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel>
-                    <TextBlock Text="{x:Bind Viewmodel.Message, Mode=OneWay}" Visibility="{x:Bind Viewmodel.DisplayWarningVisibility, Mode=OneWay}" />
-                    <CheckBox Content="Group episode list" />
-                    <CheckBox Content="Use custom regex" />
-                </StackPanel>
+                <TextBlock
+                    Grid.Column="0"
+                    FontWeight="SemiBold"
+                    Text="Identified Item" />
+                <TextBlock
+                    Grid.Column="1"
+                    FontWeight="SemiBold"
+                    Text="Unidentified and Extras" />
                 <ListView
                     x:Name="OnList"
                     Grid.Row="1"
                     Grid.Column="0"
                     Height="200"
                     ContainerContentChanging="OnList_ContainerContentChanging"
-                    Header="Indentified files"
                     ItemsSource="{x:Bind Viewmodel.MatchedList, Mode=OneWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="m:ContentList">
@@ -76,7 +80,6 @@
                     Grid.Row="1"
                     Grid.Column="1"
                     Height="200"
-                    Header="Unidentified files"
                     ItemsSource="{x:Bind Viewmodel.UnmatchedList, Mode=OneWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="m:ContentList">
@@ -85,6 +88,22 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </Grid>
+            <TextBlock Margin="0,8,0,20" Text="Identified items will be combined with online list if available." />
+        </StackPanel>
+        <!--  stage 2  -->
+        <StackPanel
+            x:Name="Stage2"
+            Grid.Row="0"
+            x:Load="{x:Bind Viewmodel.Stage.Equals(2), Mode=OneWay, FallbackValue=x:False}"
+            Loaded="{x:Bind Viewmodel.Stage2_load}">
+            <ScrollViewer x:Name="textscroll" Height="200">
+                <TextBlock
+                    FontFamily="Consolas"
+                    FontSize="12"
+                    Opacity="0.8"
+                    SizeChanged="TextBlock_SizeChanged"
+                    Text="{x:Bind Viewmodel.Message, Mode=OneWay}" />
+            </ScrollViewer>
         </StackPanel>
 
         <StackPanel
@@ -114,8 +133,12 @@
         <StackPanel
             x:Name="FinishedButtonStackPanel"
             Grid.Row="1"
+            HorizontalAlignment="Right"
             x:Load="{x:Bind Viewmodel.IsButtonLoaded.Equals(x:False), Mode=OneWay}">
-            <Button Click="{x:Bind FinishedButtonClicked}" Content="Done" />
+            <Button
+                Width="100"
+                Click="{x:Bind FinishedButtonClicked}"
+                Content="Done" />
         </StackPanel>
     </Grid>
 </ContentDialog>

@@ -11,6 +11,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -46,8 +47,8 @@ namespace Cafeine.Views.Wizard
 
         private void FinishedButtonClicked()
         {
-            Viewmodel.Dispose();
             this.Hide();
+            Viewmodel.Dispose();
         }
 
         private void EpisodeListControl_DeleteClick(object sender, RoutedEventArgs e)
@@ -62,7 +63,22 @@ namespace Cafeine.Views.Wizard
 
         private void OnList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
+            if (args.ItemIndex % 2 == 0)
+            {
+                var theme = Application.Current.RequestedTheme == 0 ? "Light" : "Dark";
+                var w = Application.Current.Resources.ThemeDictionaries[theme] as ResourceDictionary;
+                args.ItemContainer.Background = w["CafeineDarkBlue"] as SolidColorBrush;
+            }
+            else
+            {
+                args.ItemContainer.Background = new SolidColorBrush(Colors.Transparent);
+            }
+            args.Handled = true;
+        }
 
+        private void TextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            textscroll.ChangeView(null, textscroll.ScrollableHeight, null);
         }
     }
 }

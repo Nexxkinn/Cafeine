@@ -13,26 +13,32 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="76" />
-            <ColumnDefinition Width="144" />
-        </Grid.ColumnDefinitions>
         <Image
             x:Name="Thumbnail"
             Grid.RowSpan="2"
             Grid.Column="0"
             Width="72"
-            Height="41" />
-        <Button x:Name="DeleteButton" Content="Del" />
+            Height="41"
+            Visibility="Collapsed" />
         <TextBlock
             x:Name="episodenumber"
             Grid.Row="0"
             Grid.Column="1"
             x:Load="{x:Bind LoadEpisodeNumber, Mode=OneWay}"
+            FontWeight="SemiBold"
             Text="{x:Bind Item.GenerateEpisodeNumber(), Mode=OneWay}" />
         <TextBlock
             Grid.Row="1"
             Grid.Column="1"
-            Text="{x:Bind Item.Files[0].FileName, Mode=OneWay}" />
+            Width="270"
+            Text="{x:Bind Item.Files[0].FileName, Mode=OneWay}"
+            TextWrapping="Wrap" />
+        <Button
+            x:Name="DeleteButton"
+            Grid.Row="2"
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            Canvas.ZIndex="1"
+            Content="Del" />
     </Grid>
 </UserControl>
