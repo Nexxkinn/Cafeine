@@ -11,7 +11,8 @@ namespace Cafeine.Services
         
         public static async Task<(OfflineItem offline,ServiceItem service)> Pull()
         {
-            var token = library[library.Count];
+            int last = library.Count == 0 ? 0 : library.Count - 1;
+            var token = library[last];
             library.Remove(token);
             ServiceItem service = token.ServiceItem;
             if(service.UserItem == null)

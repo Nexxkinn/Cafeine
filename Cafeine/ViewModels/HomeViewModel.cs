@@ -35,7 +35,7 @@ namespace Cafeine.ViewModels
         }
         public bool SearchBoxFocus 
         {
-            get => SearchBoxFocus;
+            get => _searchboxfocus;
             set => Set(ref _searchboxfocus, value);
         }
         public Visibility SearchButtonLoad 
