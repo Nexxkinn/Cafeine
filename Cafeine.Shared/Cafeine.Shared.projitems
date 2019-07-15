@@ -9,6 +9,12 @@
     <Import_RootNamespace>Cafeine.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ContentList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ContentListComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DetailsItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\File.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ServiceItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UserItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\CafeineProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\MediaFormatEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\MediaTypeEnum.cs" />
@@ -16,7 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\SeasonsEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\ServiceType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\StatusEnum.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ItemLibraryModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\OfflineItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserCredentialsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Anitomy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\AnitomySharp\Element.cs" />
