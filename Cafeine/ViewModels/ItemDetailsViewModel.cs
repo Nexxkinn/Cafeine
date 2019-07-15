@@ -21,11 +21,16 @@ namespace Cafeine.ViewModels
 {
     public class ItemDetailsViewModel : ViewModelBase
     {
-        private OfflineItem _offline { get; set; }
+        private OfflineItem _offline;
 
-        private ServiceItem _service { get; set; }
+        private ServiceItem _service;
 
-        private DetailsItem _details { get; set; }
+        private DetailsItem _details;
+
+        public OfflineItem Offline {
+            get => _offline;
+            set => Set(ref _offline, value);
+        }
 
         public UserItem User {
             get => _service.UserItem;
@@ -40,13 +45,7 @@ namespace Cafeine.ViewModels
 
         public DetailsItem Details {
             get => _details;
-            set {
-                if (value != _details)
-                {
-                    _details = value;
-                    RaisePropertyChanged(nameof(Details));
-                }
-            }
+            set => Set(ref _details, value);
         }
 
         public ServiceItem Service => _service;
@@ -261,7 +260,7 @@ namespace Cafeine.ViewModels
             await base.OnNavigatedTo(e);
             // Let UI Thread free
             await Task.Yield();
-            (_offline, _service) = await ItemLibraryService.Pull();
+            (Offline, _service) = await ItemLibraryService.Pull();
             _ = LoadItem();
         }
         public async Task LoadItem()
@@ -309,7 +308,7 @@ namespace Cafeine.ViewModels
         public async Task LoadEpisodeList()
         {
             //load episode list from database.
-            if (_offline == null)
+            if (Offline == null)
             {
                 // online mode
                 var onlinecontentlist = await Database.GetSeriesContentList(Service);
@@ -348,7 +347,12 @@ namespace Cafeine.ViewModels
             await wizard.ShowAsync();
 
             if (wizard.IsCanceled) return;
-            //OfflineItem item = await Database.CreateOflineItem(Service, Episodelist);
+
+            Offline = wizard.Result;
+            Episodelist = new ObservableCollection<ContentList>(Offline.ContentList);
+
+            IsOfflineItemAvailable = true;
+            RaisePropertyChanged("Episodelist");
         }
 
         public override void Dispose()

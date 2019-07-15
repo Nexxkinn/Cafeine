@@ -401,28 +401,31 @@
                             FontSize="12"
                             Opacity="0.8"
                             Text="Assosiate your local files with episodes list" />
-                        <Grid Margin="0,12" Visibility="Collapsed">
+                        <Grid
+                            x:Name="FolderView"
+                            Margin="0,12"
+                            Visibility="{x:Bind (x:Boolean)Vm.IsOfflineItemAvailable, Mode=OneWay}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <SymbolIcon Symbol="Folder" />
                             <TextBlock
+                                x:Name="FolderName"
                                 Grid.Column="1"
                                 Margin="8,0"
                                 Opacity="0.8"
-                                Text="/Videos/AlicetoZouroku/" />
+                                Text="{x:Bind Vm.Offline.FolderToken, Mode=OneWay}" />
                         </Grid>
                         <Button
+                            x:Name="RunSetupButton"
                             Margin="0,12"
+                            x:Load="{x:Bind Vm.IsOfflineItemAvailable.Equals(x:False), Mode=OneWay}"
                             Click="{x:Bind Vm.CreateOfflineItem}"
                             Content="Run setup" />
 
 
-                        <StackPanel
-                            x:Name="OfflineItemSettings"
-                            x:Load="{x:Bind Vm.IsOfflineItemAvailable, Mode=OneWay}"
-                            Visibility="Collapsed">
+                        <StackPanel x:Name="OfflineItemSettings" x:Load="{x:Bind Vm.IsOfflineItemAvailable, Mode=OneWay}">
                             <TextBlock
                                 Margin="0,24,0,8"
                                 FontSize="16"

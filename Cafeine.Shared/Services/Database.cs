@@ -7,6 +7,7 @@ using DBreeze.Objects;
 using DBreeze.Utils;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -164,14 +165,14 @@ namespace Cafeine.Services
         {
             try
             {
-                db.Scheme.DeleteTable("TS_Library");
+                db.Scheme.DeleteTable("TS_Service");
                 //Get all available collection from useraccounts to the library.
                 var collection = await CurrentService.CreateCollection(CurrentAccount);
                 using(var tr = db.GetTransaction())
                 {
                     foreach (var item in collection)
                     {
-                        tr.TextInsert("TS_Library", item.ServiceID.ToBytes(), containsWords: item.Title, fullMatchWords: "");
+                        tr.TextInsert("TS_Service", item.ServiceID.ToBytes(), containsWords: item.Title, fullMatchWords: "");
                     }
                     tr.Commit();
                 }
@@ -214,15 +215,18 @@ namespace Cafeine.Services
             DatabaseUpdated.Invoke(serviceitem, null);
         }
 
-        public static async Task<OfflineItem> CreateOflineItem(ServiceItem item,ICollection<ContentList> list)
+        public static async Task<OfflineItem> CreateOflineItem(ServiceItem item,IList<ContentList> list,StorageFolder folder,string pattern)
         {
             using (var tr = db.GetTransaction())
             {
-                OfflineItem offlineitem = new OfflineItem
-                {
-                    Id = tr.ObjectGetNewIdentity<int>("library"),
-                    MalID = item.MalID,
-                };
+                OfflineItem offlineitem = new OfflineItem(
+                    id: tr.ObjectGetNewIdentity<int>("library"),
+                    regex: pattern,
+                    mal_id: item.MalID,
+                    service_id: new Dictionary<ServiceType, int> { { item.Service, item.ServiceID } },
+                    content_list: list,
+                    folder_token: folder.Name
+                    );
 
                 //  Index 3 and 4 are fallback case if the universal ID ( MalID )
                 //  doesn't exist when searching the service.
@@ -376,7 +380,7 @@ namespace Cafeine.Services
             using (var tr = db.GetTransaction())
             {
                 List<ServiceItem> items = new List<ServiceItem>();
-                foreach (var id in tr.TextSearch("TS_Library").BlockAnd(query).GetDocumentIDs())
+                foreach (var id in tr.TextSearch("TS_Service").BlockAnd(query).GetDocumentIDs())
                 {
                     int val = id.To_Int32_BigEndian();
                     var localitem = CurrentItems.First(x => x.ServiceID == val);
@@ -402,7 +406,14 @@ namespace Cafeine.Services
         {
             db.Scheme.DeleteTable("user");
             db.Scheme.DeleteTable("library");
-            db.Scheme.DeleteTable("TS_Library");
+            db.Scheme.DeleteTable("TS_Service");
         }
+        public static void DEBUGMODE()
+        {
+            //db.Scheme.DeleteTable("user");
+            db.Scheme.DeleteTable("library");
+            //db.Scheme.DeleteTable("TS_Service");
+        }
+
     }
 }

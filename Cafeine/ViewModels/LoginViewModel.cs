@@ -88,6 +88,9 @@ namespace Cafeine.ViewModels
 
         public void NavigateToMainPage()
         {
+#if DEBUG
+            Database.DEBUGMODE();
+#endif
             Frame frame = Window.Current.Content as Frame;
             frame.Navigate(typeof(HomePage), null, new DrillInNavigationTransitionInfo());
             Link.Publish(typeof(HomePageAvatarLoad));

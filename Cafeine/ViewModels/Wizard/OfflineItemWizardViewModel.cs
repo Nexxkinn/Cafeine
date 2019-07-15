@@ -233,7 +233,7 @@ namespace Cafeine.ViewModels.Wizard
             // done
             CombinedContent = CombinedContent.OrderBy(x => x.Number).ToList();
 
-            // await Database.CreateOflineItem(ServiceItem, CombinedContent).ConfigureAwait(false);
+            Result = await Database.CreateOflineItem(ServiceItem, CombinedContent, Folder, Pattern).ConfigureAwait(false);
             Message += $"Operation done successfully.\n";
             // final setup
             Title = "Finished";
