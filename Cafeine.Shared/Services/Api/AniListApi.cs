@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Web.Http;
@@ -277,6 +276,8 @@ namespace Cafeine.Services.Api
                               Media (id:$id, type:$type) {
                                 streamingEpisodes {
                                   title
+                                  url
+                                  site
                                   thumbnail
                                 }
                               }
@@ -301,12 +302,18 @@ namespace Cafeine.Services.Api
                     num = Convert.ToInt32(Regex.Match(title, @"(?<=episode\s)(?:\d+)", RegexOptions.IgnoreCase).Value);
                     title = Regex.Match(title, @"(?<=episode\s\d+\s-\s).+", RegexOptions.IgnoreCase).Value;
                 }
-
+                string urlstring = episode["url"];
+                Uri url = new Uri(urlstring);
+                List<StreamService> streams = new List<StreamService>()
+                {
+                    new StreamService { Icon = "C", Source = episode["site"], Url = url }
+                };
                 episodes.Add(new ContentList
                 {
                     Title = title,
                     Number = num,
-                    Thumbnail = episode["thumbnail"]
+                    Thumbnail = episode["thumbnail"],
+                    StreamingServices = streams
                 });
             };
             return episodes;

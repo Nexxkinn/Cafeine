@@ -1,0 +1,70 @@
+﻿<UserControl
+    x:Class="Cafeine.Views.Resources.ItemDetailsList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dt="using:UwpDesignTimeData"
+    xmlns:local="using:Cafeine.Views.Resources"
+    xmlns:m="using:Cafeine.Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sm="using:Cafeine.Shared.Models"
+    d:DesignHeight="148"
+    d:DesignWidth="184"
+    Loaded="OnLoaded"
+    mc:Ignorable="d dt">
+
+    <RelativePanel
+        Height="144"
+        Margin="2"
+        Background="#4C000000"
+        CornerRadius="3">
+        <RelativePanel.Resources />
+        <Image
+            x:Name="Thumbnail"
+            Grid.Column="0"
+            Width="180"
+            Height="80"
+            HorizontalAlignment="Left"
+            dt:DesignTime.Source="https://img1.ak.crunchyroll.com/i/spire4-tmb/83a6a11ce7ffea4af4792326a035c4c71547911382_full.jpg"
+            Opacity="1"
+            Stretch="UniformToFill" />
+        <StackPanel
+            MaxWidth="180"
+            Margin="4"
+            RelativePanel.Below="Thumbnail">
+            <TextBlock x:Name="EpisodeNumber" dt:DesignTime.Text="Episode 100" />
+            <TextBlock
+                x:Name="EpisodeTitle"
+                dt:DesignTime.Text="Though My Life May Have Ended Once by Someone Who Has A Connection"
+                FontWeight="SemiBold"
+                MaxLines="2"
+                TextTrimming="WordEllipsis"
+                TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel
+            x:Name="MediaList"
+            Width="180"
+            Height="144"
+            x:Load="False"
+            Background="#4C000000">
+            <RelativePanel Grid.Row="0" Height="80">
+                <TextBlock
+                    x:Name="MainMediaListTitle"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Text="{x:Bind Path=MainMediaList.Source}" />
+            </RelativePanel>
+            <GridView x:Name="StreamServiceGrid" ItemsSource="{x:Bind SubMediaList}">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="sm:IMediaList">
+                        <TextBlock
+                            Width="40"
+                            Height="40"
+                            dt:DesignTime.Content="C"
+                            Text="{x:Bind Source}" />
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+        </StackPanel>
+    </RelativePanel>
+</UserControl>

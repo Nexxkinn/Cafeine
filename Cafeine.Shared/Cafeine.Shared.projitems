@@ -9,10 +9,12 @@
     <Import_RootNamespace>Cafeine.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DummyData\DummyContentList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ContentList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ContentListComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DetailsItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\File.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\IMediaList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ServiceItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\CafeineProperty.cs" />
@@ -47,5 +49,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\IService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ItemLibraryService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceItemComparer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)DummyData\dummy_episodelist.jpg" />
   </ItemGroup>
 </Project>

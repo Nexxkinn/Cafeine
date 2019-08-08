@@ -67,12 +67,6 @@ namespace Cafeine.Models
             }
             ContentList.OrderBy(x => x.Number);
         }
-
-        public async Task<StorageFolder> GetStorageFolder()
-        {
-            return await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(FolderToken);
-        }
-
     }
 
 }

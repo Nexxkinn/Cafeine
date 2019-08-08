@@ -5,10 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:Cafeine.Models"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
+    xmlns:r="using:Cafeine.Views.Resources"
     xmlns:vm="using:Cafeine.ViewModels"
-    xmlns:vr="using:Cafeine.Views.Resources"
     Background="{ThemeResource LegacyDarkBlue}"
     Loaded="Page_Loaded"
     NavigationCacheMode="Enabled"
@@ -350,29 +349,7 @@
                             Visibility="{x:Bind Path=Vm.LoadEpisodeLists, Mode=OneWay}">
                             <GridView.ItemTemplate>
                                 <DataTemplate x:DataType="model:ContentList">
-                                    <RelativePanel Height="81">
-                                        <Image
-                                            x:Name="Thumbnail"
-                                            Grid.Column="0"
-                                            Width="144"
-                                            MaxHeight="81"
-                                            HorizontalAlignment="Left"
-                                            Opacity="0"
-                                            Stretch="UniformToFill" />
-                                        <StackPanel
-                                            Width="144"
-                                            Margin="8,0,0,0"
-                                            RelativePanel.RightOf="Thumbnail">
-                                            <TextBlock Text="{x:Bind GenerateEpisodeNumber()}" />
-                                            <TextBlock
-                                                x:Phase="1"
-                                                FontWeight="SemiBold"
-                                                MaxLines="2"
-                                                Text="{x:Bind Path=Title, Mode=OneWay}"
-                                                TextTrimming="WordEllipsis"
-                                                TextWrapping="Wrap" />
-                                        </StackPanel>
-                                    </RelativePanel>
+                                    <r:ItemDetailsList contentlist="{x:Bind}" />
                                 </DataTemplate>
                             </GridView.ItemTemplate>
                             <GridView.ItemContainerStyle>
