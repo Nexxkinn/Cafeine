@@ -208,9 +208,9 @@ namespace Cafeine.Services.FilenameParser
         {
             Span<int> dist = stackalloc int[elements.Length];
             List<string> newElements = new List<string>();
-            if(TryGetFileList(out List<File> samples)) return;
+            if(TryGetFileList(out List<MediaFile> samples)) return;
 
-            foreach (File file in samples)
+            foreach (MediaFile file in samples)
             {
                 string[] sample = file.Fingerprint;
                 // Oth pass : Just don't bother for mismatch length. 
@@ -231,7 +231,7 @@ namespace Cafeine.Services.FilenameParser
 
             elements = newElements.ToArray();
         }
-        private bool TryGetFileList(out List<File> samples)
+        private bool TryGetFileList(out List<MediaFile> samples)
         {
 
             throw new NotSupportedException();

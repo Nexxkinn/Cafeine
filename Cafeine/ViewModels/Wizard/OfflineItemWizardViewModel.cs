@@ -133,7 +133,7 @@ namespace Cafeine.ViewModels.Wizard
                 var  parser  = new CafeineFilenameParser(file);
                 bool isNumParsed = parser.TryGetEpisodeUsingAnitomy(out int? episode_num, out string[] fingerprint, out string[] uniq);
                 
-                var File = new File()
+                var File = new MediaFile()
                 {
                     FileName = file.DisplayName,
                     Fingerprint = fingerprint,
@@ -145,7 +145,7 @@ namespace Cafeine.ViewModels.Wizard
                     var item = new ContentList
                     {
                         Number = episode_num.Value,
-                        Files = new List<File>() { File }
+                        Files = new List<MediaFile>() { File }
                     };
                     MatchedList.Add(item);
                 }
@@ -157,7 +157,7 @@ namespace Cafeine.ViewModels.Wizard
                     {
                         Number = -1,
                         Title = File.FileName,
-                        Files = new List<File>() { File }
+                        Files = new List<MediaFile>() { File }
                     };
                     UnmatchedList.Add(item);
                 }
@@ -186,7 +186,7 @@ namespace Cafeine.ViewModels.Wizard
             var group = new List<ContentList>();
             foreach(var num in groupedContentList)
             {
-                List<File> files = num.Select(x => x.Files[0]).ToList();
+                List<MediaFile> files = num.Select(x => x.Files[0]).ToList();
                 ContentList file = new ContentList()
                 {
                     Files = files,

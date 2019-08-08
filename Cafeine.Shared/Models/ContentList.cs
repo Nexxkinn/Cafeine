@@ -1,4 +1,5 @@
 ﻿using Cafeine.Models.Enums;
+using Cafeine.Shared.Models;
 using System;
 using System.Collections.Generic;
 
@@ -17,14 +18,21 @@ namespace Cafeine.Models
         public IList<ContentList> Episodes { get; set; }
     }
 
-    public class Stream
+    public class StreamService : IMediaList
     {
-        // using custom font
-        public string Icon;
+        /// <summary>
+        /// Streaming Service Icon
+        /// </summary>
+        public string Icon { get; set; }
+        /// <summary>
+        /// Streaming service name
+        /// </summary>
+        public string Source { get; set; }
+
         public Uri Url;
     }
 
-    public class ContentList
+    public class ContentList 
     {
         public int Number { get; set; }
 
@@ -32,9 +40,9 @@ namespace Cafeine.Models
 
         public Uri Thumbnail { get; set; }
 
-        public List<Stream> StreamingServices { get; set; }
+        public List<StreamService> StreamingServices { get; set; }
 
-        public List<File> Files { get; set; }
+        public List<MediaFile> Files { get; set; }
 
         public string GenerateEpisodeNumber()
         {
