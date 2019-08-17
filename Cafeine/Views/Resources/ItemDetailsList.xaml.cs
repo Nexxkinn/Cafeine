@@ -44,7 +44,7 @@ namespace Cafeine.Views.Resources
         {
             SubMediaList = new List<IMediaList>();
 
-            if(contentlist.Files != null && contentlist.Files?.Count != 0)
+            if(contentlist.Files != null && contentlist.Files.Count != 0)
             {
                 MainMediaList = contentlist.Files[0];
                 if (contentlist.Files.Count > 1)
@@ -62,13 +62,10 @@ namespace Cafeine.Views.Resources
                 }
             }
 
+            Bindings.Update(); 
+
             // to load the lazy element
             this.FindName(nameof(MediaList));
-
-            // I don't know why it needs to update the binding
-            // since  MediaList  should've received the latest
-            // fields or properties. :/
-            Bindings.Update(); 
         }
         
         // This is only get called by ItemDetailsPage.Episodesitem_ContainerContentChanging
@@ -95,6 +92,5 @@ namespace Cafeine.Views.Resources
             Storyboard.SetTargetProperty(ImageOpenedOpacity, "Opacity");
             ImageOpenedOpacity.Begin();
         }
-
     }
 }

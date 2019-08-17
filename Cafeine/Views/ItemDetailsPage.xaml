@@ -15,6 +15,9 @@
     <Page.DataContext>
         <vm:ItemDetailsViewModel />
     </Page.DataContext>
+    <Page.Resources>
+        <r:ItemDetailsPage/>
+    </Page.Resources>
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>

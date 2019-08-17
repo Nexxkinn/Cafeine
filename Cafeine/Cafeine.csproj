@@ -11,7 +11,7 @@
     <AssemblyName>Cafeine</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -139,11 +139,20 @@
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Resources\CafeineTemplateDesign.xaml.cs">
-      <DependentUpon>CafeineTemplateDesign.xaml</DependentUpon>
+    <Compile Include="Views\Resources\CafeineTemplate.xaml.cs">
+      <DependentUpon>CafeineTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Resources\ItemDetailsList.xaml.cs">
       <DependentUpon>ItemDetailsList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Resources\ItemDetailsPageResource.xaml.cs">
+      <DependentUpon>ItemDetailsPageResource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Resources\MainPageResource.xaml.cs">
+      <DependentUpon>MainPageResource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Resources\SearchPageResource.xaml.cs">
+      <DependentUpon>SearchPageResource.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
@@ -251,11 +260,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Resources\CafeineTemplateDesign.xaml">
+    <Page Include="Views\Resources\CafeineTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Resources\ItemDetailsList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\ItemDetailsPageResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\MainPageResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\SearchPageResource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

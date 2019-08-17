@@ -7,9 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:vm="using:Cafeine.ViewModels"
+    xmlns:r="using:Cafeine.Views.Resources"
     Background="{ThemeResource CafeineDarkBlue}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
+    <mvvm:BasePage.Resources>
+        <r:MainPage/>
+    </mvvm:BasePage.Resources>
     <mvvm:BasePage.DataContext>
         <vm:MainViewModel />
     </mvvm:BasePage.DataContext>
