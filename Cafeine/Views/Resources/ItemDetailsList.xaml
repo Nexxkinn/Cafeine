@@ -12,13 +12,44 @@
     d:DesignWidth="184"
     Loaded="OnLoaded"
     mc:Ignorable="d dt">
-
     <RelativePanel
         Height="144"
         Margin="2"
         Background="#4C000000"
-        CornerRadius="3">
-        <RelativePanel.Resources />
+        CornerRadius="3"
+        PointerEntered="RelativePanel_PointerEntered"
+        PointerExited="RelativePanel_PointerExited"
+        BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal">
+                    <Storyboard>
+                        <DoubleAnimation 
+                            Storyboard.TargetName="MediaList" 
+                            Storyboard.TargetProperty="Opacity" 
+                            From="1" To="0"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="PointerOver">
+                    <Storyboard>
+                        <DoubleAnimation 
+                            Storyboard.TargetName="MediaList" 
+                            Storyboard.TargetProperty="Opacity" 
+                            From="0" To="1"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Image
             x:Name="Thumbnail"
             Grid.Column="0"
@@ -46,6 +77,7 @@
             Width="180"
             Height="144"
             x:Load="False"
+            Opacity="0"
             Background="#4C000000">
             <RelativePanel Grid.Row="0" Height="80">
                 <TextBlock

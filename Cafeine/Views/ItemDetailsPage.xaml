@@ -349,25 +349,13 @@
                             Canvas.ZIndex="-1"
                             ContainerContentChanging="Episodesitem_ContainerContentChanging"
                             ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
+                            ItemContainerStyle="{StaticResource ItemDetailsListItemContainerStyle}"
                             Visibility="{x:Bind Path=Vm.LoadEpisodeLists, Mode=OneWay}">
                             <GridView.ItemTemplate>
                                 <DataTemplate x:DataType="model:ContentList">
                                     <r:ItemDetailsList contentlist="{x:Bind}" />
                                 </DataTemplate>
                             </GridView.ItemTemplate>
-                            <GridView.ItemContainerStyle>
-                                <Style TargetType="GridViewItem">
-                                    <Setter Property="Margin" Value="0,0,8,18" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                    <Setter Property="ContentTransitions">
-                                        <Setter.Value>
-                                            <TransitionCollection>
-                                                <EntranceThemeTransition IsStaggeringEnabled="True" />
-                                            </TransitionCollection>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GridView.ItemContainerStyle>
                         </GridView>
                     </StackPanel>
                     <StackPanel

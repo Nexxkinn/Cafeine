@@ -3,6 +3,7 @@ using Cafeine.Services;
 using Cafeine.Shared.Models;
 using System;
 using System.Collections.Generic;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -72,7 +73,16 @@ namespace Cafeine.Views.Resources
         public async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             var file = await ImageCache.GetFromCacheAsync(contentlist.Thumbnail.AbsoluteUri);
-            Thumbnail.Source = new BitmapImage { UriSource = new Uri(file.Path) };
+            using (IRandomAccessStream fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
+            {
+                var img = new BitmapImage
+                {
+                    DecodePixelWidth = 180,
+                    CreateOptions = BitmapCreateOptions.IgnoreImageCache
+                };
+                await img.SetSourceAsync(fileStream);
+                Thumbnail.Source = img;
+            }
 
             DoubleAnimation animation = new DoubleAnimation
             {
@@ -91,6 +101,16 @@ namespace Cafeine.Views.Resources
             Storyboard.SetTarget(ImageOpenedOpacity, Thumbnail);
             Storyboard.SetTargetProperty(ImageOpenedOpacity, "Opacity");
             ImageOpenedOpacity.Begin();
+        }
+
+        private void RelativePanel_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            VisualStateManager.GoToState(this, "PointerOver", false);
+        }
+
+        private void RelativePanel_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            VisualStateManager.GoToState(this, "Normal", false);
         }
     }
 }
