@@ -127,14 +127,14 @@ namespace Cafeine.ViewModels
                         string title = y.Title;
                         if (title.Length < 5) return title;
                         else return title.Substring(0, 5);
-                    }).ToList();
+                    });
                 case 1:
                     return filtered.OrderByDescending(y =>
                    {
                        string title = y.Title;
                        if (title.Length < 5) return title;
                        else return title.Substring(0, 5);
-                   }).ToList();
+                   });
                 default:
                     return filtered;
             };
@@ -143,20 +143,6 @@ namespace Cafeine.ViewModels
         public void ItemClicked(object sender, ItemClickEventArgs e)
         {
             ServiceItem item = e.ClickedItem as ServiceItem;
-
-            // Why would you need to use EventAggregator to pass the data?
-            // Because the navigation parameter is so shitty that it only
-            // accepts primitve types such as string, int, etc. Otherwise,
-            // the app will crash whether you minimize it or something.
-            //
-            // Reference : http://archive.is/L1v1H
-            // Backup    : http://runtime117.rssing.com/chan-13993968/all_p3.html
-
-            if (navigationService.CanGoBack())
-            {
-                navigationService.GoBack();
-                navigationService.RemoveLastPage();
-            }
             ItemLibraryService.Push(item);
             navigationService.Navigate(typeof(ItemDetailsPage));
         }

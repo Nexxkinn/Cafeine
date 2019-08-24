@@ -62,7 +62,5 @@ namespace Cafeine.Services.Mvvm
     // Write all Type here
     public class Keyword { }
     public class SearchBoxVisibility { }
-    public class ChildFrameNavigating { }
-    public class OnlineLoadItemDetails { }
     public class HomePageAvatarLoad { }
 }

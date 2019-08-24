@@ -8,7 +8,6 @@ using System.Reactive.Linq;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http.Filters;
 
 namespace Cafeine.ViewModels
@@ -58,6 +57,7 @@ namespace Cafeine.ViewModels
         private string _suggesttext;
         #endregion
 
+        public Frame ChildFrame => NavigationService.ChildPage;
         public HomeViewModel()
         {
 
@@ -124,9 +124,6 @@ namespace Cafeine.ViewModels
 
             NavigationService.EnableBackButton += (s, e) => BackButtonVisibility = e;
         }
-
-        public Frame ChildFrame { get; set; } = new Frame();
-
         public void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             Link.Publish(SuggestText, typeof(Keyword));
