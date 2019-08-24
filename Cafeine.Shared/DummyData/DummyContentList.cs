@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cafeine.Shared.DummyData
 {
-    public class DummyContentList : ContentList
+    public class DummyContentList : MediaList
     {
         public DummyContentList()
         {
@@ -13,9 +13,9 @@ namespace Cafeine.Shared.DummyData
             {
                 new MediaFile { FileName = "wololo.mkv", Fingerprint = new string[1] , Unique_Numbers=new string[1] }
             };
-            List<StreamService> stream = new List<StreamService>()
+            List<MediaStream> stream = new List<MediaStream>()
             {
-                new StreamService { Icon = "", Url = new Uri("https://www.crunchyroll.com/kaguya-sama-love-is-war/episode-1-i-will-make-you-invite-me-to-a-movie-kaguya-wants-to-be-stopped-kaguya-wants-it-781498")}
+                new MediaStream { Icon = "", Url = new Uri("https://www.crunchyroll.com/kaguya-sama-love-is-war/episode-1-i-will-make-you-invite-me-to-a-movie-kaguya-wants-to-be-stopped-kaguya-wants-it-781498")}
             };
             Title = "Generic Long Title that can contains almost two lines of title";
             Number = 100;

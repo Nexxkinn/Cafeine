@@ -18,7 +18,7 @@ namespace Cafeine.Services.Api
         public dynamic variables;
     }
 
-    public class AniList : IService
+    public class AniList : IApiService
     {
         private static HttpClient AnilistAuthClient = new HttpClient();
 
@@ -178,7 +178,7 @@ namespace Cafeine.Services.Api
             return useritem;
         }
 
-        public Task GetItem(OfflineItem item)
+        public Task GetItem(LocalItem item)
         {
             throw new NotImplementedException();
         }
@@ -204,7 +204,7 @@ namespace Cafeine.Services.Api
             await AnilistPostAsync(query);
         }
 
-        public void DeleteRange(IList<OfflineItem> items)
+        public void DeleteRange(IList<LocalItem> items)
         {
             throw new NotImplementedException();
         }
@@ -268,7 +268,7 @@ namespace Cafeine.Services.Api
             }
         }
 
-        public async Task<IList<ContentList>> GetItemEpisodes(ServiceItem item)
+        public async Task<IList<MediaList>> GetItemEpisodes(ServiceItem item)
         {
             QueryQL query = new QueryQL
             {
@@ -291,7 +291,7 @@ namespace Cafeine.Services.Api
             string cachekey = $"GetItemEpisodes_{item.Service}_{item.ServiceID}";
             dynamic Content = await AnilistPostAsync(query,cachekey);
 
-            var episodes = new List<ContentList>();
+            var episodes = new List<MediaList>();
             Regex R_number = new Regex(@"(?<=episode\s)(?:\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             foreach (var episode in Content["data"]["Media"]["streamingEpisodes"])
             {
@@ -304,11 +304,11 @@ namespace Cafeine.Services.Api
                 }
                 string urlstring = episode["url"];
                 Uri url = new Uri(urlstring);
-                List<StreamService> streams = new List<StreamService>()
+                List<MediaStream> streams = new List<MediaStream>()
                 {
-                    new StreamService { Icon = "C", Source = episode["site"], Url = url }
+                    new MediaStream { Icon = "C", Source = episode["site"], Url = url }
                 };
-                episodes.Add(new ContentList
+                episodes.Add(new MediaList
                 {
                     Title = title,
                     Number = num,
@@ -483,7 +483,7 @@ namespace Cafeine.Services.Api
             return items;
         }
 
-        public Task<IList<OfflineItem>> OnlineSearch(string keyword)
+        public Task<IList<LocalItem>> OnlineSearch(string keyword)
         {
             throw new NotImplementedException();
         }

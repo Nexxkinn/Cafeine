@@ -28,9 +28,9 @@ namespace Cafeine.Services
 
         private static List<ServiceItem> CurrentItems;
 
-        private static IService CurrentService;
+        private static IApiService CurrentService;
 
-        private static Dictionary<int, IService> services;
+        private static Dictionary<int, IApiService> services;
 
         public static event EventHandler DatabaseUpdated;
 
@@ -63,7 +63,7 @@ namespace Cafeine.Services
             // TODO : Rewrite useraccountfactory
             List<UserAccountModel> userAccounts = GetAllUserAccounts();
             List<Task> tasks = new List<Task>();
-            services = new Dictionary<int, IService>();
+            services = new Dictionary<int, IApiService>();
             foreach (var account in userAccounts)
             {
                 tasks.Add(Task.Run(async () =>
@@ -72,7 +72,7 @@ namespace Cafeine.Services
                     {
                         case ServiceType.ANILIST:
                             {
-                                IService service = new AniList();
+                                IApiService service = new AniList();
                                 var additionalinfo = JsonConvert.DeserializeObject<Tuple<string, string>>(account.AdditionalOption.ToString());
                                 await service.VerifyAccount(additionalinfo.Item2);
                                     lock (services)
@@ -215,11 +215,11 @@ namespace Cafeine.Services
             DatabaseUpdated.Invoke(serviceitem, null);
         }
 
-        public static async Task<OfflineItem> CreateOflineItem(ServiceItem item,IList<ContentList> list,StorageFolder folder,string pattern)
+        public static async Task<LocalItem> CreateOflineItem(ServiceItem item,IList<MediaList> list,StorageFolder folder,string pattern)
         {
             using (var tr = db.GetTransaction())
             {
-                OfflineItem offlineitem = new OfflineItem(
+                LocalItem offlineitem = new LocalItem(
                     id: tr.ObjectGetNewIdentity<int>("library"),
                     regex: pattern,
                     mal_id: item.MalID,
@@ -230,7 +230,7 @@ namespace Cafeine.Services
 
                 //  Index 3 and 4 are fallback case if the universal ID ( MalID )
                 //  doesn't exist when searching the service.
-                tr.ObjectInsert("library", new DBreezeObject<OfflineItem>
+                tr.ObjectInsert("library", new DBreezeObject<LocalItem>
                 {
                     NewEntity = true,
                     Entity = offlineitem,
@@ -247,7 +247,7 @@ namespace Cafeine.Services
             }
         }
 
-        public static OfflineItem GetOfflineItem(ServiceItem serviceitem)
+        public static LocalItem GetOfflineItem(ServiceItem serviceitem)
         {
             using (var tr = db.GetTransaction())
             {
@@ -266,19 +266,19 @@ namespace Cafeine.Services
                 if ( result?.Count() != 0)
                 {
                     var firstresult = result.First();
-                    DBreezeObject<OfflineItem> localitem = firstresult.ObjectGet<OfflineItem>();
+                    DBreezeObject<LocalItem> localitem = firstresult.ObjectGet<LocalItem>();
                     return localitem.Entity;
                 }
                 else return null;
             }
         }
 
-        public static Task UpdateOfflineItem(OfflineItem item)
+        public static Task UpdateOfflineItem(LocalItem item)
         {
             using (var tr = db.GetTransaction())
             {
                 tr.SynchronizeTables("library");
-                DBreezeObject<OfflineItem> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)item.Id)).ObjectGet<OfflineItem>();
+                DBreezeObject<LocalItem> localitem = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)item.Id)).ObjectGet<LocalItem>();
                 localitem.Entity = item;
                 localitem.Indexes = new List<DBreezeIndex>()
                     {
@@ -298,16 +298,16 @@ namespace Cafeine.Services
             CurrentItems.RemoveAt(oldItem);
         }
 
-        public static async Task<List<ContentList>> GetSeriesContentList(ServiceItem item)
+        public static async Task<List<MediaList>> GetSeriesContentList(ServiceItem item)
         {
             try
             {
-                return await CurrentService.GetItemEpisodes(item) as List<ContentList>;
+                return await CurrentService.GetItemEpisodes(item) as List<MediaList>;
             }
             catch (Exception)
             {
                 //offline mode, then.
-                return new List<ContentList>();
+                return new List<MediaList>();
             }
         }
 
@@ -395,6 +395,11 @@ namespace Cafeine.Services
                 return result;
             }
         }
+
+        public static IEnumerable<ServiceItem> SearchBasedOnTags(Dictionary<string,string> keywords)
+        {
+            return null;
+        }
         #endregion
 
 
@@ -410,6 +415,5 @@ namespace Cafeine.Services
             db.Scheme.DeleteTable("library");
             //db.Scheme.DeleteTable("TS_Service");
         }
-
     }
 }

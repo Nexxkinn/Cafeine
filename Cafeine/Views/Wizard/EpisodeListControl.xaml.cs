@@ -25,7 +25,7 @@ namespace Cafeine.Views.Wizard
             add => this.DeleteButton.Click += value;
             remove => this.DeleteButton.Click -= value;
         }
-        private ContentList Item => this.DataContext as ContentList;
+        private MediaList Item => this.DataContext as MediaList;
         public EpisodeListControl()
         {
             this.InitializeComponent();

@@ -80,7 +80,7 @@ namespace Cafeine.Models
 
         public string GetItemSeasonYear() => Season.HasValue ? $"{Seasons.Seasons_int2string[(int)Season.Value]} {SeriesStart}" : "";
 
-        public async Task PopulateServiceItemDetails(IService service)
+        public async Task PopulateServiceItemDetails(IApiService service)
         {
             await service.PopulateServiceItemDetails(this);
         }

@@ -8,5 +8,6 @@ namespace Cafeine.Shared.Models
     {
         string Icon { get; }
         string Source { get; }
+        void Clicked();
     }
 }

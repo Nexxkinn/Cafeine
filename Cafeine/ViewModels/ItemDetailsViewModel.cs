@@ -8,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Popups;
@@ -21,10 +19,10 @@ namespace Cafeine.ViewModels
 {
     public class ItemDetailsViewModel : ViewModelBase
     {
-        private OfflineItem _offline;
+        private LocalItem _offline;
         private DetailsItem _details;
 
-        public OfflineItem Offline {
+        public LocalItem Offline {
             get => _offline;
             set => Set(ref _offline, value);
         }
@@ -43,7 +41,7 @@ namespace Cafeine.ViewModels
             get => _details;
             set => Set(ref _details, value);
         }
-        public ObservableCollection<ContentList> Episodelist { get; private set; }
+        public ObservableCollection<MediaList> Episodelist { get; private set; }
         
         #region mvvm setup properties
 
@@ -163,7 +161,7 @@ namespace Cafeine.ViewModels
             LoadItemDetails = new ReactiveProperty<bool>(false);
             LoadItemDetails.Subscribe(x => ItemDetailsProgressRing = !x);
 
-            Episodelist = new ObservableCollection<ContentList>();
+            Episodelist = new ObservableCollection<MediaList>();
             LoadEpisodeLists = Visibility.Collapsed;
             LoadEpisodesListConfiguration = Visibility.Visible;
 
@@ -237,14 +235,18 @@ namespace Cafeine.ViewModels
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(Service);
+
             if (User != null &&
-                (User?.UserStatus != UserStatusComboBox.Value || User?.Watched_Read != TotalSeenTextBox.Value))
+                (User?.UserStatus != UserStatusComboBox.Value 
+                || User?.Watched_Read != TotalSeenTextBox.Value ))
             {
                 User.Watched_Read = TotalSeenTextBox.Value;
                 User.UserStatus = UserStatusComboBox.Value;
                 await Database.UpdateItem(Service);
             }
+
             await base.OnNavigatedFrom(e);
+
             Dispose();
         }
 
@@ -255,12 +257,14 @@ namespace Cafeine.ViewModels
             await Task.Yield();
             LoadItem();
         }
+
         public void LoadItem()
         {
             try
             {
                 RaisePropertyChanged(nameof(User));
                 RaisePropertyChanged(nameof(Service));
+
                 TotalSeenTextBox.Value = User?.Watched_Read ?? 0;
                 UserStatusComboBox.Value = User?.UserStatus ?? 0;
                 SetDeleteButtonLoad.Value = (User != null);
@@ -304,19 +308,21 @@ namespace Cafeine.ViewModels
             {
                 // online mode
                 var onlinecontentlist = await Database.GetSeriesContentList(Service);
-                Episodelist = new ObservableCollection<ContentList>(onlinecontentlist);
+                Episodelist = new ObservableCollection<MediaList>(onlinecontentlist);
                 RaisePropertyChanged("Episodelist");
             }
             else
             {
                 // handle offline content then
                 IsOfflineItemAvailable = true;
-                Episodelist = new ObservableCollection<ContentList>(_offline.ContentList);
+                Episodelist = new ObservableCollection<MediaList>(_offline.MediaCollection);
                 RaisePropertyChanged("Episodelist");
+                // TODO: Handle a condition when the streaming service pull the list.
+                //       The app should update the streaming link.
                 var onlinecontentlist = await Database.GetSeriesContentList(Service);
-                if (onlinecontentlist.Count != _offline.ContentList.Count)
+                if (onlinecontentlist.Count != _offline.MediaCollection.Count)
                 {
-                    var newcontentlist = onlinecontentlist.Except(Episodelist, new ContentListComparer());
+                    var newcontentlist = onlinecontentlist.Except(Episodelist, new MediaListComparer());
                     foreach (var item in newcontentlist)
                     {
                         Episodelist.Add(item);
@@ -341,7 +347,7 @@ namespace Cafeine.ViewModels
             if (wizard.IsCanceled) return;
 
             Offline = wizard.Result;
-            Episodelist = new ObservableCollection<ContentList>(Offline.ContentList);
+            Episodelist = new ObservableCollection<MediaList>(Offline.MediaCollection);
 
             IsOfflineItemAvailable = true;
             RaisePropertyChanged("Episodelist");

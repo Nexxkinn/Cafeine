@@ -17,8 +17,9 @@
         Margin="2"
         Background="#4C000000"
         CornerRadius="3"
-        PointerEntered="RelativePanel_PointerEntered"
-        PointerExited="RelativePanel_PointerExited"
+        Tapped="GetTapped"
+        PointerEntered="GetPointerEntered"
+        PointerExited="GetPointerExited"
         BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CommonStates">
@@ -82,21 +83,27 @@
             <RelativePanel Grid.Row="0" Height="80">
                 <TextBlock
                     x:Name="MainMediaListTitle"
+                    Tapped="{x:Bind MainMediaList.Clicked}"
                     RelativePanel.AlignHorizontalCenterWithPanel="True"
-                    RelativePanel.AlignVerticalCenterWithPanel="True"
-                    Text="{x:Bind Path=MainMediaList.Source}" />
+                    RelativePanel.AlignVerticalCenterWithPanel="True"/>
             </RelativePanel>
-            <GridView x:Name="StreamServiceGrid" ItemsSource="{x:Bind SubMediaList}">
+            <GridView x:Name="StreamServiceGrid">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="sm:IMediaList">
-                        <TextBlock
+                        <Button
                             Width="40"
                             Height="40"
                             dt:DesignTime.Content="C"
-                            Text="{x:Bind Source}" />
+                            Click="{x:Bind Clicked}"
+                            Content="{x:Bind Source}" />
                     </DataTemplate>
                 </GridView.ItemTemplate>
             </GridView>
         </StackPanel>
+        <FlyoutBase.AttachedFlyout>
+            <Flyout Placement="Bottom">
+                <TextBlock Text="test"/>
+            </Flyout>
+        </FlyoutBase.AttachedFlyout>
     </RelativePanel>
 </UserControl>

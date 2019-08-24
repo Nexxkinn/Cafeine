@@ -70,7 +70,7 @@ namespace Cafeine.Services.Api
             vault.Add(cred);
         }
 
-        public static async Task<List<OfflineItem>> GetUserData(bool IsDefaultService)
+        public static async Task<List<LocalItem>> GetUserData(bool IsDefaultService)
         {
             throw new NotImplementedException();
             //string FetchData, FetchData2;
@@ -161,7 +161,7 @@ namespace Cafeine.Services.Api
             //}
         }
 
-        public static async Task<OfflineItem> GetItemInfo(OfflineItem item)
+        public static async Task<LocalItem> GetItemInfo(LocalItem item)
         {
             throw new NotImplementedException();
         }

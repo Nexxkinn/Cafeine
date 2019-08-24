@@ -10,12 +10,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)DummyData\DummyContentList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ContentList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ContentListComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MediaList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MediaListComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DetailsItem.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\File.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MediaFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IMediaList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MediaStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ServiceItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TagItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\CafeineProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\MediaFormatEnum.cs" />
@@ -45,8 +47,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Exception\NetworkOfflineException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FilenameParser\CafeineFilenameParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\FilenameParser\FilenamePatternEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IAuthService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ImageCache.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\IService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IApiService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ItemLibraryService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceItemComparer.cs" />
   </ItemGroup>

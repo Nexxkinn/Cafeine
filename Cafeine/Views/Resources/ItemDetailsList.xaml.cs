@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -25,15 +26,15 @@ namespace Cafeine.Views.Resources
             this.InitializeComponent();
         }
 
-        public ContentList contentlist {
-            get { return (ContentList)GetValue(contentlistProperty); }
+        public MediaList contentlist {
+            get { return (MediaList)GetValue(contentlistProperty); }
             set { if (value != null) SetValue(contentlistProperty, value);
             }
         }
 
         // Using a DependencyProperty as the backing store for contentlist.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty contentlistProperty =
-            DependencyProperty.Register("contentlist", typeof(ContentList), typeof(ItemDetailsList), null);
+            DependencyProperty.Register("contentlist", typeof(MediaList), typeof(ItemDetailsList), null);
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -63,10 +64,9 @@ namespace Cafeine.Views.Resources
                 }
             }
 
-            Bindings.Update(); 
-
-            // to load the lazy element
             this.FindName(nameof(MediaList));
+            StreamServiceGrid.ItemsSource = SubMediaList;
+            MainMediaListTitle.Text = MainMediaList.Source;
         }
         
         // This is only get called by ItemDetailsPage.Episodesitem_ContainerContentChanging
@@ -103,14 +103,31 @@ namespace Cafeine.Views.Resources
             ImageOpenedOpacity.Begin();
         }
 
-        private void RelativePanel_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void GetPointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "PointerOver", false);
         }
 
-        private void RelativePanel_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void GetPointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             VisualStateManager.GoToState(this, "Normal", false);
+        }
+
+        private void ItemClicked()
+        {
+
+        }
+
+        private void GetTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            if (e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse) return;
+
+            FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
+        }
+
+        private void ItemTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+
         }
     }
 }

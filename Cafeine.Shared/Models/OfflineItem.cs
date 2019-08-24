@@ -1,19 +1,13 @@
 ﻿using Cafeine.Models.Enums;
-using DBreeze;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.AccessCache;
 
 namespace Cafeine.Models
 {
     /// <summary>
-    /// For offline paths
+    /// The offline parts, obtained mostly from database.
     /// </summary>
-    public sealed class OfflineItem 
+    public sealed class LocalItem 
     {
         /// <summary>
         /// Database ID. Not for use.
@@ -25,29 +19,36 @@ namespace Cafeine.Models
         /// </summary>
         public int MalID { get; set; }
         /// <summary>
-        /// Accepted IDs for selected service.
+        /// ID for service.
         /// </summary>
         public Dictionary<ServiceType,int> ServiceID { get; set; }
         /// <summary>
-        /// Saved folder token.
+        /// folder path.
         /// </summary>
         public string FolderToken { get; set; }
         /// <summary>
         /// Saved episodes
         /// </summary>
-        public ICollection<ContentList> ContentList { get; set; }
+        public ICollection<MediaList> MediaCollection { get; set; }
         /// <summary>
         /// Custom regex
         /// </summary>
         public string Regex { get; set; }
 
-        public OfflineItem() { }
-        public OfflineItem(int id,int mal_id,Dictionary<ServiceType, int> service_id,string folder_token, ICollection<ContentList> content_list, string regex = null)
+        public LocalItem() { }
+        public LocalItem(
+            int id,
+            int mal_id,
+            Dictionary<ServiceType, int> service_id,
+            string folder_token,
+            ICollection<MediaList> content_list,
+            string regex = null
+            )
         {
             this.Id = id;
             this.MalID = mal_id;
             this.ServiceID = service_id;
-            this.ContentList = content_list;
+            this.MediaCollection = content_list;
             this.FolderToken = folder_token;
             this.Regex = regex;
         }
@@ -59,13 +60,13 @@ namespace Cafeine.Models
             ServiceID.Add(service_type, service_id);
         }
 
-        public void AddNewContentList(IList<ContentList> newlist)
+        public void AddNewContentList(IList<MediaList> newlist)
         {
             foreach(var item in newlist)
             {
-                ContentList.Add(item);
+                MediaCollection.Add(item);
             }
-            ContentList.OrderBy(x => x.Number);
+            MediaCollection.OrderBy(x => x.Number);
         }
     }
 

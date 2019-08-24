@@ -37,7 +37,7 @@ namespace Cafeine.ViewModels
 
         private int CurrentCategory;
 
-        private OfflineItem RightClickedItem;
+        private LocalItem RightClickedItem;
 
         public MainViewModel()
         {
@@ -141,7 +141,7 @@ namespace Cafeine.ViewModels
 
         public void RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            RightClickedItem = ((FrameworkElement)e.OriginalSource).DataContext as OfflineItem;
+            RightClickedItem = ((FrameworkElement)e.OriginalSource).DataContext as LocalItem;
         }
     }
 }

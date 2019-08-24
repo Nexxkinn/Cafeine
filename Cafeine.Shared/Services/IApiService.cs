@@ -1,38 +1,30 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
+using Cafeine.Shared.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cafeine.Services
 {
-    public interface IService
+    public interface IApiService : IAuthService
     {
-        
         Task<UserItem> AddItem(ServiceItem item);
 
-        Task GetItem(OfflineItem item);
+        Task GetItem(LocalItem item);
 
         Task PopulateServiceItemDetails(ServiceItem item);
 
         Task<DetailsItem> GetDetailsItem(ServiceItem item);
 
-        Task<IList<ContentList>> GetItemEpisodes(ServiceItem item);
+        Task<IList<MediaList>> GetItemEpisodes(ServiceItem item);
 
         Task UpdateUserItem(UserItem item);
 
         Task DeleteItem(ServiceItem item);
 
-        void DeleteRange(IList<OfflineItem> items);
+        void DeleteRange(IList<LocalItem> items);
 
         Task<UserAccountModel> CreateAccount(bool isDefaultUser);
-
-        void DeleteAccount(UserAccountModel account);
-
-        Task VerifyAccount();
-
-        Task VerifyAccount(string token);
-
-        Task VerifyAccount(UserAccountModel account);
 
         Task<IList<ServiceItem>> CreateCollection(UserAccountModel account);
 
@@ -44,6 +36,6 @@ namespace Cafeine.Services
 
         Task<IList<ServiceItem>> OnlineSearch(string keyword, MediaTypeEnum media);
 
-        Task<IList<OfflineItem>> OnlineSearch(string keyword);
+        Task<IList<LocalItem>> OnlineSearch(string keyword);
     }
 }

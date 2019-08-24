@@ -26,13 +26,13 @@ namespace Cafeine.Views.Wizard
 {
     public sealed partial class OfflineItemWizard : ContentDialog
     {
-        public bool IsCanceled { get; private set; }
+        public bool IsCanceled { get; private set; } = true;
 
-        public OfflineItem Result => Viewmodel.GetResult();
+        public LocalItem Result => Viewmodel.GetResult();
 
         private OfflineItemWizardViewModel Viewmodel => this.DataContext as OfflineItemWizardViewModel;
 
-        public OfflineItemWizard(ServiceItem item,string pattern,ICollection<ContentList> lists)
+        public OfflineItemWizard(ServiceItem item,string pattern,ICollection<MediaList> lists)
         {
             this.DataContext = new OfflineItemWizardViewModel(item,pattern,lists);
             this.InitializeComponent();
@@ -48,17 +48,18 @@ namespace Cafeine.Views.Wizard
         private void FinishedButtonClicked()
         {
             this.Hide();
+            IsCanceled = false;
             Viewmodel.Dispose();
         }
 
         private void EpisodeListControl_DeleteClick(object sender, RoutedEventArgs e)
         {
-            Viewmodel.MatchedList.Remove((sender as Button).DataContext as ContentList);
+            Viewmodel.MatchedList.Remove((sender as Button).DataContext as MediaList);
         }
 
         private void EpisodeNotOnListControl_DeleteClick(object sender, RoutedEventArgs e)
         {
-            Viewmodel.UnmatchedList.Remove((sender as Button).DataContext as ContentList);
+            Viewmodel.UnmatchedList.Remove((sender as Button).DataContext as MediaList);
         }
 
         private void OnList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)

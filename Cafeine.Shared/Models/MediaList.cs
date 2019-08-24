@@ -15,24 +15,10 @@ namespace Cafeine.Models
         /// <summary>
         /// listed items with saved configuration
         /// </summary>
-        public IList<ContentList> Episodes { get; set; }
+        public IList<MediaList> Episodes { get; set; }
     }
 
-    public class StreamService : IMediaList
-    {
-        /// <summary>
-        /// Streaming Service Icon
-        /// </summary>
-        public string Icon { get; set; }
-        /// <summary>
-        /// Streaming service name
-        /// </summary>
-        public string Source { get; set; }
-
-        public Uri Url;
-    }
-
-    public class ContentList 
+    public class MediaList 
     {
         public int Number { get; set; }
 
@@ -40,7 +26,7 @@ namespace Cafeine.Models
 
         public Uri Thumbnail { get; set; }
 
-        public List<StreamService> StreamingServices { get; set; }
+        public List<MediaStream> StreamingServices { get; set; }
 
         public List<MediaFile> Files { get; set; }
 

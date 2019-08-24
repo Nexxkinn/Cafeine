@@ -8,13 +8,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 
 namespace Cafeine.ViewModels.Wizard
 {
     public class OfflineItemWizardViewModel : ViewModelBase
     {
-        private OfflineItem Result;
+        private LocalItem Result;
 
         #region properties
         public int Stage {
@@ -60,27 +61,27 @@ namespace Cafeine.ViewModels.Wizard
                 RaisePropertyChanged(nameof(DisplayWarningVisibility));
             }
         }
-        public ICollection<ContentList> OnlineList { get; set; }
-        public ObservableCollection<ContentList> MatchedList { get; set; }
-        public ObservableCollection<ContentList> UnmatchedList { get; set; }
+        public ICollection<MediaList> OnlineList { get; set; }
+        public ObservableCollection<MediaList> MatchedList { get; set; }
+        public ObservableCollection<MediaList> UnmatchedList { get; set; }
         public bool NotEqual(int num) => this.Stage != num;
 
         private ServiceItem ServiceItem { get; }
         private string Pattern { get; }
         private StorageFolder Folder { get; set; }
 
-        public OfflineItemWizardViewModel(ServiceItem item, string pattern, ICollection<ContentList> lists)
+        public OfflineItemWizardViewModel(ServiceItem item, string pattern, ICollection<MediaList> lists)
         {
             this.ServiceItem = item;
             this.Pattern = pattern;
             this.IsButtonLoaded = true;
             this.IsDisplayWarning = false;
             this.OnlineList = lists;
-            this.MatchedList = new ObservableCollection<ContentList>();
-            this.UnmatchedList = new ObservableCollection<ContentList>();
+            this.MatchedList = new ObservableCollection<MediaList>();
+            this.UnmatchedList = new ObservableCollection<MediaList>();
         }
 
-        public OfflineItem GetResult() => Result;
+        public LocalItem GetResult() => Result;
 
         public void PreviousButtonClicked() => Stage--;
 
@@ -118,6 +119,8 @@ namespace Cafeine.ViewModels.Wizard
             UnmatchedList.Clear();
             Stage1_ViewResults = true;
 
+            StorageApplicationPermissions.FutureAccessList.Add(folder);
+
             var files = await folder.GetFilesAsync();
             
             // first pass : check if files exist
@@ -132,17 +135,18 @@ namespace Cafeine.ViewModels.Wizard
             {
                 var  parser  = new CafeineFilenameParser(file);
                 bool isNumParsed = parser.TryGetEpisodeUsingAnitomy(out int? episode_num, out string[] fingerprint, out string[] uniq);
-                
+
                 var File = new MediaFile()
                 {
                     FileName = file.DisplayName,
+                    Path = file.Path,
                     Fingerprint = fingerprint,
                     Unique_Numbers = uniq
                 };
 
                 if (isNumParsed)
                 {
-                    var item = new ContentList
+                    var item = new MediaList
                     {
                         Number = episode_num.Value,
                         Files = new List<MediaFile>() { File }
@@ -153,7 +157,7 @@ namespace Cafeine.ViewModels.Wizard
                 {
                     // consider this file as a special file.
                     // EDs, OPs, Movies, etc.
-                    var item = new ContentList
+                    var item = new MediaList
                     {
                         Number = -1,
                         Title = File.FileName,
@@ -162,7 +166,7 @@ namespace Cafeine.ViewModels.Wizard
                     UnmatchedList.Add(item);
                 }
             }
-            MatchedList = new ObservableCollection<ContentList>(MatchedList.OrderBy(x => x.Number));
+            MatchedList = new ObservableCollection<MediaList>(MatchedList.OrderBy(x => x.Number));
             RaisePropertyChanged(nameof(MatchedList));
             if ( UnmatchedList.Count != 0) Message += $"{UnmatchedList.Count} file(s) are unable to identify";
 
@@ -173,8 +177,8 @@ namespace Cafeine.ViewModels.Wizard
         public async Task Stage2_GenerateOfflineItem()
         {
             await Task.Yield();
-            var CombinedContent = new List<ContentList>();
-            var onlinelist = new List<ContentList>(OnlineList);
+            var CombinedContent = new List<MediaList>();
+            var onlinelist = new List<MediaList>(OnlineList);
             // Notify : add unmatched file.
             Message += "Adding unmatched file(s)\n";
             CombinedContent.AddRange(UnmatchedList);
@@ -183,11 +187,11 @@ namespace Cafeine.ViewModels.Wizard
             // Notify : Trying to group contents
             Message += "Trying to group contents\n";
             var groupedContentList = MatchedList.GroupBy(x => x.Number);
-            var group = new List<ContentList>();
+            var group = new List<MediaList>();
             foreach(var num in groupedContentList)
             {
                 List<MediaFile> files = num.Select(x => x.Files[0]).ToList();
-                ContentList file = new ContentList()
+                MediaList file = new MediaList()
                 {
                     Files = files,
                     Number = num.Key
@@ -203,6 +207,7 @@ namespace Cafeine.ViewModels.Wizard
                 var onlineitem = onlinelist.FirstOrDefault(x => x.Number == m_list.Number);
                 if( onlineitem == null )
                 {
+                    m_list.Title = m_list.Files[0].FileName;
                     CombinedContent.Add(m_list);
                     Message += $"offline item(s) for episode {m_list.Number} has no equivalent online list. consider using its first filename as a Title.\n";
                     // Notify : episode {m_list.Number} has no equivalent online list.
@@ -210,7 +215,7 @@ namespace Cafeine.ViewModels.Wizard
                 }
                 else
                 {
-                    var item = new ContentList()
+                    var item = new MediaList()
                     {
                         Files = m_list.Files,
                         Number = onlineitem.Number,

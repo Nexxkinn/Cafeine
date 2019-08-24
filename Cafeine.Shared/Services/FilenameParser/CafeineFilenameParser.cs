@@ -22,7 +22,7 @@ namespace Cafeine.Services.FilenameParser
     {
         string Filename;
         string[] Elements;
-        List<ContentList> ContentList;
+        List<MediaList> ContentList;
 
         private static readonly char[] brackets = { '[', ']', '(', ')', '<', '>', '{', '}', '\u300C', '\u300D', '\u300E', '\u300F', '\u3010', '\u3011', '\uFF08', '\uFF09' };
 
@@ -58,7 +58,7 @@ namespace Cafeine.Services.FilenameParser
 
         public CafeineFilenameParser(StorageFile filename) : this(filename, null) { }
 
-        public CafeineFilenameParser(StorageFile filename,List<ContentList> contentlist)
+        public CafeineFilenameParser(StorageFile filename,List<MediaList> contentlist)
         {
             this.Filename = filename.DisplayName;
             this.ContentList = contentlist;

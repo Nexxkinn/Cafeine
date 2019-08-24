@@ -67,7 +67,7 @@
                     ContainerContentChanging="OnList_ContainerContentChanging"
                     ItemsSource="{x:Bind Viewmodel.MatchedList, Mode=OneWay}">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="m:ContentList">
+                        <DataTemplate x:DataType="m:MediaList">
                             <local:EpisodeListControl
                                 DataContext="{x:Bind}"
                                 DeleteClicked="EpisodeListControl_DeleteClick"
@@ -82,7 +82,7 @@
                     Height="200"
                     ItemsSource="{x:Bind Viewmodel.UnmatchedList, Mode=OneWay}">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="m:ContentList">
+                        <DataTemplate x:DataType="m:MediaList">
                             <local:EpisodeListControl DataContext="{x:Bind}" DeleteClicked="EpisodeNotOnListControl_DeleteClick" />
                         </DataTemplate>
                     </ListView.ItemTemplate>

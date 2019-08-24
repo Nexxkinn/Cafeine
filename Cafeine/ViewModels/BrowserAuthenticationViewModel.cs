@@ -39,7 +39,7 @@ namespace Cafeine.ViewModels
             string url = args.Uri.AbsoluteUri.ToString();
             if (url.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))
             {
-                IService service = new AniList();
+                IApiService service = new AniList();
 
                 //get the token
                 Regex r = new Regex(@"(?<==).+?(?=&|$)");

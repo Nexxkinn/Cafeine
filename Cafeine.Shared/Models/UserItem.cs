@@ -12,15 +12,15 @@ namespace Cafeine.Models
         /// <summary>
         /// User's score.
         /// </summary>
-        public Nullable<double> UserScore { get; set; }
+        public double? UserScore { get; set; }
         /// <summary>
         /// User's status.
         /// </summary>
-        public Nullable<int> UserStatus { get; set; }
+        public int? UserStatus { get; set; }
         /// <summary>
         /// User's total episodes/chapters watched/read.
         /// </summary>
-        public Nullable<int> Watched_Read { get; set; }
+        public int? Watched_Read { get; set; }
         /// <summary>
         /// Intended only if the service use an overengineered method to identify user's item.
         /// </summary>
