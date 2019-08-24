@@ -11,23 +11,24 @@ using Windows.UI.Xaml.Controls;
 
 namespace Cafeine.ViewModels
 {
-    public class BrowserAuthViewModel : ViewModelBase, IViewModel
+    public class BrowserAuthViewModel : ViewModelBase
     {
+        private string _headertitle;
 
-        public ReactiveProperty<Uri> Source;
+        public Uri Source;
 
-        public ReactiveProperty<string> HeaderTitle { get; }
+        public string HeaderTitle {
+            get => _headertitle;
+            set => Set(ref _headertitle, value);
+        }
 
         public BrowserAuthViewModel()
         {
-            navigationService = new NavigationService();
+            HeaderTitle = "Loading...";
 
-            HeaderTitle = new ReactiveProperty<string>("Loading...");
+            Source = new Uri("https://anilist.co/api/v2/oauth/authorize?client_id=873&response_type=token");
 
-            Source = new ReactiveProperty<Uri>(new Uri("https://anilist.co/api/v2/oauth/authorize?client_id=873&response_type=token"));
-
-            GoBack = new CafeineCommand(
-                async() => 
+            GoBack = new CafeineCommand(() => 
                 {
                     navigationService.GoBack();
                     navigationService.ClearHistory();
@@ -50,7 +51,7 @@ namespace Cafeine.ViewModels
 
                 navigationService.GoBack();
             }
-            else HeaderTitle.Value = "Anilist Web Authentication";
+            else HeaderTitle = "Anilist Web Authentication";
         }
     }
 }

@@ -24,16 +24,8 @@ namespace Cafeine.ViewModels
         private ObservableCollection<ServiceItem> _Library;
 
         public ObservableCollection<ServiceItem> Library {
-            get {
-                return _Library;
-            }
-            set {
-                if (_Library != value) // or the appropriate comparison for your specific case
-                {
-                    _Library = value;
-                    RaisePropertyChanged("Library");
-                }
-            }
+            get => _Library;
+            set => Set(ref _Library, value);
         }
         
         public ReactiveProperty<int> SortBy { get; }

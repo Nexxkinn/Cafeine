@@ -10,7 +10,6 @@
     xmlns:vm="using:Cafeine.ViewModels"
     Background="{ThemeResource LegacyDarkBlue}"
     Loaded="Page_Loaded"
-    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
         <vm:ItemDetailsViewModel />

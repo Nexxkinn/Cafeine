@@ -23,12 +23,7 @@ namespace Cafeine.ViewModels
 
         public bool FromWebsiteRegistration = false;
 
-        public LoginViewModel()
-        {
-            UserPanelVisibility = false;
-
-            SetupPanelVisibility = false;
-        }
+        public LoginViewModel() { }
 
         public override async Task OnNavigatedTo(NavigationEventArgs e)
         {

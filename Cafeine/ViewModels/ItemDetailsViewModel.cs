@@ -22,34 +22,27 @@ namespace Cafeine.ViewModels
     public class ItemDetailsViewModel : ViewModelBase
     {
         private OfflineItem _offline;
-
-        private ServiceItem _service;
-
         private DetailsItem _details;
 
         public OfflineItem Offline {
             get => _offline;
             set => Set(ref _offline, value);
         }
-
+        public ServiceItem Service { get; private set; }
         public UserItem User {
-            get => _service.UserItem;
+            get => Service.UserItem;
             set {
-                if(value != _service.UserItem)
+                if(value != Service.UserItem)
                 {
-                    _service.UserItem = value;
+                    Service.UserItem = value;
                     RaisePropertyChanged(nameof(User));
                 }
             }
         }
-
         public DetailsItem Details {
             get => _details;
             set => Set(ref _details, value);
         }
-
-        public ServiceItem Service => _service;
-
         public ObservableCollection<ContentList> Episodelist { get; private set; }
         
         #region mvvm setup properties
@@ -153,8 +146,8 @@ namespace Cafeine.ViewModels
 
         public ItemDetailsViewModel()
         {
-            _offline = new OfflineItem();
-            _service = new ServiceItem();
+
+            (Offline, Service) = ItemLibraryService.Pull();
 
             navigationService = new NavigationService();
             PaneBackground = new SolidColorBrush(Windows.UI.Colors.Transparent);
@@ -218,14 +211,14 @@ namespace Cafeine.ViewModels
             AddButtonClicked = new AsyncReactiveCommand();
             AddButtonClicked.Subscribe(async _ =>
             {
-                User = await Database.CreateUserItem(_service);
+                User = await Database.CreateUserItem(Service);
                 SetDeleteButtonLoad.Value = true;
             });
 
             DeleteButtonClicked = new AsyncReactiveCommand();
             DeleteButtonClicked.Subscribe( async _ =>
             {
-                MessageDialog popup = new MessageDialog($"You are going to delete {_service.Title} from your list.\n" +
+                MessageDialog popup = new MessageDialog($"You are going to delete {Service.Title} from your list.\n" +
                     $"Removing this item will also unlink your local directory in this item.\n" +
                     $"Do you really want to Remove it?", $"Remove this item?");
                 popup.Commands.Add(new UICommand("Remove") { Id = 0 });
@@ -235,7 +228,7 @@ namespace Cafeine.ViewModels
                 var result = await popup.ShowAsync();
                 if ((int)result.Id == 0)
                 {
-                    await Database.DeleteItem(_service);
+                    await Database.DeleteItem(Service);
                     navigationService.GoBack();
                 }
             });
@@ -243,13 +236,13 @@ namespace Cafeine.ViewModels
 
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(_service);
+            if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(Service);
             if (User != null &&
                 (User?.UserStatus != UserStatusComboBox.Value || User?.Watched_Read != TotalSeenTextBox.Value))
             {
                 User.Watched_Read = TotalSeenTextBox.Value;
                 User.UserStatus = UserStatusComboBox.Value;
-                await Database.UpdateItem(_service);
+                await Database.UpdateItem(Service);
             }
             await base.OnNavigatedFrom(e);
             Dispose();
@@ -260,10 +253,9 @@ namespace Cafeine.ViewModels
             await base.OnNavigatedTo(e);
             // Let UI Thread free
             await Task.Yield();
-            (Offline, _service) = await ItemLibraryService.Pull();
-            _ = LoadItem();
+            LoadItem();
         }
-        public async Task LoadItem()
+        public void LoadItem()
         {
             try
             {
@@ -273,10 +265,10 @@ namespace Cafeine.ViewModels
                 UserStatusComboBox.Value = User?.UserStatus ?? 0;
                 SetDeleteButtonLoad.Value = (User != null);
 
-                StatusTextBlock = $"{StatusEnum.Anilist_AnimeItemStatus[_service.ItemStatus.Value]} • {_service.SeriesStart} • TV";
-                double score = _service.AverageScore ?? -1;
+                StatusTextBlock = $"{StatusEnum.Anilist_AnimeItemStatus[Service.ItemStatus.Value]} • {Service.SeriesStart} • TV";
+                double score = Service.AverageScore ?? -1;
                 ScorePlaceHolderRating = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(score);
-                ScoreTextBlock = (_service.AverageScore.HasValue) ? $"( {_service.AverageScore.ToString()} )" : "( No score )";
+                ScoreTextBlock = (Service.AverageScore.HasValue) ? $"( {Service.AverageScore.ToString()} )" : "( No score )";
 
                 //Parallel task.
                 List<Task> task = new List<Task>()
@@ -339,7 +331,7 @@ namespace Cafeine.ViewModels
         }
         public async Task LoadServiceItemCoverImage()
         {
-            ImageSource = await ImageCache.GetFromCacheAsync(_service.CoverImageUri.AbsoluteUri);
+            ImageSource = await ImageCache.GetFromCacheAsync(Service.CoverImageUri.AbsoluteUri);
         }
         public async void CreateOfflineItem()
         {
@@ -357,7 +349,7 @@ namespace Cafeine.ViewModels
 
         public override void Dispose()
         {
-            _service = null;
+            Service = null;
             _offline = null;
             _details = null;
             Episodelist = null;

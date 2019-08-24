@@ -18,6 +18,7 @@ namespace Cafeine.Services.Mvvm
             await Vm.OnNavigatedFrom(e);
             base.OnNavigatedFrom(e);
         }
+        //TODO: remove this method in the final release
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             bool b = e.NavigationMode == NavigationMode.Forward;

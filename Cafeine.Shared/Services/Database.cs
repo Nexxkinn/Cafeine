@@ -247,34 +247,30 @@ namespace Cafeine.Services
             }
         }
 
-        public static async Task<OfflineItem> GetOfflineItem(ServiceItem serviceitem)
+        public static OfflineItem GetOfflineItem(ServiceItem serviceitem)
         {
-            OfflineItem item = await Task.Run(() =>
+            using (var tr = db.GetTransaction())
             {
-                using (var tr = db.GetTransaction())
+                IEnumerable<Row<byte[], byte[]>> result = null;
+                if (serviceitem.MalID != default)
                 {
-                    IEnumerable<Row<byte[], byte[]>> result = null;
-                    if (serviceitem.MalID != default)
-                    {
-                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 2.ToIndex(serviceitem.MalID, 0), true, 2.ToIndex(serviceitem.MalID, int.MaxValue),true);
-                    }
-                    else
-                    {
-                        // Use with caution!
-                        // collition with different service might happened in this case!
-                        result = tr.SelectForwardFromTo<byte[], byte[]>("library", 4.ToIndex(serviceitem.Service,serviceitem.ServiceID,0, 0), true, 2.ToIndex(serviceitem.Service,serviceitem.ServiceID,0, int.MaxValue), true);
-                    }
-
-                    if ( result?.Count() != 0)
-                    {
-                        var firstresult = result.First();
-                        DBreezeObject<OfflineItem> localitem = firstresult.ObjectGet<OfflineItem>();
-                        return localitem.Entity;
-                    }
-                    else return null;
+                    result = tr.SelectForwardFromTo<byte[], byte[]>("library", 2.ToIndex(serviceitem.MalID, 0), true, 2.ToIndex(serviceitem.MalID, int.MaxValue),true);
                 }
-            });
-            return item;
+                else
+                {
+                    // Use with caution!
+                    // collition with different service might happened in this case!
+                    result = tr.SelectForwardFromTo<byte[], byte[]>("library", 4.ToIndex(serviceitem.Service,serviceitem.ServiceID,0, 0), true, 2.ToIndex(serviceitem.Service,serviceitem.ServiceID,0, int.MaxValue), true);
+                }
+
+                if ( result?.Count() != 0)
+                {
+                    var firstresult = result.First();
+                    DBreezeObject<OfflineItem> localitem = firstresult.ObjectGet<OfflineItem>();
+                    return localitem.Entity;
+                }
+                else return null;
+            }
         }
 
         public static Task UpdateOfflineItem(OfflineItem item)

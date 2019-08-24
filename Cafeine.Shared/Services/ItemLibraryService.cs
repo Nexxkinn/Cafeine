@@ -9,7 +9,7 @@ namespace Cafeine.Services
     {
         private static List<ItemLibraryToken> library { get; set; }
         
-        public static async Task<(OfflineItem offline,ServiceItem service)> Pull()
+        public static (OfflineItem offline,ServiceItem service) Pull()
         {
             int last = library.Count == 0 ? 0 : library.Count - 1;
             var token = library[last];
@@ -21,7 +21,7 @@ namespace Cafeine.Services
                 var LocalServiceItem = Database.GetUserServiceItem(service.ServiceID);
                 if (LocalServiceItem != null) service = LocalServiceItem;
             }
-            OfflineItem offline = await Database.GetOfflineItem(service);
+            OfflineItem offline = Database.GetOfflineItem(service);
             return (offline,service);
         }
 

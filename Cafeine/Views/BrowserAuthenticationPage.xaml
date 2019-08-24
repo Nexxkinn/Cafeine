@@ -36,13 +36,13 @@
                     VerticalAlignment="Center"
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Text="{x:Bind Path=Vm.HeaderTitle.Value, Mode=OneWay}" />
+                    Text="{x:Bind Path=Vm.HeaderTitle, Mode=OneWay}" />
             </StackPanel>
         </Grid>
         <WebView
             x:Name="webview"
             Grid.Row="1"
             NavigationCompleted="{x:Bind Vm.UrlCheck}"
-            Source="{x:Bind Path=Vm.Source.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            Source="{x:Bind Path=Vm.Source, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </mvvm:BasePage>
