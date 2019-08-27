@@ -299,18 +299,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DBreeze">
-      <Version>1.93.0</Version>
+      <Version>1.95.0</Version>
     </PackageReference>
     <PackageReference Include="Fastenshtein">
       <Version>1.0.0.5</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Net.Native.Compiler">
-      <Version>2.2.3</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.8</Version>
+      <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.1.190606001</Version>
@@ -319,7 +314,7 @@
       <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="ReactiveProperty">
-      <Version>5.4.0</Version>
+      <Version>6.0.3</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
       <Version>4.5.3</Version>

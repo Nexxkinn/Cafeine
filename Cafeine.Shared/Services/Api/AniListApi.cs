@@ -313,7 +313,7 @@ namespace Cafeine.Services.Api
                     Title = title,
                     Number = num,
                     Thumbnail = episode["thumbnail"],
-                    StreamingServices = streams
+                    Streams = streams
                 });
             };
             return episodes;

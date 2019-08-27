@@ -147,10 +147,10 @@ namespace Cafeine.ViewModels.Wizard
                 if (isNumParsed)
                 {
                     var item = new MediaList
-                    {
-                        Number = episode_num.Value,
-                        Files = new List<MediaFile>() { File }
-                    };
+                    (
+                        files:  new List<MediaFile>() { File },
+                        number: episode_num.Value
+                    );
                     MatchedList.Add(item);
                 }
                 else
@@ -158,11 +158,10 @@ namespace Cafeine.ViewModels.Wizard
                     // consider this file as a special file.
                     // EDs, OPs, Movies, etc.
                     var item = new MediaList
-                    {
-                        Number = -1,
-                        Title = File.FileName,
-                        Files = new List<MediaFile>() { File }
-                    };
+                    (
+                        files : new List<MediaFile>() { File },
+                        number : -1
+                    );
                     UnmatchedList.Add(item);
                 }
             }
@@ -179,23 +178,17 @@ namespace Cafeine.ViewModels.Wizard
             await Task.Yield();
             var CombinedContent = new List<MediaList>();
             var onlinelist = new List<MediaList>(OnlineList);
-            // Notify : add unmatched file.
             Message += "Adding unmatched file(s)\n";
             CombinedContent.AddRange(UnmatchedList);
 
             // group matched based on number
-            // Notify : Trying to group contents
             Message += "Trying to group contents\n";
             var groupedContentList = MatchedList.GroupBy(x => x.Number);
             var group = new List<MediaList>();
             foreach(var num in groupedContentList)
             {
                 List<MediaFile> files = num.Select(x => x.Files[0]).ToList();
-                MediaList file = new MediaList()
-                {
-                    Files = files,
-                    Number = num.Key
-                };
+                MediaList file = new MediaList(files: files, number: num.Key);
                 Message += $"Episode {num.Key} files has been grouped\n";
                 group.Add(file);
 
@@ -207,7 +200,6 @@ namespace Cafeine.ViewModels.Wizard
                 var onlineitem = onlinelist.FirstOrDefault(x => x.Number == m_list.Number);
                 if( onlineitem == null )
                 {
-                    m_list.Title = m_list.Files[0].FileName;
                     CombinedContent.Add(m_list);
                     Message += $"offline item(s) for episode {m_list.Number} has no equivalent online list. consider using its first filename as a Title.\n";
                     // Notify : episode {m_list.Number} has no equivalent online list.
@@ -215,14 +207,13 @@ namespace Cafeine.ViewModels.Wizard
                 }
                 else
                 {
-                    var item = new MediaList()
-                    {
-                        Files = m_list.Files,
-                        Number = onlineitem.Number,
-                        Title = onlineitem.Title,
-                        StreamingServices = onlineitem.StreamingServices,
-                        Thumbnail = onlineitem.Thumbnail,
-                    };
+                    var item = new MediaList(
+                        streams: onlineitem.Streams,
+                        files:   m_list.Files,
+                        number:  onlineitem.Number,
+                        title:   onlineitem.Title,
+                        thumbnail: onlineitem.Thumbnail
+                    );
                     CombinedContent.Add(item);
                     onlinelist.Remove(onlineitem);
                     Message += $"offline item(s) for episode {m_list.Number} Found matched online item\n";

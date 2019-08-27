@@ -7,7 +7,7 @@ namespace Cafeine.Shared.DummyData
 {
     public class DummyContentList : MediaList
     {
-        public DummyContentList()
+        public DummyContentList() 
         {
             List<MediaFile> file = new List<MediaFile>()
             {
@@ -21,7 +21,7 @@ namespace Cafeine.Shared.DummyData
             Number = 100;
             Thumbnail = new Uri("https://img1.ak.crunchyroll.com/i/spire4-tmb/83a6a11ce7ffea4af4792326a035c4c71547911382_full.jpg");
             Files = file;
-            StreamingServices = stream;
+            Streams = stream;
         }
     }
 }

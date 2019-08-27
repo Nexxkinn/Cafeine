@@ -3,6 +3,8 @@ using Cafeine.Services;
 using Cafeine.Shared.Models;
 using System;
 using System.Collections.Generic;
+using Windows.Networking.NetworkOperators;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -42,10 +44,12 @@ namespace Cafeine.Views.Resources
             EpisodeTitle.Text = contentlist.Title;
             SetMediaList();
         }
+
         private void SetMediaList()
         {
             SubMediaList = new List<IMediaList>();
 
+            // if offline exists, set as the main media
             if(contentlist.Files != null && contentlist.Files.Count != 0)
             {
                 MainMediaList = contentlist.Files[0];
@@ -53,14 +57,19 @@ namespace Cafeine.Views.Resources
                 {
                     SubMediaList.AddRange(contentlist.Files.GetRange(1, contentlist.Files.Count - 1));
                 }
-                SubMediaList.AddRange(contentlist.StreamingServices);
+                // add the rest.
+                if (contentlist.Streams != null)
+                {
+                    SubMediaList.AddRange(contentlist.Streams);
+                }
             }
+            // set the first listed stream service as the main media.
             else
             {
-                MainMediaList = contentlist.StreamingServices[0];
-                if(contentlist.StreamingServices.Count > 1)
+                MainMediaList = contentlist.Streams[0];
+                if(contentlist.Streams.Count > 1)
                 {
-                    SubMediaList.AddRange(contentlist.StreamingServices.GetRange(1, contentlist.StreamingServices.Count - 1));
+                    SubMediaList.AddRange(contentlist.Streams.GetRange(1, contentlist.Streams.Count - 1));
                 }
             }
 
@@ -72,17 +81,35 @@ namespace Cafeine.Views.Resources
         // This is only get called by ItemDetailsPage.Episodesitem_ContainerContentChanging
         public async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
-            var file = await ImageCache.GetFromCacheAsync(contentlist.Thumbnail.AbsoluteUri);
-            using (IRandomAccessStream fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
+            if ( contentlist.State != Models.MediaList.MediaListState.OFFLINE )
             {
+                var file = await ImageCache.GetFromCacheAsync(contentlist.Thumbnail.AbsoluteUri);
+                using (IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read))
+                {
+                    var img = new BitmapImage
+                    {
+                        DecodePixelWidth = 180,
+                        CreateOptions = BitmapCreateOptions.IgnoreImageCache
+                    };
+                    await img.SetSourceAsync(fileStream);
+                    Thumbnail.Source = img;
+                }
+            }
+            else
+            {
+                var file = await StorageFile.GetFileFromPathAsync(contentlist.Thumbnail.LocalPath);
+                var thumbnail = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.VideosView);
                 var img = new BitmapImage
                 {
                     DecodePixelWidth = 180,
                     CreateOptions = BitmapCreateOptions.IgnoreImageCache
                 };
-                await img.SetSourceAsync(fileStream);
+                await img.SetSourceAsync(thumbnail);
+                await thumbnail.FlushAsync();
                 Thumbnail.Source = img;
             }
+
+            
 
             DoubleAnimation animation = new DoubleAnimation
             {
@@ -103,21 +130,21 @@ namespace Cafeine.Views.Resources
             ImageOpenedOpacity.Begin();
         }
 
+        // for mouse-based pointer event
         private void GetPointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, "PointerOver", false);
+            if (SubMediaList.Count == 0) VisualStateManager.GoToState(this, nameof(PointerOver), false);
+            else VisualStateManager.GoToState(this, nameof(MediaDescPointerOver), false);
         }
 
+        // for mouse-based pointer event
         private void GetPointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            VisualStateManager.GoToState(this, "Normal", false);
+            if (SubMediaList.Count == 0) VisualStateManager.GoToState(this, nameof(Normal), false);
+            else VisualStateManager.GoToState(this, nameof(MediaDescNormal), false);
         }
 
-        private void ItemClicked()
-        {
-
-        }
-
+        // for touch-based click
         private void GetTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             if (e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse) return;
@@ -125,6 +152,7 @@ namespace Cafeine.Views.Resources
             FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
         }
 
+        // for touch-based link clicked
         private void ItemTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
 
