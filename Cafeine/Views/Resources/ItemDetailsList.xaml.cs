@@ -105,7 +105,6 @@ namespace Cafeine.Views.Resources
                     CreateOptions = BitmapCreateOptions.IgnoreImageCache
                 };
                 await img.SetSourceAsync(thumbnail);
-                await thumbnail.FlushAsync();
                 Thumbnail.Source = img;
             }
 

@@ -15,6 +15,7 @@ namespace Cafeine
 {
     sealed partial class App : Application
     {
+        public static event EventHandler<Uri> AuthenticationResult;
         public App()
         {
             this.InitializeComponent();
@@ -67,6 +68,15 @@ namespace Cafeine
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            if (args.Kind == ActivationKind.Protocol)
+            {
+                ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
+                AuthenticationResult?.Invoke(null, eventArgs.Uri);
+            }
         }
     }
 }

@@ -1,16 +1,13 @@
-﻿using Cafeine.Services;
-using Cafeine.Services.Api;
-using Cafeine.Services.Mvvm;
-using Reactive.Bindings;
-using Reactive.Bindings.Interactivity;
+﻿using Cafeine.Services.Mvvm;
 using System;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Text.RegularExpressions;
 using Windows.UI.Xaml.Controls;
 
 namespace Cafeine.ViewModels
 {
+    /// <summary>
+    /// Consider using this method as the last resort. <br/>
+    /// Other than that, this method is deprecated.
+    /// </summary>
     public class BrowserAuthViewModel : ViewModelBase
     {
         private string _headertitle;
@@ -26,7 +23,8 @@ namespace Cafeine.ViewModels
         {
             HeaderTitle = "Loading...";
 
-            Source = new Uri("https://anilist.co/api/v2/oauth/authorize?client_id=873&response_type=token");
+            // Add other service authentication here.
+            Source = new Uri("");
 
             GoBack = new CafeineCommand(() => 
                 {
@@ -34,24 +32,9 @@ namespace Cafeine.ViewModels
                     navigationService.ClearHistory();
                 });
         }
-        public async void UrlCheck(WebView sender, WebViewNavigationCompletedEventArgs args)
+        public void UrlCheck(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
-            string url = args.Uri.AbsoluteUri.ToString();
-            if (url.Contains("anilist.co/api/v2/oauth/Annalihation#access_token="))
-            {
-                IApiService service = new AniList();
-
-                //get the token
-                Regex r = new Regex(@"(?<==).+?(?=&|$)");
-                Match m = r.Match(url);
-                await service.VerifyAccount(m.Value);
-
-                var CurrentUserAccount = await service.CreateAccount(true);
-                Database.AddAccount(CurrentUserAccount);
-
-                navigationService.GoBack();
-            }
-            else HeaderTitle = "Anilist Web Authentication";
+            // do URL check and verification here.
         }
     }
 }

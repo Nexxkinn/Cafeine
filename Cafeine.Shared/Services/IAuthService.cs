@@ -10,6 +10,8 @@ namespace Cafeine.Shared.Services
     {
         void DeleteAccount(UserAccountModel account);
 
+        Task<UserAccountModel> CreateAccount(bool isDefaultUser);
+
         Task VerifyAccount();
 
         Task VerifyAccount(string token);

@@ -1,7 +1,11 @@
 ﻿using Cafeine.Models;
 using Cafeine.Services;
+using Cafeine.Services.Api;
 using Cafeine.Services.Mvvm;
+using Cafeine.Shared.Services;
 using Cafeine.Views;
+using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
@@ -22,6 +26,8 @@ namespace Cafeine.ViewModels
         public string welcometext;
 
         public bool FromWebsiteRegistration = false;
+
+        private IAuthService AuthService;
 
         public LoginViewModel() { }
 
@@ -53,13 +59,14 @@ namespace Cafeine.ViewModels
             }
         }
 
-        public void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        public async void ListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             switch (e.ClickedItem as string)
             {
                 case "AniList":
                     {
-                        navigationService.Navigate(typeof(BrowserAuthenticationPage));
+                        AuthService = new AniList();
+                        await LoadBrowser(new Uri("https://anilist.co/api/v2/oauth/authorize?client_id=873&response_type=token"));
                         break;
                     }
 
@@ -90,6 +97,48 @@ namespace Cafeine.ViewModels
             frame.Navigate(typeof(HomePage), null, new DrillInNavigationTransitionInfo());
             Link.Publish(typeof(HomePageAvatarLoad));
             navigationService.Navigate(typeof(MainPage));
+        }
+
+        /// <summary>
+        /// Authentication from browser.
+        /// </summary>
+        /// <param name="uriAuth"></param>
+        public async Task LoadBrowser(Uri uriAuth)
+        {
+            // enable shadow drop
+            // CODE HERE
+
+            // add event
+            App.AuthenticationResult += AuthenticationBrowserStatus;
+            // open link on another window
+            await Windows.System.Launcher.LaunchUriAsync(uriAuth);
+        }
+
+        public async void AuthenticationBrowserStatus(object sender,Uri result)
+        {
+            App.AuthenticationResult -= AuthenticationBrowserStatus;
+
+            if(AuthService is AniList)
+            {
+                if (result.Host != "anilist") return; // consider authentication failed.
+
+                Regex r = new Regex(@"(?<=token=).*?(?=&)");
+                Match m = r.Match(result.Fragment);
+
+                await AuthService.VerifyAccount(m.Value);
+
+                var AnilistAccount = await AuthService.CreateAccount(true);
+                Database.AddAccount(AnilistAccount);
+            }
+
+            // TODO: Refactor this
+            await Load();
+        }
+
+        public void AuthenticationCanceled(object sernder,object res)
+        {
+            App.AuthenticationResult -= AuthenticationBrowserStatus;
+            // disable shadow drop
         }
     }
 }
