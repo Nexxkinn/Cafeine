@@ -280,45 +280,41 @@ namespace Cafeine.ViewModels
             LoadItemDetails.Value = true;
             DescriptionTextBlock = Service.Description;
         }
-        public async Task LoadEpisodeList()
+        public async Task LoadEpisodeList(bool UpdateBinding = true)
         {
             //load episode list from database.
-            try
+            if (Offline == null)
             {
-                if (Offline == null)
+                // online mode
+                var onlinecontentlist = await Database.GetSeriesContentList(Service);
+                Episodelist = new ObservableCollection<MediaList>(onlinecontentlist);
+            }
+            else
+            {
+                // handle offline content then
+                IsOfflineItemAvailable = true;
+                Episodelist = new ObservableCollection<MediaList>(_offline.MediaCollection);
+                // TODO: Handle a condition when the streaming service pull the list.
+                //       The app should update the streaming link.
+                var onlinecontentlist = await Database.GetSeriesContentList(Service);
+                if (onlinecontentlist.Count != _offline.MediaCollection.Count)
                 {
-                    // online mode
-                    var onlinecontentlist = await Database.GetSeriesContentList(Service);
-                    Episodelist = new ObservableCollection<MediaList>(onlinecontentlist);
-                }
-                else
-                {
-                    // handle offline content then
-                    IsOfflineItemAvailable = true;
-                    Episodelist = new ObservableCollection<MediaList>(_offline.MediaCollection);
-                    // TODO: Handle a condition when the streaming service pull the list.
-                    //       The app should update the streaming link.
-                    var onlinecontentlist = await Database.GetSeriesContentList(Service);
-                    if (onlinecontentlist.Count != _offline.MediaCollection.Count)
+                    var newcontentlist = onlinecontentlist.Except(Episodelist, new MediaListComparer());
+                    foreach (var item in newcontentlist)
                     {
-                        var newcontentlist = onlinecontentlist.Except(Episodelist, new MediaListComparer());
-                        foreach (var item in newcontentlist)
-                        {
-                            Episodelist.Add(item);
-                        }
-                        RaisePropertyChanged("Episodelist");
-                        _offline?.AddNewContentList(newcontentlist.ToList());
-                        await Database.UpdateOfflineItem(_offline);
+                        Episodelist.Add(item);
                     }
+                    RaisePropertyChanged("Episodelist");
+                    _offline?.AddNewContentList(newcontentlist.ToList());
+                    await Database.UpdateOfflineItem(_offline);
                 }
+            }
+            if ( UpdateBinding )
+            {
                 LoadEpisodeLists = (Episodelist.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
                 LoadEpisodeNotFound = (Episodelist.Count == 0);
+            }
 
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.StackTrace);
-            }
         }
         public async Task LoadServiceItemCoverImage()
         {
@@ -335,6 +331,27 @@ namespace Cafeine.ViewModels
             Episodelist = new ObservableCollection<MediaList>(Offline.MediaCollection);
 
             IsOfflineItemAvailable = true;
+        }
+
+        public async void DeleteOfflineItem()
+        {
+            MessageDialog popup = new MessageDialog($"You are going to delete directory sources.\n" +
+                      $"Removing it will unlink your local files assosiated with this show.\n" +
+                      $"Do you want to Remove it?", $"Remove local directories?");
+            popup.Commands.Add(new UICommand("Remove") { Id = 0 });
+            popup.Commands.Add(new UICommand("Cancel") { Id = 1 });
+            popup.DefaultCommandIndex = 0;
+            popup.CancelCommandIndex = 1;
+            var result = await popup.ShowAsync();
+            if ((int)result.Id == 0)
+            {
+                _ = Database.DeleteOfflineItem( Offline );
+                // Clear the local item
+                Offline = null;
+                // reload the content
+                await LoadEpisodeList( UpdateBinding:false );
+                IsOfflineItemAvailable = false;
+            }
         }
 
         public override void Dispose()

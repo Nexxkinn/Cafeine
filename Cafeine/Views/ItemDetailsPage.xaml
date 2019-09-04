@@ -391,33 +391,18 @@
                             Click="{x:Bind Vm.CreateOfflineItem}"
                             Content="Run setup" />
 
-
                         <StackPanel x:Name="OfflineItemSettings" x:Load="{x:Bind Vm.IsOfflineItemAvailable, Mode=OneWay}">
-                            <TextBlock
-                                Margin="0,24,0,8"
-                                FontSize="16"
-                                Text="Episodes list" />
-                            <CheckBox Content="Get episode list from service" />
-                            <CheckBox Margin="0,4" Content="Do not use thumbnail from service" />
-                            <CheckBox Content="Use custom regex to identify local files with episodes" />
-                            <TextBox
-                                Width="400"
-                                Margin="0,8,0,0"
-                                HorizontalAlignment="Left"
-                                IsEnabled="False"
-                                Text="Default" />
-                            <StackPanel Margin="0,8" Orientation="Horizontal">
-                                <Button Content="Save" IsEnabled="False" />
-                            </StackPanel>
                             <TextBlock
                                 Margin="0,24,0,4"
                                 FontSize="16"
-                                Text="Reset" />
+                                Text="Remove local directories" />
                             <TextBlock Opacity="0.8">
-                                <Run>Use this function if you want to rescan the folder and reconnect</Run>
-                                <LineBreak /><Run>all files with corresponded episodes listed.</Run>
+                                <Run>Remove all directory sources assosiated with this list</Run>
                             </TextBlock>
-                            <Button Margin="0,4" Content="Reset and Reconnect" />
+                            <Button
+                                Margin="0,4"
+                                Click="{x:Bind Vm.DeleteOfflineItem}"
+                                Content="Remove" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>

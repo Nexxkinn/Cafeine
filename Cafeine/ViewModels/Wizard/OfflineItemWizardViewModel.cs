@@ -2,6 +2,7 @@
 using Cafeine.Services;
 using Cafeine.Services.FilenameParser;
 using Cafeine.Services.Mvvm;
+using Cafeine.Views.Wizard;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -229,7 +230,7 @@ namespace Cafeine.ViewModels.Wizard
             // done
             CombinedContent = CombinedContent.OrderBy(x => x.Number).ToList();
 
-            Result = await Database.CreateOflineItem(ServiceItem, CombinedContent, Folder, Pattern).ConfigureAwait(false);
+            Result = Database.CreateOflineItem(ServiceItem, CombinedContent, Folder, Pattern);
             Message += $"Operation done successfully.\n";
             // final setup
             Title = "Finished";
@@ -243,7 +244,6 @@ namespace Cafeine.ViewModels.Wizard
         }
         private void EpisodeListControl_DeleteClick(object sender, RoutedEventArgs e)
         {
-
         }
 
     }

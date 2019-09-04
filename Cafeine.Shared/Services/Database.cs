@@ -1,6 +1,7 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
 using Cafeine.Services.Api;
+using Cafeine.Views.Wizard;
 using DBreeze;
 using DBreeze.DataTypes;
 using DBreeze.Objects;
@@ -215,7 +216,7 @@ namespace Cafeine.Services
             DatabaseUpdated.Invoke(serviceitem, null);
         }
 
-        public static async Task<LocalItem> CreateOflineItem(ServiceItem item,IList<MediaList> list,StorageFolder folder,string pattern)
+        public static LocalItem CreateOflineItem(ServiceItem item, IList<MediaList> list, StorageFolder folder, string pattern)
         {
             using (var tr = db.GetTransaction())
             {
@@ -286,6 +287,18 @@ namespace Cafeine.Services
                         new DBreezeIndex(2,item.MalID)
                     };
                 tr.ObjectInsert("library", localitem);
+                tr.Commit();
+            }
+            return Task.CompletedTask;
+        }
+
+        public static Task DeleteOfflineItem(LocalItem item)
+        {
+            using(var tr = db.GetTransaction())
+            {
+                tr.SynchronizeTables("library");
+                var items = tr.Select<byte[], byte[]>("library", 1.ToIndex((int)item.Id));
+                tr.ObjectRemove("library", items.Key);
                 tr.Commit();
             }
             return Task.CompletedTask;
@@ -412,7 +425,7 @@ namespace Cafeine.Services
         public static void DEBUGMODE()
         {
             //db.Scheme.DeleteTable("user");
-            db.Scheme.DeleteTable("library");
+            //db.Scheme.DeleteTable("library");
             //db.Scheme.DeleteTable("TS_Service");
         }
     }
