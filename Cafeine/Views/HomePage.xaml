@@ -10,7 +10,7 @@
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
-        <vm:HomeViewModel />
+        <vm:HomeViewModel x:Name="Vm" />
     </Page.DataContext>
     <Page.Transitions>
         <TransitionCollection>

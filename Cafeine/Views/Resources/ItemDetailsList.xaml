@@ -3,112 +3,109 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dt="using:UwpDesignTimeData"
-    xmlns:local="using:Cafeine.Views.Resources"
-    xmlns:m="using:Cafeine.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sm="using:Cafeine.Shared.Models"
     d:DesignHeight="148"
     d:DesignWidth="184"
-    Loaded="OnLoaded"
-    mc:Ignorable="d dt">
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="ReducedGridViewItem" TargetType="GridViewItem">
+            <Setter Property="TabNavigation" Value="Local" />
+            <Setter Property="Margin" Value="0,0,4,4" />
+            <Setter Property="AllowDrop" Value="False" />
+            <Setter Property="FocusVisualMargin" Value="-2" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <!--  Please let me know if ListViewItemPresenter is able to disable tilt animation.  -->
+                    <ControlTemplate TargetType="GridViewItem">
+                        <ContentPresenter x:Name="ContentPresenter" RenderTransformOrigin="0.5, 0.5">
+                            <ContentPresenter.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </ContentPresenter.RenderTransform>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Storyboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="ContentPresenter"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                    To="1"
+                                                    Duration="0:0:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="ContentPresenter"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                    To="1"
+                                                    Duration="0:0:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState.Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Storyboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="ContentPresenter"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                    To="1.2"
+                                                    Duration="0:0:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="ContentPresenter"
+                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                    To="1.2"
+                                                    Duration="0:0:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState.Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <RelativePanel
         Height="144"
         Margin="2"
         Background="#4C000000"
+        BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
         CornerRadius="3"
-        Tapped="GetTapped"
         PointerEntered="GetPointerEntered"
         PointerExited="GetPointerExited"
-        BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal">
-                    <Storyboard>
-                        <DoubleAnimation 
-                            Storyboard.TargetName="MediaList" 
-                            Storyboard.TargetProperty="Opacity" 
-                            From="1" To="0"
-                            Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="MediaDescNormal">
-                    <Storyboard>
-                        <DoubleAnimation 
-                            Storyboard.TargetName="MediaList" 
-                            Storyboard.TargetProperty="Opacity" 
-                            From="1" To="0"
-                            Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                        <DoubleAnimation Storyboard.TargetName="MediaDesc"
-                                         Storyboard.TargetProperty="Opacity" From="0" To="1"
-                            Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="PointerOver">
-                    <Storyboard>
-                        <DoubleAnimation 
-                            Storyboard.TargetName="MediaList" 
-                            Storyboard.TargetProperty="Opacity" 
-                            From="0" To="1"
-                            Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="MediaDescPointerOver">
-                    <Storyboard>
-                        <DoubleAnimation 
-                            Storyboard.TargetName="MediaList" 
-                            Storyboard.TargetProperty="Opacity" 
-                            From="0" To="1"
-                            Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                        <DoubleAnimation Storyboard.TargetName="MediaDesc"
-                                         Storyboard.TargetProperty="Opacity" From="1" To="0"
-                            Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+        Tapped="GetTapped">
         <Image
             x:Name="Thumbnail"
             Grid.Column="0"
             Width="180"
             Height="80"
             HorizontalAlignment="Left"
-            dt:DesignTime.Source="https://img1.ak.crunchyroll.com/i/spire4-tmb/83a6a11ce7ffea4af4792326a035c4c71547911382_full.jpg"
             Opacity="1"
             Stretch="UniformToFill" />
         <StackPanel
             x:Name="MediaDesc"
-            MaxWidth="180"
+            Width="172"
             Margin="4"
             RelativePanel.Below="Thumbnail">
-            <TextBlock x:Name="EpisodeNumber" dt:DesignTime.Text="Episode 100" />
+            <TextBlock x:Name="EpisodeNumber" />
             <TextBlock
                 x:Name="EpisodeTitle"
-                dt:DesignTime.Text="Though My Life May Have Ended Once by Someone Who Has A Connection"
                 FontWeight="SemiBold"
                 MaxLines="2"
                 TextTrimming="WordEllipsis"
@@ -118,27 +115,134 @@
             x:Name="MediaList"
             Width="180"
             Height="144"
-            x:Load="False"
             Opacity="0">
-            <RelativePanel Grid.Row="0" Height="80" Background="#E6000000">
+            <Grid
+                Grid.Row="0"
+                Height="80"
+                Background="#E6000000"
+                Tapped="{x:Bind MainMediaList.Clicked}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <FontIcon
+                    x:Name="MainMediaListIcon"
+                    Grid.Column="1"
+                    FontFamily="ms-appx:/Assets/Font/MediaLogo.ttf#Untitled1"
+                    FontSize="24" />
                 <TextBlock
                     x:Name="MainMediaListTitle"
-                    Tapped="{x:Bind MainMediaList.Clicked}"
-                    RelativePanel.AlignHorizontalCenterWithPanel="True"
-                    RelativePanel.AlignVerticalCenterWithPanel="True"/>
-            </RelativePanel>
-            <GridView x:Name="StreamServiceGrid">
+                    Grid.Column="3"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    FontStretch="UltraExpanded"
+                    FontWeight="SemiBold"
+                    TextLineBounds="Tight" />
+            </Grid>
+            <GridView
+                x:Name="StreamServiceGrid"
+                IsItemClickEnabled="True"
+                ItemContainerStyle="{StaticResource ReducedGridViewItem}"
+                SelectionMode="None">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="sm:IMediaList">
-                        <AppBarButton Click="{x:Bind Clicked}" Width="40" Height="40" ToolTipService.ToolTip="{x:Bind Source}"/>
+                        <FontIcon
+                            FontFamily="ms-appx:/Assets/Font/MediaLogo.ttf#Untitled1"
+                            FontSize="28"
+                            Glyph="{x:Bind Icon}"
+                            Tapped="{x:Bind Clicked}"
+                            ToolTipService.ToolTip="{x:Bind Source}" />
                     </DataTemplate>
                 </GridView.ItemTemplate>
             </GridView>
         </StackPanel>
         <FlyoutBase.AttachedFlyout>
             <Flyout Placement="Bottom">
-                <TextBlock Text="test"/>
+                <TextBlock Text="yes" />
             </Flyout>
         </FlyoutBase.AttachedFlyout>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal">
+                    <Storyboard>
+                        <DoubleAnimation
+                            Storyboard.TargetName="MediaList"
+                            Storyboard.TargetProperty="Opacity"
+                            From="1"
+                            To="0"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="MediaDescNormal">
+                    <Storyboard>
+                        <DoubleAnimation
+                            Storyboard.TargetName="MediaList"
+                            Storyboard.TargetProperty="Opacity"
+                            From="1"
+                            To="0"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation
+                            Storyboard.TargetName="MediaDesc"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0"
+                            To="1"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="PointerOver">
+                    <Storyboard>
+                        <DoubleAnimation
+                            Storyboard.TargetName="MediaList"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0"
+                            To="1"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="MediaDescPointerOver">
+                    <Storyboard>
+                        <DoubleAnimation
+                            Storyboard.TargetName="MediaList"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0"
+                            To="1"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation
+                            Storyboard.TargetName="MediaDesc"
+                            Storyboard.TargetProperty="Opacity"
+                            From="1"
+                            To="0"
+                            Duration="0:0:0.3">
+                            <DoubleAnimation.EasingFunction>
+                                <ExponentialEase EasingMode="EaseOut" Exponent="5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </RelativePanel>
 </UserControl>

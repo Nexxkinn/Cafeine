@@ -4,18 +4,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:m="using:Cafeine.Models"
-    xmlns:r="using:Cafeine.Views.Resources"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
+    xmlns:r="using:Cafeine.Views.Resources"
     xmlns:vm="using:Cafeine.ViewModels"
     Background="{ThemeResource LegacyDarkBlue}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
-        <vm:SearchViewModel />
+        <vm:SearchViewModel x:Name="Vm" />
     </Page.DataContext>
     <Page.Resources>
-        <r:SearchPage/>
+        <r:SearchPage />
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>

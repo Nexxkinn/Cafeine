@@ -25,8 +25,6 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class ItemDetailsPage : BasePage
     {
-        public ItemDetailsViewModel Vm  => DataContext as ItemDetailsViewModel;
-
         public ItemDetailsPage()
         {
             this.InitializeComponent();

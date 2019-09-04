@@ -25,13 +25,6 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class HomePage : Page
     {
-        public HomeViewModel Vm {
-            get {
-                return DataContext as HomeViewModel;
-            }
-            set { }
-        }
-
         public HomePage()
         {
             this.InitializeComponent();

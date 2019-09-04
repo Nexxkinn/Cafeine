@@ -12,10 +12,10 @@
     Loaded="Page_Loaded"
     mc:Ignorable="d">
     <Page.DataContext>
-        <vm:ItemDetailsViewModel />
+        <vm:ItemDetailsViewModel x:Name="Vm" />
     </Page.DataContext>
     <Page.Resources>
-        <r:ItemDetailsPage/>
+        <r:ItemDetailsPage />
     </Page.Resources>
     <Page.Transitions>
         <TransitionCollection>
@@ -347,8 +347,8 @@
                             x:Name="episodesitem"
                             Canvas.ZIndex="-1"
                             ContainerContentChanging="Episodesitem_ContainerContentChanging"
-                            ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
                             ItemContainerStyle="{StaticResource ItemDetailsListItemContainerStyle}"
+                            ItemsSource="{x:Bind Path=Vm.Episodelist, Mode=OneWay}"
                             Visibility="{x:Bind Path=Vm.LoadEpisodeLists, Mode=OneWay}">
                             <GridView.ItemTemplate>
                                 <DataTemplate x:DataType="model:MediaList">

@@ -20,7 +20,6 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class SearchPage : BasePage
     {
-        public SearchViewModel Vm => DataContext as SearchViewModel;
         private double _listviewheight;
         private double _gridviewheight;
         public SearchPage()

@@ -3,6 +3,7 @@ using Cafeine.Services;
 using Cafeine.Services.Mvvm;
 using Cafeine.ViewModels;
 using System;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -19,8 +20,6 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class MainPage : BasePage
     {
-        public MainViewModel Vm => DataContext as MainViewModel;
-
         public MainPage()
         {
             InitializeComponent();
@@ -39,7 +38,9 @@ namespace Cafeine.Views
             var image = templateRoot.Children[0] as Image;
 
             var file = await ImageCache.GetFromCacheAsync(imageurl.AbsoluteUri);
-            image.Source = new BitmapImage { UriSource = new Uri(file.Path) };
+            var bitmap = new BitmapImage { DecodePixelWidth = 140 };
+            image.Source = bitmap;
+            bitmap.UriSource = new Uri(file.Path, UriKind.RelativeOrAbsolute);
 
             DoubleAnimation animation = new DoubleAnimation
             {

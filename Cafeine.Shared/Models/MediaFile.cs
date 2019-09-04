@@ -11,8 +11,8 @@ namespace Cafeine.Models
         public string Path;
         public string FileName;
 
-        public string Icon { get; set; } = "P";
-        public string Source { get; set; } = "Play Offline";
+        public string Icon { get; set; } = "A";
+        public string Source { get; set; } = "Play";
 
         public async void Clicked()
         {

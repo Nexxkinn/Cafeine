@@ -27,8 +27,6 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class LoginPage : BasePage
     {
-        public LoginViewModel Vm => DataContext as LoginViewModel;
-
         public LoginPage()
         {
             this.InitializeComponent();

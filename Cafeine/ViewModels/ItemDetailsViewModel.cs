@@ -7,9 +7,11 @@ using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
@@ -41,7 +43,11 @@ namespace Cafeine.ViewModels
             get => _details;
             set => Set(ref _details, value);
         }
-        public ObservableCollection<MediaList> Episodelist { get; private set; }
+        public ObservableCollection<MediaList> Episodelist 
+        {
+            get => _episodelist;
+            set => Set(ref _episodelist, value);
+        }
         
         #region mvvm setup properties
 
@@ -132,6 +138,7 @@ namespace Cafeine.ViewModels
         private bool _isOfflineItemAvailable;
         private Brush _paneBackground;
         private StorageFile _imageSource;
+        private ObservableCollection<MediaList> _episodelist;
         #endregion
 
         #endregion
@@ -165,7 +172,7 @@ namespace Cafeine.ViewModels
             LoadEpisodeLists = Visibility.Collapsed;
             LoadEpisodesListConfiguration = Visibility.Visible;
 
-            SetDeleteButtonLoad = new ReactiveProperty<bool>(true);
+            SetDeleteButtonLoad = new ReactiveProperty<bool>(User != null);
             SetDeleteButtonLoad.Subscribe(sdb =>
             {
                 SetAddButtonLoad = !sdb;
@@ -174,8 +181,8 @@ namespace Cafeine.ViewModels
             #endregion
 
             #region TwoWay Initial Value
-            TotalSeenTextBox = new ReactiveProperty<int>();
-            UserStatusComboBox = new ReactiveProperty<int>();
+            TotalSeenTextBox = new ReactiveProperty<int>( User?.Watched_Read ?? 0 );
+            UserStatusComboBox = new ReactiveProperty<int>( User?.UserStatus ?? 0 );
             #endregion
 
             PlusOneTotalSeenTextBlock = new CafeineCommand(()=> TotalSeenTextBox.Value += 1);
@@ -230,6 +237,8 @@ namespace Cafeine.ViewModels
                     navigationService.GoBack();
                 }
             });
+
+            LoadItem();
         }
 
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
@@ -250,49 +259,19 @@ namespace Cafeine.ViewModels
             Dispose();
         }
 
-        public override async Task OnNavigatedTo(NavigationEventArgs e)
-        {
-            await base.OnNavigatedTo(e);
-            // Let UI Thread free
-            await Task.Yield();
-            LoadItem();
-        }
-
         public void LoadItem()
         {
-            try
+            StatusTextBlock = $"{StatusEnum.Anilist_AnimeItemStatus[Service.ItemStatus.Value]} • {Service.SeriesStart} • TV";
+            ScorePlaceHolderRating = ScoreFormatEnum.Anilist_ConvertToGlobalUnit( Service.AverageScore ?? -1 );
+            ScoreTextBlock = (Service.AverageScore.HasValue) ? $"( {Service.AverageScore.ToString()} )" : "( No score )";
+
+            //Parallel task.
+            var tasks = new Task[]
             {
-                RaisePropertyChanged(nameof(User));
-                RaisePropertyChanged(nameof(Service));
-
-                TotalSeenTextBox.Value = User?.Watched_Read ?? 0;
-                UserStatusComboBox.Value = User?.UserStatus ?? 0;
-                SetDeleteButtonLoad.Value = (User != null);
-
-                StatusTextBlock = $"{StatusEnum.Anilist_AnimeItemStatus[Service.ItemStatus.Value]} • {Service.SeriesStart} • TV";
-                double score = Service.AverageScore ?? -1;
-                ScorePlaceHolderRating = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(score);
-                ScoreTextBlock = (Service.AverageScore.HasValue) ? $"( {Service.AverageScore.ToString()} )" : "( No score )";
-
-                //Parallel task.
-                List<Task> task = new List<Task>()
-                {
-                    LoadServiceItemDetails(),
-                    LoadEpisodeList(),
-                    LoadServiceItemCoverImage()
-                };
-            }
-            catch (Exception ex)
-            {
-                //assume an exception exists?
-                //ItemScoreReadOnly.Value   = true;
-                //ItemScore.Value           = ScoreFormatEnum.Anilist_ConvertToGlobalUnit(-1, 0);
-
-                //ItemStatusTextBlock.Value = $"An error occured. {ex.Message}";
-
-                //Item.Details.Description = $"{ex.StackTrace}\n" +
-                //    $"Screenshot this image and contact to the developer.";
-            }
+                LoadServiceItemDetails(),
+                LoadEpisodeList(),
+                LoadServiceItemCoverImage(),
+            };
         }
 
         public async Task LoadServiceItemDetails()
@@ -304,36 +283,42 @@ namespace Cafeine.ViewModels
         public async Task LoadEpisodeList()
         {
             //load episode list from database.
-            if (Offline == null)
+            try
             {
-                // online mode
-                var onlinecontentlist = await Database.GetSeriesContentList(Service);
-                Episodelist = new ObservableCollection<MediaList>(onlinecontentlist);
-                RaisePropertyChanged("Episodelist");
-            }
-            else
-            {
-                // handle offline content then
-                IsOfflineItemAvailable = true;
-                Episodelist = new ObservableCollection<MediaList>(_offline.MediaCollection);
-                RaisePropertyChanged("Episodelist");
-                // TODO: Handle a condition when the streaming service pull the list.
-                //       The app should update the streaming link.
-                var onlinecontentlist = await Database.GetSeriesContentList(Service);
-                if (onlinecontentlist.Count != _offline.MediaCollection.Count)
+                if (Offline == null)
                 {
-                    var newcontentlist = onlinecontentlist.Except(Episodelist, new MediaListComparer());
-                    foreach (var item in newcontentlist)
-                    {
-                        Episodelist.Add(item);
-                    }
-                    RaisePropertyChanged("Episodelist");
-                    _offline?.AddNewContentList(newcontentlist.ToList());
-                    await Database.UpdateOfflineItem(_offline);
+                    // online mode
+                    var onlinecontentlist = await Database.GetSeriesContentList(Service);
+                    Episodelist = new ObservableCollection<MediaList>(onlinecontentlist);
                 }
+                else
+                {
+                    // handle offline content then
+                    IsOfflineItemAvailable = true;
+                    Episodelist = new ObservableCollection<MediaList>(_offline.MediaCollection);
+                    // TODO: Handle a condition when the streaming service pull the list.
+                    //       The app should update the streaming link.
+                    var onlinecontentlist = await Database.GetSeriesContentList(Service);
+                    if (onlinecontentlist.Count != _offline.MediaCollection.Count)
+                    {
+                        var newcontentlist = onlinecontentlist.Except(Episodelist, new MediaListComparer());
+                        foreach (var item in newcontentlist)
+                        {
+                            Episodelist.Add(item);
+                        }
+                        RaisePropertyChanged("Episodelist");
+                        _offline?.AddNewContentList(newcontentlist.ToList());
+                        await Database.UpdateOfflineItem(_offline);
+                    }
+                }
+                LoadEpisodeLists = (Episodelist.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
+                LoadEpisodeNotFound = (Episodelist.Count == 0);
+
             }
-            LoadEpisodeLists = (Episodelist.Count != 0) ? Visibility.Visible : Visibility.Collapsed;
-            LoadEpisodeNotFound = (Episodelist.Count == 0);
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.StackTrace);
+            }
         }
         public async Task LoadServiceItemCoverImage()
         {
@@ -350,15 +335,18 @@ namespace Cafeine.ViewModels
             Episodelist = new ObservableCollection<MediaList>(Offline.MediaCollection);
 
             IsOfflineItemAvailable = true;
-            RaisePropertyChanged("Episodelist");
         }
 
         public override void Dispose()
         {
             Service = null;
-            _offline = null;
-            _details = null;
+            Offline = null;
+            Details = null;
             Episodelist = null;
+            IsPaneOpened.Dispose();
+            AddButtonClicked.Dispose();
+            DeleteButtonClicked.Dispose();
+
             GC.Collect();
         }
     }

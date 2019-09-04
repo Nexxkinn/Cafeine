@@ -306,7 +306,7 @@ namespace Cafeine.Services.Api
                 Uri url = new Uri(urlstring);
                 List<MediaStream> streams = new List<MediaStream>()
                 {
-                    new MediaStream { Icon = "C", Source = episode["site"], Url = url }
+                    new MediaStream { Icon = "B", Source = episode["site"], Url = url }
                 };
                 episodes.Add(new MediaList
                 {

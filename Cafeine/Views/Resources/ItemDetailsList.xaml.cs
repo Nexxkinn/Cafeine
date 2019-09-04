@@ -3,12 +3,14 @@ using Cafeine.Services;
 using Cafeine.Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Windows.Networking.NetworkOperators;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -26,27 +28,23 @@ namespace Cafeine.Views.Resources
         public ItemDetailsList()
         {
             this.InitializeComponent();
+            this.Loaded += (s, e) => SetBinding();
         }
 
         public MediaList contentlist {
             get { return (MediaList)GetValue(contentlistProperty); }
-            set { if (value != null) SetValue(contentlistProperty, value);
-            }
+            set { SetValue(contentlistProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for contentlist.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty contentlistProperty =
             DependencyProperty.Register("contentlist", typeof(MediaList), typeof(ItemDetailsList), null);
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        private void SetBinding()
         {
             EpisodeNumber.Text = contentlist.GenerateEpisodeNumber();
             EpisodeTitle.Text = contentlist.Title;
-            SetMediaList();
-        }
 
-        private void SetMediaList()
-        {
             SubMediaList = new List<IMediaList>();
 
             // if offline exists, set as the main media
@@ -72,43 +70,35 @@ namespace Cafeine.Views.Resources
                     SubMediaList.AddRange(contentlist.Streams.GetRange(1, contentlist.Streams.Count - 1));
                 }
             }
-
-            this.FindName(nameof(MediaList));
             StreamServiceGrid.ItemsSource = SubMediaList;
             MainMediaListTitle.Text = MainMediaList.Source;
+            MainMediaListIcon.Glyph = MainMediaList.Icon;
         }
         
         // This is only get called by ItemDetailsPage.Episodesitem_ContainerContentChanging
         public async void LoadImage(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
+            var img = new BitmapImage
+            {
+                DecodePixelWidth = 180,
+                DecodePixelType = DecodePixelType.Logical,
+                CreateOptions = BitmapCreateOptions.IgnoreImageCache
+            };
+            Thumbnail.Source = img;
+
             if ( contentlist.State != Models.MediaList.MediaListState.OFFLINE )
             {
+                // thumbnail is from online source.
                 var file = await ImageCache.GetFromCacheAsync(contentlist.Thumbnail.AbsoluteUri);
-                using (IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read))
-                {
-                    var img = new BitmapImage
-                    {
-                        DecodePixelWidth = 180,
-                        CreateOptions = BitmapCreateOptions.IgnoreImageCache
-                    };
-                    await img.SetSourceAsync(fileStream);
-                    Thumbnail.Source = img;
-                }
+                img.UriSource = new Uri(file.Path);
             }
             else
             {
+                // thumbnail is from offline source.
                 var file = await StorageFile.GetFileFromPathAsync(contentlist.Thumbnail.LocalPath);
                 var thumbnail = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.VideosView);
-                var img = new BitmapImage
-                {
-                    DecodePixelWidth = 180,
-                    CreateOptions = BitmapCreateOptions.IgnoreImageCache
-                };
-                await img.SetSourceAsync(thumbnail);
-                Thumbnail.Source = img;
+                if (thumbnail != null) await img.SetSourceAsync(thumbnail);
             }
-
-            
 
             DoubleAnimation animation = new DoubleAnimation
             {
@@ -134,6 +124,8 @@ namespace Cafeine.Views.Resources
         {
             if (SubMediaList.Count == 0) VisualStateManager.GoToState(this, nameof(PointerOver), false);
             else VisualStateManager.GoToState(this, nameof(MediaDescPointerOver), false);
+
+            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Hand, 0);
         }
 
         // for mouse-based pointer event
@@ -141,6 +133,8 @@ namespace Cafeine.Views.Resources
         {
             if (SubMediaList.Count == 0) VisualStateManager.GoToState(this, nameof(Normal), false);
             else VisualStateManager.GoToState(this, nameof(MediaDescNormal), false);
+
+            Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
         }
 
         // for touch-based click
@@ -155,6 +149,28 @@ namespace Cafeine.Views.Resources
         private void ItemTapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
 
+        }
+
+        // For Composition
+        private void ContentPresenterLoaded(object sender, RoutedEventArgs e)
+        {
+            var root = (UIElement)sender;
+            var rootVisual = ElementCompositionPreview.GetElementVisual(root);
+            var compositor = rootVisual.Compositor;
+
+            var pointerEnteredAnimation = compositor.CreateVector3KeyFrameAnimation();
+            pointerEnteredAnimation.InsertKeyFrame(1.0f, new Vector3(1.1f));
+
+            var pointerExitedAnimation = compositor.CreateVector3KeyFrameAnimation();
+            pointerExitedAnimation.InsertKeyFrame(1.0f, new Vector3(1.0f));
+
+            root.PointerEntered += (s, a) =>
+            {
+                rootVisual.CenterPoint = new Vector3(rootVisual.Size / 2, 0);
+                rootVisual.StartAnimation("Scale", pointerEnteredAnimation);
+            };
+
+            root.PointerExited += (s, a) => rootVisual.StartAnimation("Scale", pointerExitedAnimation);
         }
     }
 }

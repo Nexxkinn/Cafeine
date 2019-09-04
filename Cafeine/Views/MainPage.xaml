@@ -6,16 +6,16 @@
     xmlns:local="using:Cafeine"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
-    xmlns:vm="using:Cafeine.ViewModels"
     xmlns:r="using:Cafeine.Views.Resources"
+    xmlns:vm="using:Cafeine.ViewModels"
     Background="{ThemeResource CafeineDarkBlue}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <mvvm:BasePage.Resources>
-        <r:MainPage/>
+        <r:MainPage />
     </mvvm:BasePage.Resources>
     <mvvm:BasePage.DataContext>
-        <vm:MainViewModel />
+        <vm:MainViewModel x:Name="Vm" />
     </mvvm:BasePage.DataContext>
     <Grid Margin="28,0,0,0">
         <Grid.ColumnDefinitions>

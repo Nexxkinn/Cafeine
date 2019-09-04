@@ -10,7 +10,7 @@
     Background="{ThemeResource CafeineBlue}"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
-        <vm:LoginViewModel />
+        <vm:LoginViewModel x:Name="Vm" />
     </mvvm:BasePage.DataContext>
     <Grid>
         <Image

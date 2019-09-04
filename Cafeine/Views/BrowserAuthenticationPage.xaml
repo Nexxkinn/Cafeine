@@ -10,7 +10,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
     <mvvm:BasePage.DataContext>
-        <vm:BrowserAuthViewModel />
+        <vm:BrowserAuthViewModel x:Name="Vm" />
     </mvvm:BasePage.DataContext>
     <Grid>
         <Grid.RowDefinitions>
