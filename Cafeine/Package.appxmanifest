@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="39084Nexxkinn.Cafeine" Publisher="CN=7326BB0B-4D1B-41F3-9023-2FB03F7BBD30" Version="0.14.1.0" />
-  <mp:PhoneIdentity PhoneProductId="74aeff76-b194-46dd-a66a-7657a8039c87" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="39084Nexxkinn.Cafeine" Publisher="CN=7326BB0B-4D1B-41F3-9023-2FB03F7BBD30" Version="0.4.0.0" />
+  <mp:PhoneIdentity PhoneProductId="c6ca8721-eeb1-476e-8b58-961f255c2ff2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Cafeine</DisplayName>
     <PublisherDisplayName>Nexxkinn</PublisherDisplayName>
@@ -15,21 +15,11 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Cafeine.App">
-      <uap:VisualElements DisplayName="Cafeine" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Cafeine" BackgroundColor="#262a2f">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png" ShortName="Cafeine">
-          <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="square150x150Logo"/>
-            <uap:ShowOn Tile="wide310x150Logo"/>
-            <uap:ShowOn Tile="square310x310Logo"/>
-          </uap:ShowNameOnTiles>
+      <uap:VisualElements DisplayName="Cafeine" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Cafeine descriptioooon" BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
         </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="#262a2f"/>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
-      <Extensions>
-        <uap:Extension Category="windows.protocol">
-          <uap:Protocol Name="cafeine" />
-        </uap:Extension>
-      </Extensions>
     </Application>
   </Applications>
   <Capabilities>
