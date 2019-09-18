@@ -50,222 +50,78 @@
                             Stretch="UniformToFill" />
                     </Grid.Background>
                 </Grid>
-                <SplitView
+                <Grid
+                    Grid.Row="0"
                     Grid.ColumnSpan="2"
-                    DisplayMode="CompactOverlay"
-                    IsPaneOpen="{x:Bind Vm.IsPaneOpened.Value, Mode=TwoWay}"
-                    LightDismissOverlayMode="On"
-                    OpenPaneLength="350"
-                    PaneBackground="{x:Bind Vm.PaneBackground, Mode=OneWay}"
-                    Template="{StaticResource CafeineSplitView}">
-                    <SplitView.Pane>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="48" />
-                                <ColumnDefinition Width="8" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="12" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40" />
-                                <RowDefinition Height="56" />
-                                <RowDefinition Height="48" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <AppBarButton
-                                Grid.Row="1"
-                                Width="48"
-                                Height="56"
-                                MinHeight="28"
-                                Command="{x:Bind Vm.UserItemDetailsClicked}"
-                                IsEnabled="{x:Bind Vm.SetDeleteButtonLoad.Value, Mode=OneWay}"
-                                LabelPosition="Collapsed"
-                                Style="{StaticResource ReducedAppBarButtonRevealStyle}">
-                                <AppBarButton.Content>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock
-                                            FontWeight="Bold"
-                                            Text="{x:Bind Vm.User.Watched_Read, Mode=OneWay}"
-                                            TextAlignment="Center"
-                                            TextLineBounds="Tight" />
-                                        <Line
-                                            Margin="0,4"
-                                            HorizontalAlignment="Center"
-                                            Stretch="Fill"
-                                            Stroke="White"
-                                            StrokeDashCap="Square"
-                                            StrokeEndLineCap="Round"
-                                            StrokeStartLineCap="Round"
-                                            StrokeThickness="1.5"
-                                            X2="20" />
-                                        <TextBlock
-                                            Text="{x:Bind Vm.Service.Episodes_Chapters, Mode=OneWay}"
-                                            TextAlignment="Center"
-                                            TextLineBounds="Tight" />
-                                    </StackPanel>
-                                </AppBarButton.Content>
-                            </AppBarButton>
-                            <AppBarButton
-                                Grid.Row="2"
-                                Width="48"
-                                Height="48"
-                                Command="{x:Bind Vm.UserItemDetailsClicked}"
-                                IsEnabled="{x:Bind Vm.SetDeleteButtonLoad.Value, Mode=OneWay}"
-                                Style="{StaticResource ReducedAppBarButtonRevealStyle}">
-                                <AppBarButton.Content>
-                                    <TextBlock Text="N" />
-                                </AppBarButton.Content>
-                            </AppBarButton>
-                            <AppBarButton
-                                x:Name="Delete"
-                                Grid.Row="3"
-                                Width="48"
-                                Height="48"
-                                VerticalAlignment="Bottom"
-                                x:Load="{x:Bind Vm.SetDeleteButtonLoad.Value, Mode=OneWay}"
-                                Command="{x:Bind Vm.DeleteButtonClicked}"
-                                Style="{StaticResource ReducedAppBarButtonRevealStyle}">
-                                <AppBarButton.Icon>
-                                    <FontIcon Margin="3" Glyph="&#xE107;" />
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                            <AppBarButton
-                                x:Name="Add"
-                                Grid.Row="3"
-                                Width="48"
-                                Height="48"
-                                VerticalAlignment="Bottom"
-                                x:Load="{x:Bind Vm.SetAddButtonLoad, Mode=OneWay}"
-                                Command="{x:Bind Vm.AddButtonClicked}"
-                                Style="{StaticResource ReducedAppBarButtonRevealStyle}">
-                                <AppBarButton.Icon>
-                                    <FontIcon Margin="3" Glyph="&#xE109;" />
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                            <RelativePanel
-                                Grid.Row="1"
-                                Grid.Column="2"
-                                VerticalAlignment="Center">
-                                <TextBlock
-                                    x:Name="Header1"
-                                    FontSize="16"
-                                    RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    Text="Episodes seen" />
-                                <Button
-                                    x:Name="UpButton"
-                                    Command="{x:Bind Vm.PlusOneTotalSeenTextBlock}"
-                                    Content="+"
-                                    RelativePanel.LeftOf="userepisodestext" />
-                                <TextBox
-                                    x:Name="userepisodestext"
-                                    BorderThickness="0"
-                                    RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    RelativePanel.LeftOf="line"
-                                    Style="{StaticResource FluentTextBoxStyle}"
-                                    Text="{x:Bind Vm.TotalSeenTextBox.Value, Mode=TwoWay}" />
-                                <Line
-                                    x:Name="line"
-                                    Margin="8,0,2,0"
-                                    HorizontalAlignment="Center"
-                                    RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    RelativePanel.LeftOf="EpisodesChapters"
-                                    Stroke="White"
-                                    StrokeDashCap="Square"
-                                    StrokeEndLineCap="Round"
-                                    StrokeStartLineCap="Round"
-                                    StrokeThickness="1"
-                                    X2="5"
-                                    Y1="14" />
-                                <TextBlock
-                                    x:Name="EpisodesChapters"
-                                    Margin="2,0"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    Text="{x:Bind Vm.Service.Episodes_Chapters, Mode=OneWay}" />
-
-                            </RelativePanel>
-                            <RelativePanel
-                                Grid.Row="2"
-                                Grid.Column="2"
-                                VerticalAlignment="Center">
-                                <TextBlock
-                                    x:Name="Header2"
-                                    FontSize="16"
-                                    RelativePanel.AlignVerticalCenterWithPanel="True"
-                                    Text="Status" />
-                                <ComboBox
-                                    BorderThickness="0"
-                                    PlaceholderText="Not Yet Added"
-                                    RelativePanel.AlignRightWith="Header2"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    SelectedIndex="{x:Bind Vm.UserStatusComboBox.Value, Mode=TwoWay}">
-                                    <ComboBoxItem Content="Currently Watching" />
-                                    <ComboBoxItem Content="Completed" />
-                                    <ComboBoxItem Content="On Hold" />
-                                    <ComboBoxItem Content="Dropped" />
-                                    <ComboBoxItem Content="Plan to Watch" />
-                                </ComboBox>
-                            </RelativePanel>
-                        </Grid>
-                    </SplitView.Pane>
-                    <Grid Margin="8,48,28,20">
-                        <RelativePanel>
-                            <Image
-                                x:Name="cover"
-                                MinWidth="140"
-                                MinHeight="204"
-                                MaxWidth="142"
-                                MaxHeight="204"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Source="{x:Bind Vm.ImageSource.Path, Mode=OneWay}" />
-                            <StackPanel
-                                MaxHeight="204"
-                                Margin="14,0,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Stretch"
-                                RelativePanel.RightOf="cover">
-                                <TextBlock
-                                    MaxWidth="500"
-                                    FontSize="22"
-                                    FontWeight="SemiBold"
-                                    MaxLines="2"
-                                    Text="{x:Bind Path=Vm.Service.Title, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="Wrap" />
-                                <TextBlock
-                                    x:Name="ItemStatusTextBlock"
-                                    FontSize="14"
-                                    Text="{x:Bind Path=Vm.StatusTextBlock, Mode=OneWay}" />
-                                <RatingControl
-                                    x:Name="rating"
-                                    Margin="0,0,0,-8"
-                                    HorizontalAlignment="Left"
-                                    Caption="{x:Bind Path=Vm.ScoreTextBlock, Mode=OneWay}"
-                                    InitialSetValue="0"
-                                    IsReadOnly="True"
-                                    PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating, Mode=OneWay}" />
-                                <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
-                                <ProgressRing
-                                    x:Name="progressring"
-                                    HorizontalAlignment="Left"
-                                    x:Load="{x:Bind Vm.ItemDetailsProgressRing, Mode=OneWay}"
-                                    IsActive="True" />
-                                <TextBlock
-                                    x:Name="description"
-                                    MaxWidth="500"
-                                    HorizontalAlignment="Left"
-                                    x:Load="{x:Bind Vm.LoadItemDetails.Value, Mode=OneWay}"
-                                    FontSize="13"
-                                    Foreground="#D7FFFFFF"
-                                    MaxLines="5"
-                                    Text="{x:Bind Path=Vm.DescriptionTextBlock, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                        </RelativePanel>
-                    </Grid>
-                </SplitView>
+                    Padding="56,48,28,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="154" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Image
+                        x:Name="cover"
+                        Grid.Column="0"
+                        Width="140"
+                        Height="204"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+                        <Image.Source>
+                            <BitmapImage
+                                CreateOptions="IgnoreImageCache"
+                                DecodePixelType="Logical"
+                                DecodePixelWidth="140"
+                                UriSource="{x:Bind Vm.ImageSource.Path, Mode=OneWay}" />
+                        </Image.Source>
+                    </Image>
+                    <StackPanel
+                        Grid.Column="1"
+                        MaxHeight="204"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch">
+                        <TextBlock
+                            MaxWidth="500"
+                            FontSize="22"
+                            FontWeight="SemiBold"
+                            MaxLines="2"
+                            Text="{x:Bind Path=Vm.Service.Title, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            x:Name="ItemStatusTextBlock"
+                            FontSize="14"
+                            Text="{x:Bind Path=Vm.StatusTextBlock, Mode=OneWay}" />
+                        <RatingControl
+                            x:Name="rating"
+                            Margin="0,0,0,-8"
+                            HorizontalAlignment="Left"
+                            Caption="{x:Bind Path=Vm.ScoreTextBlock, Mode=OneWay}"
+                            InitialSetValue="0"
+                            IsReadOnly="True"
+                            PlaceholderValue="{x:Bind Path=Vm.ScorePlaceHolderRating, Mode=OneWay}" />
+                        <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
+                        <ProgressRing
+                            x:Name="progressring"
+                            HorizontalAlignment="Left"
+                            x:Load="{x:Bind Vm.ItemDetailsProgressRing, Mode=OneWay}"
+                            IsActive="True" />
+                        <TextBlock
+                            x:Name="description"
+                            MaxWidth="500"
+                            HorizontalAlignment="Left"
+                            x:Load="{x:Bind Vm.LoadItemDetails.Value, Mode=OneWay}"
+                            FontSize="13"
+                            Foreground="#D7FFFFFF"
+                            MaxLines="5"
+                            Text="{x:Bind Path=Vm.DescriptionTextBlock, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+                <RelativePanel Grid.ColumnSpan="2" Margin="56,48,28,20" />
                 <Border Grid.Row="1">
                     <StackPanel x:Name="ItemOptions">
                         <AppBarButton

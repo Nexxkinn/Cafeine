@@ -87,7 +87,7 @@ namespace Cafeine.Views
                 Background = new ColorSourceEffect
                 {
                     Name = "Darken",
-                    Color = Color.FromArgb(102, 0, 0, 0)
+                    Color = Color.FromArgb(102, 0, 0, 0),
                 },
                 Foreground = new GaussianBlurEffect()
                 {
@@ -95,7 +95,7 @@ namespace Cafeine.Views
                     BlurAmount = 20.0f,
                     BorderMode = EffectBorderMode.Hard,
                     Optimization = EffectOptimization.Speed,
-                    Source = new CompositionEffectSourceParameter("Backdrop")
+                    Source = new CompositionEffectSourceParameter("ImageSource")
                 }
             };
 
@@ -106,7 +106,7 @@ namespace Cafeine.Views
             var effectBrush = _backgroundCompositor.CreateEffectFactory(gfxEffect).CreateBrush();
 
             var destinationBrush = _backgroundCompositor.CreateBackdropBrush();
-            effectBrush.SetSourceParameter("Backdrop", destinationBrush);
+            effectBrush.SetSourceParameter("ImageSource", destinationBrush);
 
             //Generate a UIElement visual.
             var blurSprite = _backgroundCompositor.CreateSpriteVisual();
@@ -129,7 +129,7 @@ namespace Cafeine.Views
             Storyboard loadImageOpacity = new Storyboard();
             loadImageOpacity.Children.Add(animation);
 
-            //what kind of bullshittery to make these method as global method??
+            //start the storyboard
             Storyboard.SetTarget(animation, BackgroundImage);
             Storyboard.SetTargetProperty(animation, "Opacity");
             loadImageOpacity.Begin();
