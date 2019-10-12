@@ -96,7 +96,6 @@
             Width="180"
             Height="80"
             HorizontalAlignment="Left"
-            Opacity="1"
             Stretch="UniformToFill" />
         <StackPanel
             x:Name="MediaDesc"

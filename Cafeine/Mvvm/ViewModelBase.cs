@@ -30,7 +30,12 @@ namespace Cafeine.Services.Mvvm
         public virtual Task OnLoaded(object sender, RoutedEventArgs e) { return Task.CompletedTask; }
         public virtual Task OnGoingBack() { return Task.CompletedTask; }
 
-        public virtual void Dispose() { }
+        public virtual void Dispose() {
+            navigationService = null;
+            Link = null;
+            GoBack = null;
+        }
+
 
         public NavigationService navigationService;
         public ViewModelLink Link;

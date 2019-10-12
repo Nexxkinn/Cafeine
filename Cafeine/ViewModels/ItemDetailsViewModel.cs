@@ -5,13 +5,10 @@ using Cafeine.Services.Mvvm;
 using Cafeine.Views.Wizard;
 using Reactive.Bindings;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
@@ -241,6 +238,24 @@ namespace Cafeine.ViewModels
             LoadItem();
         }
 
+        public override void Dispose()
+        {
+            _offline = null;
+            _details = null;
+            Service = null;
+            Episodelist = null;
+            TotalSeenTextBox.Dispose();
+            UserStatusComboBox.Dispose();
+            SetDeleteButtonLoad.Dispose();
+            IsPaneOpened.Dispose();
+            LoadItemDetails.Dispose();
+            AddButtonClicked.Dispose();
+            DeleteButtonClicked.Dispose();
+
+            GC.Collect();
+            base.Dispose();
+        }
+
         public override async Task OnNavigatedFrom(NavigationEventArgs e)
         {
             if (e.NavigationMode != NavigationMode.Back) ItemLibraryService.Push(Service);
@@ -352,19 +367,6 @@ namespace Cafeine.ViewModels
                 await LoadEpisodeList( UpdateBinding:false );
                 IsOfflineItemAvailable = false;
             }
-        }
-
-        public override void Dispose()
-        {
-            Service = null;
-            Offline = null;
-            Details = null;
-            Episodelist = null;
-            IsPaneOpened.Dispose();
-            AddButtonClicked.Dispose();
-            DeleteButtonClicked.Dispose();
-
-            GC.Collect();
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Cafeine.ViewModels
             {
                 showUserPanel();
                 await Database.BuildServices();
-                await Database.Build();
+                await Database.SyncCurrentService();
                 NavigateToMainPage();
             }
             else

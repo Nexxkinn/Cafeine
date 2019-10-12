@@ -25,9 +25,15 @@ namespace Cafeine.Views
     /// </summary>
     public sealed partial class ItemDetailsPage : BasePage
     {
+        private CompositionObject scrollerPropertySet;
         public ItemDetailsPage()
         {
             this.InitializeComponent();
+            this.Unloaded += (s, e) => {
+                Vm.Dispose();
+                scrollerPropertySet.Dispose();
+                Vm = null;
+            };
         }
 
         // TODO : use composition to enable gridview virtualization
@@ -53,7 +59,7 @@ namespace Cafeine.Views
         {
             //This whole thing is pure black magic. Literally undebugable.
 
-            CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ItemDetailScroller);
+            scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ItemDetailScroller);
             Compositor compositor = scrollerPropertySet.Compositor;
 
             string progress = "Clamp(Abs(america.Translation.Y) / 232.0, 0.0, 1.0)";
@@ -133,6 +139,7 @@ namespace Cafeine.Views
             Storyboard.SetTarget(animation, BackgroundImage);
             Storyboard.SetTargetProperty(animation, "Opacity");
             loadImageOpacity.Begin();
+            gfxEffect.Dispose();
         }
 
         private void OnBackgroundGridSizeChanged(object sender, SizeChangedEventArgs e)
@@ -148,7 +155,7 @@ namespace Cafeine.Views
         private void Episodesitem_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             ItemDetailsList item = args.ItemContainer.ContentTemplateRoot as ItemDetailsList;
-            args.RegisterUpdateCallback(item.LoadImage);
+            args.RegisterUpdateCallback((s,e) => item.LoadImage());
             args.Handled = true;
         }
     }

@@ -9,6 +9,8 @@
     <Import_RootNamespace>Cafeine.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BackgroundImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\CafeineFlyoutButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DummyData\DummyContentList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MediaList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MediaListComparer.cs" />
@@ -19,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ServiceItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TagItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\CafeineCacheManagement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\CafeineProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\MediaFormatEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Enums\MediaTypeEnum.cs" />

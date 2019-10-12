@@ -12,13 +12,6 @@
     <Page.DataContext>
         <vm:HomeViewModel x:Name="Vm" />
     </Page.DataContext>
-    <Page.Transitions>
-        <TransitionCollection>
-            <NavigationThemeTransition>
-                <DrillInNavigationTransitionInfo />
-            </NavigationThemeTransition>
-        </TransitionCollection>
-    </Page.Transitions>
     <Grid x:Name="thegrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="80" />

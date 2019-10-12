@@ -52,8 +52,7 @@ namespace Cafeine.Services.Api
                     if (Database.DoesNetworkOffline()) throw new NetworkOfflineException("Unable to connect to the internet");
                     else throw;
                 }
-                var Result = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(cacheresult);
-                return Result;
+                return JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(cacheresult);
             }
 
         }
@@ -376,7 +375,7 @@ namespace Cafeine.Services.Api
                 string status = list["status"];
                 foreach (var item in list["entries"])
                 {
-                    Debug.WriteLine($"Item ID: {(int)item["mediaId"]}, Title:{item["media"]["title"]["romaji"]}");
+                    // Debug.WriteLine($"Item ID: {(int)item["mediaId"]}, Title:{item["media"]["title"]["romaji"]}");
                     int itemstatus = StatusEnum.Anilist_ItemStatus[item["media"]["status"].Value];
                     int userstatus = StatusEnum.UserStatus[status];
                     int season = ((int?)item["media"]["seasonInt"]).GetValueOrDefault();
@@ -407,6 +406,9 @@ namespace Cafeine.Services.Api
                     localitem.Add(service);
                 };
             }
+
+            Collection = null;
+
             return localitem;
         }
 

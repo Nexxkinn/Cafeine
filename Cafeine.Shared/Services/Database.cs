@@ -1,7 +1,7 @@
 ﻿using Cafeine.Models;
 using Cafeine.Models.Enums;
 using Cafeine.Services.Api;
-using Cafeine.Views.Wizard;
+using Cafeine.Services.ExceptionExtension;
 using DBreeze;
 using DBreeze.DataTypes;
 using DBreeze.Objects;
@@ -97,6 +97,7 @@ namespace Cafeine.Services
             }
             await Task.WhenAll(tasks);
         }
+
         #region accounts
         private static List<UserAccountModel> GetAllUserAccounts()
         {
@@ -162,34 +163,22 @@ namespace Cafeine.Services
         /// ASSUME there's at least one user account listed in the local database.
         /// </summary>
         /// <returns></returns>
-        public static async Task Build()
+        public static async Task SyncCurrentService()
         {
             try
             {
-                db.Scheme.DeleteTable("TS_Service");
-                //Get all available collection from useraccounts to the library.
                 var collection = await CurrentService.CreateCollection(CurrentAccount);
-                using(var tr = db.GetTransaction())
-                {
-                    foreach (var item in collection)
-                    {
-                        tr.TextInsert("TS_Service", item.ServiceID.ToBytes(), containsWords: item.Title, fullMatchWords: "");
-                    }
-                    tr.Commit();
-                }
+                
                 CurrentItems = new List<ServiceItem>(collection);
+                
                 collection.Clear();
+                collection = null;
             }
             catch (Exception e)
             {
                 // assume offline version
-                throw new Exception(e.Message, e);
+                throw new NetworkOfflineException(e.Message, e);
             }
-        }
-
-        public static async Task SyncAllService()
-        {
-            // TODO: write an instruction here
         }
 
         #region item management
