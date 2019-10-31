@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using Windows.Networking.NetworkOperators;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Composition;
@@ -47,13 +46,13 @@ namespace Cafeine.Views.Resources
 
         public ItemDetailsList()
         {
-            this.InitializeComponent();
-            this.Loaded += SetBinding;
-            this.Unloaded += (s,e) => Disposing();
-            
+            InitializeComponent();
+            Loaded += SetBinding;
+            Unloaded += (s, e) => Dispose();
+
         }
 
-        private void Disposing()
+        private void Dispose()
         {
 
             ThumbnailSpriteVisual.Dispose();
@@ -75,7 +74,7 @@ namespace Cafeine.Views.Resources
             SubMediaList = new List<IMediaList>();
 
             // if offline exists, set as the main media
-            if(contentlist.Files != null && contentlist.Files.Count != 0)
+            if (contentlist.Files != null && contentlist.Files.Count != 0)
             {
                 MainMediaList = contentlist.Files[0];
                 if (contentlist.Files.Count > 1)
@@ -92,7 +91,7 @@ namespace Cafeine.Views.Resources
             else
             {
                 MainMediaList = contentlist.Streams[0];
-                if(contentlist.Streams.Count > 1)
+                if (contentlist.Streams.Count > 1)
                 {
                     SubMediaList.AddRange(contentlist.Streams.GetRange(1, contentlist.Streams.Count - 1));
                 }
@@ -101,9 +100,9 @@ namespace Cafeine.Views.Resources
             MainMediaListTitle.Text = MainMediaList.Source;
             MainMediaListIcon.Glyph = MainMediaList.Icon;
 
-            this.Loaded -= SetBinding;
+            Loaded -= SetBinding;
         }
-        
+
         // This is only get called by ItemDetailsPage.Episodesitem_ContainerContentChanging
         public async void LoadImage()
         {
@@ -188,7 +187,7 @@ namespace Cafeine.Views.Resources
         }
 
         #region unused
-        
+
         // Composition Experiment
         private void ContentPresenterLoaded(object sender, RoutedEventArgs e)
         {

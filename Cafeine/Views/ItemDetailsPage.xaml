@@ -120,17 +120,13 @@
                             Text="{x:Bind Path=Vm.DescriptionTextBlock, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="Wrap" />
-                        <StackPanel Orientation="Horizontal">
-                            <rc:CafeineFlyoutButton Width="150" Text="Status : Completed">
-                                <rc:CafeineFlyoutButton.ContextFlyout>
-                                    <Flyout Placement="Bottom">
-                                        <TextBlock Text="Wani" />
-                                    </Flyout>
-                                </rc:CafeineFlyoutButton.ContextFlyout>
-                            </rc:CafeineFlyoutButton>
-                            <rc:CafeineFlyoutButton Margin="8,0,0,0" Text="Helllll" />
-                            <rc:CafeineFlyoutButton Margin="8,0,0,0" Text="Helllll" />
-                        </StackPanel>
+                        <Grid>
+
+                            <rc:CafeineFlyoutButton
+                                Width="100"
+                                Height="32"
+                                Text="Helllll" />
+                        </Grid>
                     </StackPanel>
                 </Grid>
                 <RelativePanel Grid.ColumnSpan="2" Margin="56,48,28,20" />
