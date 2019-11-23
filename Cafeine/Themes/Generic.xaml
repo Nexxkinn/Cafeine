@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Cafeine"
     xmlns:local2="using:Cafeine.Views.Wizard"
-    xmlns:local3="using:Cafeine.Views.Resources.Controls">
+    xmlns:local3="using:Cafeine.Shared.Controls">
 
     <Style TargetType="local2:EpisodeListControl">
         <Setter Property="Template">

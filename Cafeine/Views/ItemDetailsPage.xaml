@@ -7,7 +7,7 @@
     xmlns:model="using:Cafeine.Models"
     xmlns:mvvm="using:Cafeine.Services.Mvvm"
     xmlns:r="using:Cafeine.Views.Resources"
-    xmlns:rc="using:Cafeine.Views.Resources.Controls"
+    xmlns:rc="using:Cafeine.Shared.Controls"
     xmlns:vm="using:Cafeine.ViewModels"
     Background="{ThemeResource LegacyDarkBlue}"
     Loaded="Page_Loaded"
