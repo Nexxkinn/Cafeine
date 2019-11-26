@@ -55,10 +55,10 @@ namespace Cafeine.Views.Resources
         private void Dispose()
         {
 
-            ThumbnailSpriteVisual.Dispose();
+            ThumbnailSpriteVisual?.Dispose();
             ThumbnailSpriteVisual = null;
 
-            ThumbnailSurfaceBrush.Dispose();
+            ThumbnailSurfaceBrush?.Dispose();
             ThumbnailSurfaceBrush = null;
 
             SubMediaList = null;

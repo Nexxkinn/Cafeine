@@ -68,36 +68,51 @@
                         Grid.Column="0"
                         Width="140"
                         Height="204"
+                        MaxWidth="140"
                         HorizontalAlignment="Left"
-                        VerticalAlignment="Top">
+                        VerticalAlignment="Top"
+                        Stretch="UniformToFill">
                         <Image.Source>
                             <BitmapImage
                                 CreateOptions="IgnoreImageCache"
+                                DecodePixelHeight="204"
                                 DecodePixelType="Logical"
-                                DecodePixelWidth="140"
                                 UriSource="{x:Bind Vm.ImageSource.Path, Mode=OneWay}" />
                         </Image.Source>
                     </Image>
-                    <StackPanel
+                    <Grid
                         Grid.Column="1"
                         MaxHeight="204"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="14" />
+                            <RowDefinition Height="24" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="36" />
+
+                        </Grid.RowDefinitions>
                         <TextBlock
+                            Grid.Row="0"
                             MaxWidth="500"
+                            Margin="0,0,0,2"
                             FontSize="22"
                             FontWeight="SemiBold"
                             MaxLines="2"
                             Text="{x:Bind Path=Vm.Service.Title, Mode=OneWay}"
+                            TextLineBounds="TrimToCapHeight"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="Wrap" />
                         <TextBlock
                             x:Name="ItemStatusTextBlock"
+                            Grid.Row="1"
                             FontSize="14"
-                            Text="{x:Bind Path=Vm.StatusTextBlock, Mode=OneWay}" />
+                            Text="{x:Bind Path=Vm.StatusTextBlock, Mode=OneWay}"
+                            TextLineBounds="TrimToCapHeight" />
                         <RatingControl
                             x:Name="rating"
-                            Margin="0,0,0,-8"
+                            Grid.Row="2"
                             HorizontalAlignment="Left"
                             Caption="{x:Bind Path=Vm.ScoreTextBlock, Mode=OneWay}"
                             InitialSetValue="0"
@@ -106,13 +121,17 @@
                         <!--  IsReadOnly="{x:Bind Path=Vm.ItemScoreReadOnly.Value, Mode=OneWay}"  -->
                         <ProgressRing
                             x:Name="progressring"
+                            Grid.Row="3"
                             HorizontalAlignment="Left"
                             x:Load="{x:Bind Vm.ItemDetailsProgressRing, Mode=OneWay}"
+                            Foreground="White"
                             IsActive="True" />
                         <TextBlock
                             x:Name="description"
-                            MaxWidth="500"
+                            Grid.Row="3"
+                            Width="500"
                             HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
                             x:Load="{x:Bind Vm.LoadItemDetails.Value, Mode=OneWay}"
                             FontSize="13"
                             Foreground="#D7FFFFFF"
@@ -120,7 +139,10 @@
                             Text="{x:Bind Path=Vm.DescriptionTextBlock, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="Wrap" />
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel
+                            Grid.Row="4"
+                            VerticalAlignment="Bottom"
+                            Orientation="Horizontal">
                             <rc:CafeineFlyoutButton Width="150" Text="Status : Completed">
                                 <rc:CafeineFlyoutButton.ContextFlyout>
                                     <Flyout Placement="Bottom">
@@ -128,10 +150,10 @@
                                     </Flyout>
                                 </rc:CafeineFlyoutButton.ContextFlyout>
                             </rc:CafeineFlyoutButton>
-                            <rc:CafeineFlyoutButton Margin="8,0,0,0" Text="Helllll" />
-                            <rc:CafeineFlyoutButton Margin="8,0,0,0" Text="Helllll" />
+                            <rc:CafeineFlyoutButton Margin="8,0,0,0" Text="8/10" />
+                            <rc:CafeineFlyoutButton Margin="8,0,0,0" Text="16/10 Eps watched to the end" />
                         </StackPanel>
-                    </StackPanel>
+                    </Grid>
                 </Grid>
                 <RelativePanel Grid.ColumnSpan="2" Margin="56,48,28,20" />
                 <Border Grid.Row="1">
